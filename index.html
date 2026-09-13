@@ -288,31 +288,77 @@ const Music = {
 };
 const PRAISE = ['对啦', '真棒', '好厉害', '答对啦', '你真行'];
 const Voice = {
-  on: true, last: '', unlocked: false,
+  on: true, last: '', unlocked: false, voice: null, scanned: false,
+  list() { try { return window.speechSynthesis.getVoices() || []; } catch (e) { return []; } },
+  pick() {
+    if (!('speechSynthesis' in window)) return null;
+    const vs = this.list();
+    if (!vs.length) return null;
+    this.scanned = true;
+    const isZh = v => /^(zh|cmn|yue)/i.test(v.lang || '') ||
+      /chinese|mandarin|中文|普通话|国语|Ting-?Ting|Mei-?Jia|Yu-?shu|Sin-?ji|Li-?mu|Huihui|Kangkang|Xiaoxiao|Yaoyao|Liangliang/i.test(v.name || '');
+    const zh = vs.filter(isZh);
+    this.voice = zh.find(v => /zh[-_]?(CN|Hans)|cmn/i.test(v.lang || '')) || zh[0] || null;
+    return this.voice;
+  },
+  status() {
+    if (!('speechSynthesis' in window)) return '这个浏览器不支持语音合成，换 Safari 或 Chrome 试试';
+    const n = this.list().length;
+    if (!n) return '语音列表还没加载出来，点一下下面的测试按钮';
+    if (!this.voice) this.pick();
+    return this.voice
+      ? '正在用：' + this.voice.name + '（' + this.voice.lang + '）'
+      : '这台设备上的 ' + n + ' 个语音里没有中文，需要装中文语音包';
+  },
   unlock() {
     if (this.unlocked || !('speechSynthesis' in window)) return;
-    this.unlocked = true;
-    try { const u = new SpeechSynthesisUtterance('　'); u.volume = 0; u.lang = 'zh-CN'; speechSynthesis.speak(u); } catch (e) { }
+    this.unlocked = true; this.pick();
+    try {
+      const u = new SpeechSynthesisUtterance('好');
+      u.volume = 0; u.lang = 'zh-CN'; if (this.voice) u.voice = this.voice;
+      speechSynthesis.speak(u);
+    } catch (e) { }
   },
   say(t, keep) {
     if (!t) return;
     if (keep !== false) this.last = t;
     if (!this.on || !('speechSynthesis' in window)) return;
-    try {
-      speechSynthesis.cancel();
+    if (!this.list().length && !this.scanned) {
+      let done = false;
+      const go = () => { if (done) return; done = true; this.pick(); this.fire(t); };
+      try { speechSynthesis.addEventListener('voiceschanged', go, { once: true }); } catch (e) { }
+      setTimeout(go, 700);
+      return;
+    }
+    if (!this.voice) this.pick();
+    this.fire(t);
+  },
+  fire(t, isRetry) {
+    let started = false;
+    const btn = document.getElementById('sayBtn');
+    const mk = () => {
       const u = new SpeechSynthesisUtterance(t);
-      u.lang = 'zh-CN'; u.rate = .9; u.pitch = 1.15;
-      const btn = document.getElementById('sayBtn');
-      u.onstart = () => { Music.duck(true); if (btn) btn.classList.add('talking'); };
+      u.lang = (this.voice && this.voice.lang) || 'zh-CN';
+      if (this.voice) u.voice = this.voice;
+      u.rate = .9; u.pitch = 1.12; u.volume = 1;
+      u.onstart = () => { started = true; Music.duck(true); if (btn) btn.classList.add('talking'); };
       const off = () => { Music.duck(false); if (btn) btn.classList.remove('talking'); };
       u.onend = off; u.onerror = off;
-      speechSynthesis.speak(u);
+      return u;
+    };
+    try {
+      speechSynthesis.cancel();
+      setTimeout(() => { try { speechSynthesis.resume(); speechSynthesis.speak(mk()); } catch (e) { } }, 30);
+      if (!isRetry) setTimeout(() => { if (!started) { this.pick(); this.fire(t, true); } }, 650);
     } catch (e) { }
   },
   short(t) { this.say(t, false); },
   praise() { this.short(pick(PRAISE)); },
-  repeat() { if (this.last) { const t = this.last; this.on = true; this.say(t); } }
+  repeat() { this.unlock(); if (this.last) { this.on = true; this.say(this.last); } }
 };
+if ('speechSynthesis' in window) {
+  try { speechSynthesis.getVoices(); speechSynthesis.addEventListener('voiceschanged', () => Voice.pick()); } catch (e) { }
+}
 
 /* ============ 全局状态（本次打开有效） ============ */
 const STICKERS = ['🐣', '🦄', '🐙', '🍓', '🚀', '🌈', '🐢', '🦋', '🍭', '🐧', '🦖', '🌻', '🐬', '🎠', '🐨', '🍉'];
@@ -1075,6 +1121,20 @@ function openPanel() {
   mk('语音读题', () => Voice.on, v => { Voice.on = v; if (!v && 'speechSynthesis' in window) speechSynthesis.cancel(); });
   mk('背景音乐', () => Music.on, v => { Music.on = v; if (v) Music.start(); else Music.stop(); });
   mk('自动调整难度', () => S.autoLevel, v => S.autoLevel = v);
+  const vRow = el('div', 'row'); vRow.style.display = 'block';
+  vRow.appendChild(el('div', null, '中文语音自检'));
+  const vInfo = el('div', null, Voice.status());
+  vInfo.style.cssText = 'font-size:14px;color:var(--ink-soft);margin:4px 0 8px';
+  const vTest = el('button', 'sw', '🔊 测试朗读');
+  vTest.addEventListener('click', () => {
+    Audio2.init(); Voice.unlock(); Voice.pick();
+    vInfo.textContent = Voice.status();
+    const was = Voice.on; Voice.on = true;
+    Voice.say('你好，我们一起来玩游戏吧');
+    Voice.on = was;
+  });
+  vRow.appendChild(vInfo); vRow.appendChild(vTest); p.appendChild(vRow);
+
   const lvRow = el('div', 'row'); lvRow.style.display = 'block';
   lvRow.appendChild(el('div', null, '各游戏当前关卡（点 +/− 手动调）'));
   const box = el('div'); box.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;margin-top:8px';
