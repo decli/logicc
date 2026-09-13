@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no, maximum-scale=1">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="思维小画本">
@@ -325,7 +326,7 @@ const Voice = {
     if (!n) return '语音列表还没加载出来，点一下测试朗读';
     const c = this.candidates();
     if (!c.length) return '这台设备的 ' + n + ' 个语音里没有中文，需要装中文语音包';
-    if (this.failed) return '所有中文音色都没出声。诊断：' + this.diag();
+    if (this.failed) return '所有中文音色都没出声，多半是这个浏览器的语音引擎没响应（Chrome on macOS 常见）。先彻底退出浏览器重开，或改用 Safari。诊断：' + this.diag();
     const v = this.voice || c[0];
     return '正在用：' + v.name + '（' + v.lang + '）· ' + this.diag();
   },
@@ -396,7 +397,11 @@ const Voice = {
   repeat() { this.unlock(); if (this.last) { this.on = true; this.failed = false; this.say(this.last); } }
 };
 if ('speechSynthesis' in window) {
-  try { speechSynthesis.getVoices(); speechSynthesis.addEventListener('voiceschanged', () => { Voice.scanned = true; }); } catch (e) { }
+  try {
+    speechSynthesis.cancel();  // Chrome 的老毛病：不先清一次队列，之后可能一直不出声
+    speechSynthesis.getVoices();
+    speechSynthesis.addEventListener('voiceschanged', () => { Voice.scanned = true; });
+  } catch (e) { }
 }
 
 /* ============ 全局状态（本次打开有效） ============ */
