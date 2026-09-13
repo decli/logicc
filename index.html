@@ -40,7 +40,7 @@ body{
   overflow:hidden;
 }
 .num{font-family:"Arial Rounded MT Bold","Avenir Next Rounded","Nunito","PingFang SC",sans-serif;font-weight:700}
-#app{display:flex;flex-direction:column;height:100%;height:calc(var(--vh)*100);
+#app{display:flex;flex-direction:column;height:100%;height:calc(var(--vh)*100);max-width:1240px;margin:0 auto;width:100%;
   padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 /* ---------- top bar ---------- */
 #topbar{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:10px 14px}
@@ -74,8 +74,8 @@ body{
 .card:nth-child(even){transform:rotate(1deg)}
 .card:active{transform:translate(4px,4px) rotate(0deg);box-shadow:0 0 0 var(--ink)}
 .card .band{position:absolute;left:0;right:0;bottom:0;height:13%;background:var(--c)}
-.card .emoji{font-size:min(7.5vh,44px);line-height:1.1;position:relative;z-index:1}
-.card .name{font-size:min(3vh,20px);font-weight:700;position:relative;z-index:1}
+.card .emoji{font-size:min(7vh,5.5vw);line-height:1.1;position:relative;z-index:1}
+.card .name{font-size:min(3vh,2.4vw);font-weight:700;position:relative;z-index:1}
 .card .lv{position:absolute;top:8px;right:10px;font-size:13px;color:var(--ink-soft);z-index:1}
 .card .band .stripe{position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.35) 0 6px,transparent 6px 14px)}
 #stickerBar{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:10px 4px 2px;font-size:15px;color:var(--ink-soft);min-height:42px;flex-wrap:wrap}
@@ -84,7 +84,7 @@ body{
 #dots{flex:0 0 auto;display:flex;gap:8px;justify-content:center;padding:2px 0 8px}
 #dots i{width:14px;height:14px;border-radius:50%;border:3px solid var(--ink);background:#fff;display:block}
 #dots i.on{background:var(--yellow)}
-#prompt{flex:0 0 auto;text-align:center;font-size:min(4.2vh,26px);font-weight:700;padding:2px 0 8px;min-height:34px}
+#prompt{flex:0 0 auto;text-align:center;font-size:min(4vh,3vw);font-weight:700;padding:2px 0 8px;min-height:34px}
 #board{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;position:relative}
 .center{display:flex;align-items:center;justify-content:center;flex-direction:column}
 /* ---------- generic tiles ---------- */
@@ -103,10 +103,10 @@ body{
 @keyframes pp{0%{transform:scale(.7)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
 /* schulte */
 #grid{display:grid;gap:min(1.6vh,12px)}
-#grid .tile{font-size:min(7vh,44px)}
+#grid .tile{font-size:min(6vh,5vw)}
 #targetChip{display:inline-flex;align-items:center;justify-content:center;min-width:64px;height:64px;
   border:4px solid var(--ink);border-radius:20px;background:var(--yellow);box-shadow:4px 4px 0 var(--ink);
-  font-size:34px;margin-left:10px;vertical-align:middle;padding:0 10px}
+  font-size:min(4.6vh,34px);margin-left:10px;vertical-align:middle;padding:0 10px}
 /* dots face */
 .face{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);
   width:100%;height:100%;padding:10%;gap:4%}
@@ -120,12 +120,12 @@ body{
 .domino .half+.half{border-top:4px solid var(--ink)}
 .domino .qm{display:flex;align-items:center;justify-content:center;height:100%;font-size:min(8vh,46px);color:var(--line)}
 .optrow{display:flex;gap:min(2.5vh,16px);align-items:stretch;justify-content:center;flex-wrap:wrap}
-.opt{width:min(20vh,110px);height:min(14vh,80px)}
-.opt.numopt{font-size:min(7vh,44px);width:min(16vh,90px);height:min(16vh,90px)}
+.opt{width:min(17vh,13vw);height:min(12vh,9vw)}
+.opt.numopt{font-size:min(6vh,5vw);width:min(15vh,11vw);height:min(15vh,11vw)}
 /* bond */
 #bondWrap{display:flex;flex-direction:column;align-items:center;gap:6px}
-.bnode{width:min(13vh,84px);height:min(13vh,84px);border-radius:50%;border:4px solid var(--ink);background:#fff;
-  display:flex;align-items:center;justify-content:center;font-size:min(6.5vh,40px);box-shadow:4px 4px 0 var(--ink)}
+.bnode{width:min(12vh,9vw);height:min(12vh,9vw);border-radius:50%;border:4px solid var(--ink);background:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:min(6vh,4.5vw);box-shadow:4px 4px 0 var(--ink)}
 .bnode.top{background:var(--blue);color:#fff}
 .bnode.q{background:#fff;color:var(--line)}
 .bnode.fill{background:var(--green);color:#fff}
@@ -134,7 +134,7 @@ body{
 #matchSvg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .mcols{position:relative;display:flex;justify-content:space-between;height:100%;padding:0 2px}
 .mcol{display:flex;flex-direction:column;justify-content:space-around;gap:6px}
-.mitem{padding:0 min(2.4vh,16px);height:min(9vh,58px);font-size:min(4.6vh,30px);letter-spacing:.06em}
+.mitem{padding:0 min(2.4vh,16px);height:min(8vh,7vw);font-size:min(4.2vh,3.2vw);letter-spacing:.06em}
 .mitem.done{background:var(--purple);color:#fff}
 /* mirror */
 #mirrorWrap{display:grid;gap:min(1.2vh,8px);position:relative}
@@ -159,7 +159,7 @@ body{
 @keyframes fly{0%{transform:translate(0,0) scale(.4);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1.3);opacity:0}}
 #reward{position:absolute;inset:0;background:rgba(255,252,242,.96);display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:16px;z-index:6;text-align:center;padding:20px}
-#reward .big{font-size:min(22vh,140px);animation:pp .5s}
+#reward .big{font-size:min(20vh,18vw);animation:pp .5s}
 #reward h2{margin:0;font-size:min(5vh,30px)}
 .bigbtn{border:4px solid var(--ink);border-radius:18px;background:var(--yellow);box-shadow:5px 5px 0 var(--ink);
   font-size:22px;font-weight:700;padding:14px 28px;font-family:inherit;color:var(--ink);cursor:pointer}
@@ -167,7 +167,7 @@ body{
 .bigbtn.ghost{background:#fff}
 .btnrow{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
 /* settings */
-#panel{position:absolute;inset:auto 10px 10px 10px;max-width:520px;margin:0 auto;background:#fff;border:4px solid var(--ink);
+#panel{position:absolute;left:10px;right:10px;bottom:10px;max-width:560px;max-height:min(84vh,760px);overflow:auto;-webkit-overflow-scrolling:touch;margin:0 auto;background:#fff;border:4px solid var(--ink);
   border-radius:22px;box-shadow:6px 6px 0 var(--ink);padding:16px;z-index:7}
 #panel h3{margin:0 0 10px;font-size:20px}
 .row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:2px solid var(--line);font-size:17px}
@@ -288,34 +288,47 @@ const Music = {
 };
 const PRAISE = ['对啦', '真棒', '好厉害', '答对啦', '你真行'];
 const Voice = {
-  on: true, last: '', unlocked: false, voice: null, scanned: false,
+  on: true, last: '', unlocked: false, voice: null, forced: null, scanned: false, failed: false,
   list() { try { return window.speechSynthesis.getVoices() || []; } catch (e) { return []; } },
-  pick() {
-    if (!('speechSynthesis' in window)) return null;
-    const vs = this.list();
-    if (!vs.length) return null;
-    this.scanned = true;
-    const isZh = v => /^(zh|cmn|yue)/i.test(v.lang || '') ||
-      /chinese|mandarin|中文|普通话|国语|Ting-?Ting|Mei-?Jia|Yu-?shu|Sin-?ji|Li-?mu|Huihui|Kangkang|Xiaoxiao|Yaoyao|Liangliang/i.test(v.name || '');
-    const zh = vs.filter(isZh);
-    this.voice = zh.find(v => /zh[-_]?(CN|Hans)|cmn/i.test(v.lang || '')) || zh[0] || null;
-    return this.voice;
+  isZh(v) {
+    return /^(zh|cmn|yue)/i.test(v.lang || '') ||
+      /chinese|mandarin|中文|普通话|国语/i.test(v.name || '');
+  },
+  candidates() {
+    const zh = this.list().filter(v => this.isZh(v));
+    const score = v => {
+      const n = (v.name || '').toLowerCase(), l = v.lang || '';
+      let s = 0;
+      if (/google/.test(n)) s += 8;
+      if (/ting-?ting|tingting|mei-?jia|sin-?ji|yu-?shu|li-?mu|xiaoxiao|xiaoyi|yunxi|huihui|kangkang|yaoyao|liangliang/.test(n)) s += 6;
+      if (/zh[-_]?(cn|hans)|cmn/i.test(l)) s += 3;
+      if (v.default) s += 2;
+      if (v.localService) s += 1;
+      // macOS 的趣味音色多半没下载，排到最后
+      if (/eddy|flo|grandma|grandpa|reed|rocko|sandy|shelley|bells|bubbles|jester|organ|superstar|trinoids|whisper|wobble|zarvox/.test(n)) s -= 10;
+      return s;
+    };
+    zh.sort((x, y) => score(y) - score(x));
+    if (this.forced) return [this.forced].concat(zh.filter(v => v !== this.forced));
+    return zh;
   },
   status() {
     if (!('speechSynthesis' in window)) return '这个浏览器不支持语音合成，换 Safari 或 Chrome 试试';
     const n = this.list().length;
-    if (!n) return '语音列表还没加载出来，点一下下面的测试按钮';
-    if (!this.voice) this.pick();
-    return this.voice
-      ? '正在用：' + this.voice.name + '（' + this.voice.lang + '）'
-      : '这台设备上的 ' + n + ' 个语音里没有中文，需要装中文语音包';
+    if (!n) return '语音列表还没加载出来，点一下测试朗读';
+    const c = this.candidates();
+    if (!c.length) return '这台设备的 ' + n + ' 个语音里没有中文，需要装中文语音包';
+    if (this.failed) return '找到 ' + c.length + ' 个中文语音，但都没发出声音，用下面的下拉框换一个试试';
+    const v = this.voice || c[0];
+    return '正在用：' + v.name + '（' + v.lang + '），共 ' + c.length + ' 个中文语音可选';
   },
   unlock() {
     if (this.unlocked || !('speechSynthesis' in window)) return;
-    this.unlocked = true; this.pick();
+    this.unlocked = true;
     try {
       const u = new SpeechSynthesisUtterance('好');
-      u.volume = 0; u.lang = 'zh-CN'; if (this.voice) u.voice = this.voice;
+      u.volume = 0; u.lang = 'zh-CN';
+      const c = this.candidates(); if (c[0]) u.voice = c[0];
       speechSynthesis.speak(u);
     } catch (e) { }
   },
@@ -325,39 +338,53 @@ const Voice = {
     if (!this.on || !('speechSynthesis' in window)) return;
     if (!this.list().length && !this.scanned) {
       let done = false;
-      const go = () => { if (done) return; done = true; this.pick(); this.fire(t); };
+      const go = () => { if (done) return; done = true; this.scanned = true; this.fire(t, 0); };
       try { speechSynthesis.addEventListener('voiceschanged', go, { once: true }); } catch (e) { }
       setTimeout(go, 700);
       return;
     }
-    if (!this.voice) this.pick();
-    this.fire(t);
+    this.scanned = true;
+    this.fire(t, 0);
   },
-  fire(t, isRetry) {
-    let started = false;
+  fire(t, idx) {
+    const cands = this.candidates();
+    // 已经确认能用的音色，直接从它开始
+    if (idx === 0 && this.voice && !this.failed) {
+      const i = cands.indexOf(this.voice);
+      if (i > 0) cands.unshift(cands.splice(i, 1)[0]);
+    }
+    const v = cands[idx] || null;
+    if (idx > 0 && !v) { this.failed = true; return; }
+    let started = false, advanced = false;
     const btn = document.getElementById('sayBtn');
-    const mk = () => {
-      const u = new SpeechSynthesisUtterance(t);
-      u.lang = (this.voice && this.voice.lang) || 'zh-CN';
-      if (this.voice) u.voice = this.voice;
-      u.rate = .9; u.pitch = 1.12; u.volume = 1;
-      u.onstart = () => { started = true; Music.duck(true); if (btn) btn.classList.add('talking'); };
-      const off = () => { Music.duck(false); if (btn) btn.classList.remove('talking'); };
-      u.onend = off; u.onerror = off;
-      return u;
+    const off = () => { Music.duck(false); if (btn) btn.classList.remove('talking'); };
+    const nextTry = () => {
+      if (advanced || started) return;
+      advanced = true; off();
+      if (idx + 1 < cands.length) this.fire(t, idx + 1); else this.failed = true;
     };
     try {
       speechSynthesis.cancel();
-      setTimeout(() => { try { speechSynthesis.resume(); speechSynthesis.speak(mk()); } catch (e) { } }, 30);
-      if (!isRetry) setTimeout(() => { if (!started) { this.pick(); this.fire(t, true); } }, 650);
-    } catch (e) { }
+      const u = new SpeechSynthesisUtterance(t);
+      if (v) { u.voice = v; u.lang = v.lang || 'zh-CN'; } else u.lang = 'zh-CN';
+      u.rate = .9; u.pitch = 1.12; u.volume = 1;
+      u.onstart = () => {
+        started = true; this.failed = false; if (v) this.voice = v;
+        Music.duck(true); if (btn) btn.classList.add('talking');
+      };
+      u.onend = off;
+      u.onerror = () => nextTry();
+      speechSynthesis.resume();
+      speechSynthesis.speak(u);
+      setTimeout(nextTry, 900);
+    } catch (e) { nextTry(); }
   },
   short(t) { this.say(t, false); },
   praise() { this.short(pick(PRAISE)); },
-  repeat() { this.unlock(); if (this.last) { this.on = true; this.say(this.last); } }
+  repeat() { this.unlock(); if (this.last) { this.on = true; this.failed = false; this.say(this.last); } }
 };
 if ('speechSynthesis' in window) {
-  try { speechSynthesis.getVoices(); speechSynthesis.addEventListener('voiceschanged', () => Voice.pick()); } catch (e) { }
+  try { speechSynthesis.getVoices(); speechSynthesis.addEventListener('voiceschanged', () => { Voice.scanned = true; }); } catch (e) { }
 }
 
 /* ============ 全局状态（本次打开有效） ============ */
@@ -571,7 +598,7 @@ function gDots(board, lv) {
   const b = T - a;
   const wrap = el('div'); wrap.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:min(4vh,28px);flex-wrap:wrap';
   const dom = el('div', 'domino');
-  dom.style.cssText += 'width:min(26vh,160px);height:min(40vh,240px)';
+  dom.style.cssText += 'width:min(22vh,17vw);height:min(34vh,26vw)';
   const h1 = el('div', 'half'); h1.appendChild(faceEl(a));
   const h2 = el('div', 'half'); const qm = el('div', 'qm num', '?'); h2.appendChild(qm);
   dom.appendChild(h1); dom.appendChild(h2);
@@ -621,10 +648,10 @@ function gBond(board, lv) {
   const wrap = el('div'); wrap.id = 'bondWrap';
   const top = el('div', 'bnode top num', String(N));
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('viewBox', '0 0 200 60'); svg.style.cssText = 'width:min(42vh,260px);height:min(10vh,60px)';
+  svg.setAttribute('viewBox', '0 0 200 60'); svg.style.cssText = 'width:min(38vh,28vw);height:min(9vh,7vw)';
   svg.innerHTML = '<line x1="100" y1="4" x2="26" y2="56" stroke="#2A2523" stroke-width="5" stroke-linecap="round"/>' +
     '<line x1="100" y1="4" x2="174" y2="56" stroke="#2A2523" stroke-width="5" stroke-linecap="round"/>';
-  const leaves = el('div'); leaves.style.cssText = 'display:flex;gap:min(14vh,90px)';
+  const leaves = el('div'); leaves.style.cssText = 'display:flex;gap:min(13vh,10vw)';
   const left = el('div', 'bnode num', String(a));
   const qn = el('div', 'bnode q num', '?');
   leaves.appendChild(left); leaves.appendChild(qn);
@@ -815,7 +842,7 @@ function gConnect(board, lv) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.id = 'cSvg'; svg.setAttribute('viewBox', '0 0 100 100');
   svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-  const box = el('div'); box.style.cssText = 'width:min(66vh,92vw);height:min(66vh,92vw)';
+  const box = el('div'); box.style.cssText = 'width:min(70vh,80vw);height:min(70vh,80vw)';
   const fill = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
   fill.setAttribute('class', 'shapefill');
   fill.setAttribute('points', pts.map(p => p.join(',')).join(' '));
@@ -1125,15 +1152,38 @@ function openPanel() {
   vRow.appendChild(el('div', null, '中文语音自检'));
   const vInfo = el('div', null, Voice.status());
   vInfo.style.cssText = 'font-size:14px;color:var(--ink-soft);margin:4px 0 8px';
+  vRow.appendChild(vInfo);
+  const vSel = document.createElement('select');
+  vSel.style.cssText = 'font:inherit;font-size:15px;padding:6px 10px;border:3px solid var(--ink);border-radius:12px;background:#fff;max-width:100%;margin-right:8px';
+  const fillSel = () => {
+    vSel.innerHTML = '';
+    const c = Voice.candidates();
+    const use = c.length ? c : Voice.list();
+    use.forEach((v, i) => {
+      const o = document.createElement('option');
+      o.value = String(i); o.textContent = v.name + '（' + v.lang + '）';
+      if (Voice.voice === v || (!Voice.voice && i === 0)) o.selected = true;
+      vSel.appendChild(o);
+    });
+    vSel.dataset.n = String(use.length);
+  };
+  fillSel();
+  vSel.addEventListener('change', () => {
+    const c = Voice.candidates(); const use = c.length ? c : Voice.list();
+    Voice.forced = use[+vSel.value] || null; Voice.voice = Voice.forced; Voice.failed = false;
+    vInfo.textContent = Voice.status();
+    const was = Voice.on; Voice.on = true; Voice.say('你好，我们一起来玩游戏吧'); Voice.on = was;
+  });
   const vTest = el('button', 'sw', '🔊 测试朗读');
   vTest.addEventListener('click', () => {
-    Audio2.init(); Voice.unlock(); Voice.pick();
-    vInfo.textContent = Voice.status();
+    Audio2.init(); Voice.unlock();
+    fillSel(); vInfo.textContent = Voice.status();
     const was = Voice.on; Voice.on = true;
     Voice.say('你好，我们一起来玩游戏吧');
     Voice.on = was;
+    setTimeout(() => { vInfo.textContent = Voice.status(); fillSel(); }, 1500);
   });
-  vRow.appendChild(vInfo); vRow.appendChild(vTest); p.appendChild(vRow);
+  vRow.appendChild(vSel); vRow.appendChild(vTest); p.appendChild(vRow);
 
   const lvRow = el('div', 'row'); lvRow.style.display = 'block';
   lvRow.appendChild(el('div', null, '各游戏当前关卡（点 +/− 手动调）'));
