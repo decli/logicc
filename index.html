@@ -288,7 +288,7 @@ const Music = {
 };
 const PRAISE = ['对啦', '真棒', '好厉害', '答对啦', '你真行'];
 const Voice = {
-  on: true, last: '', unlocked: false, voice: null, forced: null, scanned: false, failed: false,
+  on: true, last: '', unlocked: false, voice: null, forced: null, scanned: false, failed: false, lastErr: '', tried: 0,
   list() { try { return window.speechSynthesis.getVoices() || []; } catch (e) { return []; } },
   isZh(v) {
     return /^(zh|cmn|yue)/i.test(v.lang || '') ||
@@ -312,15 +312,22 @@ const Voice = {
     if (this.forced) return [this.forced].concat(zh.filter(v => v !== this.forced));
     return zh;
   },
+  diag() {
+    if (!('speechSynthesis' in window)) return '不支持语音合成';
+    const ss = window.speechSynthesis;
+    return '音色 ' + this.list().length + ' 个 / 中文 ' + this.candidates().length +
+      ' 个 · speaking=' + ss.speaking + ' pending=' + ss.pending + ' paused=' + ss.paused +
+      ' · 试过 ' + this.tried + ' 次 · ' + (this.lastErr ? ('错误码 ' + this.lastErr) : '没有任何错误回调');
+  },
   status() {
     if (!('speechSynthesis' in window)) return '这个浏览器不支持语音合成，换 Safari 或 Chrome 试试';
     const n = this.list().length;
     if (!n) return '语音列表还没加载出来，点一下测试朗读';
     const c = this.candidates();
     if (!c.length) return '这台设备的 ' + n + ' 个语音里没有中文，需要装中文语音包';
-    if (this.failed) return '找到 ' + c.length + ' 个中文语音，但都没发出声音，用下面的下拉框换一个试试';
+    if (this.failed) return '所有中文音色都没出声。诊断：' + this.diag();
     const v = this.voice || c[0];
-    return '正在用：' + v.name + '（' + v.lang + '），共 ' + c.length + ' 个中文语音可选';
+    return '正在用：' + v.name + '（' + v.lang + '）· ' + this.diag();
   },
   unlock() {
     if (this.unlocked || !('speechSynthesis' in window)) return;
@@ -348,23 +355,28 @@ const Voice = {
   },
   fire(t, idx) {
     const cands = this.candidates();
-    // 已经确认能用的音色，直接从它开始
     if (idx === 0 && this.voice && !this.failed) {
       const i = cands.indexOf(this.voice);
       if (i > 0) cands.unshift(cands.splice(i, 1)[0]);
     }
-    const v = cands[idx] || null;
-    if (idx > 0 && !v) { this.failed = true; return; }
+    // 最后一档：完全不指定 voice，只给 lang，交给浏览器自己挑
+    const chain = cands.concat([null]);
+    if (idx >= chain.length) { this.failed = true; return; }
+    const v = chain[idx];
+    const cands2 = chain;
     let started = false, advanced = false;
     const btn = document.getElementById('sayBtn');
     const off = () => { Music.duck(false); if (btn) btn.classList.remove('talking'); };
     const nextTry = () => {
       if (advanced || started) return;
       advanced = true; off();
-      if (idx + 1 < cands.length) this.fire(t, idx + 1); else this.failed = true;
+      if (idx + 1 < cands2.length) this.fire(t, idx + 1); else this.failed = true;
     };
     try {
-      speechSynthesis.cancel();
+      const ss = window.speechSynthesis;
+      if (ss.speaking || ss.pending) ss.cancel();
+      if (ss.paused) ss.resume();
+      this.tried++;
       const u = new SpeechSynthesisUtterance(t);
       if (v) { u.voice = v; u.lang = v.lang || 'zh-CN'; } else u.lang = 'zh-CN';
       u.rate = .9; u.pitch = 1.12; u.volume = 1;
@@ -373,9 +385,9 @@ const Voice = {
         Music.duck(true); if (btn) btn.classList.add('talking');
       };
       u.onend = off;
-      u.onerror = () => nextTry();
-      speechSynthesis.resume();
-      speechSynthesis.speak(u);
+      u.onerror = e => { this.lastErr = (e && (e.error || e.name)) || 'unknown'; nextTry(); };
+      ss.speak(u);
+      setTimeout(() => { try { if (!started && ss.paused) ss.resume(); } catch (e) { } }, 120);
       setTimeout(nextTry, 900);
     } catch (e) { nextTry(); }
   },
@@ -1181,7 +1193,8 @@ function openPanel() {
     const was = Voice.on; Voice.on = true;
     Voice.say('你好，我们一起来玩游戏吧');
     Voice.on = was;
-    setTimeout(() => { vInfo.textContent = Voice.status(); fillSel(); }, 1500);
+    setTimeout(() => { vInfo.textContent = Voice.status(); }, 400);
+    setTimeout(() => { vInfo.textContent = Voice.status(); fillSel(); }, 2500);
   });
   vRow.appendChild(vSel); vRow.appendChild(vTest); p.appendChild(vRow);
 
