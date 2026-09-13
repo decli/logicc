@@ -14,180 +14,145 @@
 <title>思维小画本</title>
 <style>
 :root{
-  --paper:#FFFCF2;
-  --ink:#2A2523;
-  --ink-soft:#6F665E;
-  --line:#E4DCC9;
-  --red:#E8452C;
-  --orange:#F08A24;
-  --yellow:#F5B921;
-  --green:#3FA34D;
-  --blue:#2E7DD1;
-  --purple:#7B4BC9;
-  --pink:#E4568E;
-  --teal:#12A5A0;
-  --vh:1vh;
+  --paper:#FFFCF2; --ink:#2A2523; --ink-soft:#6F665E; --line:#E4DCC9;
+  --red:#E8452C; --orange:#F08A24; --yellow:#F5B921; --green:#3FA34D;
+  --blue:#2E7DD1; --purple:#7B4BC9; --pink:#E4568E; --teal:#12A5A0;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;margin:0;padding:0;overscroll-behavior:none}
+html,body{height:100%;margin:0;padding:0;overscroll-behavior:none;overflow:hidden}
 body{
   background:var(--paper);
-  background-image:radial-gradient(var(--line) 1.2px, transparent 1.3px);
+  background-image:radial-gradient(var(--line) 1.2px,transparent 1.3px);
   background-size:22px 22px;
   color:var(--ink);
   font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Heiti SC",sans-serif;
-  -webkit-user-select:none;user-select:none;
-  touch-action:manipulation;
-  overflow:hidden;
+  -webkit-user-select:none;user-select:none;touch-action:manipulation;
 }
 .num{font-family:"Arial Rounded MT Bold","Avenir Next Rounded","Nunito","PingFang SC",sans-serif;font-weight:700}
-#app{display:flex;flex-direction:column;height:100%;height:calc(var(--vh)*100);max-width:1240px;margin:0 auto;width:100%;
+#app{position:fixed;inset:0;display:flex;flex-direction:column;overflow:hidden;
   padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
-/* ---------- top bar ---------- */
-#topbar{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:10px 14px}
-.iconbtn{
-  width:52px;height:52px;flex:0 0 auto;border:3px solid var(--ink);background:#fff;
-  border-radius:16px;font-size:24px;line-height:1;display:flex;align-items:center;justify-content:center;
-  box-shadow:3px 3px 0 var(--ink);cursor:pointer;padding:0;
-}
+/* ---------- 顶栏 ---------- */
+#topbar{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:8px 12px;min-width:0}
+.iconbtn{width:46px;height:46px;flex:0 0 auto;border:3px solid var(--ink);background:#fff;border-radius:14px;
+  font-size:21px;line-height:1;display:flex;align-items:center;justify-content:center;box-shadow:3px 3px 0 var(--ink);cursor:pointer;padding:0}
 .iconbtn:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
-#barTitle{flex:1 1 auto;min-width:0;font-size:22px;font-weight:700;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#barTitle{flex:1 1 auto;min-width:0;font-size:19px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#starBox{flex:0 0 auto;display:flex;align-items:center;gap:5px;font-size:19px;padding:5px 12px;border:3px solid var(--ink);
+  border-radius:999px;background:#fff;box-shadow:3px 3px 0 var(--ink)}
 #sayBtn{background:var(--yellow)}
 #sayBtn.talking{animation:pl 1s infinite}
-#starBox{display:flex;align-items:center;gap:6px;font-size:22px;padding:6px 14px;border:3px solid var(--ink);
-  border-radius:999px;background:#fff;box-shadow:3px 3px 0 var(--ink)}
-#starBox .num{font-size:22px}
-/* ---------- screen ---------- */
-#screen{flex:1 1 auto;position:relative;overflow:hidden}
-.pane{position:absolute;inset:0;padding:0 14px 14px;display:flex;flex-direction:column}
-/* ---------- home ---------- */
-.hero{display:flex;align-items:baseline;gap:12px;padding:2px 4px 12px}
-.hero h1{margin:0;font-size:30px;letter-spacing:.04em;transform:rotate(-1.2deg)}
-.hero p{margin:0;color:var(--ink-soft);font-size:15px}
-#cards{flex:1 1 auto;display:grid;grid-template-columns:repeat(2,1fr);grid-auto-rows:1fr;gap:14px;min-height:0}
-@media (orientation:landscape){#cards{grid-template-columns:repeat(4,1fr)}}
-.card{
-  border:4px solid var(--ink);border-radius:20px;background:#fff;position:relative;overflow:hidden;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-  box-shadow:5px 5px 0 var(--ink);cursor:pointer;padding:6px 6px 15%;
-}
-.card:nth-child(odd){transform:rotate(-1deg)}
-.card:nth-child(even){transform:rotate(1deg)}
-.card:active{transform:translate(4px,4px) rotate(0deg);box-shadow:0 0 0 var(--ink)}
-.card .band{position:absolute;left:0;right:0;bottom:0;height:13%;background:var(--c)}
-.card .emoji{font-size:min(7vh,5.5vw);line-height:1.1;position:relative;z-index:1}
-.card .name{font-size:min(3vh,2.4vw);font-weight:700;position:relative;z-index:1}
-.card .lv{position:absolute;top:8px;right:10px;font-size:13px;color:var(--ink-soft);z-index:1}
-.card .band .stripe{position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.35) 0 6px,transparent 6px 14px)}
-#stickerBar{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:10px 4px 2px;font-size:15px;color:var(--ink-soft);min-height:42px;flex-wrap:wrap}
-#stickerBar span.st{font-size:26px}
-/* ---------- game shell ---------- */
-#dots{flex:0 0 auto;display:flex;gap:8px;justify-content:center;padding:2px 0 8px}
-#dots i{width:14px;height:14px;border-radius:50%;border:3px solid var(--ink);background:#fff;display:block}
+/* ---------- 屏幕 ---------- */
+#screen{flex:1 1 auto;position:relative;overflow:hidden;min-height:0}
+.pane{position:absolute;inset:0;display:flex;flex-direction:column;padding:0 12px 12px;overflow:hidden}
+/* ---------- 首页 ---------- */
+.hero{flex:0 0 auto;display:flex;align-items:baseline;gap:10px;padding:0 4px 8px}
+.hero h1{margin:0;font-size:26px;transform:rotate(-1.2deg)}
+.hero p{margin:0;color:var(--ink-soft);font-size:14px}
+#cards{flex:1 1 auto;display:grid;gap:10px;min-height:0}
+.card{border:4px solid var(--ink);border-radius:18px;background:#fff;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  box-shadow:5px 5px 0 var(--ink);cursor:pointer;min-height:0;padding-bottom:12%}
+.card:nth-child(odd){transform:rotate(-.8deg)}
+.card:nth-child(even){transform:rotate(.8deg)}
+.card:active{transform:translate(4px,4px) rotate(0);box-shadow:0 0 0 var(--ink)}
+.card .band{position:absolute;left:0;right:0;bottom:0;height:11%;background:var(--c)}
+.card .band i{position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.35) 0 6px,transparent 6px 14px)}
+.card .emoji{line-height:1.05;position:relative;z-index:1}
+.card .name{font-weight:700;position:relative;z-index:1}
+.card .lv{position:absolute;top:6px;right:9px;font-size:12px;color:var(--ink-soft);z-index:1}
+#stickerBar{flex:0 0 auto;display:flex;align-items:center;gap:7px;padding:8px 4px 0;font-size:14px;color:var(--ink-soft);
+  min-height:34px;overflow:hidden}
+#stickerBar b{font-size:23px;font-weight:400}
+/* ---------- 选关 ---------- */
+#lvWrap{flex:1 1 auto;display:grid;gap:10px;min-height:0;align-content:center}
+.lvcard{border:4px solid var(--ink);border-radius:16px;background:#fff;box-shadow:4px 4px 0 var(--ink);cursor:pointer;
+  display:flex;align-items:center;gap:12px;padding:10px 14px;min-height:0;position:relative}
+.lvcard:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--ink)}
+.lvcard .no{flex:0 0 auto;width:44px;height:44px;border-radius:12px;border:3px solid var(--ink);display:flex;
+  align-items:center;justify-content:center;font-size:20px;background:var(--c);color:#fff}
+.lvcard .tx{flex:1 1 auto;min-width:0}
+.lvcard .t1{font-size:17px;font-weight:700}
+.lvcard .t2{font-size:13px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lvcard .st{flex:0 0 auto;font-size:13px;letter-spacing:1px;color:var(--orange)}
+.lvcard .tag{position:absolute;top:-10px;right:10px;background:var(--green);color:#fff;font-size:11px;
+  padding:2px 8px;border-radius:999px;border:2px solid var(--ink)}
+/* ---------- 关卡外壳 ---------- */
+#dots{flex:0 0 auto;display:flex;gap:7px;justify-content:center;padding:2px 0 6px}
+#dots i{width:12px;height:12px;border-radius:50%;border:3px solid var(--ink);background:#fff;display:block}
 #dots i.on{background:var(--yellow)}
-#prompt{flex:0 0 auto;text-align:center;font-size:min(4vh,3vw);font-weight:700;padding:2px 0 8px;min-height:34px}
-#board{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;position:relative}
-.center{display:flex;align-items:center;justify-content:center;flex-direction:column}
-/* ---------- generic tiles ---------- */
-.tile{
-  border:3px solid var(--ink);border-radius:14px;background:#fff;box-shadow:3px 3px 0 var(--ink);
-  display:flex;align-items:center;justify-content:center;cursor:pointer;
-}
+#prompt{flex:0 0 auto;text-align:center;font-weight:700;padding:0 0 6px;line-height:1.25}
+#board{flex:1 1 auto;min-height:0;min-width:0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+#targetChip{display:inline-flex;align-items:center;justify-content:center;border:3px solid var(--ink);border-radius:14px;
+  background:var(--yellow);box-shadow:3px 3px 0 var(--ink);padding:0 10px;margin:0 6px;vertical-align:middle}
+/* ---------- 通用块 ---------- */
+.tile{border:3px solid var(--ink);border-radius:12px;background:#fff;box-shadow:3px 3px 0 var(--ink);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;line-height:1}
 .tile:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
-.tile.done{background:var(--green);color:#fff;border-color:var(--ink);box-shadow:none;transform:none;cursor:default}
+.tile.done{background:var(--green);color:#fff;box-shadow:none;transform:none;cursor:default}
 .tile.pick{background:var(--yellow)}
+.tile.rd{color:var(--red)}
+.tile.bl{color:var(--blue)}
 .shake{animation:sh .34s}
 @keyframes sh{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}50%{transform:translateX(7px)}80%{transform:translateX(-4px)}}
 .pulse{animation:pl 1s infinite}
 @keyframes pl{0%,100%{filter:none}50%{filter:brightness(1.12) drop-shadow(0 0 10px var(--yellow))}}
 .pop{animation:pp .35s}
 @keyframes pp{0%{transform:scale(.7)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
-/* schulte */
-#grid{display:grid;gap:min(1.6vh,12px)}
-#grid .tile{font-size:min(6vh,5vw)}
-#targetChip{display:inline-flex;align-items:center;justify-content:center;min-width:64px;height:64px;
-  border:4px solid var(--ink);border-radius:20px;background:var(--yellow);box-shadow:4px 4px 0 var(--ink);
-  font-size:min(4.6vh,34px);margin-left:10px;vertical-align:middle;padding:0 10px}
-/* dots face */
-.face{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);
-  width:100%;height:100%;padding:10%;gap:4%}
+.row2{display:flex;align-items:center;justify-content:center}
+.col2{display:flex;flex-direction:column;align-items:center;justify-content:center}
+/* 点子 */
+.face{display:grid;width:100%;height:100%;padding:9%;gap:4%;
+  grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr)}
 .face.wide{grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(2,1fr)}
 .face b{border-radius:50%;background:var(--ink);width:100%;aspect-ratio:1;align-self:center;justify-self:center;display:block}
 .face b.off{background:transparent}
 .face b.lit{background:var(--red);animation:pp .3s}
-.domino{display:flex;flex-direction:column;border:4px solid var(--ink);border-radius:18px;background:#fff;
-  box-shadow:5px 5px 0 var(--ink);overflow:hidden}
+.domino{display:flex;flex-direction:column;border:4px solid var(--ink);border-radius:16px;background:#fff;
+  box-shadow:5px 5px 0 var(--ink);overflow:hidden;flex:0 0 auto}
 .domino .half{flex:1 1 0;min-height:0;position:relative}
 .domino .half+.half{border-top:4px solid var(--ink)}
-.domino .qm{display:flex;align-items:center;justify-content:center;height:100%;font-size:min(8vh,46px);color:var(--line)}
-.optrow{display:flex;gap:min(2.5vh,16px);align-items:stretch;justify-content:center;flex-wrap:wrap}
-.opt{width:min(17vh,13vw);height:min(12vh,9vw)}
-.opt.numopt{font-size:min(6vh,5vw);width:min(15vh,11vw);height:min(15vh,11vw)}
-/* bond */
-#bondWrap{display:flex;flex-direction:column;align-items:center;gap:6px}
-.bnode{width:min(12vh,9vw);height:min(12vh,9vw);border-radius:50%;border:4px solid var(--ink);background:#fff;
-  display:flex;align-items:center;justify-content:center;font-size:min(6vh,4.5vw);box-shadow:4px 4px 0 var(--ink)}
+.qm{display:flex;align-items:center;justify-content:center;height:100%;color:var(--line)}
+/* 数的分解 */
+.bnode{border-radius:50%;border:4px solid var(--ink);background:#fff;display:flex;align-items:center;
+  justify-content:center;box-shadow:4px 4px 0 var(--ink);flex:0 0 auto}
 .bnode.top{background:var(--blue);color:#fff}
-.bnode.q{background:#fff;color:var(--line)}
+.bnode.q{color:var(--line)}
 .bnode.fill{background:var(--green);color:#fff}
-/* match */
+/* 找一样 */
 #matchWrap{position:relative;width:100%;height:100%}
 #matchSvg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.mcols{position:relative;display:flex;justify-content:space-between;height:100%;padding:0 2px}
-.mcol{display:flex;flex-direction:column;justify-content:space-around;gap:6px}
-.mitem{padding:0 min(2.4vh,16px);height:min(8vh,7vw);font-size:min(4.2vh,3.2vw);letter-spacing:.06em}
+.mcols{position:relative;display:flex;justify-content:space-between;height:100%}
+.mcol{display:flex;flex-direction:column;justify-content:space-around}
+.mitem{letter-spacing:.06em}
 .mitem.done{background:var(--purple);color:#fff}
-/* mirror */
-#mirrorWrap{display:grid;gap:min(1.2vh,8px);position:relative}
-.mc{border-radius:8px;border:2px dashed var(--line);background:#fff}
-.mc.left{border:2px solid var(--ink);background:var(--blue)}
-.mc.blank{border:2px dashed var(--line)}
-.mc.right{border:2px solid var(--ink);background:var(--pink);animation:pp .3s}
-.mc.miss{background:var(--line);transition:background .5s}
-.mirrorline{position:absolute;top:-4px;bottom:-4px;width:0;border-left:4px dashed var(--orange)}
-/* connect */
-#cSvg{width:100%;height:100%}
+/* 照镜子 */
+.mgrid{display:grid;position:relative}
+.mc{border-radius:6px;border:2px dashed var(--line);background:#fff}
+.mc.on{border:2px solid var(--ink);background:var(--blue)}
+.mc.put{border:2px solid var(--ink);background:var(--pink);animation:pp .3s}
+.mc.bad{background:var(--line)}
+.axis{position:absolute;border:0;border-left:4px dashed var(--orange)}
+.axis.h{border-left:0;border-top:4px dashed var(--orange)}
+/* 连点 */
 #cSvg .dot{fill:#fff;stroke:var(--ink);stroke-width:3}
 #cSvg .dot.on{fill:var(--green)}
 #cSvg .dot.next{fill:var(--yellow)}
-#cSvg text{font-family:"Arial Rounded MT Bold","PingFang SC",sans-serif;font-weight:700;font-size:7px;fill:var(--ink);text-anchor:middle;pointer-events:none}
-#cSvg .seg{stroke:var(--purple);stroke-width:7;stroke-linecap:round;fill:none}
+#cSvg text{font-family:"Arial Rounded MT Bold","PingFang SC",sans-serif;font-weight:700;font-size:7px;fill:var(--ink);
+  text-anchor:middle;pointer-events:none}
+#cSvg .seg{stroke:var(--purple);stroke-width:6;stroke-linecap:round;fill:none}
 #cSvg .shapefill{fill:var(--yellow);opacity:0;transition:opacity .6s}
 #cSvg .shapefill.show{opacity:.85}
-/* celebrate + reward */
-#fx{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:5}
-.spark{position:absolute;font-size:30px;animation:fly .9s ease-out forwards}
-@keyframes fly{0%{transform:translate(0,0) scale(.4);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1.3);opacity:0}}
-#reward{position:absolute;inset:0;background:rgba(255,252,242,.96);display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:16px;z-index:6;text-align:center;padding:20px}
-#reward .big{font-size:min(20vh,18vw);animation:pp .5s}
-#reward h2{margin:0;font-size:min(5vh,30px)}
-.bigbtn{border:4px solid var(--ink);border-radius:18px;background:var(--yellow);box-shadow:5px 5px 0 var(--ink);
-  font-size:22px;font-weight:700;padding:14px 28px;font-family:inherit;color:var(--ink);cursor:pointer}
-.bigbtn:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--ink)}
-.bigbtn.ghost{background:#fff}
-.btnrow{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
-/* settings */
-#panel{position:absolute;left:10px;right:10px;bottom:10px;max-width:560px;max-height:min(84vh,760px);overflow:auto;-webkit-overflow-scrolling:touch;margin:0 auto;background:#fff;border:4px solid var(--ink);
-  border-radius:22px;box-shadow:6px 6px 0 var(--ink);padding:16px;z-index:7}
-#panel h3{margin:0 0 10px;font-size:20px}
-.row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:2px solid var(--line);font-size:17px}
-.row:last-of-type{border-bottom:0}
-.sw{border:3px solid var(--ink);border-radius:999px;background:#fff;padding:6px 16px;font-size:16px;font-family:inherit;cursor:pointer}
-.sw.on{background:var(--green);color:#fff}
-
-/* 水果连连看 */
-#llHolder{position:relative;display:inline-block}
-#llWrap{display:grid;gap:min(1.4vh,10px)}
-.ll{border:3px solid var(--ink);border-radius:14px;background:#fff;box-shadow:3px 3px 0 var(--ink);
+/* 连连看 */
+#llHolder{position:relative}
+#llWrap{display:grid}
+.ll{border:3px solid var(--ink);border-radius:12px;background:#fff;box-shadow:3px 3px 0 var(--ink);
   display:flex;align-items:center;justify-content:center;cursor:pointer;line-height:1}
 .ll:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
 .ll.pick{background:var(--yellow)}
 .ll.gone{visibility:hidden}
 #llSvg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
-#llSvg polyline{fill:none;stroke:var(--teal);stroke-width:7;stroke-linecap:round;stroke-linejoin:round}
-/* 走迷宫 */
-#mzHolder{display:flex;flex-direction:column;align-items:center;gap:10px}
+#llSvg polyline{fill:none;stroke:var(--teal);stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
+/* 迷宫 */
 #mzWrap{display:grid;background:#fff;border-right:4px solid var(--ink);border-bottom:4px solid var(--ink);
   border-radius:4px;touch-action:none;position:relative}
 .mz{position:relative;display:flex;align-items:center;justify-content:center;line-height:1}
@@ -196,6 +161,32 @@ body{
 .mz.trail{background:#FCEBB0}
 .mz.sol{background:#CFE6FF}
 .mz.won{background:#BFE8C4}
+/* 找规律 */
+.seqrow{display:flex;align-items:center;justify-content:center}
+.seq{border:3px solid var(--ink);border-radius:12px;background:#fff;display:flex;align-items:center;
+  justify-content:center;line-height:1;flex:0 0 auto}
+.seq.q{background:var(--yellow);border-style:dashed}
+/* 奖励 / 面板 */
+#fx{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:60}
+.spark{position:absolute;font-size:28px;animation:fly .9s ease-out forwards}
+@keyframes fly{0%{transform:translate(0,0) scale(.4);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1.3);opacity:0}}
+#reward{position:absolute;inset:0;background:rgba(255,252,242,.96);display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:14px;z-index:20;text-align:center;padding:18px}
+#reward .big{font-size:min(150px,22vh);animation:pp .5s}
+#reward h2{margin:0;font-size:24px}
+.bigbtn{border:4px solid var(--ink);border-radius:16px;background:var(--yellow);box-shadow:5px 5px 0 var(--ink);
+  font-size:20px;font-weight:700;padding:13px 26px;font-family:inherit;color:var(--ink);cursor:pointer}
+.bigbtn:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--ink)}
+.bigbtn.ghost{background:#fff}
+.btnrow{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+#panel{position:absolute;left:10px;right:10px;bottom:10px;max-width:560px;max-height:86%;overflow:auto;
+  -webkit-overflow-scrolling:touch;margin:0 auto;background:#fff;border:4px solid var(--ink);border-radius:20px;
+  box-shadow:6px 6px 0 var(--ink);padding:14px;z-index:30}
+#panel h3{margin:0 0 8px;font-size:19px}
+.prow{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:2px solid var(--line);font-size:16px}
+.prow:last-of-type{border-bottom:0}
+.sw{border:3px solid var(--ink);border-radius:999px;background:#fff;padding:5px 14px;font-size:15px;font-family:inherit;cursor:pointer}
+.sw.on{background:var(--green);color:#fff}
 .hide{display:none!important}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -203,53 +194,57 @@ body{
 <body>
 <div id="app">
   <div id="topbar">
-    <button class="iconbtn hide" id="backBtn" aria-label="回到首页">🏠</button>
+    <button class="iconbtn hide" id="backBtn" aria-label="返回">🏠</button>
     <div id="barTitle">思维小画本</div>
     <div id="starBox"><span>⭐</span><span class="num" id="starNum">0</span></div>
-    <button class="iconbtn" id="sayBtn" aria-label="再读一遍题目">🔊</button>
+    <button class="iconbtn" id="sayBtn" aria-label="再读一遍">🔊</button>
     <button class="iconbtn" id="gearBtn" aria-label="家长设置">⚙️</button>
   </div>
   <div id="screen"></div>
 </div>
 <div id="fx"></div>
-
 <script>
-/* ============ 基础工具 ============ */
+/* ===================== 工具 ===================== */
 const $ = s => document.querySelector(s);
-const el = (t, cls, txt) => { const n = document.createElement(t); if (cls) n.className = cls; if (txt != null) n.textContent = txt; return n; };
+const el = (t, c, x) => { const n = document.createElement(t); if (c) n.className = c; if (x != null) n.textContent = x; return n; };
+const svgEl = t => document.createElementNS('http://www.w3.org/2000/svg', t);
 const rnd = n => Math.floor(Math.random() * n);
 const pick = a => a[rnd(a.length)];
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1);[a[i], a[j]] = [a[j], a[i]]; } return a; };
 const range = (a, b) => { const r = []; for (let i = a; i <= b; i++) r.push(i); return r; };
-function setVH() { document.documentElement.style.setProperty('--vh', (window.innerHeight / 100) + 'px'); }
-setVH(); window.addEventListener('resize', setVH); window.addEventListener('orientationchange', () => setTimeout(setVH, 250));
+const px = n => Math.round(n) + 'px';
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 document.addEventListener('gesturestart', e => e.preventDefault());
 
-/* ============ 声音 ============ */
+/* 按真实容器尺寸排版：cols×rows 的格子能用多大 */
+function cellFit(w, h, cols, rows, gap, max) {
+  const cw = (w - gap * (cols - 1)) / cols, ch = (h - gap * (rows - 1)) / rows;
+  return clamp(Math.floor(Math.min(cw, ch)), 22, max || 220);
+}
+
+/* ===================== 声音 ===================== */
 const Audio2 = {
-  ctx: null,
-  on: true,
+  ctx: null, on: true,
   init() { if (!this.ctx) { try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { } } if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume(); },
-  beep(freq, dur, type, vol) {
+  beep(f, d, type, vol) {
     if (!this.on) return; this.init(); if (!this.ctx) return;
     const o = this.ctx.createOscillator(), g = this.ctx.createGain();
-    o.type = type || 'sine'; o.frequency.value = freq;
-    g.gain.value = 0; o.connect(g); g.connect(this.ctx.destination);
+    o.type = type || 'sine'; o.frequency.value = f; o.connect(g); g.connect(this.ctx.destination);
     const t = this.ctx.currentTime, v = vol == null ? .14 : vol;
-    g.gain.linearRampToValueAtTime(v, t + .01);
-    g.gain.exponentialRampToValueAtTime(.0001, t + dur);
-    o.start(t); o.stop(t + dur + .02);
+    g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(v, t + .01);
+    g.gain.exponentialRampToValueAtTime(.0001, t + d);
+    o.start(t); o.stop(t + d + .02);
   },
   tap() { this.beep(520, .08, 'triangle', .08); },
   step() { this.beep(300 + rnd(90), .06, 'triangle', .05); },
   pop() { this.beep(880, .06, 'sine', .09); setTimeout(() => this.beep(1320, .1, 'sine', .07), 55); },
-  star() { [784, 1047, 1319].forEach((f, i) => setTimeout(() => this.beep(f, .12, 'sine', .1), i * 70)); },
-  page() { this.beep(380, .09, 'sine', .05); setTimeout(() => this.beep(560, .1, 'sine', .05), 70); },
   good() { this.beep(660, .1, 'sine'); setTimeout(() => this.beep(880, .14, 'sine'), 90); },
   soft() { this.beep(240, .16, 'sine', .07); },
-  win() { [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => this.beep(f, .2, 'triangle', .13), i * 110)); },
-  fanfare() { [523, 659, 784, 1047, 784, 1047, 1319].forEach((f, i) => setTimeout(() => this.beep(f, .26, 'triangle', .13), i * 130)); },
-  count(i) { this.beep(440 + i * 60, .07, 'square', .06); }
+  star() {[784, 1047, 1319].forEach((f, i) => setTimeout(() => this.beep(f, .12, 'sine', .1), i * 70)); },
+  page() { this.beep(380, .09, 'sine', .05); setTimeout(() => this.beep(560, .1, 'sine', .05), 70); },
+  count(i) { this.beep(440 + i * 60, .07, 'square', .06); },
+  win() {[523, 659, 784, 1047].forEach((f, i) => setTimeout(() => this.beep(f, .2, 'triangle', .13), i * 110)); },
+  fanfare() {[523, 659, 784, 1047, 784, 1047, 1319].forEach((f, i) => setTimeout(() => this.beep(f, .26, 'triangle', .13), i * 130)); }
 };
 const Music = {
   on: true, playing: false, i: 0, timer: null, master: null,
@@ -261,21 +256,16 @@ const Music = {
     if (!this.master) { this.master = Audio2.ctx.createGain(); this.master.gain.value = .5; this.master.connect(Audio2.ctx.destination); }
     return true;
   },
-  note(f, dur, vol, type) {
+  note(f, d, v, type) {
     if (!this.ensure()) return;
     const c = Audio2.ctx, o = c.createOscillator(), g = c.createGain();
     o.type = type; o.frequency.value = f; o.connect(g); g.connect(this.master);
     const t = c.currentTime;
-    g.gain.setValueAtTime(.0001, t);
-    g.gain.linearRampToValueAtTime(vol, t + .04);
-    g.gain.exponentialRampToValueAtTime(.0001, t + dur);
-    o.start(t); o.stop(t + dur + .05);
+    g.gain.setValueAtTime(.0001, t); g.gain.linearRampToValueAtTime(v, t + .04);
+    g.gain.exponentialRampToValueAtTime(.0001, t + d);
+    o.start(t); o.stop(t + d + .05);
   },
-  start() {
-    if (!this.on || this.playing) return;
-    if (!this.ensure()) return;
-    this.playing = true; this.tick();
-  },
+  start() { if (!this.on || this.playing) return; if (!this.ensure()) return; this.playing = true; this.tick(); },
   stop() { this.playing = false; clearTimeout(this.timer); },
   duck(on) { if (this.master && Audio2.ctx) this.master.gain.setTargetAtTime(on ? .12 : .5, Audio2.ctx.currentTime, .1); },
   tick() {
@@ -283,62 +273,49 @@ const Music = {
     const s = this.i % this.mel.length, n = this.mel[s];
     if (n != null) this.note(this.scale[n], .5, .045, 'triangle');
     if (s % 8 === 0) this.note(this.bass[((this.i / 8) | 0) % this.bass.length], 1.2, .05, 'sine');
-    this.i++;
-    this.timer = setTimeout(() => this.tick(), 340);
+    this.i++; this.timer = setTimeout(() => this.tick(), 340);
   }
 };
 const PRAISE = ['对啦', '真棒', '好厉害', '答对啦', '你真行'];
 const Voice = {
   on: true, last: '', unlocked: false, voice: null, forced: null, scanned: false, failed: false, lastErr: '', tried: 0,
   list() { try { return window.speechSynthesis.getVoices() || []; } catch (e) { return []; } },
-  isZh(v) {
-    return /^(zh|cmn|yue)/i.test(v.lang || '') ||
-      /chinese|mandarin|中文|普通话|国语/i.test(v.name || '');
-  },
+  isZh(v) { return /^(zh|cmn|yue)/i.test(v.lang || '') || /chinese|mandarin|中文|普通话|国语/i.test(v.name || ''); },
   candidates() {
     const zh = this.list().filter(v => this.isZh(v));
     const score = v => {
-      const n = (v.name || '').toLowerCase(), l = v.lang || '';
-      let s = 0;
+      const n = (v.name || '').toLowerCase(), l = v.lang || ''; let s = 0;
       if (/google/.test(n)) s += 8;
       if (/ting-?ting|tingting|mei-?jia|sin-?ji|yu-?shu|li-?mu|xiaoxiao|xiaoyi|yunxi|huihui|kangkang|yaoyao|liangliang/.test(n)) s += 6;
       if (/zh[-_]?(cn|hans)|cmn/i.test(l)) s += 3;
       if (v.default) s += 2;
       if (v.localService) s += 1;
-      // macOS 的趣味音色多半没下载，排到最后
       if (/eddy|flo|grandma|grandpa|reed|rocko|sandy|shelley|bells|bubbles|jester|organ|superstar|trinoids|whisper|wobble|zarvox/.test(n)) s -= 10;
       return s;
     };
     zh.sort((x, y) => score(y) - score(x));
-    if (this.forced) return [this.forced].concat(zh.filter(v => v !== this.forced));
-    return zh;
+    return this.forced ? [this.forced].concat(zh.filter(v => v !== this.forced)) : zh;
   },
   diag() {
     if (!('speechSynthesis' in window)) return '不支持语音合成';
     const ss = window.speechSynthesis;
-    return '音色 ' + this.list().length + ' 个 / 中文 ' + this.candidates().length +
-      ' 个 · speaking=' + ss.speaking + ' pending=' + ss.pending + ' paused=' + ss.paused +
-      ' · 试过 ' + this.tried + ' 次 · ' + (this.lastErr ? ('错误码 ' + this.lastErr) : '没有任何错误回调');
+    return '音色 ' + this.list().length + ' 个 / 中文 ' + this.candidates().length + ' 个 · speaking=' + ss.speaking +
+      ' pending=' + ss.pending + ' paused=' + ss.paused + ' · 试过 ' + this.tried + ' 次 · ' + (this.lastErr ? ('错误码 ' + this.lastErr) : '没有任何错误回调');
   },
   status() {
-    if (!('speechSynthesis' in window)) return '这个浏览器不支持语音合成，换 Safari 或 Chrome 试试';
+    if (!('speechSynthesis' in window)) return '这个浏览器不支持语音合成，换 Safari 试试';
     const n = this.list().length;
     if (!n) return '语音列表还没加载出来，点一下测试朗读';
     const c = this.candidates();
     if (!c.length) return '这台设备的 ' + n + ' 个语音里没有中文，需要装中文语音包';
-    if (this.failed) return '所有中文音色都没出声，多半是这个浏览器的语音引擎没响应（Chrome on macOS 常见）。先彻底退出浏览器重开，或改用 Safari。诊断：' + this.diag();
+    if (this.failed) return '所有中文音色都没出声，多半是浏览器语音引擎没响应（Chrome on macOS 常见）。彻底退出浏览器重开，或改用 Safari。诊断：' + this.diag();
     const v = this.voice || c[0];
     return '正在用：' + v.name + '（' + v.lang + '）· ' + this.diag();
   },
   unlock() {
     if (this.unlocked || !('speechSynthesis' in window)) return;
     this.unlocked = true;
-    try {
-      const u = new SpeechSynthesisUtterance('好');
-      u.volume = 0; u.lang = 'zh-CN';
-      const c = this.candidates(); if (c[0]) u.voice = c[0];
-      speechSynthesis.speak(u);
-    } catch (e) { }
+    try { const u = new SpeechSynthesisUtterance('好'); u.volume = 0; u.lang = 'zh-CN'; const c = this.candidates(); if (c[0]) u.voice = c[0]; speechSynthesis.speak(u); } catch (e) { }
   },
   say(t, keep) {
     if (!t) return;
@@ -348,31 +325,22 @@ const Voice = {
       let done = false;
       const go = () => { if (done) return; done = true; this.scanned = true; this.fire(t, 0); };
       try { speechSynthesis.addEventListener('voiceschanged', go, { once: true }); } catch (e) { }
-      setTimeout(go, 700);
-      return;
+      setTimeout(go, 700); return;
     }
-    this.scanned = true;
-    this.fire(t, 0);
+    this.scanned = true; this.fire(t, 0);
   },
   fire(t, idx) {
-    const cands = this.candidates();
+    const cs = this.candidates();
     if (idx === 0 && this.voice && !this.failed) {
-      const i = cands.indexOf(this.voice);
-      if (i > 0) cands.unshift(cands.splice(i, 1)[0]);
+      const i = cs.indexOf(this.voice); if (i > 0) cs.unshift(cs.splice(i, 1)[0]);
     }
-    // 最后一档：完全不指定 voice，只给 lang，交给浏览器自己挑
-    const chain = cands.concat([null]);
+    const chain = cs.concat([null]);
     if (idx >= chain.length) { this.failed = true; return; }
     const v = chain[idx];
-    const cands2 = chain;
     let started = false, advanced = false;
     const btn = document.getElementById('sayBtn');
     const off = () => { Music.duck(false); if (btn) btn.classList.remove('talking'); };
-    const nextTry = () => {
-      if (advanced || started) return;
-      advanced = true; off();
-      if (idx + 1 < cands2.length) this.fire(t, idx + 1); else this.failed = true;
-    };
+    const nextTry = () => { if (advanced || started) return; advanced = true; off(); if (idx + 1 < chain.length) this.fire(t, idx + 1); else this.failed = true; };
     try {
       const ss = window.speechSynthesis;
       if (ss.speaking || ss.pending) ss.cancel();
@@ -381,10 +349,7 @@ const Voice = {
       const u = new SpeechSynthesisUtterance(t);
       if (v) { u.voice = v; u.lang = v.lang || 'zh-CN'; } else u.lang = 'zh-CN';
       u.rate = .9; u.pitch = 1.12; u.volume = 1;
-      u.onstart = () => {
-        started = true; this.failed = false; if (v) this.voice = v;
-        Music.duck(true); if (btn) btn.classList.add('talking');
-      };
+      u.onstart = () => { started = true; this.failed = false; if (v) this.voice = v; Music.duck(true); if (btn) btn.classList.add('talking'); };
       u.onend = off;
       u.onerror = e => { this.lastErr = (e && (e.error || e.name)) || 'unknown'; nextTry(); };
       ss.speak(u);
@@ -397,88 +362,226 @@ const Voice = {
   repeat() { this.unlock(); if (this.last) { this.on = true; this.failed = false; this.say(this.last); } }
 };
 if ('speechSynthesis' in window) {
-  try {
-    speechSynthesis.cancel();  // Chrome 的老毛病：不先清一次队列，之后可能一直不出声
-    speechSynthesis.getVoices();
-    speechSynthesis.addEventListener('voiceschanged', () => { Voice.scanned = true; });
-  } catch (e) { }
+  try { speechSynthesis.cancel(); speechSynthesis.getVoices(); speechSynthesis.addEventListener('voiceschanged', () => { Voice.scanned = true; }); } catch (e) { }
 }
 
-/* ============ 全局状态（本次打开有效） ============ */
+/* ===================== 状态 ===================== */
 const STICKERS = ['🐣', '🦄', '🐙', '🍓', '🚀', '🌈', '🐢', '🦋', '🍭', '🐧', '🦖', '🌻', '🐬', '🎠', '🐨', '🍉'];
-const S = {
-  stars: 0,
-  stickers: [],
-  level: { schulte: 1, dots: 1, bond: 1, match: 1, mirror: 1, connect: 1, link: 1, maze: 1 },
-  streak: { schulte: 0, dots: 0, bond: 0, match: 0, mirror: 0, connect: 0, link: 0, maze: 0 },
-  autoLevel: true
-};
+const S = { stars: 0, stickers: [], level: {}, streak: {}, autoLevel: true };
 function addStars(n) { S.stars += n; $('#starNum').textContent = S.stars; Audio2.star(); }
 
-/* ============ 庆祝动画 ============ */
+/* ===================== 游戏清单与关卡设计 ===================== */
+const GAMES = [
+  {
+    id: 'schulte', name: '找数字', emoji: '🔢', color: 'var(--blue)', tip: '按数字顺序把它们找出来',
+    levels: [
+      { t: '3×3 找 1 到 9', d: '先熟悉规则', cfg: { n: 3, order: 'asc' } },
+      { t: '4×4 找 1 到 16', d: '格子变多了', cfg: { n: 4, order: 'asc' } },
+      { t: '5×5 找 1 到 25', d: '和练习册一样', cfg: { n: 5, order: 'asc' } },
+      { t: '4×4 倒着找', d: '从 16 找回 1，要压住顺数的习惯', cfg: { n: 4, order: 'desc' } },
+      { t: '5×5 红蓝交替', d: '红 1、蓝 1、红 2… 两条线索来回切', cfg: { n: 5, order: 'alt' } }
+    ]
+  },
+  {
+    id: 'dots', name: '数点点', emoji: '🎲', color: 'var(--red)', tip: '看点点，凑出要的数',
+    levels: [
+      { t: '凑到 5', d: '一眼看出几个点', cfg: { kind: 'make', max: 5 } },
+      { t: '凑到 10', d: '10 以内的分与合', cfg: { kind: 'make', max: 10 } },
+      { t: '谁的点多', d: '不数出来，比多少', cfg: { kind: 'cmp' } },
+      { t: '闪一下就藏起来', d: '点点只出现一秒，靠瞬间记住', cfg: { kind: 'flash' } },
+      { t: '三张凑总数', d: '两张已知，第三张要算', cfg: { kind: 'make3', max: 10 } }
+    ]
+  },
+  {
+    id: 'bond', name: '凑数字', emoji: '🍎', color: 'var(--green)', tip: '把一个数分成两份',
+    levels: [
+      { t: '5 以内分一分', d: '数的组成入门', cfg: { max: 5, miss: 'right' } },
+      { t: '10 以内分一分', d: '和练习册一样', cfg: { max: 10, miss: 'right' } },
+      { t: '缺左边那份', d: '换个位置问，不能套路作答', cfg: { max: 10, miss: 'left' } },
+      { t: '求总数', d: '两份合起来是几', cfg: { max: 10, miss: 'top' } },
+      { t: '分成三份', d: '一个数分给三个盒子', cfg: { max: 10, miss: 'three' } }
+    ]
+  },
+  {
+    id: 'match', name: '找一样', emoji: '🔍', color: 'var(--purple)', tip: '左右两边找出一模一样的',
+    levels: [
+      { t: '两位数 3 组', d: '先建立比对的习惯', cfg: { n: 3, d: 2 } },
+      { t: '三位数 4 组', d: '', cfg: { n: 4, d: 3 } },
+      { t: '四位数 4 组', d: '', cfg: { n: 4, d: 4 } },
+      { t: '六位数 5 组', d: '和练习册一样，全是同样的数字换位置', cfg: { n: 5, d: 6 } },
+      { t: '六位数 6 组·相邻换位', d: '干扰项只调换相邻两位，必须逐位看', cfg: { n: 6, d: 6, swap: true } }
+    ]
+  },
+  {
+    id: 'mirror', name: '照镜子', emoji: '🦋', color: 'var(--pink)', tip: '画出和另一边一样的图案',
+    levels: [
+      { t: '3×3 左右对称', d: '点错会自己消失', cfg: { w: 3, h: 3, n: 4, axis: 'x', instant: true } },
+      { t: '4×4 左右对称', d: '', cfg: { w: 4, h: 4, n: 6, axis: 'x', instant: true } },
+      { t: '5×5 左右对称', d: '接近练习册的复杂度', cfg: { w: 5, h: 5, n: 9, axis: 'x', instant: true } },
+      { t: '5×5 没有提示', d: '点错不会消失，要自己检查', cfg: { w: 5, h: 5, n: 9, axis: 'x', instant: false } },
+      { t: '上下对称', d: '镜子横过来了', cfg: { w: 5, h: 4, n: 8, axis: 'y', instant: false } },
+      { t: '转半圈', d: '旋转 180°，比镜像更难想', cfg: { w: 5, h: 5, n: 8, axis: 'rot', instant: false } }
+    ]
+  },
+  {
+    id: 'connect', name: '连点成画', emoji: '✏️', color: 'var(--orange)', tip: '按顺序连起来，看看是什么',
+    levels: [
+      { t: '7 个点·小房子', d: '', cfg: { sh: 0, step: 1 } },
+      { t: '8 个点·小鱼', d: '', cfg: { sh: 1, step: 1 } },
+      { t: '10 个点·星星', d: '', cfg: { sh: 2, step: 1 } },
+      { t: '12 个点·爱心', d: '', cfg: { sh: 3, step: 1 } },
+      { t: '16 个点·小花', d: '', cfg: { sh: 4, step: 1 } },
+      { t: '20 个点·太阳·数双数', d: '2、4、6…按双数连，练数的规律', cfg: { sh: 5, step: 2 } }
+    ]
+  },
+  {
+    id: 'link', name: '水果连连看', emoji: '🍉', color: 'var(--teal)', tip: '点两个一样的水果把它们消掉',
+    levels: [
+      { t: '6 张·随便配对', d: '', cfg: { w: 3, h: 2, free: true } },
+      { t: '8 张·随便配对', d: '', cfg: { w: 4, h: 2, free: true } },
+      { t: '12 张·路要走得通', d: '开始有连线规则', cfg: { w: 4, h: 3, free: false } },
+      { t: '16 张·路要走得通', d: '', cfg: { w: 4, h: 4, free: false } },
+      { t: '20 张·路要走得通', d: '', cfg: { w: 5, h: 4, free: false } },
+      { t: '24 张·相近的水果', d: '形状颜色接近，要看仔细', cfg: { w: 6, h: 4, free: false, hard: true } }
+    ]
+  },
+  {
+    id: 'maze', name: '走迷宫', emoji: '🐰', color: 'var(--yellow)', tip: '用手指带小兔子找到胡萝卜',
+    levels: [
+      { t: '4×4', d: '', cfg: { n: 4 } },
+      { t: '5×5', d: '', cfg: { n: 5 } },
+      { t: '6×6', d: '', cfg: { n: 6 } },
+      { t: '7×7', d: '', cfg: { n: 7 } },
+      { t: '8×8', d: '', cfg: { n: 8 } },
+      { t: '8×8 先拿钥匙', d: '必须先取到钥匙才能开门，要先规划路线', cfg: { n: 8, key: true } }
+    ]
+  },
+  {
+    id: 'pattern', name: '找规律', emoji: '🧩', color: 'var(--purple)', tip: '看看下一个该是什么',
+    levels: [
+      { t: 'AB AB', d: '两个一循环', cfg: { kind: 'rep', p: 2 } },
+      { t: 'ABC ABC', d: '三个一循环', cfg: { kind: 'rep', p: 3 } },
+      { t: 'AAB AAB', d: '循环里有重复，更绕一点', cfg: { kind: 'aab' } },
+      { t: '数字接龙', d: '按加 1、加 2 的规律往下数', cfg: { kind: 'num' } },
+      { t: '越来越多', d: '数量或大小在变，看趋势', cfg: { kind: 'grow' } }
+    ]
+  }
+];
+const G = {}; GAMES.forEach(g => { G[g.id] = g; S.level[g.id] = 1; S.streak[g.id] = 0; });
+
+/* ===================== 庆祝 ===================== */
 function sparkle(x, y, chars) {
-  const fx = $('#fx'); const set = chars || ['⭐', '✨', '🌟'];
+  const fx = $('#fx'), set = chars || ['⭐', '✨', '🌟'];
   for (let i = 0; i < 12; i++) {
     const s = el('span', 'spark', pick(set));
-    s.style.left = x + 'px'; s.style.top = y + 'px';
+    s.style.left = px(x); s.style.top = px(y);
     const a = Math.random() * Math.PI * 2, d = 70 + Math.random() * 130;
-    s.style.setProperty('--dx', Math.cos(a) * d + 'px');
-    s.style.setProperty('--dy', Math.sin(a) * d + 'px');
+    s.style.setProperty('--dx', px(Math.cos(a) * d)); s.style.setProperty('--dy', px(Math.sin(a) * d));
     fx.appendChild(s); setTimeout(() => s.remove(), 950);
   }
 }
-function sparkleAt(node, chars) {
-  const r = node.getBoundingClientRect();
-  sparkle(r.left + r.width / 2, r.top + r.height / 2, chars);
+function sparkleAt(n) { if (!n) return sparkle(innerWidth / 2, innerHeight / 2); const r = n.getBoundingClientRect(); sparkle(r.left + r.width / 2, r.top + r.height / 2); }
+function toast(t) {
+  const n = el('div', null, t);
+  n.style.cssText = 'position:absolute;left:50%;top:10px;transform:translateX(-50%);background:#fff;border:3px solid var(--ink);border-radius:999px;padding:7px 16px;font-size:16px;box-shadow:3px 3px 0 var(--ink);z-index:40';
+  $('#screen').appendChild(n); setTimeout(() => n.remove(), 1700);
 }
 
-/* ============ 首页 ============ */
-const GAMES = [
-  { id: 'schulte', name: '找数字', emoji: '🔢', color: 'var(--blue)', tip: '按 1、2、3 的顺序，把数字找出来' },
-  { id: 'dots', name: '数点点', emoji: '🎲', color: 'var(--red)', tip: '看点点，凑成上面的数' },
-  { id: 'bond', name: '凑数字', emoji: '🍎', color: 'var(--green)', tip: '把大数字分成两份' },
-  { id: 'match', name: '找一样', emoji: '🔍', color: 'var(--purple)', tip: '左边右边，找出一模一样的' },
-  { id: 'mirror', name: '照镜子', emoji: '🦋', color: 'var(--pink)', tip: '右边画出和左边一样的图案' },
-  { id: 'connect', name: '连点成画', emoji: '✏️', color: 'var(--orange)', tip: '按数字顺序连起来，会变成一幅画' },
-  { id: 'link', name: '水果连连看', emoji: '🍉', color: 'var(--teal)', tip: '点两个一样的水果，就能把它们消掉' },
-  { id: 'maze', name: '走迷宫', emoji: '🐰', color: 'var(--yellow)', tip: '用手指带小兔子走到胡萝卜那里' }
-];
+/* ===================== 首页 ===================== */
 function home() {
-  Session = null;
+  Session = null; Fit.cb = null; ROUND_ID++;
   $('#backBtn').classList.add('hide');
   $('#barTitle').textContent = '思维小画本';
   const p = el('div', 'pane');
   const hero = el('div', 'hero');
-  const h = el('h1', null, '今天想玩哪一个？');
-  const sub = el('p', null, '一次三关，很快就玩完');
-  hero.appendChild(h); hero.appendChild(sub);
+  hero.appendChild(el('h1', null, '今天玩哪一个？'));
+  hero.appendChild(el('p', null, '一次三关，很快就玩完'));
   const cards = el('div'); cards.id = 'cards';
   GAMES.forEach(g => {
-    const c = el('div', 'card');
-    c.style.setProperty('--c', g.color);
-    const band = el('div', 'band'); band.appendChild(el('div', 'stripe'));
-    c.appendChild(band);
+    const c = el('div', 'card'); c.style.setProperty('--c', g.color);
+    const band = el('div', 'band'); band.appendChild(el('i')); c.appendChild(band);
     c.appendChild(el('div', 'emoji', g.emoji));
     c.appendChild(el('div', 'name', g.name));
     c.appendChild(el('div', 'lv', '第 ' + S.level[g.id] + ' 关'));
-    c.addEventListener('click', () => { Audio2.page(); Voice.say(g.name + '。' + g.tip); openGame(g); });
+    c.addEventListener('click', () => { Audio2.page(); levelPicker(g); });
     cards.appendChild(c);
   });
   const bar = el('div'); bar.id = 'stickerBar';
-  if (S.stickers.length === 0) bar.appendChild(el('span', null, '玩完一组就能收到一张贴纸'));
-  else { bar.appendChild(el('span', null, '我的贴纸')); S.stickers.forEach(s => bar.appendChild(el('span', 'st', s))); }
+  if (!S.stickers.length) bar.appendChild(el('span', null, '玩完一组就能收到一张贴纸'));
+  else { bar.appendChild(el('span', null, '我的贴纸')); S.stickers.forEach(s => bar.appendChild(el('b', null, s))); }
   p.appendChild(hero); p.appendChild(cards); p.appendChild(bar);
   $('#screen').innerHTML = ''; $('#screen').appendChild(p);
+  Fit.cb = () => {
+    const r = cards.getBoundingClientRect();
+    if (!r.width) return;
+    const cols = r.width > r.height * 1.35 ? (r.width > 900 ? 5 : 3) : (r.width < 380 ? 2 : 3);
+    const rows = Math.ceil(GAMES.length / cols);
+    cards.style.gridTemplateColumns = 'repeat(' + cols + ',1fr)';
+    cards.style.gridTemplateRows = 'repeat(' + rows + ',1fr)';
+    const ch = (r.height - 10 * (rows - 1)) / rows;
+    const cw = (r.width - 10 * (cols - 1)) / cols;
+    const u = Math.min(ch, cw);
+    cards.querySelectorAll('.emoji').forEach(n => n.style.fontSize = px(clamp(u * .38, 20, 60)));
+    cards.querySelectorAll('.name').forEach(n => n.style.fontSize = px(clamp(u * .17, 12, 24)));
+  };
+  Fit.run();
 }
 
-/* ============ 关卡外壳 ============ */
-let Session = null;
-const ROUNDS = 3;
-function openGame(g) {
-  Audio2.init();
-  Session = { g, round: 0, miss: 0, hintTimer: null, doneRounds: 0 };
+/* ===================== 选难度 ===================== */
+function levelPicker(g) {
+  Session = null; Fit.cb = null; ROUND_ID++;
   $('#backBtn').classList.remove('hide');
   $('#barTitle').textContent = g.name;
+  const p = el('div', 'pane');
+  const hero = el('div', 'hero');
+  hero.appendChild(el('h1', null, '选一个难度'));
+  hero.appendChild(el('p', null, g.tip));
+  const wrap = el('div'); wrap.id = 'lvWrap';
+  g.levels.forEach((L, i) => {
+    const lv = i + 1;
+    const c = el('div', 'lvcard'); c.style.setProperty('--c', g.color);
+    c.appendChild(el('div', 'no num', String(lv)));
+    const tx = el('div', 'tx');
+    tx.appendChild(el('div', 't1', L.t));
+    if (L.d) tx.appendChild(el('div', 't2', L.d));
+    c.appendChild(tx);
+    c.appendChild(el('div', 'st', '★'.repeat(lv) + '☆'.repeat(g.levels.length - lv)));
+    if (lv === S.level[g.id]) c.appendChild(el('div', 'tag', '上次玩到这'));
+    c.addEventListener('click', () => { Audio2.tap(); S.level[g.id] = lv; Voice.say(g.name + '，' + L.t); startSession(g, lv); });
+    wrap.appendChild(c);
+  });
+  p.appendChild(hero); p.appendChild(wrap);
+  $('#screen').innerHTML = ''; $('#screen').appendChild(p);
+  Fit.cb = () => {
+    const r = wrap.getBoundingClientRect(); if (!r.width) return;
+    const cols = r.width > 720 ? 2 : 1;
+    wrap.style.gridTemplateColumns = 'repeat(' + cols + ',1fr)';
+  };
+  Fit.run();
+}
+
+/* ===================== 关卡外壳 ===================== */
+let Session = null, ROUND_ID = 0;
+const ROUNDS = 3;
+// 关卡内的延时回调统一走这里：换关后旧的定时器自动失效
+function later(ms, fn) { const id = ROUND_ID; return setTimeout(() => { if (id === ROUND_ID) fn(); }, ms); }
+function every(ms, fn) { const id = ROUND_ID; const t = setInterval(() => { if (id !== ROUND_ID) return clearInterval(t); fn(t); }, ms); return t; }
+const Fit = {
+  cb: null, ro: null,
+  run() { if (this.cb) { try { this.cb(); } catch (e) { } } },
+  boot() {
+    const go = () => requestAnimationFrame(() => this.run());
+    addEventListener('resize', go); addEventListener('orientationchange', () => setTimeout(go, 250));
+    if (window.visualViewport) visualViewport.addEventListener('resize', go);
+    if (window.ResizeObserver) { this.ro = new ResizeObserver(go); this.ro.observe($('#screen')); }
+  }
+};
+function boardBox() { const r = $('#board').getBoundingClientRect(); return { w: r.width, h: r.height }; }
+function startSession(g, lv) {
+  Audio2.init();
+  Session = { g, lv, round: 0, doneRounds: 0, miss: 0, hintTimer: null };
+  $('#backBtn').classList.remove('hide');
+  $('#barTitle').textContent = g.name + ' · 第 ' + lv + ' 关';
   const p = el('div', 'pane');
   const dots = el('div'); dots.id = 'dots';
   for (let i = 0; i < ROUNDS; i++) dots.appendChild(el('i'));
@@ -488,362 +591,455 @@ function openGame(g) {
   $('#screen').innerHTML = ''; $('#screen').appendChild(p);
   nextRound();
 }
-function updateDots() {
-  document.querySelectorAll('#dots i').forEach((d, i) => d.classList.toggle('on', i < Session.doneRounds));
+function updateDots() { document.querySelectorAll('#dots i').forEach((d, i) => d.classList.toggle('on', i < Session.doneRounds)); }
+function setPrompt(html) {
+  const p = $('#prompt'); if (!p) return;
+  p.innerHTML = html;
+  const w = p.getBoundingClientRect().width || 360;
+  p.style.fontSize = px(clamp(w * .046, 15, 30));
+  const chip = $('#targetChip');
+  if (chip) { const s = clamp(w * .075, 30, 56); chip.style.height = px(s); chip.style.minWidth = px(s); chip.style.fontSize = px(s * .62); }
 }
+function miss() { if (Session) Session.miss++; Audio2.soft(); }
+function clearHint() { if (Session && Session.hintTimer) { clearTimeout(Session.hintTimer); Session.hintTimer = null; } }
+function hintIn(ms, fn) { clearHint(); if (!Session) return; Session.hintTimer = setTimeout(() => { if (Session) fn(); }, ms); }
 function nextRound() {
   if (!Session) return;
-  clearHint();
+  clearHint(); Fit.cb = null; ROUND_ID++;
   if (Session.doneRounds >= ROUNDS) return rewardScreen();
   Session.round++; Session.miss = 0;
   updateDots();
-  const board = $('#board'); board.innerHTML = '';
-  GAME_IMPL[Session.g.id](board, S.level[Session.g.id]);
-}
-function setPrompt(html) { $('#prompt').innerHTML = html; }
-function miss() { if (Session) Session.miss++; Audio2.soft(); }
-function clearHint() { if (Session && Session.hintTimer) { clearTimeout(Session.hintTimer); Session.hintTimer = null; } }
-function hintIn(ms, fn) {
-  clearHint();
-  if (!Session) return;
-  Session.hintTimer = setTimeout(() => { if (Session) fn(); }, ms);
+  const board = $('#board'); board.innerHTML = ''; board.style.cssText = '';
+  GAME_IMPL[Session.g.id](board, Session.lv);
+  requestAnimationFrame(() => Fit.run());
 }
 function roundWin(node) {
-  if (!Session) return;
-  clearHint();
-  Audio2.win();
-  Voice.praise();
-  const id = Session.g.id;
+  if (!Session || Session.won === ROUND_ID) return;
+  Session.won = ROUND_ID;
+  clearHint(); Audio2.win(); Voice.praise();
+  const id = Session.g.id, maxLv = Session.g.levels.length;
   if (Session.miss === 0) S.streak[id]++; else if (Session.miss >= 3) S.streak[id] = 0;
-  const maxLv = GAME_MAXLV[id];
   if (S.autoLevel) {
-    if (S.streak[id] >= 3 && S.level[id] < maxLv) { S.level[id]++; S.streak[id] = 0; toast('变难一点点啦 💪'); }
-    else if (Session.miss >= 4 && S.level[id] > 1) { S.level[id]--; toast('换个简单的试试 🙂'); }
+    if (S.streak[id] >= 3 && Session.lv < maxLv) { Session.lv++; S.level[id] = Session.lv; S.streak[id] = 0; toast('升到第 ' + Session.lv + ' 关啦 💪'); $('#barTitle').textContent = Session.g.name + ' · 第 ' + Session.lv + ' 关'; }
+    else if (Session.miss >= 5 && Session.lv > 1) { Session.lv--; S.level[id] = Session.lv; toast('换个简单点的 🙂'); $('#barTitle').textContent = Session.g.name + ' · 第 ' + Session.lv + ' 关'; }
   }
   addStars(Session.miss === 0 ? 3 : 2);
-  if (node) sparkleAt(node); else sparkle(window.innerWidth / 2, window.innerHeight / 2);
-  Session.doneRounds++;
-  updateDots();
+  sparkleAt(node);
+  Session.doneRounds++; updateDots();
   setTimeout(() => { if (Session) nextRound(); }, 1300);
 }
-function toast(txt) {
-  const t = el('div', null, txt);
-  t.style.cssText = 'position:absolute;left:50%;top:14px;transform:translateX(-50%);background:#fff;border:3px solid var(--ink);border-radius:999px;padding:8px 18px;font-size:17px;box-shadow:3px 3px 0 var(--ink);z-index:8';
-  $('#screen').appendChild(t); setTimeout(() => t.remove(), 1600);
-}
 function rewardScreen() {
-  const sticker = pick(STICKERS.filter(s => !S.stickers.includes(s)).length ? STICKERS.filter(s => !S.stickers.includes(s)) : STICKERS);
+  const left = STICKERS.filter(s => !S.stickers.includes(s));
+  const sticker = pick(left.length ? left : STICKERS);
   S.stickers.push(sticker);
-  Audio2.fanfare();
-  Voice.say('三关都通过了，得到一张贴纸');
+  Audio2.fanfare(); Voice.say('三关都通过了，得到一张贴纸');
   const r = el('div'); r.id = 'reward';
   r.appendChild(el('div', 'big', sticker));
-  const h = el('h2', null, '三关都通过了，贴纸收好'); r.appendChild(h);
+  r.appendChild(el('h2', null, '三关都通过了'));
   const row = el('div', 'btnrow');
   const again = el('button', 'bigbtn', '再玩三关');
   again.addEventListener('click', () => { Audio2.tap(); r.remove(); Session.doneRounds = 0; nextRound(); });
-  const back = el('button', 'bigbtn ghost', '换一个玩');
+  const other = el('button', 'bigbtn ghost', '换个难度');
+  other.addEventListener('click', () => { Audio2.tap(); levelPicker(Session.g); });
+  const back = el('button', 'bigbtn ghost', '回首页');
   back.addEventListener('click', () => { Audio2.tap(); home(); });
-  row.appendChild(again); row.appendChild(back); r.appendChild(row);
+  row.appendChild(again); row.appendChild(other); row.appendChild(back); r.appendChild(row);
   $('#screen').appendChild(r);
-  sparkle(window.innerWidth / 2, window.innerHeight / 3, ['🎉', '⭐', '✨', '🎈']);
-  setTimeout(() => sparkle(window.innerWidth / 2, window.innerHeight / 3, ['🎉', '⭐', '✨']), 400);
+  sparkle(innerWidth / 2, innerHeight / 3, ['🎉', '⭐', '✨', '🎈']);
+  setTimeout(() => sparkle(innerWidth / 2, innerHeight / 3, ['🎉', '⭐', '✨']), 400);
 }
 
-/* ============ 点子图案 ============ */
+/* ===================== 点子图案 ===================== */
 const DIE = { 1: [4], 2: [0, 8], 3: [0, 4, 8], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] };
 function faceEl(n) {
   const f = el('div', 'face');
-  if (n <= 6) {
-    const on = DIE[n] || [];
-    for (let i = 0; i < 9; i++) { const b = el('b'); if (!on.includes(i)) b.className = 'off'; f.appendChild(b); }
-  } else {
-    f.classList.add('wide');
-    for (let i = 0; i < 10; i++) { const b = el('b'); if (i >= n) b.className = 'off'; f.appendChild(b); }
-  }
+  if (n <= 6) { const on = DIE[n] || []; for (let i = 0; i < 9; i++) { const b = el('b'); if (!on.includes(i)) b.className = 'off'; f.appendChild(b); } }
+  else { f.classList.add('wide'); for (let i = 0; i < 10; i++) { const b = el('b'); if (i >= n) b.className = 'off'; f.appendChild(b); } }
   return f;
 }
 
-/* ============ 游戏 1：找数字（舒尔特） ============ */
-const GAME_MAXLV = { schulte: 4, dots: 3, bond: 3, match: 4, mirror: 4, connect: 5, link: 5, maze: 5 };
+/* ===================== 1 找数字 ===================== */
 function gSchulte(board, lv) {
-  const n = [2, 3, 4, 5][Math.min(lv, 4) - 1];
-  const total = n * n;
-  let target = 1;
-  const wrap = el('div', 'center');
-  const grid = el('div'); grid.id = 'grid';
-  grid.style.gridTemplateColumns = 'repeat(' + n + ',1fr)';
-  const size = 'min(' + Math.floor(72 / n) + 'vh, ' + Math.floor(76 / n) + 'vw)';
-  const nums = shuffle(range(1, total));
-  const cells = [];
-  nums.forEach(v => {
-    const c = el('div', 'tile num', String(v));
-    c.style.width = size; c.style.height = size;
-    c.dataset.v = v;
+  const cfg = G.schulte.levels[lv - 1].cfg, n = cfg.n, total = n * n;
+  let seq = [];
+  if (cfg.order === 'asc') seq = range(1, total).map(v => ({ v, c: '' }));
+  else if (cfg.order === 'desc') seq = range(1, total).reverse().map(v => ({ v, c: '' }));
+  else { const half = total >> 1; for (let i = 1; i <= half; i++) { seq.push({ v: i, c: 'rd' }); seq.push({ v: i, c: 'bl' }); } if (total % 2) seq.push({ v: half + 1, c: 'rd' }); }
+  const pool = cfg.order === 'alt' ? seq.slice() : range(1, total).map(v => ({ v, c: '' }));
+  const cells = [], grid = el('div');
+  grid.style.display = 'grid';
+  shuffle(pool).forEach(o => {
+    const c = el('div', 'tile num' + (o.c ? ' ' + o.c : ''), String(o.v));
+    c.dataset.v = o.v; c.dataset.c = o.c || '';
     c.addEventListener('click', () => {
       if (c.classList.contains('done')) return;
-      if (+c.dataset.v === target) {
-        c.classList.add('done', 'pop'); c.classList.remove('pulse');
-        Audio2.good(); target++;
-        if (target > total) { setPrompt('全部找到啦'); roundWin(grid); return; }
-        setPrompt('找 <span class="num" id="targetChip">' + target + '</span>');
-        Voice.say('找 ' + target);
-        armHint();
+      const want = seq[idx];
+      if (+c.dataset.v === want.v && (c.dataset.c || '') === (want.c || '')) {
+        c.classList.add('done', 'pop'); c.classList.remove('pulse'); Audio2.good(); idx++;
+        if (idx >= seq.length) { setPrompt('全部找到啦'); return roundWin(grid); }
+        showTarget(); arm();
       } else { miss(); c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake'); }
     });
     cells.push(c); grid.appendChild(c);
   });
-  function armHint() {
+  let idx = 0;
+  function showTarget() {
+    const w = seq[idx];
+    const color = w.c === 'rd' ? 'var(--red)' : w.c === 'bl' ? 'var(--blue)' : 'var(--ink)';
+    setPrompt('找 <span class="num" id="targetChip" style="color:' + color + '">' + w.v + '</span>');
+    Voice.say((w.c === 'rd' ? '红色的 ' : w.c === 'bl' ? '蓝色的 ' : '') + w.v);
+  }
+  function arm() {
     hintIn(7000, () => {
-      const t = cells.find(c => +c.dataset.v === target);
+      const w = seq[idx];
+      const t = cells.find(c => +c.dataset.v === w.v && (c.dataset.c || '') === (w.c || '') && !c.classList.contains('done'));
       if (t) t.classList.add('pulse');
-      Voice.say('找 ' + target);
-      armHint();
+      arm();
     });
   }
-  setPrompt('找 <span class="num" id="targetChip">1</span>');
-  Voice.say('按顺序找数字，先找 1');
-  wrap.appendChild(grid); board.appendChild(wrap);
-  armHint();
+  board.appendChild(grid);
+  const first = seq[0];
+  setPrompt('找 <span class="num" id="targetChip">' + first.v + '</span>');
+  Voice.say(cfg.order === 'desc' ? '这次倒着找，先找 ' + first.v : cfg.order === 'alt' ? '红一、蓝一、红二，这样交替找' : '按顺序找数字，先找 ' + first.v);
+  arm();
+  Fit.cb = () => {
+    const b = boardBox(), gap = clamp(b.w / 90, 5, 12);
+    const c = cellFit(b.w, b.h, n, n, gap, 150);
+    grid.style.gap = px(gap);
+    grid.style.gridTemplateColumns = 'repeat(' + n + ',' + px(c) + ')';
+    grid.style.gridAutoRows = px(c);
+    cells.forEach(x => x.style.fontSize = px(c * (n > 4 ? .44 : .5)));
+  };
 }
 
-/* ============ 游戏 2：数点点（多米诺凑数） ============ */
-function gDots(board, lv) {
-  const maxT = [5, 7, 10][Math.min(lv, 3) - 1];
-  const T = 3 + rnd(maxT - 2);
-  const a = 1 + rnd(T - 1);
-  const b = T - a;
-  const wrap = el('div'); wrap.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:min(4vh,28px);flex-wrap:wrap';
-  const dom = el('div', 'domino');
-  dom.style.cssText += 'width:min(22vh,17vw);height:min(34vh,26vw)';
-  const h1 = el('div', 'half'); h1.appendChild(faceEl(a));
-  const h2 = el('div', 'half'); const qm = el('div', 'qm num', '?'); h2.appendChild(qm);
-  dom.appendChild(h1); dom.appendChild(h2);
-  const right = el('div'); right.style.cssText = 'display:flex;flex-direction:column;gap:min(2.4vh,16px);align-items:center';
-  const opts = el('div', 'optrow');
-  const choices = shuffle([b, ...uniqueNear(b, T, 2)]);
-  choices.forEach(v => {
-    const o = el('div', 'tile opt');
-    o.appendChild(faceEl(v));
-    o.addEventListener('click', () => {
-      if (v === b) {
-        Audio2.good();
-        h2.innerHTML = ''; h2.appendChild(faceEl(v));
-        o.classList.add('done');
-        countUp(h1, h2, T, () => roundWin(dom));
-      } else { miss(); o.classList.remove('shake'); void o.offsetWidth; o.classList.add('shake'); }
-    });
-    opts.appendChild(o);
-  });
-  right.appendChild(opts);
-  wrap.appendChild(dom); wrap.appendChild(right);
-  board.appendChild(wrap);
-  setPrompt('一共要 <span class="num">' + T + '</span> 个点，还差几个？');
-  Voice.say('一共要 ' + T + ' 个点，还差几个？');
-  hintIn(9000, () => { opts.querySelectorAll('.tile').forEach((o, i) => { if (choices[i] === b) o.classList.add('pulse'); }); });
-}
+/* ===================== 2 数点点 ===================== */
 function uniqueNear(b, T, k) {
   const pool = range(1, Math.max(T, 6)).filter(v => v !== b && v <= 10);
   pool.sort((x, y) => Math.abs(x - b) - Math.abs(y - b));
   return shuffle(pool.slice(0, 4)).slice(0, k);
 }
-function countUp(h1, h2, total, done) {
-  const dots = [...h1.querySelectorAll('b:not(.off)'), ...h2.querySelectorAll('b:not(.off)')];
-  let i = 0;
-  const t = setInterval(() => {
-    if (i >= dots.length) { clearInterval(t); setTimeout(done, 250); return; }
-    dots[i].classList.add('lit'); Audio2.count(i); i++;
-  }, 180);
+function gDots(board, lv) {
+  const cfg = G.dots.levels[lv - 1].cfg;
+  const wrap = el('div', 'row2'); wrap.style.flexWrap = 'wrap';
+  const opts = el('div', 'row2');
+  let sizer = null;
+
+  if (cfg.kind === 'cmp') {
+    const a = 2 + rnd(7); let b2 = 2 + rnd(7); while (b2 === a) b2 = 2 + rnd(7);
+    const cards = [a, b2].map(v => {
+      const t = el('div', 'tile'); t.appendChild(faceEl(v)); t.dataset.v = v;
+      t.addEventListener('click', () => {
+        if (v === Math.max(a, b2)) { Audio2.good(); t.classList.add('done'); later(350, () => roundWin(t)); }
+        else { miss(); t.classList.remove('shake'); void t.offsetWidth; t.classList.add('shake'); }
+      });
+      return t;
+    });
+    cards.forEach(c => opts.appendChild(c));
+    wrap.appendChild(opts); board.appendChild(wrap);
+    setPrompt('哪一张点更多？');
+    Voice.say('哪一张的点更多？');
+    sizer = () => { const b = boardBox(), s = cellFit(b.w, b.h, 2, 1, 24, 240); cards.forEach(c => { c.style.width = px(s); c.style.height = px(s); }); opts.style.gap = px(24); };
+    hintIn(10000, () => cards[a > b2 ? 0 : 1].classList.add('pulse'));
+
+  } else if (cfg.kind === 'flash') {
+    const N = 3 + rnd(6);
+    const card = el('div', 'tile'); const face = faceEl(N); card.appendChild(face);
+    wrap.appendChild(card); board.appendChild(wrap); board.appendChild(opts);
+    board.style.flexDirection = 'column'; board.style.gap = '14px';
+    setPrompt('看好了，一会儿要藏起来');
+    Voice.say('看好了，数一数有几个点');
+    const choices = shuffle([N, ...uniqueNear(N, 10, 2)]);
+    later(1400, () => {
+      card.innerHTML = ''; const q = el('div', 'qm num', '?'); q.style.fontSize = px(card.getBoundingClientRect().height * .4); card.appendChild(q);
+      setPrompt('刚才有几个点？');
+      Voice.say('刚才有几个点？');
+      choices.forEach(v => {
+        const o = el('div', 'tile num', String(v));
+        o.addEventListener('click', () => {
+          if (v === N) { Audio2.good(); o.classList.add('done'); card.innerHTML = ''; card.appendChild(faceEl(N)); later(500, () => roundWin(card)); }
+          else { miss(); o.classList.remove('shake'); void o.offsetWidth; o.classList.add('shake'); }
+        });
+        opts.appendChild(o);
+      });
+      Fit.run();
+    });
+    sizer = () => {
+      const b = boardBox(), s = cellFit(b.w, b.h * .62, 1, 1, 0, 220);
+      card.style.width = px(s); card.style.height = px(s);
+      const o = clamp(s * .45, 44, 110);
+      opts.style.gap = px(14);
+      opts.querySelectorAll('.tile').forEach(n => { n.style.width = px(o); n.style.height = px(o); n.style.fontSize = px(o * .5); });
+    };
+
+  } else {
+    const max = cfg.max, T = 3 + rnd(max - 2);
+    const parts = cfg.kind === 'make3' ? 2 : 1;
+    let given = [], rest = T;
+    for (let i = 0; i < parts; i++) { const v = 1 + rnd(Math.max(1, rest - (parts - i))); given.push(v); rest -= v; }
+    const need = rest;
+    const dom = el('div', 'domino');
+    given.forEach(v => { const h = el('div', 'half'); h.appendChild(faceEl(v)); dom.appendChild(h); });
+    const qh = el('div', 'half'); const qm = el('div', 'qm num', '?'); qh.appendChild(qm); dom.appendChild(qh);
+    const choices = shuffle([need, ...uniqueNear(need, T, 2)]);
+    choices.forEach(v => {
+      const o = el('div', 'tile'); o.appendChild(faceEl(v));
+      o.addEventListener('click', () => {
+        if (v === need) {
+          Audio2.good(); qh.innerHTML = ''; qh.appendChild(faceEl(v)); o.classList.add('done');
+          const dots = dom.querySelectorAll('b:not(.off)'); let i = 0;
+          every(170, tm => {
+            if (i >= dots.length) { clearInterval(tm); later(250, () => roundWin(dom)); return; }
+            dots[i].classList.add('lit'); Audio2.count(i); i++;
+          });
+        } else { miss(); o.classList.remove('shake'); void o.offsetWidth; o.classList.add('shake'); }
+      });
+      opts.appendChild(o);
+    });
+    wrap.appendChild(dom); wrap.appendChild(opts); board.appendChild(wrap);
+    setPrompt('一共要 <span class="num">' + T + '</span> 个点，还差几个？');
+    Voice.say('一共要 ' + T + ' 个点，还差几个？');
+    hintIn(10000, () => opts.querySelectorAll('.tile').forEach((o, i) => { if (choices[i] === need) o.classList.add('pulse'); }));
+    sizer = () => {
+      const b = boardBox();
+      const rows = given.length + 1;
+      const gap = clamp(b.w / 60, 10, 26);
+      let dh = Math.min(b.h * .92, (b.w - gap) * .62);
+      let dw = dh / rows * .92;
+      if (dw > b.w * .34) { dw = b.w * .34; dh = dw * rows / .92; }
+      dom.style.width = px(dw); dom.style.height = px(dh);
+      qm.style.fontSize = px(dh / rows * .45);
+      const ow = clamp(Math.min((b.w - dw - gap * 2) / 3.4, dh / rows), 46, 150);
+      wrap.style.gap = px(gap); opts.style.gap = px(gap * .7);
+      opts.style.flexDirection = b.w < dw + ow * 3.6 ? 'column' : 'row';
+      opts.querySelectorAll('.tile').forEach(n => { n.style.width = px(ow * 1.3); n.style.height = px(ow); });
+    };
+  }
+  Fit.cb = sizer;
 }
 
-/* ============ 游戏 3：凑数字（数的分解） ============ */
+/* ===================== 3 凑数字 ===================== */
 function gBond(board, lv) {
-  const maxN = [5, 7, 10][Math.min(lv, 3) - 1];
-  const N = 3 + rnd(maxN - 2);
-  const a = 1 + rnd(N - 1);
-  const b = N - a;
-  const wrap = el('div'); wrap.id = 'bondWrap';
-  const top = el('div', 'bnode top num', String(N));
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('viewBox', '0 0 200 60'); svg.style.cssText = 'width:min(38vh,28vw);height:min(9vh,7vw)';
-  svg.innerHTML = '<line x1="100" y1="4" x2="26" y2="56" stroke="#2A2523" stroke-width="5" stroke-linecap="round"/>' +
-    '<line x1="100" y1="4" x2="174" y2="56" stroke="#2A2523" stroke-width="5" stroke-linecap="round"/>';
-  const leaves = el('div'); leaves.style.cssText = 'display:flex;gap:min(13vh,10vw)';
-  const left = el('div', 'bnode num', String(a));
-  const qn = el('div', 'bnode q num', '?');
-  leaves.appendChild(left); leaves.appendChild(qn);
-  const opts = el('div', 'optrow'); opts.style.marginTop = 'min(3vh,20px)';
-  const choices = shuffle([b, ...uniqueNear(b, N, 3)]);
-  choices.forEach(v => {
-    const o = el('div', 'tile opt numopt num', String(v));
+  const cfg = G.bond.levels[lv - 1].cfg, max = cfg.max;
+  const N = 3 + rnd(max - 2);
+  const wrap = el('div', 'col2');
+  const top = el('div', 'bnode top num');
+  const svg = svgEl('svg'); svg.setAttribute('viewBox', '0 0 200 60'); svg.setAttribute('preserveAspectRatio', 'none');
+  const leaves = el('div', 'row2');
+  let answer, nodes = [];
+  const mk = (txt, q) => { const n = el('div', 'bnode num' + (q ? ' q' : ''), txt); nodes.push(n); return n; };
+
+  if (cfg.miss === 'three') {
+    const a = 1 + rnd(N - 2), b = 1 + rnd(N - a - 1), c = N - a - b;
+    answer = c; top.textContent = N;
+    svg.innerHTML = '<line x1="100" y1="4" x2="20" y2="56" stroke="#2A2523" stroke-width="5" stroke-linecap="round"/>' +
+      '<line x1="100" y1="4" x2="100" y2="56" stroke="#2A2523" stroke-width="5" stroke-linecap="round"/>' +
+      '<line x1="100" y1="4" x2="180" y2="56" stroke="#2A2523" stroke-width="5" stroke-linecap="round"/>';
+    leaves.appendChild(mk(String(a))); leaves.appendChild(mk(String(b))); leaves.appendChild(mk('?', true));
+    setPrompt('<span class="num">' + N + '</span> 分成 ' + a + '、' + b + ' 和几？');
+    Voice.say(N + ' 分成 ' + a + '、' + b + ' 和几？');
+  } else {
+    const a = 1 + rnd(N - 1), b = N - a;
+    svg.innerHTML = '<line x1="100" y1="4" x2="26" y2="56" stroke="#2A2523" stroke-width="5" stroke-linecap="round"/>' +
+      '<line x1="100" y1="4" x2="174" y2="56" stroke="#2A2523" stroke-width="5" stroke-linecap="round"/>';
+    if (cfg.miss === 'top') {
+      answer = N; top.textContent = '?'; top.classList.add('q'); top.classList.remove('top');
+      leaves.appendChild(mk(String(a))); leaves.appendChild(mk(String(b)));
+      setPrompt('<span class="num">' + a + '</span> 和 <span class="num">' + b + '</span> 合起来是几？');
+      Voice.say(a + ' 和 ' + b + ' 合起来是几？');
+    } else if (cfg.miss === 'left') {
+      answer = a; top.textContent = N;
+      leaves.appendChild(mk('?', true)); leaves.appendChild(mk(String(b)));
+      setPrompt('<span class="num">' + N + '</span> 分成几和 <span class="num">' + b + '</span>？');
+      Voice.say(N + ' 分成几和 ' + b + '？');
+    } else {
+      answer = b; top.textContent = N;
+      leaves.appendChild(mk(String(a))); leaves.appendChild(mk('?', true));
+      setPrompt('<span class="num">' + N + '</span> 分成 <span class="num">' + a + '</span> 和几？');
+      Voice.say(N + ' 分成 ' + a + ' 和几？');
+    }
+  }
+  const qn = nodes.find(n => n.classList.contains('q')) || top;
+  const opts = el('div', 'row2');
+  shuffle([answer, ...uniqueNear(answer, Math.max(N, 6), 3)]).forEach(v => {
+    const o = el('div', 'tile num', String(v));
     o.addEventListener('click', () => {
-      if (v === b) {
-        Audio2.good();
-        qn.textContent = String(v); qn.classList.remove('q'); qn.classList.add('fill', 'pop');
-        setPrompt('<span class="num">' + a + '</span> 和 <span class="num">' + b + '</span> 合起来是 <span class="num">' + N + '</span>');
-        Voice.say(a + ' 和 ' + b + ' 合起来是 ' + N);
-        setTimeout(() => roundWin(qn), 700);
+      if (v === answer) {
+        Audio2.good(); qn.textContent = String(v); qn.classList.remove('q'); qn.classList.add('fill', 'pop');
+        later(650, () => roundWin(qn));
       } else { miss(); o.classList.remove('shake'); void o.offsetWidth; o.classList.add('shake'); }
     });
     opts.appendChild(o);
   });
   const help = el('button', 'sw', '💡 看点点');
-  help.style.marginTop = '10px';
   help.addEventListener('click', () => {
     Audio2.tap(); help.disabled = true; help.style.opacity = .5;
-    const box = el('div'); box.style.cssText = 'display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;justify-content:center';
-    for (let i = 0; i < N; i++) {
-      const d = el('b'); d.style.cssText = 'width:22px;height:22px;border-radius:50%;display:block;background:' + (i < a ? 'var(--blue)' : 'var(--line)');
-      box.appendChild(d);
-    }
-    wrap.appendChild(box);
+    const box = el('div', 'row2'); box.style.flexWrap = 'wrap'; box.style.gap = '5px'; box.style.marginTop = '6px';
+    const first = cfg.miss === 'three' ? +nodes[0].textContent : (cfg.miss === 'left' ? 0 : +nodes[0].textContent);
+    for (let i = 0; i < N; i++) { const d = el('b'); d.style.cssText = 'width:18px;height:18px;border-radius:50%;display:block;background:' + (i < first ? 'var(--blue)' : 'var(--line)'); box.appendChild(d); }
+    wrap.appendChild(box); Fit.run();
   });
   wrap.appendChild(top); wrap.appendChild(svg); wrap.appendChild(leaves); wrap.appendChild(opts); wrap.appendChild(help);
   board.appendChild(wrap);
-  setPrompt('<span class="num">' + N + '</span> 可以分成 <span class="num">' + a + '</span> 和几？');
-  Voice.say(N + ' 可以分成 ' + a + ' 和几？');
-  hintIn(10000, () => { help.click(); });
+  hintIn(11000, () => { if (!help.disabled) help.click(); });
+  Fit.cb = () => {
+    const b = boardBox();
+    const leafN = leaves.children.length;
+    const node = clamp(Math.min(b.h * .2, b.w / (leafN * 2.1)), 40, 110);
+    nodes.concat([top]).forEach(n => { n.style.width = px(node); n.style.height = px(node); n.style.fontSize = px(node * .48); });
+    const lw = clamp(b.w * .62, 180, 420);
+    leaves.style.gap = px(Math.max(10, lw / leafN - node));
+    svg.style.width = px(lw); svg.style.height = px(clamp(b.h * .12, 28, 70));
+    const o = clamp(Math.min(b.h * .17, b.w / 5.2), 42, 96);
+    opts.style.gap = px(clamp(o * .22, 8, 20)); opts.style.marginTop = px(clamp(b.h * .04, 6, 18));
+    opts.querySelectorAll('.tile').forEach(n => { n.style.width = px(o); n.style.height = px(o); n.style.fontSize = px(o * .5); });
+    wrap.style.gap = px(clamp(b.h * .012, 2, 10));
+  };
 }
 
-/* ============ 游戏 4：找一样 ============ */
+/* ===================== 4 找一样 ===================== */
 function gMatch(board, lv) {
-  const conf = [{ n: 3, d: 2 }, { n: 4, d: 3 }, { n: 4, d: 4 }, { n: 5, d: 6 }][Math.min(lv, 4) - 1];
+  const cfg = G.match.levels[lv - 1].cfg;
   const digits = shuffle(['0', '3', '5', '6', '8', '9']);
-  const set = new Set();
-  let guard = 0;
-  while (set.size < conf.n && guard++ < 500) {
-    const s = shuffle(digits).slice(0, conf.d).join('');
-    set.add(s);
+  const items = [];
+  if (cfg.swap) {
+    const base = shuffle(digits).slice(0, cfg.d);
+    items.push(base.join(''));
+    let guard = 0;
+    while (items.length < cfg.n && guard++ < 300) {
+      const a = base.slice(); const i = rnd(a.length - 1);
+      [a[i], a[i + 1]] = [a[i + 1], a[i]];
+      const s = a.join(''); if (!items.includes(s)) items.push(s);
+      base.push(base.shift());
+    }
+    while (items.length < cfg.n) { const s = shuffle(digits).slice(0, cfg.d).join(''); if (!items.includes(s)) items.push(s); }
+  } else {
+    const set = new Set(); let guard = 0;
+    while (set.size < cfg.n && guard++ < 400) set.add(shuffle(digits).slice(0, cfg.d).join(''));
+    set.forEach(v => items.push(v));
   }
-  const items = [...set];
-  const leftOrder = shuffle(items), rightOrder = shuffle(items);
   const wrap = el('div'); wrap.id = 'matchWrap';
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.id = 'matchSvg';
+  const svg = svgEl('svg'); svg.id = 'matchSvg';
   const cols = el('div', 'mcols');
   const cl = el('div', 'mcol'), cr = el('div', 'mcol');
-  const map = {};
-  let sel = null, doneCount = 0;
-  function mk(v, side) {
-    const t = el('div', 'tile mitem num', v);
-    t.dataset.v = v;
+  const map = {}; let sel = null, done = 0; const linked = [];
+  const mk = (v, side) => {
+    const t = el('div', 'tile mitem num', v); t.dataset.v = v;
     t.addEventListener('click', () => {
       if (t.classList.contains('done')) return;
-      if (side === 'L') {
-        cl.querySelectorAll('.mitem').forEach(x => x.classList.remove('pick'));
-        t.classList.add('pick'); sel = t; Audio2.tap();
-      } else {
+      if (side === 'L') { cl.querySelectorAll('.mitem').forEach(x => x.classList.remove('pick')); t.classList.add('pick'); sel = t; Audio2.tap(); }
+      else {
         if (!sel) { t.classList.add('shake'); setTimeout(() => t.classList.remove('shake'), 350); Voice.say('先点左边一个数字'); return; }
         if (sel.dataset.v === v) {
-          Audio2.good();
-          sel.classList.remove('pick'); sel.classList.add('done'); t.classList.add('done');
-          line(sel, t); sel = null; doneCount++;
-          if (doneCount === items.length) setTimeout(() => roundWin(wrap), 400);
-        } else {
-          miss();
-          [sel, t].forEach(x => { x.classList.remove('shake'); void x.offsetWidth; x.classList.add('shake'); });
-          sel.classList.remove('pick'); sel = null;
-        }
+          Audio2.good(); sel.classList.remove('pick'); sel.classList.add('done'); t.classList.add('done');
+          linked.push([sel, t]); drawLines(); sel = null; done++;
+          if (done === items.length) later(400, () => roundWin(wrap));
+        } else { miss();[sel, t].forEach(x => { x.classList.remove('shake'); void x.offsetWidth; x.classList.add('shake'); }); sel.classList.remove('pick'); sel = null; }
       }
     });
     return t;
+  };
+  shuffle(items).forEach(v => { const t = mk(v, 'L'); map['L' + v] = t; cl.appendChild(t); });
+  shuffle(items).forEach(v => { const t = mk(v, 'R'); map['R' + v] = t; cr.appendChild(t); });
+  function drawLines() {
+    svg.innerHTML = '';
+    const wr = wrap.getBoundingClientRect();
+    linked.forEach(([a, b]) => {
+      const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+      const l = svgEl('line');
+      l.setAttribute('x1', ra.right - wr.left); l.setAttribute('y1', ra.top - wr.top + ra.height / 2);
+      l.setAttribute('x2', rb.left - wr.left); l.setAttribute('y2', rb.top - wr.top + rb.height / 2);
+      l.setAttribute('stroke', '#7B4BC9'); l.setAttribute('stroke-width', '6'); l.setAttribute('stroke-linecap', 'round');
+      svg.appendChild(l);
+    });
   }
-  leftOrder.forEach(v => { const t = mk(v, 'L'); map['L' + v] = t; cl.appendChild(t); });
-  rightOrder.forEach(v => { const t = mk(v, 'R'); map['R' + v] = t; cr.appendChild(t); });
-  function line(a, b) {
-    const wr = wrap.getBoundingClientRect(), ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
-    const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    l.setAttribute('x1', ra.right - wr.left); l.setAttribute('y1', ra.top - wr.top + ra.height / 2);
-    l.setAttribute('x2', rb.left - wr.left); l.setAttribute('y2', rb.top - wr.top + rb.height / 2);
-    l.setAttribute('stroke', '#7B4BC9'); l.setAttribute('stroke-width', '6'); l.setAttribute('stroke-linecap', 'round');
-    svg.appendChild(l);
-  }
-  cols.appendChild(cl); cols.appendChild(cr);
-  wrap.appendChild(svg); wrap.appendChild(cols);
+  cols.appendChild(cl); cols.appendChild(cr); wrap.appendChild(svg); wrap.appendChild(cols);
   board.appendChild(wrap);
   setPrompt('找出一模一样的两个数字');
   Voice.say('先点左边一个数字，再点右边一样的');
-  hintIn(12000, () => {
-    const v = items.find(x => !map['L' + x].classList.contains('done'));
-    if (v) { map['L' + v].classList.add('pulse'); map['R' + v].classList.add('pulse'); }
-  });
+  hintIn(13000, () => { const v = items.find(x => !map['L' + x].classList.contains('done')); if (v) { map['L' + v].classList.add('pulse'); map['R' + v].classList.add('pulse'); } });
+  Fit.cb = () => {
+    const b = boardBox();
+    const h = clamp((b.h - 8 * items.length) / items.length, 30, 78);
+    const fs = clamp(Math.min(h * .55, b.w / (cfg.d * 2.6)), 15, 34);
+    wrap.querySelectorAll('.mitem').forEach(n => { n.style.height = px(h); n.style.fontSize = px(fs); n.style.padding = '0 ' + px(clamp(fs * .5, 6, 18)); });
+    drawLines();
+  };
 }
 
-/* ============ 游戏 5：照镜子（对称） ============ */
+/* ===================== 5 照镜子 ===================== */
 function gMirror(board, lv) {
-  const conf = [{ w: 3, h: 3, n: 3 }, { w: 4, h: 4, n: 5 }, { w: 4, h: 5, n: 6 }, { w: 5, h: 5, n: 8 }][Math.min(lv, 4) - 1];
-  const W = conf.w, H = conf.h;
-  const target = new Set();
-  let cx = rnd(W), cy = rnd(H);
-  target.add(cy + ',' + cx);
+  const cfg = G.mirror.levels[lv - 1].cfg, W = cfg.w, H = cfg.h;
+  const src = new Set();
+  let cy = rnd(H), cx = rnd(W); src.add(cy + ',' + cx);
   let guard = 0;
-  while (target.size < conf.n && guard++ < 300) {
+  while (src.size < cfg.n && guard++ < 400) {
     const d = pick([[0, 1], [1, 0], [0, -1], [-1, 0]]);
-    const ny = Math.min(H - 1, Math.max(0, cy + d[0])), nx = Math.min(W - 1, Math.max(0, cx + d[1]));
-    cy = ny; cx = nx; target.add(cy + ',' + cx);
+    cy = clamp(cy + d[0], 0, H - 1); cx = clamp(cx + d[1], 0, W - 1);
+    src.add(cy + ',' + cx);
   }
-  const cell = 'min(' + Math.floor(60 / H) + 'vh, ' + Math.floor(80 / (W * 2 + 1)) + 'vw)';
-  const wrap = el('div'); wrap.id = 'mirrorWrap';
-  wrap.style.gridTemplateColumns = 'repeat(' + (W * 2) + ',' + cell + ')';
-  wrap.style.gridAutoRows = cell;
-  const right = {};
-  let left = 0;
-  for (let y = 0; y < H; y++) {
-    for (let x = 0; x < W; x++) {
-      const c = el('div', 'mc');
-      if (target.has(y + ',' + x)) c.classList.add('left'); else c.classList.add('blank');
-      wrap.appendChild(c);
-    }
-    for (let x = 0; x < W; x++) {
-      const mx = W - 1 - x;
-      const need = target.has(y + ',' + mx);
-      const c = el('div', 'mc blank');
-      c.dataset.k = y + ',' + mx;
-      if (need) { right[y + ',' + mx] = c; left++; }
-      c.addEventListener('click', () => {
-        if (c.classList.contains('right')) return;
-        if (need) {
-          c.classList.remove('blank'); c.classList.add('right'); Audio2.good(); left--;
-          if (left === 0) { setPrompt('一模一样！'); setTimeout(() => roundWin(wrap), 350); }
-        } else {
-          miss(); c.classList.add('miss');
-          setTimeout(() => c.classList.remove('miss'), 500);
-        }
-      });
-      wrap.appendChild(c);
-    }
+  const mapKey = (y, x) => cfg.axis === 'x' ? (y + ',' + (W - 1 - x)) : cfg.axis === 'y' ? ((H - 1 - y) + ',' + x) : ((H - 1 - y) + ',' + (W - 1 - x));
+  const holder = el('div'); holder.style.position = 'relative';
+  const stack = el('div'); stack.style.display = 'flex'; stack.style.alignItems = 'center'; stack.style.justifyContent = 'center';
+  const gA = el('div', 'mgrid'), gB = el('div', 'mgrid');
+  const needMap = {}; let left = 0;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const a = el('div', 'mc' + (src.has(y + ',' + x) ? ' on' : ''));
+    gA.appendChild(a);
+    const k = mapKey(y, x);
+    const need = src.has(mapKey(y, x));
+    const c = el('div', 'mc');
+    if (need) { needMap[y + ',' + x] = c; left++; }
+    c.addEventListener('click', () => {
+      if (c.classList.contains('put')) { if (!cfg.instant) { c.classList.remove('put'); if (need) left++; } return; }
+      if (need) {
+        c.classList.add('put'); Audio2.good(); left--;
+        if (left === 0) { if (ok()) { setPrompt('一模一样！'); later(350, () => roundWin(holder)); } else check(); }
+      } else if (cfg.instant) {
+        miss(); c.classList.add('bad'); setTimeout(() => c.classList.remove('bad'), 480);
+      } else {
+        c.classList.add('put'); Audio2.tap();
+        if (left === 0) check();
+      }
+    });
+    gB.appendChild(c);
   }
-  const holder = el('div'); holder.style.cssText = 'position:relative;display:inline-block';
-  holder.appendChild(wrap);
-  const ml = el('div', 'mirrorline'); ml.style.left = '50%'; holder.appendChild(ml);
+  function ok() { return gB.querySelectorAll('.put').length === Object.keys(needMap).length && Object.values(needMap).every(n => n.classList.contains('put')); }
+  function check() {
+    if (ok()) { setPrompt('一模一样！'); later(350, () => roundWin(holder)); return; }
+    miss();
+    const want = Object.values(needMap);
+    const bad = [...gB.querySelectorAll('.put')].filter(n => !want.includes(n));
+    bad.forEach(n => n.classList.add('bad'));
+    Voice.say('有几个不对，我帮你擦掉了，再看看');
+    later(650, () => {
+      bad.forEach(n => n.classList.remove('bad', 'put'));
+      if (ok()) { setPrompt('一模一样！'); later(350, () => roundWin(holder)); }
+    });
+  }
+  const axis = el('div', 'axis' + (cfg.axis === 'y' ? ' h' : ''));
+  if (cfg.axis === 'y') { stack.style.flexDirection = 'column'; }
+  stack.appendChild(gA); stack.appendChild(gB); holder.appendChild(stack); holder.appendChild(axis);
   board.appendChild(holder);
-  setPrompt('右边点一点，画出一样的图案');
-  Voice.say('中间是一面镜子，右边画出和左边一样的');
-  hintIn(12000, () => {
-    const k = Object.keys(right).find(k2 => !right[k2].classList.contains('right'));
-    if (k) right[k].classList.add('pulse');
-  });
+  const tips = { x: '右边点一点，画出和左边一样的', y: '下面点一点，画出和上面一样的', rot: '把图案转半圈，画在右边' };
+  setPrompt(tips[cfg.axis]);
+  Voice.say(cfg.axis === 'rot' ? '把左边的图案转半圈，画到右边' : cfg.axis === 'y' ? '中间是一面横着的镜子，下面画出一样的' : '中间是一面镜子，右边画出一样的');
+  hintIn(14000, () => { const k = Object.keys(needMap).find(k2 => !needMap[k2].classList.contains('put')); if (k) needMap[k].classList.add('pulse'); });
+  Fit.cb = () => {
+    const b = boardBox(), gap = 4;
+    const two = cfg.axis === 'y' ? { c: W, r: H * 2 } : { c: W * 2, r: H };
+    const pad = 16;
+    const c = cellFit(b.w - pad, b.h - pad, two.c + .4, two.r + .4, gap, 96);
+    [gA, gB].forEach(g => { g.style.gap = px(gap); g.style.gridTemplateColumns = 'repeat(' + W + ',' + px(c) + ')'; g.style.gridAutoRows = px(c); });
+    const mid = px(clamp(c * .35, 10, 30));
+    stack.style.gap = mid;
+    if (cfg.axis === 'y') { axis.className = 'axis h'; axis.style.cssText = 'position:absolute;left:-6px;right:-6px;top:50%;border-top:4px dashed var(--orange)'; }
+    else { axis.className = 'axis'; axis.style.cssText = 'position:absolute;top:-6px;bottom:-6px;left:50%;border-left:4px dashed var(--orange)'; }
+  };
 }
 
-/* ============ 游戏 6：连点成画 ============ */
-function starPts(spikes, R, r) {
-  const p = [];
-  for (let i = 0; i < spikes * 2; i++) {
-    const ang = -Math.PI / 2 + i * Math.PI / spikes;
-    const rad = i % 2 === 0 ? R : r;
-    p.push([50 + Math.cos(ang) * rad, 50 + Math.sin(ang) * rad]);
-  }
-  return p;
-}
-function heartPts(n) {
-  const p = [];
-  for (let i = 0; i < n; i++) {
-    const t = -Math.PI / 2 + (i / n) * Math.PI * 2;
-    const x = 16 * Math.pow(Math.sin(t), 3);
-    const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
-    p.push([50 + x * 2.4, 48 - y * 2.4]);
-  }
-  return p;
-}
+/* ===================== 6 连点成画 ===================== */
+function starPts(sp, R, r) { const p = []; for (let i = 0; i < sp * 2; i++) { const a = -Math.PI / 2 + i * Math.PI / sp, rad = i % 2 ? r : R; p.push([50 + Math.cos(a) * rad, 50 + Math.sin(a) * rad]); } return p; }
+function heartPts(n) { const p = []; for (let i = 0; i < n; i++) { const t = -Math.PI / 2 + (i / n) * Math.PI * 2; const x = 16 * Math.pow(Math.sin(t), 3); const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t); p.push([50 + x * 2.4, 48 - y * 2.4]); } return p; }
 const SHAPES = [
   { name: '小房子', emoji: '🏠', pts: [[50, 10], [86, 38], [76, 38], [76, 86], [24, 86], [24, 38], [14, 38]] },
   { name: '小鱼', emoji: '🐟', pts: [[16, 50], [42, 28], [66, 32], [86, 16], [90, 50], [86, 84], [66, 68], [42, 72]] },
@@ -853,196 +1049,144 @@ const SHAPES = [
   { name: '太阳', emoji: '☀️', pts: starPts(10, 44, 26) }
 ];
 function gConnect(board, lv) {
-  const sh = SHAPES[Math.min(lv, SHAPES.length) - 1];
-  const pts = sh.pts;
-  const N = pts.length;
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.id = 'cSvg'; svg.setAttribute('viewBox', '0 0 100 100');
-  svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-  const box = el('div'); box.style.cssText = 'width:min(70vh,80vw);height:min(70vh,80vw)';
-  const fill = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-  fill.setAttribute('class', 'shapefill');
-  fill.setAttribute('points', pts.map(p => p.join(',')).join(' '));
-  svg.appendChild(fill);
-  const segs = document.createElementNS('http://www.w3.org/2000/svg', 'g'); svg.appendChild(segs);
-  let next = 1;
-  const nodes = [];
+  const cfg = G.connect.levels[lv - 1].cfg, sh = SHAPES[cfg.sh], pts = sh.pts, N = pts.length, step = cfg.step || 1;
+  const label = i => (i + 1) * step;
+  const box = el('div');
+  const svg = svgEl('svg'); svg.id = 'cSvg'; svg.setAttribute('viewBox', '0 0 100 100'); svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+  svg.style.width = '100%'; svg.style.height = '100%';
+  const fill = svgEl('polygon'); fill.setAttribute('class', 'shapefill'); fill.setAttribute('points', pts.map(p => p.join(',')).join(' ')); svg.appendChild(fill);
+  const segs = svgEl('g'); svg.appendChild(segs);
+  let next = 0; const dots = [];
   pts.forEach((p, i) => {
-    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    c.setAttribute('cx', p[0]); c.setAttribute('cy', p[1]); c.setAttribute('r', 6.2);
+    const g2 = svgEl('g'); g2.style.cursor = 'pointer';
+    const c = svgEl('circle'); c.setAttribute('cx', p[0]); c.setAttribute('cy', p[1]); c.setAttribute('r', 6.4);
     c.setAttribute('class', 'dot' + (i === 0 ? ' next' : ''));
-    const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    t.setAttribute('x', p[0]); t.setAttribute('y', p[1]); t.setAttribute('dy', '0.35em');
-    t.textContent = String(i + 1);
-    g.appendChild(c); g.appendChild(t);
-    g.style.cursor = 'pointer';
-    g.addEventListener('click', () => {
-      if (i + 1 === next) {
-        Audio2.good();
-        c.setAttribute('class', 'dot on'); c.classList && c.classList.remove('next');
-        if (next > 1) {
-          const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-          const q = pts[next - 2];
-          l.setAttribute('x1', q[0]); l.setAttribute('y1', q[1]);
-          l.setAttribute('x2', p[0]); l.setAttribute('y2', p[1]);
-          l.setAttribute('class', 'seg'); segs.appendChild(l);
-        }
+    const t = svgEl('text'); t.setAttribute('x', p[0]); t.setAttribute('y', p[1]); t.setAttribute('dy', '0.35em'); t.textContent = String(label(i));
+    g2.appendChild(c); g2.appendChild(t);
+    g2.addEventListener('click', () => {
+      if (i === next) {
+        Audio2.good(); c.setAttribute('class', 'dot on');
+        if (next > 0) { const l = svgEl('line'), q = pts[next - 1]; l.setAttribute('x1', q[0]); l.setAttribute('y1', q[1]); l.setAttribute('x2', p[0]); l.setAttribute('y2', p[1]); l.setAttribute('class', 'seg'); segs.appendChild(l); }
         next++;
-        if (next > N) {
-          const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-          l.setAttribute('x1', pts[N - 1][0]); l.setAttribute('y1', pts[N - 1][1]);
-          l.setAttribute('x2', pts[0][0]); l.setAttribute('y2', pts[0][1]);
-          l.setAttribute('class', 'seg'); segs.appendChild(l);
-          fill.classList.add('show');
-          setPrompt('是一个' + sh.name + ' ' + sh.emoji);
+        if (next >= N) {
+          const l = svgEl('line'); l.setAttribute('x1', pts[N - 1][0]); l.setAttribute('y1', pts[N - 1][1]); l.setAttribute('x2', pts[0][0]); l.setAttribute('y2', pts[0][1]); l.setAttribute('class', 'seg'); segs.appendChild(l);
+          fill.classList.add('show'); setPrompt('是一个' + sh.name + ' ' + sh.emoji);
           Voice.say('画好啦，是一个' + sh.name);
-          setTimeout(() => roundWin(box), 600);
-        } else {
-          nodes[next - 1].setAttribute('class', 'dot next');
-          setPrompt('下一个点 <span class="num">' + next + '</span>');
-          Voice.say('下一个是 ' + next);
-        }
-      } else {
-        miss(); g.classList.remove('shake'); g.classList.add('shake');
-        setTimeout(() => g.classList.remove('shake'), 350);
-      }
+          later(600, () => roundWin(box));
+        } else { dots[next].setAttribute('class', 'dot next'); setPrompt('下一个是 <span class="num">' + label(next) + '</span>'); Voice.say('下一个是 ' + label(next)); }
+      } else { miss(); g2.classList.remove('shake'); void svg.clientWidth; g2.classList.add('shake'); setTimeout(() => g2.classList.remove('shake'), 350); }
     });
-    nodes.push(c);
-    svg.appendChild(g);
+    dots.push(c); svg.appendChild(g2);
   });
   box.appendChild(svg); board.appendChild(box);
-  setPrompt('从 <span class="num">1</span> 开始，按顺序连起来');
-  Voice.say('从 1 开始，按数字顺序连起来，看看是什么');
-  const armH = () => hintIn(7000, () => { if (nodes[next - 1]) nodes[next - 1].setAttribute('class', 'dot next pulse'); armH(); });
-  armH();
+  setPrompt('从 <span class="num">' + label(0) + '</span> 开始，按顺序连');
+  Voice.say(step > 1 ? '按双数连，2、4、6 这样往下' : '从 1 开始，按数字顺序连起来');
+  const arm = () => hintIn(8000, () => { if (dots[next]) dots[next].setAttribute('class', 'dot next pulse'); arm(); });
+  arm();
+  Fit.cb = () => { const b = boardBox(), s = Math.min(b.w, b.h); box.style.width = px(s); box.style.height = px(s); };
 }
 
-
-/* ============ 游戏 7：水果连连看 ============ */
-const LL_ITEMS = ['🍎', '🍌', '🍇', '🍓', '🍉', '🍊', '🍐', '🥝', '🍒', '🥕', '🌽', '🍄', '🍍', '🥑'];
+/* ===================== 7 水果连连看 ===================== */
+const LL_EASY = ['🍎', '🍌', '🍇', '🍓', '🍉', '🍊', '🥕', '🌽', '🍄', '🍍', '🥑', '🍆'];
+const LL_HARD = ['🍎', '🍏', '🍊', '🍋', '🍐', '🥝', '🍒', '🍓', '🫐', '🍇', '🍑', '🥭'];
 function gLink(board, lv) {
-  const conf = [{ w: 3, h: 2, free: true }, { w: 4, h: 2, free: true }, { w: 4, h: 3, free: false },
-  { w: 4, h: 4, free: false }, { w: 5, h: 4, free: false }][Math.min(lv, 5) - 1];
-  const W = conf.w, H = conf.h, pairs = W * H / 2;
-  const kinds = shuffle(LL_ITEMS).slice(0, pairs);
-  const G = Array.from({ length: H + 2 }, () => new Array(W + 2).fill(null));
+  const cfg = G.link.levels[lv - 1].cfg, W = cfg.w, H = cfg.h, pairs = W * H / 2;
+  const kinds = shuffle(cfg.hard ? LL_HARD : LL_EASY).slice(0, pairs);
+  const Gd = Array.from({ length: H + 2 }, () => new Array(W + 2).fill(null));
   const nodes = Array.from({ length: H + 2 }, () => new Array(W + 2).fill(null));
   let left = W * H, sel = null, busy = false;
-
-  const cell = 'min(' + Math.floor(54 / H) + 'vh, ' + Math.floor(78 / W) + 'vw)';
   const holder = el('div'); holder.id = 'llHolder';
   const wrap = el('div'); wrap.id = 'llWrap';
-  wrap.style.gridTemplateColumns = 'repeat(' + W + ',' + cell + ')';
-  wrap.style.gridAutoRows = cell;
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.id = 'llSvg';
-
-  const vals = shuffle(kinds.concat(kinds));
-  let k = 0;
+  const svg = svgEl('svg'); svg.id = 'llSvg';
+  const vals = shuffle(kinds.concat(kinds)); let k = 0;
   for (let y = 1; y <= H; y++) for (let x = 1; x <= W; x++) {
-    G[y][x] = vals[k++];
-    const t = el('div', 'll', G[y][x]);
-    t.style.fontSize = 'calc(' + cell + ' * 0.6)';
+    Gd[y][x] = vals[k++];
+    const t = el('div', 'll', Gd[y][x]);
     t.addEventListener('click', () => tap(y, x));
     nodes[y][x] = t; wrap.appendChild(t);
   }
   holder.appendChild(wrap); holder.appendChild(svg); board.appendChild(holder);
-
-  const clearH = (y, xa, xb) => { const a = Math.min(xa, xb), b = Math.max(xa, xb); for (let i = a + 1; i < b; i++) if (G[y][i]) return false; return true; };
-  const clearV = (x, ya, yb) => { const a = Math.min(ya, yb), b = Math.max(ya, yb); for (let i = a + 1; i < b; i++) if (G[i][x]) return false; return true; };
+  const clearH = (y, a, b) => { const s = Math.min(a, b), e = Math.max(a, b); for (let i = s + 1; i < e; i++) if (Gd[y][i]) return false; return true; };
+  const clearV = (x, a, b) => { const s = Math.min(a, b), e = Math.max(a, b); for (let i = s + 1; i < e; i++) if (Gd[i][x]) return false; return true; };
   function findPath(p, q) {
     const [y1, x1] = p, [y2, x2] = q;
     if (y1 === y2 && clearH(y1, x1, x2)) return [p, q];
     if (x1 === x2 && clearV(x1, y1, y2)) return [p, q];
-    if (!G[y1][x2] && clearH(y1, x1, x2) && clearV(x2, y1, y2)) return [p, [y1, x2], q];
-    if (!G[y2][x1] && clearV(x1, y1, y2) && clearH(y2, x1, x2)) return [p, [y2, x1], q];
-    for (let x = 0; x <= W + 1; x++) {
-      if (x === x1 || x === x2) continue;
-      if (!G[y1][x] && !G[y2][x] && clearH(y1, x1, x) && clearH(y2, x2, x) && clearV(x, y1, y2))
-        return [p, [y1, x], [y2, x], q];
-    }
-    for (let y = 0; y <= H + 1; y++) {
-      if (y === y1 || y === y2) continue;
-      if (!G[y][x1] && !G[y][x2] && clearV(x1, y1, y) && clearV(x2, y2, y) && clearH(y, x1, x2))
-        return [p, [y, x1], [y, x2], q];
-    }
+    if (!Gd[y1][x2] && clearH(y1, x1, x2) && clearV(x2, y1, y2)) return [p, [y1, x2], q];
+    if (!Gd[y2][x1] && clearV(x1, y1, y2) && clearH(y2, x1, x2)) return [p, [y2, x1], q];
+    for (let x = 0; x <= W + 1; x++) { if (x === x1 || x === x2) continue; if (!Gd[y1][x] && !Gd[y2][x] && clearH(y1, x1, x) && clearH(y2, x2, x) && clearV(x, y1, y2)) return [p, [y1, x], [y2, x], q]; }
+    for (let y = 0; y <= H + 1; y++) { if (y === y1 || y === y2) continue; if (!Gd[y][x1] && !Gd[y][x2] && clearV(x1, y1, y) && clearV(x2, y2, y) && clearH(y, x1, x2)) return [p, [y, x1], [y, x2], q]; }
     return null;
   }
   function anyPair() {
     const list = [];
-    for (let y = 1; y <= H; y++) for (let x = 1; x <= W; x++) if (G[y][x]) list.push([y, x]);
+    for (let y = 1; y <= H; y++) for (let x = 1; x <= W; x++) if (Gd[y][x]) list.push([y, x]);
     for (let i = 0; i < list.length; i++) for (let j = i + 1; j < list.length; j++) {
       const a = list[i], b = list[j];
-      if (G[a[0]][a[1]] !== G[b[0]][b[1]]) continue;
-      if (conf.free || findPath(a, b)) return [a, b];
+      if (Gd[a[0]][a[1]] !== Gd[b[0]][b[1]]) continue;
+      if (cfg.free || findPath(a, b)) return [a, b];
     }
     return null;
   }
   function reshuffle() {
     const spots = [], vs = [];
-    for (let y = 1; y <= H; y++) for (let x = 1; x <= W; x++) if (G[y][x]) { spots.push([y, x]); vs.push(G[y][x]); }
-    for (let n = 0; n < 40; n++) {
-      const sh = shuffle(vs);
-      spots.forEach((s2, i) => { G[s2[0]][s2[1]] = sh[i]; nodes[s2[0]][s2[1]].textContent = sh[i]; });
-      if (anyPair()) return true;
-    }
+    for (let y = 1; y <= H; y++) for (let x = 1; x <= W; x++) if (Gd[y][x]) { spots.push([y, x]); vs.push(Gd[y][x]); }
+    for (let n = 0; n < 50; n++) { const sh = shuffle(vs); spots.forEach((s, i) => { Gd[s[0]][s[1]] = sh[i]; nodes[s[0]][s[1]].textContent = sh[i]; }); if (anyPair()) return true; }
     return false;
   }
   function center(y, x) {
     const hr = holder.getBoundingClientRect(), r0 = nodes[1][1].getBoundingClientRect();
-    const stepX = W > 1 ? nodes[1][2].getBoundingClientRect().left - r0.left : r0.width;
-    const stepY = H > 1 ? nodes[2][1].getBoundingClientRect().top - r0.top : r0.height;
-    return [r0.left - hr.left + r0.width / 2 + (x - 1) * stepX, r0.top - hr.top + r0.height / 2 + (y - 1) * stepY];
+    const sx = W > 1 ? nodes[1][2].getBoundingClientRect().left - r0.left : r0.width;
+    const sy = H > 1 ? nodes[2][1].getBoundingClientRect().top - r0.top : r0.height;
+    return [r0.left - hr.left + r0.width / 2 + (x - 1) * sx, r0.top - hr.top + r0.height / 2 + (y - 1) * sy];
   }
-  function drawPath(path) {
-    const pl = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-    pl.setAttribute('points', path.map(p => center(p[0], p[1]).join(',')).join(' '));
-    svg.appendChild(pl);
-    setTimeout(() => pl.remove(), 520);
-  }
-  function deselect() { if (sel) { nodes[sel[0]][sel[1]].classList.remove('pick'); sel = null; } }
-  function bump(n2) { n2.classList.remove('shake'); void n2.offsetWidth; n2.classList.add('shake'); }
+  function drawPath(path) { const pl = svgEl('polyline'); pl.setAttribute('points', path.map(p => center(p[0], p[1]).join(',')).join(' ')); svg.appendChild(pl); setTimeout(() => pl.remove(), 520); }
+  const bump = n => { n.classList.remove('shake'); void n.offsetWidth; n.classList.add('shake'); };
   function tap(y, x) {
-    if (busy || !G[y][x]) return;
-    if (sel && sel[0] === y && sel[1] === x) { deselect(); return; }
+    if (busy || !Gd[y][x]) return;
+    if (sel && sel[0] === y && sel[1] === x) { nodes[y][x].classList.remove('pick'); sel = null; return; }
     if (!sel) { sel = [y, x]; nodes[y][x].classList.add('pick'); Audio2.tap(); return; }
     const a = sel;
-    if (G[a[0]][a[1]] !== G[y][x]) { miss(); bump(nodes[y][x]); bump(nodes[a[0]][a[1]]); deselect(); return; }
-    const path = conf.free ? [a, [y, x]] : findPath(a, [y, x]);
-    if (!path) { miss(); Voice.say('这条路被挡住了，换一对试试'); bump(nodes[y][x]); bump(nodes[a[0]][a[1]]); deselect(); return; }
-    busy = true; Audio2.pop(); drawPath(path);
-    nodes[a[0]][a[1]].classList.remove('pick');
-    const done = () => {
-      G[a[0]][a[1]] = null; G[y][x] = null;
+    if (Gd[a[0]][a[1]] !== Gd[y][x]) { miss(); bump(nodes[y][x]); bump(nodes[a[0]][a[1]]); nodes[a[0]][a[1]].classList.remove('pick'); sel = null; return; }
+    const path = cfg.free ? [a, [y, x]] : findPath(a, [y, x]);
+    if (!path) { miss(); Voice.say('这条路被挡住了，换一对试试'); bump(nodes[y][x]); bump(nodes[a[0]][a[1]]); nodes[a[0]][a[1]].classList.remove('pick'); sel = null; return; }
+    busy = true; Audio2.pop(); drawPath(path); nodes[a[0]][a[1]].classList.remove('pick');
+    later(420, () => {
+      Gd[a[0]][a[1]] = null; Gd[y][x] = null;
       nodes[a[0]][a[1]].classList.add('gone'); nodes[y][x].classList.add('gone');
       sel = null; left -= 2; busy = false;
-      if (left === 0) { setPrompt('全部消完啦'); roundWin(holder); return; }
-      if (!conf.free && !anyPair()) { reshuffle(); toast('重新摆一摆 🔄'); }
-      armHint();
-    };
-    setTimeout(done, 420);
-  }
-  function armHint() {
-    hintIn(12000, () => {
-      const pr = anyPair();
-      if (pr) pr.forEach(p => nodes[p[0]][p[1]].classList.add('pulse'));
-      setTimeout(() => { if (pr) pr.forEach(p => nodes[p[0]][p[1]].classList.remove('pulse')); }, 2500);
-      armHint();
+      if (!left) { setPrompt('全部消完啦'); return roundWin(holder); }
+      if (!cfg.free && !anyPair()) { reshuffle(); toast('重新摆一摆 🔄'); }
+      arm();
     });
   }
-  if (!conf.free && !anyPair()) reshuffle();
-  setPrompt(conf.free ? '点两个一样的水果' : '点两个一样的水果，路要能通过去');
-  Voice.say(conf.free ? '点两个一样的水果，就能把它们消掉' : '点两个一样的水果，中间的路要走得通');
-  armHint();
+  function arm() {
+    hintIn(13000, () => {
+      const pr = anyPair();
+      if (pr) { pr.forEach(p => nodes[p[0]][p[1]].classList.add('pulse')); setTimeout(() => pr.forEach(p => nodes[p[0]][p[1]].classList.remove('pulse')), 2600); }
+      arm();
+    });
+  }
+  if (!cfg.free && !anyPair()) reshuffle();
+  setPrompt(cfg.free ? '点两个一样的水果' : '点两个一样的，中间的路要走得通');
+  Voice.say(cfg.free ? '点两个一样的水果，就能把它们消掉' : '点两个一样的水果，中间的路要走得通');
+  arm();
+  Fit.cb = () => {
+    const b = boardBox(), gap = clamp(b.w / 110, 4, 10);
+    const c = cellFit(b.w, b.h, W, H, gap, 120);
+    wrap.style.gap = px(gap);
+    wrap.style.gridTemplateColumns = 'repeat(' + W + ',' + px(c) + ')';
+    wrap.style.gridAutoRows = px(c);
+    wrap.querySelectorAll('.ll').forEach(n => n.style.fontSize = px(c * .6));
+  };
 }
 
-/* ============ 游戏 8：走迷宫 ============ */
+/* ===================== 8 走迷宫 ===================== */
 function genMaze(W, H) {
   const g = Array.from({ length: H }, () => Array.from({ length: W }, () => ({ n: 1, e: 1, s: 1, w: 1, v: false })));
   const st = [[0, 0]]; g[0][0].v = true;
   while (st.length) {
-    const [y, x] = st[st.length - 1];
-    const nb = [];
+    const [y, x] = st[st.length - 1], nb = [];
     if (y > 0 && !g[y - 1][x].v) nb.push([y - 1, x, 'n', 's']);
     if (y < H - 1 && !g[y + 1][x].v) nb.push([y + 1, x, 's', 'n']);
     if (x > 0 && !g[y][x - 1].v) nb.push([y, x - 1, 'w', 'e']);
@@ -1054,56 +1198,46 @@ function genMaze(W, H) {
   return g;
 }
 function gMaze(board, lv) {
-  const n = [4, 5, 6, 7, 8][Math.min(lv, 5) - 1];
-  const W = n, H = n;
+  const cfg = G.maze.levels[lv - 1].cfg, n = cfg.n, W = n, H = n;
   const g = genMaze(W, H);
-  const cell = 'min(' + Math.floor(58 / H) + 'vh, ' + Math.floor(82 / W) + 'vw)';
-  const holder = el('div'); holder.id = 'mzHolder';
+  const holder = el('div', 'col2');
   const wrap = el('div'); wrap.id = 'mzWrap';
-  wrap.style.gridTemplateColumns = 'repeat(' + W + ',' + cell + ')';
-  wrap.style.gridAutoRows = cell;
   const nodes = [];
-  for (let y = 0; y < H; y++) {
-    nodes[y] = [];
-    for (let x = 0; x < W; x++) {
-      const c = el('div', 'mz' + (g[y][x].n ? ' wn' : '') + (g[y][x].w ? ' ww' : ''));
-      c.style.fontSize = 'calc(' + cell + ' * 0.6)';
-      nodes[y][x] = c; wrap.appendChild(c);
-    }
-  }
-  nodes[H - 1][W - 1].textContent = '🥕';
+  for (let y = 0; y < H; y++) { nodes[y] = []; for (let x = 0; x < W; x++) { const c = el('div', 'mz' + (g[y][x].n ? ' wn' : '') + (g[y][x].w ? ' ww' : '')); nodes[y][x] = c; wrap.appendChild(c); } }
+  let keyPos = null, hasKey = !cfg.key;
+  if (cfg.key) { do { keyPos = [rnd(H), rnd(W)]; } while ((keyPos[0] < H / 2 && keyPos[1] < W / 2) || (keyPos[0] === H - 1 && keyPos[1] === W - 1)); nodes[keyPos[0]][keyPos[1]].textContent = '🔑'; }
+  nodes[H - 1][W - 1].textContent = cfg.key ? '🚪' : '🥕';
   let cur = [0, 0], trail = [[0, 0]], won = false;
   nodes[0][0].classList.add('trail');
-  const runner = el('span', null, '🐰');
-  nodes[0][0].appendChild(runner);
-  function place() { nodes[cur[0]][cur[1]].appendChild(runner); }
+  const runner = el('span', null, '🐰'); nodes[0][0].appendChild(runner);
   function step(y, x) {
-    if (won) return;
-    const [cy, cx] = cur;
-    const dy = y - cy, dx = x - cx;
+    if (won) return false;
+    const [cy, cx] = cur, dy = y - cy, dx = x - cx;
     if (Math.abs(dy) + Math.abs(dx) !== 1) return false;
     const w = dy === -1 ? 'n' : dy === 1 ? 's' : dx === -1 ? 'w' : 'e';
     if (g[cy][cx][w]) return false;
-    if (trail.length > 1 && trail[trail.length - 2][0] === y && trail[trail.length - 2][1] === x) {
-      nodes[cy][cx].classList.remove('trail'); trail.pop();
-    } else { trail.push([y, x]); nodes[y][x].classList.add('trail'); }
-    cur = [y, x]; place(); Audio2.step();
+    if (trail.length > 1 && trail[trail.length - 2][0] === y && trail[trail.length - 2][1] === x) { nodes[cy][cx].classList.remove('trail'); trail.pop(); }
+    else { trail.push([y, x]); nodes[y][x].classList.add('trail'); }
+    cur = [y, x]; nodes[y][x].appendChild(runner); Audio2.step();
+    if (cfg.key && !hasKey && keyPos && y === keyPos[0] && x === keyPos[1]) {
+      hasKey = true; nodes[y][x].textContent = ''; nodes[y][x].appendChild(runner);
+      Audio2.pop(); toast('拿到钥匙 🔑'); Voice.say('拿到钥匙了，去开门'); setPrompt('钥匙拿到了，去开门 🚪');
+    }
     if (y === H - 1 && x === W - 1) {
+      if (!hasKey) { Voice.say('先去拿钥匙'); toast('要先拿到钥匙 🔑'); return true; }
       won = true; clearHint();
       trail.forEach(t => nodes[t[0]][t[1]].classList.add('won'));
-      setPrompt('小兔子吃到胡萝卜啦');
-      Voice.say('走到啦');
-      setTimeout(() => roundWin(wrap), 400);
+      setPrompt(cfg.key ? '门开啦 🎉' : '小兔子吃到胡萝卜啦');
+      later(400, () => roundWin(wrap));
     }
     return true;
   }
   function toward(y, x) {
-    for (let i = 0; i < 6; i++) {
-      const [cy, cx] = cur;
-      if (cy === y && cx === x) return;
+    for (let i = 0; i < 8; i++) {
+      const [cy, cx] = cur; if (cy === y && cx === x) return;
       const dy = Math.sign(y - cy), dx = Math.sign(x - cx);
       let moved = false;
-      if (Math.abs(y - cy) >= Math.abs(x - cx)) moved = dy && step(cy + dy, cx);
+      if (Math.abs(y - cy) >= Math.abs(x - cx)) moved = !!dy && step(cy + dy, cx);
       if (!moved && dx) moved = step(cy, cx + dx);
       if (!moved && dy) moved = step(cy + dy, cx);
       if (!moved) return;
@@ -1112,8 +1246,7 @@ function gMaze(board, lv) {
   let dragging = false;
   function at(ev) {
     const r = wrap.getBoundingClientRect();
-    const x = Math.floor((ev.clientX - r.left) / (r.width / W));
-    const y = Math.floor((ev.clientY - r.top) / (r.height / H));
+    const x = Math.floor((ev.clientX - r.left) / (r.width / W)), y = Math.floor((ev.clientY - r.top) / (r.height / H));
     if (y < 0 || x < 0 || y >= H || x >= W) return;
     toward(y, x);
   }
@@ -1121,42 +1254,108 @@ function gMaze(board, lv) {
   wrap.addEventListener('pointermove', ev => { if (dragging) at(ev); });
   wrap.addEventListener('pointerup', () => dragging = false);
   wrap.addEventListener('pointercancel', () => dragging = false);
-  function solve() {
-    const prev = {}, q = [cur.join(',')]; prev[cur.join(',')] = null;
+  function solve(from, to) {
+    const pv = {}; const q = [from]; pv[from.join(',')] = null;
     while (q.length) {
-      const k = q.shift(), [y, x] = k.split(',').map(Number);
-      if (y === H - 1 && x === W - 1) { const path = []; let c = k; while (c) { path.push(c.split(',').map(Number)); c = prev[c]; } return path; }
+      const [y, x] = q.shift();
+      if (y === to[0] && x === to[1]) { const path = []; let c = y + ',' + x; while (c) { path.push(c.split(',').map(Number)); c = pv[c]; } return path; }
       [['n', -1, 0], ['s', 1, 0], ['w', 0, -1], ['e', 0, 1]].forEach(([w, dy, dx]) => {
         if (g[y][x][w]) return;
         const ny = y + dy, nx = x + dx, nk = ny + ',' + nx;
-        if (ny < 0 || nx < 0 || ny >= H || nx >= W || nk in prev) return;
-        prev[nk] = k; q.push(nk);
+        if (ny < 0 || nx < 0 || ny >= H || nx >= W || nk in pv) return;
+        pv[nk] = y + ',' + x; q.push([ny, nx]);
       });
     }
     return [];
   }
   function flash() {
-    const path = solve();
+    const target = (cfg.key && !hasKey) ? keyPos : [H - 1, W - 1];
+    const path = solve(cur, target);
     path.forEach(p => nodes[p[0]][p[1]].classList.add('sol'));
     setTimeout(() => path.forEach(p => nodes[p[0]][p[1]].classList.remove('sol')), 1400);
   }
   const help = el('button', 'sw', '💡 看一眼路');
   help.addEventListener('click', () => { if (won) return; miss(); flash(); });
   holder.appendChild(wrap); holder.appendChild(help); board.appendChild(holder);
-  setPrompt('用手指带小兔子走到胡萝卜那里');
-  Voice.say('用手指按住小兔子，带它走到胡萝卜那里');
-  hintIn(20000, () => { if (!won) flash(); });
+  setPrompt(cfg.key ? '先拿钥匙 🔑 再去开门 🚪' : '带小兔子走到胡萝卜那里');
+  Voice.say(cfg.key ? '先用手指带小兔子拿到钥匙，再去开门' : '用手指按住小兔子，带它走到胡萝卜那里');
+  hintIn(22000, () => { if (!won) flash(); });
+  Fit.cb = () => {
+    const b = boardBox();
+    const c = cellFit(b.w, b.h - 46, W, H, 0, 110);
+    wrap.style.gridTemplateColumns = 'repeat(' + W + ',' + px(c) + ')';
+    wrap.style.gridAutoRows = px(c);
+    wrap.querySelectorAll('.mz').forEach(n => n.style.fontSize = px(c * .6));
+    holder.style.gap = '8px';
+  };
 }
 
-const GAME_IMPL = { schulte: gSchulte, dots: gDots, bond: gBond, match: gMatch, mirror: gMirror, connect: gConnect, link: gLink, maze: gMaze };
+/* ===================== 9 找规律 ===================== */
+const PAT_TOKENS = ['🔴', '🔵', '🟡', '🟢', '🟣', '🟠', '⭐', '❤️', '🐶', '🐱', '🌸', '🍎'];
+function gPattern(board, lv) {
+  const cfg = G.pattern.levels[lv - 1].cfg;
+  let seq = [], answer = null, opts3 = [];
+  if (cfg.kind === 'rep' || cfg.kind === 'aab') {
+    const p = cfg.kind === 'aab' ? 3 : cfg.p;
+    const toks = shuffle(PAT_TOKENS).slice(0, cfg.kind === 'aab' ? 2 : p);
+    const unit = cfg.kind === 'aab' ? [toks[0], toks[0], toks[1]] : toks;
+    const len = p === 2 ? 7 : 8;
+    for (let i = 0; i < len; i++) seq.push(unit[i % unit.length]);
+    answer = seq[len - 1]; seq[len - 1] = null;
+    opts3 = shuffle(Array.from(new Set([answer, ...shuffle(unit.concat(PAT_TOKENS)).filter(t => t !== answer)])).slice(0, 3));
+  } else if (cfg.kind === 'num') {
+    const stepv = pick([1, 2, 2, 3, 5]), start = 1 + rnd(4);
+    for (let i = 0; i < 6; i++) seq.push(String(start + stepv * i));
+    answer = seq[5]; seq[5] = null;
+    const nA = +answer;
+    opts3 = shuffle(Array.from(new Set([answer, String(nA + stepv), String(Math.max(0, nA - stepv)), String(nA + 1)])).slice(0, 3));
+  } else {
+    const tok = pick(PAT_TOKENS);
+    for (let i = 1; i <= 5; i++) seq.push(tok.repeat(i));
+    answer = seq[4]; seq[4] = null;
+    opts3 = shuffle([answer, tok.repeat(3), tok.repeat(6)]);
+  }
+  const holder = el('div', 'col2');
+  const row = el('div', 'seqrow');
+  const cells = [];
+  seq.forEach(v => { const c = el('div', 'seq' + (v == null ? ' q' : ''), v == null ? '?' : v); cells.push(c); row.appendChild(c); });
+  const opts = el('div', 'seqrow');
+  const oc = [];
+  opts3.forEach(v => {
+    const o = el('div', 'seq tile', v);
+    o.addEventListener('click', () => {
+      if (v === answer) {
+        Audio2.good(); const q = cells[cells.length - 1]; q.textContent = v; q.classList.remove('q'); q.classList.add('pop');
+        q.style.background = 'var(--green)'; later(600, () => roundWin(q));
+      } else { miss(); o.classList.remove('shake'); void o.offsetWidth; o.classList.add('shake'); }
+    });
+    oc.push(o); opts.appendChild(o);
+  });
+  holder.appendChild(row); holder.appendChild(opts); board.appendChild(holder);
+  setPrompt('接下来该是哪一个？');
+  Voice.say('看看前面的规律，接下来该是哪一个？');
+  hintIn(12000, () => oc.forEach(o => { if (o.textContent === answer) o.classList.add('pulse'); }));
+  Fit.cb = () => {
+    const b = boardBox(), gap = clamp(b.w / 80, 5, 12);
+    const cs = cellFit(b.w, b.h * .45, cells.length, 1, gap, 110);
+    row.style.gap = px(gap);
+    cells.forEach(c => { c.style.width = px(cs); c.style.height = px(cs); c.style.fontSize = px(cs * (cfg.kind === 'grow' ? .3 : .5)); });
+    const os = cellFit(b.w, b.h * .34, 3, 1, gap * 2, 130);
+    opts.style.gap = px(gap * 2); opts.style.marginTop = px(clamp(b.h * .06, 8, 26));
+    oc.forEach(o => { o.style.width = px(os); o.style.height = px(os); o.style.fontSize = px(os * (cfg.kind === 'grow' ? .26 : .5)); });
+    holder.style.gap = '0';
+  };
+}
 
-/* ============ 家长设置 ============ */
+const GAME_IMPL = { schulte: gSchulte, dots: gDots, bond: gBond, match: gMatch, mirror: gMirror, connect: gConnect, link: gLink, maze: gMaze, pattern: gPattern };
+
+/* ===================== 家长设置 ===================== */
 function openPanel() {
   if ($('#panel')) return;
   const p = el('div'); p.id = 'panel';
   p.appendChild(el('h3', null, '家长设置'));
   const mk = (label, get, set) => {
-    const r = el('div', 'row'); r.appendChild(el('span', null, label));
+    const r = el('div', 'prow'); r.appendChild(el('span', null, label));
     const b = el('button', 'sw' + (get() ? ' on' : ''), get() ? '开' : '关');
     b.addEventListener('click', () => { set(!get()); b.className = 'sw' + (get() ? ' on' : ''); b.textContent = get() ? '开' : '关'; });
     r.appendChild(b); p.appendChild(r);
@@ -1164,73 +1363,65 @@ function openPanel() {
   mk('音效', () => Audio2.on, v => Audio2.on = v);
   mk('语音读题', () => Voice.on, v => { Voice.on = v; if (!v && 'speechSynthesis' in window) speechSynthesis.cancel(); });
   mk('背景音乐', () => Music.on, v => { Music.on = v; if (v) Music.start(); else Music.stop(); });
-  mk('自动调整难度', () => S.autoLevel, v => S.autoLevel = v);
-  const vRow = el('div', 'row'); vRow.style.display = 'block';
+  mk('玩得顺时自动升关', () => S.autoLevel, v => S.autoLevel = v);
+  const vRow = el('div', 'prow'); vRow.style.display = 'block';
   vRow.appendChild(el('div', null, '中文语音自检'));
   const vInfo = el('div', null, Voice.status());
-  vInfo.style.cssText = 'font-size:14px;color:var(--ink-soft);margin:4px 0 8px';
+  vInfo.style.cssText = 'font-size:13px;color:var(--ink-soft);margin:4px 0 8px;line-height:1.5';
   vRow.appendChild(vInfo);
   const vSel = document.createElement('select');
-  vSel.style.cssText = 'font:inherit;font-size:15px;padding:6px 10px;border:3px solid var(--ink);border-radius:12px;background:#fff;max-width:100%;margin-right:8px';
-  const fillSel = () => {
+  vSel.style.cssText = 'font:inherit;font-size:14px;padding:5px 8px;border:3px solid var(--ink);border-radius:10px;background:#fff;max-width:100%;margin-right:8px';
+  const fill = () => {
     vSel.innerHTML = '';
-    const c = Voice.candidates();
-    const use = c.length ? c : Voice.list();
-    use.forEach((v, i) => {
-      const o = document.createElement('option');
-      o.value = String(i); o.textContent = v.name + '（' + v.lang + '）';
-      if (Voice.voice === v || (!Voice.voice && i === 0)) o.selected = true;
-      vSel.appendChild(o);
-    });
-    vSel.dataset.n = String(use.length);
+    const c = Voice.candidates(), use = c.length ? c : Voice.list();
+    use.forEach((v, i) => { const o = document.createElement('option'); o.value = String(i); o.textContent = v.name + '（' + v.lang + '）'; if (Voice.voice === v || (!Voice.voice && !i)) o.selected = true; vSel.appendChild(o); });
   };
-  fillSel();
+  fill();
   vSel.addEventListener('change', () => {
-    const c = Voice.candidates(); const use = c.length ? c : Voice.list();
+    const c = Voice.candidates(), use = c.length ? c : Voice.list();
     Voice.forced = use[+vSel.value] || null; Voice.voice = Voice.forced; Voice.failed = false;
     vInfo.textContent = Voice.status();
-    const was = Voice.on; Voice.on = true; Voice.say('你好，我们一起来玩游戏吧'); Voice.on = was;
+    const w = Voice.on; Voice.on = true; Voice.say('你好，我们一起来玩游戏吧'); Voice.on = w;
   });
   const vTest = el('button', 'sw', '🔊 测试朗读');
   vTest.addEventListener('click', () => {
-    Audio2.init(); Voice.unlock();
-    fillSel(); vInfo.textContent = Voice.status();
-    const was = Voice.on; Voice.on = true;
-    Voice.say('你好，我们一起来玩游戏吧');
-    Voice.on = was;
-    setTimeout(() => { vInfo.textContent = Voice.status(); }, 400);
-    setTimeout(() => { vInfo.textContent = Voice.status(); fillSel(); }, 2500);
+    Audio2.init(); Voice.unlock(); fill(); vInfo.textContent = Voice.status();
+    const w = Voice.on; Voice.on = true; Voice.say('你好，我们一起来玩游戏吧'); Voice.on = w;
+    setTimeout(() => vInfo.textContent = Voice.status(), 400);
+    setTimeout(() => { vInfo.textContent = Voice.status(); fill(); }, 2500);
   });
   vRow.appendChild(vSel); vRow.appendChild(vTest); p.appendChild(vRow);
-
-  const lvRow = el('div', 'row'); lvRow.style.display = 'block';
-  lvRow.appendChild(el('div', null, '各游戏当前关卡（点 +/− 手动调）'));
-  const box = el('div'); box.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;margin-top:8px';
+  const lvRow = el('div', 'prow'); lvRow.style.display = 'block';
+  lvRow.appendChild(el('div', null, '各游戏关卡（也可以在每个游戏里直接选）'));
+  const box = el('div'); box.style.cssText = 'display:flex;flex-wrap:wrap;gap:7px;margin-top:7px';
   GAMES.forEach(g => {
-    const chip = el('div'); chip.style.cssText = 'display:flex;align-items:center;gap:6px;border:2px solid var(--line);border-radius:12px;padding:4px 8px;font-size:15px';
-    const lab = el('span', null, g.emoji + ' ' + g.name + ' ');
+    const chip = el('div'); chip.style.cssText = 'display:flex;align-items:center;gap:5px;border:2px solid var(--line);border-radius:11px;padding:3px 7px;font-size:14px';
+    chip.appendChild(el('span', null, g.emoji + ' ' + g.name));
+    const minus = el('button', 'sw', '−'); minus.style.padding = '1px 9px';
     const val = el('b', 'num', String(S.level[g.id]));
-    const minus = el('button', 'sw', '−'); minus.style.padding = '2px 10px';
-    const plus = el('button', 'sw', '+'); plus.style.padding = '2px 10px';
+    const plus = el('button', 'sw', '+'); plus.style.padding = '1px 9px';
     minus.addEventListener('click', () => { S.level[g.id] = Math.max(1, S.level[g.id] - 1); val.textContent = S.level[g.id]; });
-    plus.addEventListener('click', () => { S.level[g.id] = Math.min(GAME_MAXLV[g.id], S.level[g.id] + 1); val.textContent = S.level[g.id]; });
-    chip.appendChild(lab); chip.appendChild(minus); chip.appendChild(val); chip.appendChild(plus);
-    box.appendChild(chip);
+    plus.addEventListener('click', () => { S.level[g.id] = Math.min(g.levels.length, S.level[g.id] + 1); val.textContent = S.level[g.id]; });
+    chip.appendChild(minus); chip.appendChild(val); chip.appendChild(plus); box.appendChild(chip);
   });
   lvRow.appendChild(box); p.appendChild(lvRow);
   const close = el('button', 'bigbtn', '好了');
-  close.style.cssText += 'width:100%;margin-top:12px';
-  close.addEventListener('click', () => { p.remove(); if (!Session) home(); });
+  close.style.cssText += 'width:100%;margin-top:10px';
+  close.addEventListener('click', () => { p.remove(); Fit.run(); });
   p.appendChild(close);
   $('#screen').appendChild(p);
 }
 
-/* ============ 启动 ============ */
+/* ===================== 启动 ===================== */
+$('#backBtn').addEventListener('click', () => {
+  Audio2.page(); clearHint();
+  if (Session) levelPicker(Session.g); else home();
+});
 $('#sayBtn').addEventListener('click', () => { Audio2.init(); Voice.unlock(); Voice.repeat(); });
+$('#gearBtn').addEventListener('click', () => { Audio2.init(); openPanel(); });
 document.addEventListener('pointerdown', () => { Audio2.init(); Voice.unlock(); Music.start(); }, { once: true });
 document.addEventListener('visibilitychange', () => { if (document.hidden) { Music.stop(); if ('speechSynthesis' in window) speechSynthesis.cancel(); } else Music.start(); });
-$('#backBtn').addEventListener('click', () => { Audio2.page(); clearHint(); home(); });
-$('#gearBtn').addEventListener('click', () => { Audio2.init(); openPanel(); });
+Fit.boot();
 home();
 </script>
 </body>
