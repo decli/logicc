@@ -1,0 +1,16 @@
+{
+  "name": "思维小画本",
+  "short_name": "小画本",
+  "description": "给幼儿园小朋友的思维与专注力小游戏：舒尔特、数的分解、对称、连点成画、水果连连看、走迷宫。",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#FFFCF2",
+  "theme_color": "#FFFCF2",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
