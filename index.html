@@ -130,7 +130,8 @@ body{
 .mc{border-radius:6px;border:2px dashed var(--line);background:#fff}
 .mc.on{border:2px solid var(--ink);background:var(--blue)}
 .mc.put{border:2px solid var(--ink);background:var(--pink);animation:pp .3s}
-.mc.bad{background:var(--line)}
+.mc.bad{background:var(--red);opacity:.55}
+.mc.show{box-shadow:inset 0 0 0 4px var(--green)}
 .axis{position:absolute;border:0;border-left:4px dashed var(--orange)}
 .axis.h{border-left:0;border-top:4px dashed var(--orange)}
 /* 连点 */
@@ -978,62 +979,99 @@ function gMirror(board, lv) {
     src.add(cy + ',' + cx);
   }
   const mapKey = (y, x) => cfg.axis === 'x' ? (y + ',' + (W - 1 - x)) : cfg.axis === 'y' ? ((H - 1 - y) + ',' + x) : ((H - 1 - y) + ',' + (W - 1 - x));
-  const holder = el('div'); holder.style.position = 'relative';
+  const holder = el('div', 'col2');
+  const stage = el('div'); stage.style.position = 'relative';
   const stack = el('div'); stack.style.display = 'flex'; stack.style.alignItems = 'center'; stack.style.justifyContent = 'center';
   const gA = el('div', 'mgrid'), gB = el('div', 'mgrid');
-  const needMap = {}; let left = 0;
+  const needMap = {};
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-    const a = el('div', 'mc' + (src.has(y + ',' + x) ? ' on' : ''));
-    gA.appendChild(a);
-    const k = mapKey(y, x);
+    gA.appendChild(el('div', 'mc' + (src.has(y + ',' + x) ? ' on' : '')));
     const need = src.has(mapKey(y, x));
     const c = el('div', 'mc');
-    if (need) { needMap[y + ',' + x] = c; left++; }
-    c.addEventListener('click', () => {
-      if (c.classList.contains('put')) { if (!cfg.instant) { c.classList.remove('put'); if (need) left++; } return; }
-      if (need) {
-        c.classList.add('put'); Audio2.good(); left--;
-        if (left === 0) { if (ok()) { setPrompt('一模一样！'); later(350, () => roundWin(holder)); } else check(); }
-      } else if (cfg.instant) {
-        miss(); c.classList.add('bad'); setTimeout(() => c.classList.remove('bad'), 480);
-      } else {
-        c.classList.add('put'); Audio2.tap();
-        if (left === 0) check();
-      }
-    });
+    if (need) needMap[y + ',' + x] = c;
+    c.addEventListener('click', () => onTap(c, need));
     gB.appendChild(c);
   }
-  function ok() { return gB.querySelectorAll('.put').length === Object.keys(needMap).length && Object.values(needMap).every(n => n.classList.contains('put')); }
+  const want = Object.values(needMap), total = want.length;
+  const placed = () => gB.querySelectorAll('.put').length;
+  const ok = () => placed() === total && want.every(n => n.classList.contains('put'));
+  let finished = false;
+
+  function winNow() { if (finished) return; finished = true; setPrompt('一模一样！'); later(350, () => roundWin(stage)); }
+  function onTap(c, need) {
+    if (finished) return;
+    if (c.classList.contains('put')) {           // 再点一下可以取消
+      if (!cfg.instant) { c.classList.remove('put'); Audio2.tap(); }
+      return;
+    }
+    if (need) { c.classList.add('put'); Audio2.good(); }
+    else if (cfg.instant) { miss(); c.classList.add('bad'); setTimeout(() => c.classList.remove('bad'), 480); return; }
+    else { c.classList.add('put'); Audio2.tap(); }
+    if (cfg.instant) { if (ok()) winNow(); }
+    else if (placed() >= total) check();          // 画够格子数就自动判一次
+  }
   function check() {
-    if (ok()) { setPrompt('一模一样！'); later(350, () => roundWin(holder)); return; }
-    miss();
-    const want = Object.values(needMap);
+    if (finished) return;
+    if (ok()) return winNow();
     const bad = [...gB.querySelectorAll('.put')].filter(n => !want.includes(n));
+    if (!bad.length) {                      // 画的都对，只是还没画完
+      const rest = total - placed();
+      setPrompt('都对，还差 <span class="num">' + rest + '</span> 个');
+      Voice.say('画的都对，还差 ' + rest + ' 个');
+      later(1300, () => { if (!finished) setPrompt(tips[cfg.axis]); });
+      return;
+    }
+    miss();
     bad.forEach(n => n.classList.add('bad'));
-    Voice.say('有几个不对，我帮你擦掉了，再看看');
-    later(650, () => {
+    const right = placed() - bad.length;
+    setPrompt('对了 <span class="num">' + right + '</span> 个，有 <span class="num">' + bad.length + '</span> 个不对');
+    Voice.say(cfg.axis === 'rot' ? '有 ' + bad.length + ' 个不对。不是照镜子哦，要把图案转半圈'
+      : '有 ' + bad.length + ' 个不对，我帮你擦掉了，再看看');
+    later(750, () => {
       bad.forEach(n => n.classList.remove('bad', 'put'));
-      if (ok()) { setPrompt('一模一样！'); later(350, () => roundWin(holder)); }
+      if (ok()) winNow(); else setPrompt(tips[cfg.axis]);
     });
   }
-  const axis = el('div', 'axis' + (cfg.axis === 'y' ? ' h' : ''));
-  if (cfg.axis === 'y') { stack.style.flexDirection = 'column'; }
-  stack.appendChild(gA); stack.appendChild(gB); holder.appendChild(stack); holder.appendChild(axis);
-  board.appendChild(holder);
-  const tips = { x: '右边点一点，画出和左边一样的', y: '下面点一点，画出和上面一样的', rot: '把图案转半圈，画在右边' };
+  function flashAnswer() {
+    want.forEach(n => n.classList.add('show'));
+    later(1300, () => want.forEach(n => n.classList.remove('show')));
+  }
+  const divider = el('div', 'axis' + (cfg.axis === 'y' ? ' h' : ''));
+  if (cfg.axis === 'rot') { divider.className = 'rotmark'; divider.textContent = '↻'; }
+  if (cfg.axis === 'y') stack.style.flexDirection = 'column';
+  stack.appendChild(gA); stack.appendChild(gB);
+  stage.appendChild(stack); stage.appendChild(divider);
+  const bar = el('div', 'row2'); bar.style.gap = '10px'; bar.style.marginTop = '10px';
+  const hint = el('button', 'sw', '💡 看一眼');
+  hint.addEventListener('click', () => { if (finished) return; miss(); flashAnswer(); });
+  bar.appendChild(hint);
+  if (!cfg.instant) {
+    const doneBtn = el('button', 'sw', '✅ 画好了');
+    doneBtn.style.background = 'var(--yellow)';
+    doneBtn.addEventListener('click', () => { if (finished) return; if (!placed()) { Voice.say('先在格子上点一点'); return; } check(); });
+    bar.appendChild(doneBtn);
+  }
+  holder.appendChild(stage); holder.appendChild(bar); board.appendChild(holder);
+  const tips = { x: '右边点一点，画出和左边一样的', y: '下面点一点，画出和上面一样的', rot: '把左边的图案转半圈，画到右边（不是照镜子）' };
   setPrompt(tips[cfg.axis]);
-  Voice.say(cfg.axis === 'rot' ? '把左边的图案转半圈，画到右边' : cfg.axis === 'y' ? '中间是一面横着的镜子，下面画出一样的' : '中间是一面镜子，右边画出一样的');
-  hintIn(14000, () => { const k = Object.keys(needMap).find(k2 => !needMap[k2].classList.contains('put')); if (k) needMap[k].classList.add('pulse'); });
+  Voice.say(cfg.axis === 'rot' ? '把左边的图案转半圈画到右边，注意不是照镜子'
+    : cfg.axis === 'y' ? '中间是一面横着的镜子，下面画出一样的' : '中间是一面镜子，右边画出一样的');
+  hintIn(15000, () => { if (!finished) flashAnswer(); });
   Fit.cb = () => {
-    const b = boardBox(), gap = 4;
+    const b = boardBox(), gap = 4, pad = 18;
     const two = cfg.axis === 'y' ? { c: W, r: H * 2 } : { c: W * 2, r: H };
-    const pad = 16;
-    const c = cellFit(b.w - pad, b.h - pad, two.c + .4, two.r + .4, gap, 96);
+    const c = cellFit(b.w - pad, b.h - pad - 50, two.c + .4, two.r + .4, gap, 92);
     [gA, gB].forEach(g => { g.style.gap = px(gap); g.style.gridTemplateColumns = 'repeat(' + W + ',' + px(c) + ')'; g.style.gridAutoRows = px(c); });
-    const mid = px(clamp(c * .35, 10, 30));
-    stack.style.gap = mid;
-    if (cfg.axis === 'y') { axis.className = 'axis h'; axis.style.cssText = 'position:absolute;left:-6px;right:-6px;top:50%;border-top:4px dashed var(--orange)'; }
-    else { axis.className = 'axis'; axis.style.cssText = 'position:absolute;top:-6px;bottom:-6px;left:50%;border-left:4px dashed var(--orange)'; }
+    stack.style.gap = px(clamp(c * .45, 14, 40));
+    if (cfg.axis === 'rot') {
+      divider.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:' + px(clamp(c * .7, 22, 46)) +
+        ';color:var(--orange);background:var(--paper);border:3px solid var(--orange);border-radius:50%;width:' + px(clamp(c * 1.05, 34, 64)) +
+        ';height:' + px(clamp(c * 1.05, 34, 64)) + ';display:flex;align-items:center;justify-content:center;font-weight:700';
+    } else if (cfg.axis === 'y') {
+      divider.style.cssText = 'position:absolute;left:-6px;right:-6px;top:50%;border-top:4px dashed var(--orange)';
+    } else {
+      divider.style.cssText = 'position:absolute;top:-6px;bottom:-6px;left:50%;border-left:4px dashed var(--orange)';
+    }
   };
 }
 
