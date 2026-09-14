@@ -197,6 +197,11 @@ body{
 .folded{transform:scaleX(-1) translateX(var(--foldx,0px))}
 .mirrorGhost{opacity:.3}
 .mc.ghost{background:repeating-linear-gradient(45deg,var(--line) 0 6px,transparent 6px 12px);border:2px solid var(--line)}
+.dpad{display:grid;grid-template-columns:repeat(3,auto);gap:8px;justify-items:center;align-items:center}
+.dbtn{border:4px solid var(--ink);border-radius:16px;background:#fff;box-shadow:4px 4px 0 var(--ink);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;line-height:1}
+.dbtn:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--ink)}
+.dbtn.rot{background:var(--yellow)}
 .hide{display:none!important}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
@@ -589,13 +594,15 @@ const GAMES = [
     ]
   },
   {
-    id: 'fit', name: '方块拼拼', emoji: '🧱', color: 'var(--blue)', tip: '把方块拼进去，缺口正好补满',
+    id: 'fit', name: '方块拼拼', emoji: '🧱', color: 'var(--blue)', tip: '先学会看形状，再玩会掉下来的',
     levels: [
       { t: '补上这个缺口', d: '选出正好补上的那一块，不用转', cfg: { kind: 'hole', rot: false } },
-      { t: '转一下才合适', d: '要在脑子里把它转过来再选——先想好再动手，这一步才是练心理旋转的地方', cfg: { kind: 'hole', rot: true } },
+      { t: '转一下才合适', d: '要先在脑子里把它转过来再选', cfg: { kind: 'hole', rot: true } },
       { t: '两块拼满', d: '自己选块、自己放位置', cfg: { kind: 'tile', pieces: 2, rot: false } },
       { t: '三块拼满', d: '可以按 🔄 把方块转个方向', cfg: { kind: 'tile', pieces: 3, rot: true } },
-      { t: '方块消消乐', d: '6×6 棋盘随便放，填满一整行或一整列就消掉；不会掉落也不计时，慢慢想', cfg: { kind: 'clear', w: 6, h: 6, goal: 2 } }
+      { t: '会掉下来了·慢', d: '方块开始往下掉，两秒一格，有足够时间想。消掉 2 行过关', cfg: { kind: 'drop', w: 6, h: 10, speed: 2000, goal: 2 } },
+      { t: '掉快一点', d: '一秒二一格，消掉 3 行', cfg: { kind: 'drop', w: 6, h: 10, speed: 1200, goal: 3 } },
+      { t: '再快一点', d: '零点八秒一格，棋盘也更宽，消掉 3 行', cfg: { kind: 'drop', w: 7, h: 12, speed: 800, goal: 3 } }
     ]
   },
   {
@@ -759,7 +766,7 @@ function previewShape(g, i) {
   else if (g.id === 'pattern') { cols = 6; rows = 1; }
   else if (g.id === 'dots') { cols = c.kind === 'make3' ? 3 : 2; rows = 1; }
   else if (g.id === 'bond') { cols = c.miss === 'three' ? 3 : 2; rows = 2; }
-  else if (g.id === 'fit') { cols = c.kind === 'clear' ? c.w : 4; rows = c.kind === 'clear' ? c.h : 3; }
+  else if (g.id === 'fit') { cols = c.w || 4; rows = c.kind === 'drop' ? Math.min(6, c.h) : 3; }
   else if (g.id === 'fish') { cols = (c.flank * 2) + 1; rows = 1; }
   else if (g.id === 'span') { cols = c.w; rows = c.h; }
   else if (g.id === 'connect') { cols = Math.min(6, Math.round(c.pts / 3)); rows = 1; }
@@ -2294,6 +2301,150 @@ function gFit(board, lv) {
       boardWrap.style.gridTemplateColumns = 'repeat(' + BW + ',' + px(cellPx) + ')';
       boardWrap.style.gridAutoRows = px(cellPx);
       [...tray.children].forEach((t, i) => { t.innerHTML = ''; t.appendChild(pieceEl(cands[i].cs, cellPx * .72, FIT_COLORS[i % FIT_COLORS.length])); });
+    };
+    return;
+  }
+
+  /* ---------- 落体模式：会掉下来的方块 ---------- */
+  if (cfg.kind === 'drop') {
+    const BW = cfg.w, BH = cfg.h;
+    const TETRO = [
+      { cs: [[0, 0], [0, 1], [0, 2], [0, 3]], c: '#12A5A0' },   // I
+      { cs: [[0, 0], [0, 1], [1, 0], [1, 1]], c: '#F5B921' },   // O
+      { cs: [[0, 0], [0, 1], [0, 2], [1, 1]], c: '#7B4BC9' },   // T
+      { cs: [[0, 1], [0, 2], [1, 0], [1, 1]], c: '#3FA34D' },   // S
+      { cs: [[0, 0], [0, 1], [1, 1], [1, 2]], c: '#E8452C' },   // Z
+      { cs: [[0, 0], [1, 0], [1, 1], [1, 2]], c: '#2E7DD1' },   // J
+      { cs: [[0, 2], [1, 0], [1, 1], [1, 2]], c: '#F08A24' }    // L
+    ];
+    const occ = {};
+    let cur = null, nextP = null, cleared = 0, over = false, tick = null, cellPx2 = 28, lockAt = 0;
+    let bag = [];
+    const takeBag = () => { if (!bag.length) bag = shuffle(TETRO.map((_, i) => i)); return TETRO[bag.pop()]; };
+
+    const wrap = el('div', 'row2'); wrap.style.gap = '18px'; wrap.style.alignItems = 'flex-start';
+    const grid = el('div'); grid.style.display = 'grid'; grid.className = 'fit-board';
+    grid.style.cssText += 'background:#FFFDF7;border:4px solid var(--ink);border-radius:10px;padding:4px';
+    const side = el('div', 'col2'); side.style.gap = '14px';
+    const nextBox = el('div', 'tile'); nextBox.style.cssText += 'flex-direction:column;padding:8px;cursor:default';
+    const nextLab = el('div', null, '下一个'); nextLab.style.cssText = 'font-size:13px;color:var(--ink-soft)';
+    const nextIn = el('div');
+    nextBox.appendChild(nextLab); nextBox.appendChild(nextIn);
+    const pad = el('div', 'dpad');
+    const mkBtn = (txt, cls, fn) => {
+      const b = el('div', 'dbtn' + (cls ? ' ' + cls : ''), txt);
+      b.addEventListener('pointerdown', ev => { ev.preventDefault(); Audio2.init(); fn(); });
+      return b;
+    };
+    const bRot = mkBtn('🔄', 'rot', () => rotate());
+    const bL = mkBtn('◀', '', () => move(0, -1));
+    const softDrop = () => { if (Date.now() - lockAt < 260) return; if (!move(1, 0)) lock(); };  // 落定后短暂冷却，防止连点把下一块也摔到底
+    const bD = mkBtn('▼', '', softDrop);
+    const bR = mkBtn('▶', '', () => move(0, 1));
+    const spacer = () => { const d = el('div'); return d; };
+    pad.appendChild(spacer()); pad.appendChild(bRot); pad.appendChild(spacer());
+    pad.appendChild(bL); pad.appendChild(bD); pad.appendChild(bR);
+    side.appendChild(nextBox); side.appendChild(pad);
+    wrap.appendChild(grid); wrap.appendChild(side);
+    holder.appendChild(wrap); board.appendChild(holder);
+
+    const cellsD = [];
+    for (let y = 0; y < BH; y++) for (let x = 0; x < BW; x++) { const c = el('div'); cellsD.push(c); grid.appendChild(c); }
+    function paint() {
+      const live = {};
+      if (cur) cur.cs.forEach(c => live[(c[0] + cur.y) + ',' + (c[1] + cur.x)] = cur.c);
+      cellsD.forEach((c, i) => {
+        const y = (i / BW) | 0, x = i % BW, k = y + ',' + x;
+        const col = live[k] || occ[k];
+        c.style.cssText = col
+          ? 'background:' + col + ';border:2px solid rgba(42,37,35,.55);border-radius:5px'
+          : 'background:#F3EEDF;border:1px solid #E4DCC9;border-radius:5px';
+        c.style.width = px(cellPx2); c.style.height = px(cellPx2);
+      });
+      nextIn.innerHTML = '';
+      if (nextP) nextIn.appendChild(pieceEl(nextP.cs, cellPx2 * .62, nextP.c));
+    }
+    function fits(cs, y, x) {
+      return cs.every(c => {
+        const yy = c[0] + y, xx = c[1] + x;
+        return yy >= 0 && yy < BH && xx >= 0 && xx < BW && !occ[yy + ',' + xx];
+      });
+    }
+    function move(dy, dx) {
+      if (!cur || over) return false;
+      if (fits(cur.cs, cur.y + dy, cur.x + dx)) { cur.y += dy; cur.x += dx; if (dx) Audio2.tap(); paint(); return true; }
+      return false;
+    }
+    function rotate() {
+      if (!cur || over) return;
+      const r = pRot(cur.cs);
+      for (const kick of [0, -1, 1, -2, 2]) {
+        if (fits(r, cur.y, cur.x + kick)) { cur.cs = r; cur.x += kick; Audio2.step(); paint(); return; }
+      }
+      Audio2.soft();
+    }
+    function spawn() {
+      const p = nextP || takeBag(); nextP = takeBag();
+      const d = pDims(p.cs);
+      cur = { cs: p.cs.slice(), c: p.c, y: 0, x: Math.max(0, ((BW - d[1]) / 2) | 0) };
+      if (!fits(cur.cs, cur.y, cur.x)) {
+        // 堆到顶：不判输，拿掉最上面两行就好。
+        // 不要动底下几行——那里往往是她最接近消掉的一行，帮忙不该把成果一起删了
+        for (let y = 0; y < 2; y++) for (let x = 0; x < BW; x++) delete occ[y + ',' + x];
+        toast('太高啦，帮你拿掉最上面两行 🧹'); Voice.say('堆得太高了，帮你把最上面拿掉一点');
+      }
+      paint();
+    }
+    function lock() {
+      if (!cur || over) return;
+      cur.cs.forEach(c => occ[(c[0] + cur.y) + ',' + (c[1] + cur.x)] = cur.c);
+      cur = null; lockAt = Date.now(); Audio2.pop();
+      // 消行
+      let got = 0;
+      for (let y = BH - 1; y >= 0; y--) {
+        let full = true;
+        for (let x = 0; x < BW; x++) if (!occ[y + ',' + x]) full = false;
+        if (!full) continue;
+        got++;
+        for (let yy = y; yy > 0; yy--) for (let x = 0; x < BW; x++) {
+          if (occ[(yy - 1) + ',' + x]) occ[yy + ',' + x] = occ[(yy - 1) + ',' + x]; else delete occ[yy + ',' + x];
+        }
+        for (let x = 0; x < BW; x++) delete occ['0,' + x];
+        y++;
+      }
+      if (got) { cleared += got; Audio2.star(); toast('消掉 ' + got + ' 行！'); Voice.short('消掉 ' + got + ' 行'); }
+      setPrompt('已经消掉 <span class="num">' + cleared + '</span> / ' + cfg.goal + ' 行');
+      if (cleared >= cfg.goal) {
+        over = true; clearInterval(tick);
+        setPrompt('消够啦 🎉'); Voice.say('消够啦，真棒');
+        return later(600, () => roundWin(grid));
+      }
+      spawn();
+    }
+    const rid = ROUND_ID;
+    const onKey = ev => {
+      if (rid !== ROUND_ID) { removeEventListener('keydown', onKey); return; }   // 换关后自动摘掉，避免多块棋盘同时响应键盘
+      const k = ev.key;
+      if (k === 'ArrowLeft') { move(0, -1); ev.preventDefault(); }
+      else if (k === 'ArrowRight') { move(0, 1); ev.preventDefault(); }
+      else if (k === 'ArrowDown') { softDrop(); ev.preventDefault(); }
+      else if (k === 'ArrowUp' || k === ' ') { rotate(); ev.preventDefault(); }
+    };
+    addEventListener('keydown', onKey);
+    nextP = takeBag(); spawn();
+    setPrompt('已经消掉 <span class="num">0</span> / ' + cfg.goal + ' 行');
+    Voice.say('方块会往下掉。用左右箭头挪位置，按转一下换方向，按向下让它快点落。填满一整行就消掉');
+    tick = every(cfg.speed, () => { if (over) return; if (!move(1, 0)) lock(); });
+    Fit.cb = () => {
+      const b = boardBox();
+      const padW = clamp(b.w * .26, 120, 240);
+      cellPx2 = clamp(Math.floor(Math.min((b.w - padW - 40) / BW, (b.h - 12) / BH)), 14, 54);
+      grid.style.gap = '2px';
+      grid.style.gridTemplateColumns = 'repeat(' + BW + ',' + px(cellPx2) + ')';
+      grid.style.gridAutoRows = px(cellPx2);
+      const bs = clamp(padW / 3.4, 40, 78);
+      [bRot, bL, bD, bR].forEach(x => { x.style.width = px(bs); x.style.height = px(bs); x.style.fontSize = px(bs * .46); });
+      paint();
     };
     return;
   }
