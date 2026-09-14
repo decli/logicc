@@ -590,10 +590,10 @@ function toast(t) {
 
 
 /* ===================== 新外壳：首页 / 阶梯 / 游戏中 / 奖励 ===================== */
-Object.assign(S, { hints: false, showTimer: true, persist: true, best: {}, days: {} });
+Object.assign(S, { hints: false, hideTarget: false, showTimer: true, persist: true, best: {}, days: {} });
 var SKEY = 'logicc.design.v2';
 function todayKey() { var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
-function save() { if (!S.persist) return; try { localStorage.setItem(SKEY, JSON.stringify({ level: S.level, stars: S.stars, stickers: S.stickers, best: S.best, days: S.days, hints: S.hints, showTimer: S.showTimer, autoLevel: S.autoLevel, snd: Audio2.on, voi: Voice.on, mus: Music.on })); } catch (e) { } }
+function save() { if (!S.persist) return; try { localStorage.setItem(SKEY, JSON.stringify({ level: S.level, stars: S.stars, stickers: S.stickers, best: S.best, days: S.days, hints: S.hints, hideTarget: S.hideTarget, showTimer: S.showTimer, autoLevel: S.autoLevel, snd: Audio2.on, voi: Voice.on, mus: Music.on })); } catch (e) { } }
 function load() {
   try {
     var raw = localStorage.getItem(SKEY); if (!raw) return;
@@ -601,6 +601,7 @@ function load() {
     if (r.level) Object.keys(r.level).forEach(function (k) { if (S.level[k]) S.level[k] = r.level[k]; });
     S.stars = r.stars || 0; S.stickers = r.stickers || []; S.best = r.best || {}; S.days = r.days || {};
     if (typeof r.hints === 'boolean') S.hints = r.hints;
+    if (typeof r.hideTarget === 'boolean') S.hideTarget = r.hideTarget;
     if (typeof r.showTimer === 'boolean') S.showTimer = r.showTimer;
     if (typeof r.autoLevel === 'boolean') S.autoLevel = r.autoLevel;
     if (typeof r.snd === 'boolean') Audio2.on = r.snd;
@@ -929,10 +930,24 @@ function gSchulte(board, lv) {
     cells.push(c); grid.appendChild(c);
   });
   let idx = 0;
-  function showTarget() {
+  function paintTarget(reveal) {
     const w = seq[idx];
     const color = w.c === 'rd' ? 'var(--red)' : w.c === 'bl' ? 'var(--blue)' : 'var(--ink)';
-    setPrompt('找 <span class="num" id="targetChip" style="color:' + color + '">' + w.v + '</span>');
+    setPrompt('找 <span class="num" id="targetChip" style="color:' + color + '">' + ((S.hideTarget && !reveal) ? '?' : w.v) + '</span>');
+    if (S.hideTarget) {
+      const chip = document.getElementById('targetChip');
+      if (chip) {
+        chip.style.cursor = 'pointer';
+        chip.addEventListener('click', function () {
+          Audio2.tap(); paintTarget(true);
+          later(1500, function () { paintTarget(false); });
+        });
+      }
+    }
+  }
+  function showTarget() {
+    paintTarget(false);
+    const w = seq[idx];
     Voice.say((w.c === 'rd' ? '红色的 ' : w.c === 'bl' ? '蓝色的 ' : '') + w.v);
   }
   function arm() {
@@ -945,7 +960,7 @@ function gSchulte(board, lv) {
   }
   board.appendChild(grid);
   const first = seq[0];
-  setPrompt('找 <span class="num" id="targetChip">' + first.v + '</span>');
+  paintTarget(false);
   Voice.say(cfg.order === 'desc' ? '这次倒着找，先找 ' + first.v : cfg.order === 'alt' ? '红一、蓝一、红二，这样交替找' : '按顺序找数字，先找 ' + first.v);
   arm();
   Fit.cb = () => {
@@ -1685,6 +1700,7 @@ function openPanel() {
   c1.appendChild(toggleRow('背景音乐', '朗读时自动压低', function () { return Music.on; }, function (v) { Music.on = v; if (v) Music.start(); else Music.stop(); }));
   var c2 = el('div', 'pcard'); c2.appendChild(el('h3', null, '玩法'));
   c2.appendChild(toggleRow('玩得顺时自动升关', '连续三关零失误升一级，一关错五次降一级', function () { return S.autoLevel; }, function (v) { S.autoLevel = v; }));
+  c2.appendChild(toggleRow('找数字：藏起要找的数', '默认关闭。打开后题目牌只显示「?」，数字只念一遍，孩子得自己记着数到几了——这部分工作记忆的负荷会回到她身上。点一下牌子能偷看 1.5 秒。', function () { return S.hideTarget; }, function (v) { S.hideTarget = v; }));
   c2.appendChild(toggleRow('卡住时发光提示', '默认关闭。打开后没动作时会点亮正确答案——等于替孩子做完了搜索，训练效果会打折。', function () { return S.hints; }, function (v) { S.hints = v; }, true));
   var c3 = el('div', 'pcard'); c3.appendChild(el('h3', null, '计时与记录'));
   c3.appendChild(toggleRow('给孩子看秒表', '关掉后孩子看不到计时，后台照常记录用时；容易紧张的孩子建议关', function () { return S.showTimer; }, function (v) { S.showTimer = v; }));
