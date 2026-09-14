@@ -2326,6 +2326,7 @@ function gFit(board, lv) {
     holder.appendChild(boardWrap); holder.appendChild(tray); board.appendChild(holder);
     Fit.cb = () => {
       const b = boardBox();
+      if (!b.h || !b.w) return;                 // 还没量到真实尺寸，等下一帧
       cellPx = cellFit(b.w * .9, b.h * .5, BW, BH, 3, 92);
       boardWrap.style.gap = '3px';
       boardWrap.style.gridTemplateColumns = 'repeat(' + BW + ',' + px(cellPx) + ')';
@@ -2338,11 +2339,11 @@ function gFit(board, lv) {
   /* ---------- 落体模式：会掉下来的方块 ---------- */
   if (cfg.kind === 'drop') {
     const BW = cfg.w;
-    // 格子太小对近距离观看的孩子不友好。先按可用高度反推能放几行，
-    // 保证每格不低于 34px；屏幕够高时才用到关卡设定的行数
-    const MIN_CELL = 26;    // 放小一点换更多行，别几块就触顶
-    const vhNow = (window.visualViewport ? visualViewport.height : window.innerHeight) || 800;
-    const BH = clamp(Math.floor((vhNow - 160) / MIN_CELL), 10, cfg.h);
+    // 行数不能拍脑袋估：之前用「视口高度减 160」猜，格子却用实测的棋盘区高度算。
+    // 两者不一致时，行数被压到下限 10、格子反而顶到上限 52px——正是「怎么还是 10 行」的原因。
+    // 现在改成同一个实测值决定：棋盘区量出来能放几行就放几行，每格不低于 MIN_CELL
+    const MIN_CELL = 26;
+    let BH = 0, built = false;
     const SPEEDS = [2400, 1500, 950];
     const SPEED_ICON = ['🐢', '🐇', '🚀'], SPEED_NAME = ['慢', '中', '快'];
     const TETRO = [
@@ -2427,7 +2428,11 @@ function gFit(board, lv) {
     holder.appendChild(colWrap); board.appendChild(holder);
 
     const cellsD = [];
-    for (let y = 0; y < BH; y++) for (let x = 0; x < BW; x++) { const c = el('div'); cellsD.push(c); grid.appendChild(c); }
+    function buildCells() {
+      cellsD.length = 0;
+      grid.innerHTML = ''; grid.appendChild(pauseMask);
+      for (let y = 0; y < BH; y++) for (let x = 0; x < BW; x++) { const c = el('div'); cellsD.push(c); grid.appendChild(c); }
+    }
 
     function paint() {
       const live = {};
@@ -2569,12 +2574,19 @@ function gFit(board, lv) {
       else if (k === 'p' || k === 'Escape') { togglePause(); ev.preventDefault(); }
     };
     addEventListener('keydown', onKey);
-    nextP = takeBag(); spawn();
     setPrompt('已经消掉 <span class="num">0</span> / ' + cfg.goal + ' 行');
     Voice.say('方块会往下掉。左右挪位置，转一下换方向，向下让它快点落。放错了可以按退回。填满一整行就消掉');
-    restartTick();
+    // 兜底：万一量不到棋盘尺寸（某些环境首帧拿到 0），退回按视口估算，别让棋盘一直空着
+    later(450, () => {
+      if (built) return;
+      const vh = (window.visualViewport ? window.visualViewport.height : window.innerHeight) || 800;
+      BH = clamp(Math.floor((vh * .62) / (MIN_CELL + 2)), 10, cfg.h);
+      buildCells(); built = true;
+      nextP = takeBag(); spawn(); restartTick(); Fit.run();
+    });
     Fit.cb = () => {
       const b = boardBox();
+      if (!b.h || !b.w) return;                 // 还没量到真实尺寸，等下一帧
       // 按钮统一到原来「退回／速度」那一档：把省下的高度全部还给棋盘。
       // 格子太小比按钮小一点更伤——孩子是贴近了看的
       btnPx = Math.round(clamp(Math.min(b.w * .058, b.h * .105), 46, 78));
@@ -2597,8 +2609,14 @@ function gFit(board, lv) {
       nextBox.style.width = px(nextW);
       boardRow.style.gap = px(nextGap);
       const GAP = 2, CHROME = 4 * 2 + 4 * 2;
-      const availH = b.h - consoleH - 14 - CHROME - GAP * (BH - 1);
+      const boxH = b.h - consoleH - 14 - CHROME;         // 棋盘真正能用的高度
       const availW = b.w - 24 - nextW - nextGap - CHROME - GAP * (BW - 1);
+      if (!built) {                                       // 量到尺寸后再决定行数并开局
+        BH = clamp(Math.floor((boxH + GAP) / (MIN_CELL + GAP)), 10, cfg.h);
+        buildCells(); built = true;
+        nextP = takeBag(); spawn(); restartTick();
+      }
+      const availH = boxH - GAP * (BH - 1);
       cellPx2 = clamp(Math.floor(Math.min(availW / BW, availH / BH)), 12, 52);
       grid.style.gap = '2px';
       grid.style.gridTemplateColumns = 'repeat(' + BW + ',' + px(cellPx2) + ')';
