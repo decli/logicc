@@ -197,6 +197,16 @@ body{
 .folded{transform:scaleX(-1) translateX(var(--foldx,0px))}
 .mirrorGhost{opacity:.3}
 .mc.ghost{background:repeating-linear-gradient(45deg,var(--line) 0 6px,transparent 6px 12px);border:2px solid var(--line)}
+@keyframes lineBoom{0%{filter:brightness(1);transform:scale(1)}
+  30%{filter:brightness(3) saturate(0);background:#fff;transform:scale(1.18)}
+  60%{filter:brightness(2.4);background:#FFF3B0;transform:scale(1.1)}
+  100%{opacity:0;transform:scaleY(.05) scaleX(1.3)}}
+.lineboom{animation:lineBoom .46s forwards;z-index:3;position:relative}
+#gameover{position:absolute;inset:0;background:rgba(255,252,242,.94);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:14px;z-index:25;text-align:center;padding:16px}
+#gameover .gtitle{font-size:26px;font-weight:700}
+#gameover .gsub{font-size:16px;color:var(--ink-soft)}
+.spdbtn{font-size:12px;color:var(--ink-soft);text-align:center;margin-top:2px}
 .dpad{display:grid;grid-template-columns:repeat(3,auto);gap:8px;justify-items:center;align-items:center}
 .dbtn{border:4px solid var(--ink);border-radius:16px;background:#fff;box-shadow:4px 4px 0 var(--ink);
   display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;line-height:1}
@@ -600,9 +610,9 @@ const GAMES = [
       { t: '转一下才合适', d: '要先在脑子里把它转过来再选', cfg: { kind: 'hole', rot: true } },
       { t: '两块拼满', d: '自己选块、自己放位置', cfg: { kind: 'tile', pieces: 2, rot: false } },
       { t: '三块拼满', d: '可以按 🔄 把方块转个方向', cfg: { kind: 'tile', pieces: 3, rot: true } },
-      { t: '会掉下来了·慢', d: '方块开始往下掉，两秒一格，有足够时间想。消掉 2 行过关', cfg: { kind: 'drop', w: 6, h: 10, speed: 2000, goal: 2 } },
-      { t: '掉快一点', d: '一秒二一格，消掉 3 行', cfg: { kind: 'drop', w: 6, h: 10, speed: 1200, goal: 3 } },
-      { t: '再快一点', d: '零点八秒一格，棋盘也更宽，消掉 3 行', cfg: { kind: 'drop', w: 7, h: 12, speed: 800, goal: 3 } }
+      { t: '会掉下来了', d: '方块开始往下掉，棋盘 6×14 有足够堆的地方。右边可以随时调快慢，消掉 2 行过关', cfg: { kind: 'drop', w: 6, h: 14, defIdx: 0, goal: 2 } },
+      { t: '棋盘更高', d: '7×16，消掉 3 行；速度默认中档，可自己调', cfg: { kind: 'drop', w: 7, h: 16, defIdx: 1, goal: 3 } },
+      { t: '又高又宽', d: '8×18，消掉 4 行', cfg: { kind: 'drop', w: 8, h: 18, defIdx: 1, goal: 4 } }
     ]
   },
   {
@@ -648,10 +658,10 @@ function toast(t) {
 
 
 /* ===================== 新外壳：首页 / 阶梯 / 游戏中 / 奖励 ===================== */
-Object.assign(S, { hints: false, hideTarget: false, easeIn: true, showTimer: true, persist: true, best: {}, days: {} });
+Object.assign(S, { hints: false, hideTarget: false, easeIn: true, dropStep: null, showTimer: true, persist: true, best: {}, days: {} });
 var SKEY = 'logicc.design.v2';
 function todayKey() { var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
-function save() { if (!S.persist) return; try { localStorage.setItem(SKEY, JSON.stringify({ level: S.level, stars: S.stars, stickers: S.stickers, best: S.best, days: S.days, hints: S.hints, hideTarget: S.hideTarget, easeIn: S.easeIn, showTimer: S.showTimer, autoLevel: S.autoLevel, snd: Audio2.on, voi: Voice.on, mus: Music.on })); } catch (e) { } }
+function save() { if (!S.persist) return; try { localStorage.setItem(SKEY, JSON.stringify({ level: S.level, stars: S.stars, stickers: S.stickers, best: S.best, days: S.days, hints: S.hints, hideTarget: S.hideTarget, easeIn: S.easeIn, dropStep: S.dropStep, showTimer: S.showTimer, autoLevel: S.autoLevel, snd: Audio2.on, voi: Voice.on, mus: Music.on })); } catch (e) { } }
 function load() {
   try {
     var raw = localStorage.getItem(SKEY); if (!raw) return;
@@ -661,6 +671,7 @@ function load() {
     if (typeof r.hints === 'boolean') S.hints = r.hints;
     if (typeof r.hideTarget === 'boolean') S.hideTarget = r.hideTarget;
     if (typeof r.easeIn === 'boolean') S.easeIn = r.easeIn;
+    if (typeof r.dropStep === 'number') S.dropStep = r.dropStep;
     if (typeof r.showTimer === 'boolean') S.showTimer = r.showTimer;
     if (typeof r.autoLevel === 'boolean') S.autoLevel = r.autoLevel;
     if (typeof r.snd === 'boolean') Audio2.on = r.snd;
@@ -2308,26 +2319,29 @@ function gFit(board, lv) {
   /* ---------- 落体模式：会掉下来的方块 ---------- */
   if (cfg.kind === 'drop') {
     const BW = cfg.w, BH = cfg.h;
+    const SPEEDS = [2400, 1500, 950];
+    const SPEED_ICON = ['🐢', '🐇', '🚀'], SPEED_NAME = ['慢', '中', '快'];
     const TETRO = [
-      { cs: [[0, 0], [0, 1], [0, 2], [0, 3]], c: '#12A5A0' },   // I
-      { cs: [[0, 0], [0, 1], [1, 0], [1, 1]], c: '#F5B921' },   // O
-      { cs: [[0, 0], [0, 1], [0, 2], [1, 1]], c: '#7B4BC9' },   // T
-      { cs: [[0, 1], [0, 2], [1, 0], [1, 1]], c: '#3FA34D' },   // S
-      { cs: [[0, 0], [0, 1], [1, 1], [1, 2]], c: '#E8452C' },   // Z
-      { cs: [[0, 0], [1, 0], [1, 1], [1, 2]], c: '#2E7DD1' },   // J
-      { cs: [[0, 2], [1, 0], [1, 1], [1, 2]], c: '#F08A24' }    // L
+      { cs: [[0, 0], [0, 1], [0, 2], [0, 3]], c: '#12A5A0' },
+      { cs: [[0, 0], [0, 1], [1, 0], [1, 1]], c: '#F5B921' },
+      { cs: [[0, 0], [0, 1], [0, 2], [1, 1]], c: '#7B4BC9' },
+      { cs: [[0, 1], [0, 2], [1, 0], [1, 1]], c: '#3FA34D' },
+      { cs: [[0, 0], [0, 1], [1, 1], [1, 2]], c: '#E8452C' },
+      { cs: [[0, 0], [1, 0], [1, 1], [1, 2]], c: '#2E7DD1' },
+      { cs: [[0, 2], [1, 0], [1, 1], [1, 2]], c: '#F08A24' }
     ];
-    const occ = {};
-    let cur = null, nextP = null, cleared = 0, over = false, tick = null, cellPx2 = 28, lockAt = 0;
-    let bag = [];
+    let occ = {}, cur = null, nextP = null, cleared = 0, over = false, busy = false;
+    let tick = null, cellPx2 = 24, lockAt = 0, bag = [];
+    let spdIdx = (S.dropStep == null ? (cfg.defIdx || 0) : S.dropStep);
+    const history = [];
     const takeBag = () => { if (!bag.length) bag = shuffle(TETRO.map((_, i) => i)); return TETRO[bag.pop()]; };
 
-    const wrap = el('div', 'row2'); wrap.style.gap = '18px'; wrap.style.alignItems = 'flex-start';
-    const grid = el('div'); grid.style.display = 'grid'; grid.className = 'fit-board';
-    grid.style.cssText += 'background:#FFFDF7;border:4px solid var(--ink);border-radius:10px;padding:4px';
-    const side = el('div', 'col2'); side.style.gap = '14px';
-    const nextBox = el('div', 'tile'); nextBox.style.cssText += 'flex-direction:column;padding:8px;cursor:default';
-    const nextLab = el('div', null, '下一个'); nextLab.style.cssText = 'font-size:13px;color:var(--ink-soft)';
+    const wrap = el('div', 'row2'); wrap.style.gap = '16px'; wrap.style.alignItems = 'flex-start';
+    const grid = el('div'); grid.className = 'fit-board';
+    grid.style.cssText = 'display:grid;background:#FFFDF7;border:4px solid var(--ink);border-radius:10px;padding:4px';
+    const side = el('div', 'col2'); side.style.gap = '10px';
+    const nextBox = el('div', 'tile'); nextBox.style.cssText += 'flex-direction:column;padding:7px;cursor:default';
+    const nextLab = el('div', null, '下一个'); nextLab.style.cssText = 'font-size:12px;color:var(--ink-soft)';
     const nextIn = el('div');
     nextBox.appendChild(nextLab); nextBox.appendChild(nextIn);
     const pad = el('div', 'dpad');
@@ -2336,24 +2350,28 @@ function gFit(board, lv) {
       b.addEventListener('pointerdown', ev => { ev.preventDefault(); Audio2.init(); fn(); });
       return b;
     };
+    const bUndo = mkBtn('↩︎', '', () => undo());
     const bRot = mkBtn('🔄', 'rot', () => rotate());
+    const bSpd = mkBtn(SPEED_ICON[spdIdx], '', () => cycleSpeed());
     const bL = mkBtn('◀', '', () => move(0, -1));
-    const softDrop = () => { if (Date.now() - lockAt < 260) return; if (!move(1, 0)) lock(); };  // 落定后短暂冷却，防止连点把下一块也摔到底
+    const softDrop = () => { if (Date.now() - lockAt < 260 || busy) return; if (!move(1, 0)) lock(); };
     const bD = mkBtn('▼', '', softDrop);
     const bR = mkBtn('▶', '', () => move(0, 1));
-    const spacer = () => { const d = el('div'); return d; };
-    pad.appendChild(spacer()); pad.appendChild(bRot); pad.appendChild(spacer());
+    pad.appendChild(bUndo); pad.appendChild(bRot); pad.appendChild(bSpd);
     pad.appendChild(bL); pad.appendChild(bD); pad.appendChild(bR);
-    side.appendChild(nextBox); side.appendChild(pad);
+    const spdLab = el('div', 'spdbtn', '速度：' + SPEED_NAME[spdIdx]);
+    side.appendChild(nextBox); side.appendChild(pad); side.appendChild(spdLab);
     wrap.appendChild(grid); wrap.appendChild(side);
     holder.appendChild(wrap); board.appendChild(holder);
 
     const cellsD = [];
     for (let y = 0; y < BH; y++) for (let x = 0; x < BW; x++) { const c = el('div'); cellsD.push(c); grid.appendChild(c); }
+
     function paint() {
       const live = {};
       if (cur) cur.cs.forEach(c => live[(c[0] + cur.y) + ',' + (c[1] + cur.x)] = cur.c);
       cellsD.forEach((c, i) => {
+        if (c.classList.contains('lineboom')) return;
         const y = (i / BW) | 0, x = i % BW, k = y + ',' + x;
         const col = live[k] || occ[k];
         c.style.cssText = col
@@ -2362,88 +2380,141 @@ function gFit(board, lv) {
         c.style.width = px(cellPx2); c.style.height = px(cellPx2);
       });
       nextIn.innerHTML = '';
-      if (nextP) nextIn.appendChild(pieceEl(nextP.cs, cellPx2 * .62, nextP.c));
+      if (nextP) nextIn.appendChild(pieceEl(nextP.cs, Math.max(9, cellPx2 * .6), nextP.c));
     }
-    function fits(cs, y, x) {
-      return cs.every(c => {
-        const yy = c[0] + y, xx = c[1] + x;
-        return yy >= 0 && yy < BH && xx >= 0 && xx < BW && !occ[yy + ',' + xx];
-      });
-    }
+    const fits = (cs, y, x) => cs.every(c => {
+      const yy = c[0] + y, xx = c[1] + x;
+      return yy >= 0 && yy < BH && xx >= 0 && xx < BW && !occ[yy + ',' + xx];
+    });
     function move(dy, dx) {
-      if (!cur || over) return false;
+      if (!cur || over || busy) return false;
       if (fits(cur.cs, cur.y + dy, cur.x + dx)) { cur.y += dy; cur.x += dx; if (dx) Audio2.tap(); paint(); return true; }
       return false;
     }
     function rotate() {
-      if (!cur || over) return;
+      if (!cur || over || busy) return;
       const r = pRot(cur.cs);
-      for (const kick of [0, -1, 1, -2, 2]) {
-        if (fits(r, cur.y, cur.x + kick)) { cur.cs = r; cur.x += kick; Audio2.step(); paint(); return; }
-      }
+      for (const kick of [0, -1, 1, -2, 2]) if (fits(r, cur.y, cur.x + kick)) { cur.cs = r; cur.x += kick; Audio2.step(); paint(); return; }
       Audio2.soft();
+    }
+    function restartTick() {
+      if (tick) clearInterval(tick);
+      tick = every(SPEEDS[spdIdx], () => { if (over || busy) return; if (!move(1, 0)) lock(); });
+    }
+    function cycleSpeed() {
+      spdIdx = (spdIdx + 1) % SPEEDS.length;
+      S.dropStep = spdIdx; save();
+      bSpd.textContent = SPEED_ICON[spdIdx];
+      spdLab.textContent = '速度：' + SPEED_NAME[spdIdx];
+      toast('速度：' + SPEED_NAME[spdIdx] + ' ' + SPEED_ICON[spdIdx]);
+      restartTick();
+    }
+    function undo() {
+      if (over || busy) return;
+      if (!history.length) { Voice.say('还没有可以退回的一步'); toast('还没有可以退回的'); return; }
+      const h = history.pop();
+      occ = h.occ; cleared = h.cleared;
+      cur = { cs: h.piece.cs.slice(), c: h.piece.c, y: 0, x: h.piece.x };
+      if (!fits(cur.cs, cur.y, cur.x)) cur.y = 0, cur.x = 0;
+      Audio2.step(); toast('退回一步 ↩︎');
+      setPrompt('已经消掉 <span class="num">' + cleared + '</span> / ' + cfg.goal + ' 行');
+      paint();
     }
     function spawn() {
       const p = nextP || takeBag(); nextP = takeBag();
       const d = pDims(p.cs);
       cur = { cs: p.cs.slice(), c: p.c, y: 0, x: Math.max(0, ((BW - d[1]) / 2) | 0) };
-      if (!fits(cur.cs, cur.y, cur.x)) {
-        // 堆到顶：不判输，拿掉最上面两行就好。
-        // 不要动底下几行——那里往往是她最接近消掉的一行，帮忙不该把成果一起删了
-        for (let y = 0; y < 2; y++) for (let x = 0; x < BW; x++) delete occ[y + ',' + x];
-        toast('太高啦，帮你拿掉最上面两行 🧹'); Voice.say('堆得太高了，帮你把最上面拿掉一点');
-      }
+      if (!fits(cur.cs, cur.y, cur.x)) { cur = null; return gameOver(); }
       paint();
     }
     function lock() {
-      if (!cur || over) return;
+      if (!cur || over || busy) return;
+      history.push({ occ: Object.assign({}, occ), cleared: cleared, piece: { cs: cur.cs.slice(), c: cur.c, x: cur.x } });
+      if (history.length > 15) history.shift();
       cur.cs.forEach(c => occ[(c[0] + cur.y) + ',' + (c[1] + cur.x)] = cur.c);
-      cur = null; lockAt = Date.now(); Audio2.pop();
-      // 消行
-      let got = 0;
-      for (let y = BH - 1; y >= 0; y--) {
-        let full = true;
-        for (let x = 0; x < BW; x++) if (!occ[y + ',' + x]) full = false;
-        if (!full) continue;
-        got++;
-        for (let yy = y; yy > 0; yy--) for (let x = 0; x < BW; x++) {
-          if (occ[(yy - 1) + ',' + x]) occ[yy + ',' + x] = occ[(yy - 1) + ',' + x]; else delete occ[yy + ',' + x];
+      cur = null; lockAt = Date.now(); Audio2.pop(); paint();
+      const full = [];
+      for (let y = 0; y < BH; y++) { let f = true; for (let x = 0; x < BW; x++) if (!occ[y + ',' + x]) f = false; if (f) full.push(y); }
+      if (!full.length) return spawn();
+      busy = true;
+      Audio2.star(); Audio2.fanfare();
+      full.forEach(y => {
+        for (let x = 0; x < BW; x++) {
+          const c = cellsD[y * BW + x];
+          c.classList.add('lineboom');
+          c.style.animationDelay = (x * 35) + 'ms';
         }
-        for (let x = 0; x < BW; x++) delete occ['0,' + x];
-        y++;
-      }
-      if (got) { cleared += got; Audio2.star(); toast('消掉 ' + got + ' 行！'); Voice.short('消掉 ' + got + ' 行'); }
-      setPrompt('已经消掉 <span class="num">' + cleared + '</span> / ' + cfg.goal + ' 行');
-      if (cleared >= cfg.goal) {
-        over = true; clearInterval(tick);
-        setPrompt('消够啦 🎉'); Voice.say('消够啦，真棒');
-        return later(600, () => roundWin(grid));
-      }
-      spawn();
+        const mid = cellsD[y * BW + ((BW / 2) | 0)].getBoundingClientRect();
+        later(120, () => sparkle(mid.left + mid.width / 2, mid.top + mid.height / 2, ['✨', '⭐', '💥', '🌟']));
+      });
+      toast(full.length > 1 ? ('一次消掉 ' + full.length + ' 行！太厉害了 🎆') : '消掉一行！✨');
+      Voice.short(full.length > 1 ? '一次消掉 ' + full.length + ' 行，太厉害了' : '消掉一行');
+      later(560, () => {
+        full.forEach(y => { for (let x = 0; x < BW; x++) { const c = cellsD[y * BW + x]; c.classList.remove('lineboom'); c.style.animationDelay = ''; } });
+        const keep = [], n2 = {};
+        for (let y = BH - 1; y >= 0; y--) if (full.indexOf(y) < 0) keep.push(y);
+        let ny = BH - 1;
+        keep.forEach(y => { for (let x = 0; x < BW; x++) if (occ[y + ',' + x]) n2[ny + ',' + x] = occ[y + ',' + x]; ny--; });
+        occ = n2; cleared += full.length; busy = false;
+        setPrompt('已经消掉 <span class="num">' + cleared + '</span> / ' + cfg.goal + ' 行');
+        paint();
+        if (cleared >= cfg.goal) {
+          over = true; if (tick) clearInterval(tick);
+          setPrompt('消够啦 🎉'); Voice.say('消够啦，真棒');
+          return later(600, () => roundWin(grid));
+        }
+        spawn();
+      });
+    }
+    function gameOver() {
+      over = true; if (tick) clearInterval(tick);
+      Audio2.soft();
+      const g = el('div'); g.id = 'gameover';
+      g.appendChild(el('div', 'gtitle', '堆满啦！'));
+      g.appendChild(el('div', 'gsub', '这一局消掉了 ' + cleared + ' 行'));
+      const row = el('div', 'btnrow');
+      const again = el('button', 'bigbtn', '🔁 再来一局');
+      again.addEventListener('click', () => { Audio2.tap(); g.remove(); reset(); });
+      const slower = el('button', 'bigbtn ghost', '🐢 调慢再来');
+      slower.addEventListener('click', () => { Audio2.tap(); spdIdx = 0; S.dropStep = 0; save(); bSpd.textContent = SPEED_ICON[0]; spdLab.textContent = '速度：慢'; g.remove(); reset(); });
+      const back = el('button', 'bigbtn ghost', '🏠 回家');
+      back.addEventListener('click', () => { Audio2.tap(); home(); });
+      row.appendChild(again); row.appendChild(slower); row.appendChild(back);
+      g.appendChild(row);
+      $('#screen').appendChild(g);
+      Voice.say('方块堆满啦，要再来一局吗');
+    }
+    function reset() {
+      occ = {}; cur = null; nextP = null; cleared = 0; over = false; busy = false;
+      history.length = 0; bag = [];
+      cellsD.forEach(c => c.classList.remove('lineboom'));
+      setPrompt('已经消掉 <span class="num">0</span> / ' + cfg.goal + ' 行');
+      nextP = takeBag(); spawn(); restartTick();
     }
     const rid = ROUND_ID;
     const onKey = ev => {
-      if (rid !== ROUND_ID) { removeEventListener('keydown', onKey); return; }   // 换关后自动摘掉，避免多块棋盘同时响应键盘
+      if (rid !== ROUND_ID) { removeEventListener('keydown', onKey); return; }
       const k = ev.key;
       if (k === 'ArrowLeft') { move(0, -1); ev.preventDefault(); }
       else if (k === 'ArrowRight') { move(0, 1); ev.preventDefault(); }
       else if (k === 'ArrowDown') { softDrop(); ev.preventDefault(); }
       else if (k === 'ArrowUp' || k === ' ') { rotate(); ev.preventDefault(); }
+      else if (k === 'z' || k === 'Backspace') { undo(); ev.preventDefault(); }
     };
     addEventListener('keydown', onKey);
     nextP = takeBag(); spawn();
     setPrompt('已经消掉 <span class="num">0</span> / ' + cfg.goal + ' 行');
-    Voice.say('方块会往下掉。用左右箭头挪位置，按转一下换方向，按向下让它快点落。填满一整行就消掉');
-    tick = every(cfg.speed, () => { if (over) return; if (!move(1, 0)) lock(); });
+    Voice.say('方块会往下掉。左右挪位置，转一下换方向，向下让它快点落。放错了可以按退回。填满一整行就消掉');
+    restartTick();
     Fit.cb = () => {
       const b = boardBox();
-      const padW = clamp(b.w * .26, 120, 240);
-      cellPx2 = clamp(Math.floor(Math.min((b.w - padW - 40) / BW, (b.h - 12) / BH)), 14, 54);
+      const padW = clamp(b.w * .24, 112, 210);
+      cellPx2 = clamp(Math.floor(Math.min((b.w - padW - 34) / BW, (b.h - 14) / BH)), 12, 46);
       grid.style.gap = '2px';
       grid.style.gridTemplateColumns = 'repeat(' + BW + ',' + px(cellPx2) + ')';
       grid.style.gridAutoRows = px(cellPx2);
-      const bs = clamp(padW / 3.4, 40, 78);
-      [bRot, bL, bD, bR].forEach(x => { x.style.width = px(bs); x.style.height = px(bs); x.style.fontSize = px(bs * .46); });
+      const bs = clamp(Math.min(padW / 3.3, b.h * .13), 36, 70);
+      [bUndo, bRot, bSpd, bL, bD, bR].forEach(x => { x.style.width = px(bs); x.style.height = px(bs); x.style.fontSize = px(bs * .44); });
       paint();
     };
     return;
