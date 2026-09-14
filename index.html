@@ -208,6 +208,20 @@ body{
 #gameover .gtitle{font-size:26px;font-weight:700}
 #gameover .gsub{font-size:16px;color:var(--ink-soft)}
 .spdbtn{font-size:12px;color:var(--ink-soft);text-align:center;margin-top:2px}
+.console{display:flex;align-items:flex-end;justify-content:space-between;width:100%;gap:10px}
+.cgroup{display:flex;align-items:flex-end}
+.btnwrap{display:flex;align-items:center;justify-content:center;touch-action:none;-webkit-user-select:none;user-select:none;cursor:pointer}
+.dbtn2{border:4px solid var(--ink);border-radius:20px;background:#fff;box-shadow:5px 5px 0 var(--ink);
+  display:flex;align-items:center;justify-content:center;line-height:1;font-weight:700;transition:transform .05s,box-shadow .05s}
+.dbtn2.prim{background:var(--yellow)}
+.dbtn2.util{border-width:3px;box-shadow:3px 3px 0 var(--ink);background:#FFFDF7}
+.dbtn2.act{transform:translate(5px,5px);box-shadow:0 0 0 var(--ink);filter:brightness(.94)}
+.utilcol{display:flex;flex-direction:column;align-items:center;gap:1px}
+.utillab{font-size:11px;color:var(--ink-soft);white-space:nowrap}
+.droptop{display:flex;align-items:center;justify-content:center;gap:14px;width:100%}
+.nextbox{display:flex;align-items:center;gap:8px;border:3px solid var(--ink);border-radius:14px;background:#fff;
+  box-shadow:3px 3px 0 var(--ink);padding:5px 12px}
+.nextlab{font-size:12px;color:var(--ink-soft)}
 .dpad{display:grid;grid-template-columns:repeat(3,auto);gap:8px;justify-items:center;align-items:center}
 .dbtn{border:4px solid var(--ink);border-radius:16px;background:#fff;box-shadow:4px 4px 0 var(--ink);
   display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;line-height:1}
@@ -2337,33 +2351,66 @@ function gFit(board, lv) {
     const history = [];
     const takeBag = () => { if (!bag.length) bag = shuffle(TETRO.map((_, i) => i)); return TETRO[bag.pop()]; };
 
-    const wrap = el('div', 'row2'); wrap.style.gap = '16px'; wrap.style.alignItems = 'flex-start';
-    const grid = el('div'); grid.className = 'fit-board';
-    grid.style.cssText = 'display:grid;background:#FFFDF7;border:4px solid var(--ink);border-radius:10px;padding:4px';
-    const side = el('div', 'col2'); side.style.gap = '10px';
-    const nextBox = el('div', 'tile'); nextBox.style.cssText += 'flex-direction:column;padding:7px;cursor:default';
-    const nextLab = el('div', null, '下一个'); nextLab.style.cssText = 'font-size:12px;color:var(--ink-soft)';
+    /* 控件布局按儿童触屏习惯重排：
+       ─ 4~6 岁的点击精度明显低于成人，落点还普遍偏目标左下，所以按钮取 ~20mm
+         （约 80~105 CSS px），并给每个按钮加一圈不可见的外扩热区
+       ─ 高频键（移动 / 旋转 / 下落）放底部两角，双手横握时正好落在拇指下；
+         误触代价高的键（撤销 / 调速）做小、做淡，单独放中间，和高频键拉开距离
+       ─ 移动与下落支持按住连发，免得孩子反复戳 */
+    const colWrap = el('div', 'col2'); colWrap.style.cssText = 'width:100%;height:100%;justify-content:space-between;gap:8px';
+    const topRow = el('div', 'droptop');
+    const nextBox = el('div', 'nextbox');
+    const nextLab = el('div', 'nextlab', '下一个');
     const nextIn = el('div');
     nextBox.appendChild(nextLab); nextBox.appendChild(nextIn);
-    const pad = el('div', 'dpad');
-    const mkBtn = (txt, cls, fn) => {
-      const b = el('div', 'dbtn' + (cls ? ' ' + cls : ''), txt);
-      b.addEventListener('pointerdown', ev => { ev.preventDefault(); Audio2.init(); fn(); });
-      return b;
-    };
-    const bUndo = mkBtn('↩︎', '', () => undo());
-    const bRot = mkBtn('🔄', 'rot', () => rotate());
-    const bSpd = mkBtn(SPEED_ICON[spdIdx], '', () => cycleSpeed());
-    const bL = mkBtn('◀', '', () => move(0, -1));
+    topRow.appendChild(nextBox);
+    const gridHold = el('div'); gridHold.style.cssText = 'flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center';
+    const grid = el('div'); grid.className = 'fit-board';
+    grid.style.cssText = 'display:grid;background:#FFFDF7;border:4px solid var(--ink);border-radius:10px;padding:4px';
+    gridHold.appendChild(grid);
+    const consoleBar = el('div', 'console');
+
+    let primPx = 84, utilPx = 48, holdTimer = null;
+    function mkBtn(face, kind, fn, repeat) {
+      const wrapEl = el('div', 'btnwrap');
+      const b2 = el('div', 'dbtn2' + (kind ? ' ' + kind : ''), face);
+      wrapEl.appendChild(b2);
+      const stop = () => { if (holdTimer) { clearInterval(holdTimer); holdTimer = null; } b2.classList.remove('act'); };
+      wrapEl.addEventListener('pointerdown', ev => {
+        ev.preventDefault(); Audio2.init();
+        b2.classList.add('act'); fn();
+        if (repeat) {
+          clearInterval(holdTimer);
+          let started = false;
+          holdTimer = setInterval(() => { started = true; fn(); }, 150);
+          setTimeout(() => { if (!started && holdTimer) { } }, 0);
+        }
+        try { wrapEl.setPointerCapture(ev.pointerId); } catch (e) { }
+      });
+      ['pointerup', 'pointercancel', 'pointerleave'].forEach(t => wrapEl.addEventListener(t, stop));
+      wrapEl._face = b2;
+      return wrapEl;
+    }
     const softDrop = () => { if (Date.now() - lockAt < 260 || busy) return; if (!move(1, 0)) lock(); };
-    const bD = mkBtn('▼', '', softDrop);
-    const bR = mkBtn('▶', '', () => move(0, 1));
-    pad.appendChild(bUndo); pad.appendChild(bRot); pad.appendChild(bSpd);
-    pad.appendChild(bL); pad.appendChild(bD); pad.appendChild(bR);
-    const spdLab = el('div', 'spdbtn', '速度：' + SPEED_NAME[spdIdx]);
-    side.appendChild(nextBox); side.appendChild(pad); side.appendChild(spdLab);
-    wrap.appendChild(grid); wrap.appendChild(side);
-    holder.appendChild(wrap); board.appendChild(holder);
+    const bL = mkBtn('◀', '', () => move(0, -1), true);
+    const bR = mkBtn('▶', '', () => move(0, 1), true);
+    const bD = mkBtn('▼', '', softDrop, true);
+    const bRot = mkBtn('🔄', 'prim', () => rotate());
+    const bUndo = mkBtn('↩︎', 'util', () => undo());
+    const bSpd = mkBtn('🐢', 'util', () => cycleSpeed());
+
+    const gLeft = el('div', 'cgroup'); gLeft.appendChild(bL); gLeft.appendChild(bR);
+    const gMid = el('div', 'cgroup');
+    const uUndo = el('div', 'utilcol'); uUndo.appendChild(bUndo); uUndo.appendChild(el('div', 'utillab', '退回'));
+    const uSpd = el('div', 'utilcol'); uSpd.appendChild(bSpd);
+    const spdLab = el('div', 'utillab', '慢'); uSpd.appendChild(spdLab);
+    gMid.appendChild(uUndo); gMid.appendChild(uSpd);
+    const gRight = el('div', 'cgroup'); gRight.appendChild(bD); gRight.appendChild(bRot);
+    consoleBar.appendChild(gLeft); consoleBar.appendChild(gMid); consoleBar.appendChild(gRight);
+
+    colWrap.appendChild(topRow); colWrap.appendChild(gridHold); colWrap.appendChild(consoleBar);
+    holder.style.cssText = 'width:100%;height:100%';
+    holder.appendChild(colWrap); board.appendChild(holder);
 
     const cellsD = [];
     for (let y = 0; y < BH; y++) for (let x = 0; x < BW; x++) { const c = el('div'); cellsD.push(c); grid.appendChild(c); }
@@ -2405,8 +2452,8 @@ function gFit(board, lv) {
     function cycleSpeed() {
       spdIdx = (spdIdx + 1) % SPEEDS.length;
       S.dropStep = spdIdx; save();
-      bSpd.textContent = SPEED_ICON[spdIdx];
-      spdLab.textContent = '速度：' + SPEED_NAME[spdIdx];
+      bSpd._face.textContent = SPEED_ICON[spdIdx];
+      spdLab.textContent = SPEED_NAME[spdIdx];
       toast('速度：' + SPEED_NAME[spdIdx] + ' ' + SPEED_ICON[spdIdx]);
       restartTick();
     }
@@ -2481,7 +2528,7 @@ function gFit(board, lv) {
       const again = el('button', 'bigbtn', '🔁 再来一局');
       again.addEventListener('click', () => { Audio2.tap(); g.remove(); reset(); });
       const slower = el('button', 'bigbtn ghost', '🐢 调慢再来');
-      slower.addEventListener('click', () => { Audio2.tap(); spdIdx = 0; S.dropStep = 0; save(); bSpd.textContent = SPEED_ICON[0]; spdLab.textContent = '速度：慢'; g.remove(); reset(); });
+      slower.addEventListener('click', () => { Audio2.tap(); spdIdx = 0; S.dropStep = 0; save(); bSpd._face.textContent = SPEED_ICON[0]; spdLab.textContent = '慢'; g.remove(); reset(); });
       const back = el('button', 'bigbtn ghost', '🏠 回家');
       back.addEventListener('click', () => { Audio2.tap(); home(); });
       row.appendChild(again); row.appendChild(slower); row.appendChild(back);
@@ -2513,18 +2560,35 @@ function gFit(board, lv) {
     restartTick();
     Fit.cb = () => {
       const b = boardBox();
-      const padW = clamp(b.w * .24, 112, 210);
-      // 棋盘除了格子本身，还要扣掉：格子间隙、grid 的 padding 4×2、边框 4×2。
-      // 之前只粗略减了 14px，18 行时累计少算约 36px，正好把棋盘顶出可视区
+      // 主键取 ~20mm（96dpi 下约 80~105 CSS px）：4~6 岁的点击精度远低于成人，
+      // 成人下限 44pt 对她不够用。副键做到主键的 0.56 倍并拉开距离，降低误触代价
+      primPx = Math.round(clamp(Math.min(b.w * .112, b.h * .155), 58, 108));
+      utilPx = Math.round(primPx * .56);
+      const slop = Math.round(clamp(primPx * .13, 7, 15));          // 每个键外扩的隐形热区
+      [bL, bR, bD, bRot].forEach(x => {
+        x.style.padding = px(slop);
+        x._face.style.width = px(primPx); x._face.style.height = px(primPx);
+        x._face.style.fontSize = px(primPx * .44);
+      });
+      [bUndo, bSpd].forEach(x => {
+        x.style.padding = px(slop);
+        x._face.style.width = px(utilPx); x._face.style.height = px(utilPx);
+        x._face.style.fontSize = px(utilPx * .46);
+      });
+      const inGap = Math.round(clamp(primPx * .3, 14, 34));          // 同组相邻键的间隔
+      gLeft.style.gap = px(inGap); gRight.style.gap = px(inGap);
+      gMid.style.gap = px(Math.round(inGap * .8));
+      consoleBar.style.padding = '0 ' + px(clamp(b.w * .02, 6, 26));
+      const consoleH = primPx + slop * 2;
+      const topH = Math.round(utilPx * 1.5);
+      nextLab.style.fontSize = px(clamp(utilPx * .28, 11, 16));
       const GAP = 2, CHROME = 4 * 2 + 4 * 2;
-      const availH = b.h - CHROME - GAP * (BH - 1);
-      const availW = b.w - padW - 28 - CHROME - GAP * (BW - 1);
+      const availH = b.h - topH - consoleH - 16 - CHROME - GAP * (BH - 1);
+      const availW = b.w - 24 - CHROME - GAP * (BW - 1);
       cellPx2 = clamp(Math.floor(Math.min(availW / BW, availH / BH)), 10, 46);
       grid.style.gap = '2px';
       grid.style.gridTemplateColumns = 'repeat(' + BW + ',' + px(cellPx2) + ')';
       grid.style.gridAutoRows = px(cellPx2);
-      const bs = clamp(Math.min(padW / 3.3, b.h * .13), 36, 70);
-      [bUndo, bRot, bSpd, bL, bD, bR].forEach(x => { x.style.width = px(bs); x.style.height = px(bs); x.style.fontSize = px(bs * .44); });
       paint();
     };
     return;
