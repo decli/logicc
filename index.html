@@ -589,23 +589,23 @@ const GAMES = [
     ]
   },
   {
-    id: 'switch', name: '换规则分类', emoji: '🔀', color: 'var(--blue)', tip: '把卡片放进对的盒子，规则中途会变',
+    id: 'fit', name: '方块拼拼', emoji: '🧱', color: 'var(--blue)', tip: '把方块拼进去，缺口正好补满',
     levels: [
-      { t: '按颜色放', d: '盒子是什么颜色，就放什么颜色的卡片', cfg: { rule: 'color', cards: 6 } },
-      { t: '按形状放', d: '这次不看颜色，只看形状', cfg: { rule: 'shape', cards: 6 } },
-      { t: '玩到一半换规则', d: 'DCCS 的经典考法：用顺手了再叫你改。学龄前最难的一关', cfg: { rule: 'color', switchAt: 4, cards: 8 } },
-      { t: '来回换', d: '每三张换一次，得一直盯着现在按什么分', cfg: { rule: 'shape', every: 3, cards: 9 } },
-      { t: '看边框决定', d: '有粗黑边按形状，没粗边按颜色——规则藏在卡片自己身上', cfg: { rule: 'border', cards: 8 } }
+      { t: '补上这个缺口', d: '选出正好补上的那一块，不用转', cfg: { kind: 'hole', rot: false } },
+      { t: '转一下才合适', d: '要在脑子里把它转过来再选——先想好再动手，这一步才是练心理旋转的地方', cfg: { kind: 'hole', rot: true } },
+      { t: '两块拼满', d: '自己选块、自己放位置', cfg: { kind: 'tile', pieces: 2, rot: false } },
+      { t: '三块拼满', d: '可以按 🔄 把方块转个方向', cfg: { kind: 'tile', pieces: 3, rot: true } },
+      { t: '方块消消乐', d: '6×6 棋盘随便放，填满一整行或一整列就消掉；不会掉落也不计时，慢慢想', cfg: { kind: 'clear', w: 6, h: 6, goal: 2 } }
     ]
   },
   {
-    id: 'stop', name: '红灯停绿灯行', emoji: '🚦', color: 'var(--red)', tip: '绿灯才能走，红灯要停住',
+    id: 'fish', name: '小鱼朝哪边', emoji: '🐠', color: 'var(--red)', tip: '只看中间那条鱼，它朝哪边',
     levels: [
-      { t: '绿灯走，红灯停', d: '规则她本来就懂，不用讲', cfg: { kind: 'light', n: 10, noRate: .35, win: 2800 } },
-      { t: '红灯变多了', d: '要停住的次数变多，更难忍', cfg: { kind: 'light', n: 12, noRate: .5, win: 2500 } },
-      { t: '反过来！红灯走', d: '把已经练顺的反应压住，这是抑制控制的核心考法', cfg: { kind: 'light', rev: true, n: 12, noRate: .5, win: 2800 } },
-      { t: '白天黑夜', d: '看到太阳要点月亮，看到月亮要点太阳（经典 day-night 任务）', cfg: { kind: 'stroop', n: 10, win: 3400 } },
-      { t: '混着来', d: '红绿灯和白天黑夜交替出现', cfg: { kind: 'mix', n: 14, win: 2800 } }
+      { t: '一条鱼', d: '先认方向：它朝左就点左，朝右就点右', cfg: { n: 8, flank: 0, inc: 0, win: 4200 } },
+      { t: '一排鱼，都朝一边', d: '旁边多了几条，但方向都一样', cfg: { n: 10, flank: 2, inc: 0, win: 4000 } },
+      { t: '旁边的鱼会捣乱', d: '两边的鱼朝反方向——得压住「跟着大多数走」的冲动', cfg: { n: 12, flank: 2, inc: .5, win: 3800 } },
+      { t: '捣乱的更多了', d: '大部分都是反方向', cfg: { n: 12, flank: 2, inc: .75, win: 3400 } },
+      { t: '换成箭头', d: '没有鱼的样子帮忙，纯看方向', cfg: { n: 12, flank: 2, inc: .6, win: 3400, arrow: true } }
     ]
   },
   {
@@ -759,8 +759,8 @@ function previewShape(g, i) {
   else if (g.id === 'pattern') { cols = 6; rows = 1; }
   else if (g.id === 'dots') { cols = c.kind === 'make3' ? 3 : 2; rows = 1; }
   else if (g.id === 'bond') { cols = c.miss === 'three' ? 3 : 2; rows = 2; }
-  else if (g.id === 'switch') { cols = 2; rows = 2; }
-  else if (g.id === 'stop') { cols = 3; rows = 1; }
+  else if (g.id === 'fit') { cols = c.kind === 'clear' ? c.w : 4; rows = c.kind === 'clear' ? c.h : 3; }
+  else if (g.id === 'fish') { cols = (c.flank * 2) + 1; rows = 1; }
   else if (g.id === 'span') { cols = c.w; rows = c.h; }
   else if (g.id === 'connect') { cols = Math.min(6, Math.round(c.pts / 3)); rows = 1; }
   return { cols: cols, rows: rows };
@@ -2196,248 +2196,343 @@ function gPattern(board, lv) {
   };
 }
 
-/* ===================== 10 换规则分类（认知灵活性 / DCCS） =====================
-   卡片用 SVG 画，颜色由程序填充，形状与颜色才是两个真正独立的维度
-   （之前用 emoji，颜色是图形自带的、改不了，等于题目没有线索）。
-   盒子会跟着规则换外观：按颜色分时是纯色块，按形状分时是灰色轮廓。
+/* ===================== 10 方块拼拼（空间构建 / 心理旋转） =====================
+   证据取舍：单纯玩会掉落的俄罗斯方块，对心理旋转的迁移在高效力重复实验里做不出来
+   （Mayer 综述、Timm 等人 2024）；但结构化积木拼搭在 fMRI 研究里确实改善了心理旋转
+   成绩与脑激活。差别在于必须「先在脑子里转好再动手」，而不是狂按旋转键试错。
+   所以这里不做掉落与计时，前两关甚至不给旋转按钮——只能先想清楚再选。
+   国内 5-6 岁课纲（摩比「图形与空间」、火花 L3）的四巧板／图形割补也是同一路子。
    ========================================================================== */
-const SW_SHAPE_DEF = [
-  { id: 'circle', n: '圆形' }, { id: 'square', n: '方形' },
-  { id: 'tri', n: '三角形' }, { id: 'star', n: '星星' }
+const POLY = [
+  [[0, 0]],
+  [[0, 0], [0, 1]],
+  [[0, 0], [0, 1], [0, 2]],
+  [[0, 0], [0, 1], [1, 0], [1, 1]],
+  [[0, 0], [1, 0], [1, 1]],
+  [[0, 0], [0, 1], [0, 2], [1, 1]],
+  [[0, 0], [1, 0], [2, 0], [2, 1]],
+  [[0, 1], [0, 2], [1, 0], [1, 1]],
+  [[0, 0], [0, 1], [0, 2], [0, 3]],
+  [[0, 0], [1, 0], [1, 1], [1, 2]]
 ];
-const SW_COLOR_DEF = [
-  { c: '#E8452C', n: '红色' }, { c: '#2E7DD1', n: '蓝色' },
-  { c: '#3FA34D', n: '绿色' }, { c: '#F5B921', n: '黄色' }
-];
-function shapeSvg(kind, fill, size, outline) {
-  const svg = svgEl('svg');
-  svg.setAttribute('viewBox', '0 0 100 100');
-  svg.style.width = px(size); svg.style.height = px(size); svg.style.display = 'block';
-  let node;
-  if (kind === 'circle') { node = svgEl('circle'); node.setAttribute('cx', 50); node.setAttribute('cy', 50); node.setAttribute('r', 36); }
-  else if (kind === 'square') { node = svgEl('rect'); node.setAttribute('x', 16); node.setAttribute('y', 16); node.setAttribute('width', 68); node.setAttribute('height', 68); node.setAttribute('rx', 10); }
-  else if (kind === 'tri') { node = svgEl('polygon'); node.setAttribute('points', '50,12 88,82 12,82'); }
-  else { node = svgEl('polygon'); node.setAttribute('points', starPts2(5, 40, 17, 50, 52).map(p => p.join(',')).join(' ')); }
-  node.setAttribute('fill', outline ? 'none' : fill);
-  node.setAttribute('stroke', outline ? '#B9AE99' : '#2A2523');
-  node.setAttribute('stroke-width', outline ? 7 : 5);
-  node.setAttribute('stroke-dasharray', outline ? '10 7' : '');
-  svg.appendChild(node);
-  return svg;
+function pNorm(cs) {
+  const mr = Math.min.apply(null, cs.map(c => c[0])), mc = Math.min.apply(null, cs.map(c => c[1]));
+  return cs.map(c => [c[0] - mr, c[1] - mc]).sort((a, b) => a[0] - b[0] || a[1] - b[1]);
 }
-function gSwitch(board, lv) {
-  const cfg = G.switch.levels[lv - 1].cfg;
-  const shapes = shuffle(SW_SHAPE_DEF).slice(0, 2), colors = shuffle(SW_COLOR_DEF).slice(0, 2);
-  const total = cfg.cards;
-  const deck = [];
-  for (let i = 0; i < total; i++) deck.push({ s: rnd(2), c: rnd(2), border: cfg.rule === 'border' ? (i % 2 ? 1 : 0) : 0 });
-  shuffle(deck).forEach((d, i) => deck[i] = d);
-  // 至少一半是「冲突卡」：形状指一个盒子、颜色指另一个，规则才真正起作用
-  for (let i = 0; i < total; i += 2) deck[i].c = 1 - deck[i].s;
-  let idx = 0, rule = cfg.rule === 'border' ? null : cfg.rule;
+function pRot(cs) { const mr = Math.max.apply(null, cs.map(c => c[0])); return pNorm(cs.map(c => [c[1], mr - c[0]])); }
+function pKey(cs) { return pNorm(cs).map(c => c.join(',')).join(';'); }
+function pDims(cs) { return [Math.max.apply(null, cs.map(c => c[0])) + 1, Math.max.apply(null, cs.map(c => c[1])) + 1]; }
+function pAllRot(cs) { const out = [], seen = {}; let c2 = pNorm(cs); for (let i = 0; i < 4; i++) { const k = pKey(c2); if (!seen[k]) { seen[k] = 1; out.push(c2); } c2 = pRot(c2); } return out; }
+const FIT_COLORS = ['#2E7DD1', '#E8452C', '#3FA34D', '#F5B921', '#7B4BC9', '#12A5A0'];
+function pieceEl(cs, cell, color, gap) {
+  const d = pDims(cs), g = el('div');
+  g.style.display = 'grid';
+  g.style.gridTemplateColumns = 'repeat(' + d[1] + ',' + px(cell) + ')';
+  g.style.gridAutoRows = px(cell); g.style.gap = px(gap == null ? 2 : gap);
+  const set = {}; cs.forEach(c => set[c[0] + ',' + c[1]] = 1);
+  for (let r = 0; r < d[0]; r++) for (let c = 0; c < d[1]; c++) {
+    const b = el('div');
+    if (set[r + ',' + c]) b.style.cssText = 'background:' + color + ';border:2px solid var(--ink);border-radius:5px';
+    g.appendChild(b);
+  }
+  return g;
+}
+function gFit(board, lv) {
+  const cfg = G.fit.levels[lv - 1].cfg;
+  const holder = el('div', 'col2'); holder.style.gap = '14px';
+  const boardWrap = el('div'); boardWrap.style.display = 'grid'; boardWrap.className = 'fit-board';
+  const tray = el('div', 'row2 fit-tray'); tray.style.gap = '16px';
+  let cellPx = 34;
 
-  const holder = el('div', 'col2'); holder.style.gap = '12px';
-  const ruleCard = el('div', 'row2 sw-rule');
-  ruleCard.style.cssText = 'gap:10px;border:4px solid var(--ink);border-radius:16px;background:#fff;box-shadow:4px 4px 0 var(--ink);padding:8px 16px';
-  const ruleTx = el('b'); const ruleIcons = el('div', 'row2'); ruleIcons.style.gap = '8px';
-  ruleCard.appendChild(ruleTx); ruleCard.appendChild(ruleIcons);
-  const progress = el('div'); progress.style.cssText = 'font-size:15px;color:var(--ink-soft)';
-  const cardBox = el('div', 'row2 sw-card');
-  const bins = el('div', 'row2 sw-bins'); bins.style.gap = '26px';
-  const binEls = [];
-  for (let i = 0; i < 2; i++) {
-    const b = el('div', 'tile'); b.dataset.i = i;
-    b.addEventListener('click', () => drop(i));
-    binEls.push(b); bins.appendChild(b);
-  }
-  let cardEl = null, cardSize = 90, binSize = 110;
-  function curRule() { const d0 = deck[Math.min(idx, total - 1)]; return cfg.rule === 'border' ? (d0.border ? 'shape' : 'color') : rule; }
-  function paint() {
-    const r = curRule();
-    ruleTx.textContent = cfg.rule === 'border' ? '粗边→看形状　细边→看颜色' : (r === 'color' ? '现在：看颜色' : '现在：看形状');
-    ruleIcons.innerHTML = '';
-    binEls.forEach((b, i) => {
-      b.innerHTML = ''; b.style.background = '#fff'; b.style.borderWidth = '3px';
-      if (r === 'color') {
-        b.style.background = colors[i].c;
-        const dot = el('div'); dot.style.cssText = 'width:60%;height:60%;border-radius:12px;background:rgba(255,255,255,.35)';
-        b.appendChild(dot);
-      } else {
-        b.appendChild(shapeSvg(shapes[i].id, '#fff', binSize * .66, true));
-      }
-      const tag = shapeSvg(shapes[i].id, r === 'color' ? colors[i].c : '#fff', 26, r !== 'color');
-      ruleIcons.appendChild(tag);
+  /* ---------- 补洞：选出正好补上的那一块 ---------- */
+  if (cfg.kind === 'hole') {
+    const BW = 5, BH = 4;
+    const piece = pNorm(pick(POLY.filter(p => p.length >= 3 && p.length <= 4)));
+    const d = pDims(piece);
+    const oy = rnd(BH - d[0] + 1), ox = rnd(BW - d[1] + 1);
+    const hole = {}; piece.forEach(c => hole[(c[0] + oy) + ',' + (c[1] + ox)] = 1);
+    const cells = [];
+    for (let y = 0; y < BH; y++) for (let x = 0; x < BW; x++) {
+      const c = el('div');
+      c.style.cssText = hole[y + ',' + x]
+        ? 'background:repeating-linear-gradient(45deg,#EFE7D4 0 7px,transparent 7px 14px);border:3px dashed var(--orange);border-radius:6px'
+        : 'background:#C9BFA8;border:2px solid var(--ink);border-radius:6px';
+      c.dataset.k = y + ',' + x;
+      cells.push(c); boardWrap.appendChild(c);
+    }
+    const rots = pAllRot(piece);
+    const shown = cfg.rot && rots.length > 1 ? pick(rots.filter(r => pKey(r) !== pKey(piece))) : piece;
+    const wrongPool = POLY.filter(p => pKey(pNorm(p)) !== pKey(piece) && p.length === piece.length);
+    const cands = shuffle([{ cs: shown, ok: true }].concat(
+      shuffle(wrongPool).slice(0, 2).map(p => ({ cs: pNorm(p), ok: false }))));
+    cands.forEach((cd, i) => {
+      const t = el('div', 'tile'); t.style.padding = '8px';
+      t.appendChild(pieceEl(cd.cs, cellPx * .8, FIT_COLORS[i % FIT_COLORS.length]));
+      t.addEventListener('click', () => {
+        if (cd.ok) {
+          Audio2.good(); t.classList.add('done');
+          piece.forEach(c => {
+            const cell = cells[(c[0] + oy) * BW + (c[1] + ox)];
+            cell.style.background = FIT_COLORS[cands.indexOf(cd) % FIT_COLORS.length];
+            cell.style.border = '2px solid var(--ink)'; cell.classList.add('pop');
+          });
+          setPrompt('正好补上了！');
+          Voice.say('正好补上');
+          later(700, () => roundWin(boardWrap));
+        } else { miss(); t.classList.remove('shake'); void t.offsetWidth; t.classList.add('shake'); Voice.say('这块放不进去，再看看形状'); }
+      });
+      tray.appendChild(t);
     });
-    const d = deck[idx];
-    progress.textContent = '第 ' + (idx + 1) + ' / ' + total + ' 张';
-    setPrompt(cfg.rule === 'border'
-      ? '卡片边框粗的看形状，细的看颜色'
-      : (r === 'color' ? '把卡片放进<b>颜色一样</b>的盒子' : '把卡片放进<b>形状一样</b>的盒子'));
+    setPrompt(cfg.rot ? '哪一块<b>转一下</b>正好补上缺口？' : '哪一块正好补上缺口？');
+    Voice.say(cfg.rot ? '下面哪一块，转一下以后正好补上这个缺口？先在脑子里转转看' : '下面哪一块正好补上这个缺口？');
+    hintIn(15000, () => { const t = tray.children[cands.findIndex(c => c.ok)]; if (t) t.classList.add('pulse'); });
+    holder.appendChild(boardWrap); holder.appendChild(tray); board.appendChild(holder);
+    Fit.cb = () => {
+      const b = boardBox();
+      cellPx = cellFit(b.w * .9, b.h * .5, BW, BH, 3, 92);
+      boardWrap.style.gap = '3px';
+      boardWrap.style.gridTemplateColumns = 'repeat(' + BW + ',' + px(cellPx) + ')';
+      boardWrap.style.gridAutoRows = px(cellPx);
+      [...tray.children].forEach((t, i) => { t.innerHTML = ''; t.appendChild(pieceEl(cands[i].cs, cellPx * .72, FIT_COLORS[i % FIT_COLORS.length])); });
+    };
+    return;
   }
-  function showCard() {
-    cardBox.innerHTML = '';
-    const d = deck[idx];
-    cardEl = el('div', 'tile');
-    cardEl.style.borderWidth = d.border ? '11px' : '3px';
-    cardEl.appendChild(shapeSvg(shapes[d.s].id, colors[d.c].c, cardSize * .72));
-    cardBox.appendChild(cardEl);
-    cardEl.classList.add('pop');
+
+  /* ---------- 拼满 / 消消：选块 + 落位 ---------- */
+  const isClear = cfg.kind === 'clear';
+  const BW = isClear ? cfg.w : 4, BH = isClear ? cfg.h : 4;
+  const occ = {};                      // 已占格
+  const region = {};                   // 拼满模式下的目标区域
+  let pieces = [];                     // 待放置的块
+  let sel = -1, cleared = 0;
+  const cells = [];
+
+  function buildRegion() {             // 用 n 块随机拼出一块连通区域，保证有解
+    for (let attempt = 0; attempt < 60; attempt++) {
+      const used = {}, out = [];
+      let okAll = true;
+      for (let i = 0; i < cfg.pieces; i++) {
+        let placed = false;
+        const order = shuffle(POLY.filter(p => p.length >= 2 && p.length <= 4));
+        for (const p of order) {
+          for (const r of shuffle(pAllRot(p))) {
+            const d = pDims(r);
+            const spots = [];
+            for (let y = 0; y + d[0] <= BH; y++) for (let x = 0; x + d[1] <= BW; x++) {
+              if (r.every(c => !used[(c[0] + y) + ',' + (c[1] + x)])) {
+                if (i === 0 || r.some(c => {
+                  const yy = c[0] + y, xx = c[1] + x;
+                  return used[(yy - 1) + ',' + xx] || used[(yy + 1) + ',' + xx] || used[yy + ',' + (xx - 1)] || used[yy + ',' + (xx + 1)];
+                })) spots.push([y, x]);
+              }
+            }
+            if (spots.length) { const [y, x] = pick(spots); r.forEach(c => used[(c[0] + y) + ',' + (c[1] + x)] = 1); out.push(pNorm(r)); placed = true; break; }
+          }
+          if (placed) break;
+        }
+        if (!placed) { okAll = false; break; }
+      }
+      if (okAll) return { used: used, pieces: out };
+    }
+    return null;
   }
-  function drop(i) {
-    const d = deck[idx], r = curRule();
-    const right = r === 'color' ? d.c : d.s;
-    if (i === right) {
-      Audio2.good(); binEls[i].classList.add('pop');
-      idx++;
-      if (idx >= total) { setPrompt('全部放完啦 🎉'); return roundWin(bins); }
-      if (cfg.switchAt && idx === cfg.switchAt) { rule = rule === 'color' ? 'shape' : 'color'; announce(); }
-      else if (cfg.every && idx % cfg.every === 0) { rule = rule === 'color' ? 'shape' : 'color'; announce(); }
-      paint(); showCard(); Fit.run();
-    } else {
-      miss(); binEls[i].classList.remove('shake'); void binEls[i].offsetWidth; binEls[i].classList.add('shake');
-      const r2 = curRule();
-      Voice.say(cfg.rule === 'border' ? (d.border ? '这张边框粗，要看形状' : '这张边框细，要看颜色')
-        : (r2 === 'color' ? '现在看颜色，不看形状' : '现在看形状，不看颜色'));
+  if (!isClear) {
+    const g2 = buildRegion();
+    if (g2) { Object.keys(g2.used).forEach(k => region[k] = 1); pieces = shuffle(g2.pieces); }
+  } else {
+    pieces = [0, 1, 2].map(() => pNorm(pick(pAllRot(pick(POLY.filter(p => p.length >= 2 && p.length <= 4))))));
+  }
+  for (let y = 0; y < BH; y++) for (let x = 0; x < BW; x++) {
+    const c = el('div'); c.dataset.y = y; c.dataset.x = x;
+    c.addEventListener('click', () => drop(y, x));
+    cells.push(c); boardWrap.appendChild(c);
+  }
+  function paintBoard() {
+    cells.forEach(c => {
+      const k = c.dataset.y + ',' + c.dataset.x;
+      if (occ[k]) c.style.cssText = 'background:' + occ[k] + ';border:2px solid var(--ink);border-radius:6px';
+      else if (!isClear && region[k]) c.style.cssText = 'background:repeating-linear-gradient(45deg,#EFE7D4 0 7px,transparent 7px 14px);border:3px dashed var(--orange);border-radius:6px';
+      else c.style.cssText = isClear ? 'background:#fff;border:2px solid var(--line);border-radius:6px' : 'background:transparent;border:2px solid transparent';
+      c.style.width = px(cellPx); c.style.height = px(cellPx);
+    });
+  }
+  function paintTray() {
+    tray.innerHTML = '';
+    pieces.forEach((p, i) => {
+      if (!p) { const gap = el('div'); gap.style.width = px(cellPx * 2); tray.appendChild(gap); return; }
+      const t = el('div', 'tile' + (i === sel ? ' pick' : '')); t.style.padding = '7px';
+      t.appendChild(pieceEl(p, cellPx * .68, FIT_COLORS[i % FIT_COLORS.length]));
+      t.addEventListener('click', () => { sel = i; Audio2.tap(); paintTray(); });
+      tray.appendChild(t);
+    });
+    if (cfg.rot || isClear) {
+      const rb = el('button', 'sw', '🔄 转一下');
+      rb.addEventListener('click', () => {
+        if (sel < 0 || !pieces[sel]) { Voice.say('先选一块'); return; }
+        pieces[sel] = pRot(pieces[sel]); Audio2.tap(); paintTray();
+      });
+      tray.appendChild(rb);
     }
   }
-  function announce() {
-    const r = rule === 'color' ? '颜色' : '形状';
-    toast('规则变了！现在看' + r);
-    Voice.say('注意，规则变了。现在看' + r + '，不看' + (r === '颜色' ? '形状' : '颜色'));
-  }
-  holder.appendChild(ruleCard); holder.appendChild(cardBox); holder.appendChild(bins); holder.appendChild(progress);
-  board.appendChild(holder);
-  paint(); showCard();
-  Voice.say(cfg.rule === 'border' ? '边框粗的看形状放，边框细的看颜色放'
-    : (cfg.rule === 'color' ? '把卡片放进颜色一样的盒子里' : '把卡片放进形状一样的盒子里'));
-  hintIn(13000, () => {
-    if (idx >= total) return;
-    const r = curRule(), right = r === 'color' ? deck[idx].c : deck[idx].s;
-    binEls[right].classList.add('pulse'); later(2200, () => binEls[right].classList.remove('pulse'));
-  });
-  Fit.cb = () => {
-    const b = boardBox();
-    cardSize = clamp(Math.min(b.h * .3, b.w * .22), 60, 160);
-    binSize = clamp(Math.min(b.h * .3, b.w * .24), 64, 180);
-    const d0 = deck[idx];
-    if (cardEl && d0) { cardEl.style.width = px(cardSize); cardEl.style.height = px(cardSize); cardEl.innerHTML = ''; cardEl.appendChild(shapeSvg(shapes[d0.s].id, colors[d0.c].c, cardSize * .72)); }
-    binEls.forEach(x => { x.style.width = px(binSize * 1.12); x.style.height = px(binSize); });
-    ruleTx.style.fontSize = px(clamp(b.w * .026, 14, 22));
-    paintBinsOnly();
-  };
-  function paintBinsOnly() {
-    const r = curRule();
-    binEls.forEach((b, i) => {
-      b.innerHTML = ''; b.style.background = '#fff';
-      if (r === 'color') { b.style.background = colors[i].c; const dot = el('div'); dot.style.cssText = 'width:60%;height:60%;border-radius:12px;background:rgba(255,255,255,.35)'; b.appendChild(dot); }
-      else b.appendChild(shapeSvg(shapes[i].id, '#fff', binSize * .66, true));
+  function canPlace(p, y, x) {
+    return p.every(c => {
+      const yy = c[0] + y, xx = c[1] + x, k = yy + ',' + xx;
+      if (yy < 0 || xx < 0 || yy >= BH || xx >= BW || occ[k]) return false;
+      if (!isClear && !region[k]) return false;
+      return true;
     });
   }
+  function drop(y, x) {
+    if (sel < 0 || !pieces[sel]) { Voice.say('先选一块方块'); return; }
+    const p = pieces[sel];
+    // 宽容落位：只要有一种摆法能盖住你点的格子就算
+    let best = null;
+    for (const c of p) { const oy = y - c[0], ox = x - c[1]; if (canPlace(p, oy, ox)) { best = [oy, ox]; break; } }
+    if (!best) { miss(); const cell = cells[y * BW + x]; cell.classList.remove('shake'); void cell.offsetWidth; cell.classList.add('shake'); Voice.say('这里放不下，换个地方试试'); return; }
+    const color = FIT_COLORS[sel % FIT_COLORS.length];
+    p.forEach(c => occ[(c[0] + best[0]) + ',' + (c[1] + best[1])] = color);
+    pieces[sel] = null; sel = -1; Audio2.pop(); paintBoard(); paintTray();
+    if (isClear) checkLines(); else checkFull();
+  }
+  function checkFull() {
+    const need = Object.keys(region).length, have = Object.keys(occ).length;
+    setPrompt('还剩 <span class="num">' + (need - have) + '</span> 格');
+    if (have >= need) { setPrompt('拼满啦！'); Voice.say('拼满啦'); later(500, () => roundWin(boardWrap)); }
+    else if (pieces.every(p => !p)) { Voice.say('方块用完了，再来一次'); later(900, () => nextRound()); }
+  }
+  function checkLines() {
+    let got = 0;
+    for (let y = 0; y < BH; y++) { let full = true; for (let x = 0; x < BW; x++) if (!occ[y + ',' + x]) full = false; if (full) { for (let x = 0; x < BW; x++) delete occ[y + ',' + x]; got++; } }
+    for (let x = 0; x < BW; x++) { let full = true; for (let y = 0; y < BH; y++) if (!occ[y + ',' + x]) full = false; if (full) { for (let y = 0; y < BH; y++) delete occ[y + ',' + x]; got++; } }
+    if (got) { cleared += got; Audio2.star(); toast('消掉 ' + got + ' 行！'); paintBoard(); }
+    setPrompt('已经消掉 <span class="num">' + cleared + '</span> / ' + cfg.goal + ' 行');
+    if (cleared >= cfg.goal) { setPrompt('消够啦 🎉'); Voice.say('消够啦'); return later(500, () => roundWin(boardWrap)); }
+    if (pieces.every(p => !p)) pieces = [0, 1, 2].map(() => pNorm(pick(pAllRot(pick(POLY.filter(p => p.length >= 2 && p.length <= 4))))));
+    // 一块都放不下就换一批，不让孩子卡死
+    const stuck = pieces.every(p => { if (!p) return true; for (let y = 0; y < BH; y++) for (let x = 0; x < BW; x++) if (canPlace(p, y, x)) return false; return true; });
+    if (stuck) { pieces = [0, 1, 2].map(() => pNorm(pick(pAllRot(pick(POLY.filter(p => p.length >= 2 && p.length <= 3)))))); toast('换一批方块 🔄'); }
+    paintTray();
+  }
+  holder.appendChild(boardWrap); holder.appendChild(tray); board.appendChild(holder);
+  setPrompt(isClear ? '填满一整行或一整列就会消掉' : '用下面的方块把虚线区域拼满');
+  Voice.say(isClear ? '把方块放到棋盘上，填满一整行或者一整列就会消掉。不会掉下来，可以慢慢想'
+    : '先点一块方块，再点要放的位置，把虚线的地方拼满');
+  Fit.cb = () => {
+    const b = boardBox();
+    cellPx = cellFit(b.w * .92, b.h * .56, BW, BH, 3, 80);
+    boardWrap.style.gap = '3px';
+    boardWrap.style.gridTemplateColumns = 'repeat(' + BW + ',' + px(cellPx) + ')';
+    boardWrap.style.gridAutoRows = px(cellPx);
+    paintBoard(); paintTray();
+  };
 }
 
-/* ===================== 11 红灯停绿灯行（抑制控制 / Go-No-Go、day-night） =====================
-   原来用「小鱼点、鲨鱼不点」，规则只念一遍语音、屏幕上没有任何说明，孩子看不懂。
-   改用红绿灯：绿灯走红灯停是她本来就懂的常识，规则自带在图形里。
-   规则卡常驻屏幕，前两张不计分只当练习。
-   ========================================================================================= */
-function gStop(board, lv) {
-  const cfg = G.stop.levels[lv - 1].cfg, N = cfg.n, PRACTICE = 2;
-  const holder = el('div', 'col2'); holder.style.gap = '14px';
-  const ruleCard = el('div', 'row2 st-rule');
-  ruleCard.style.cssText = 'gap:18px;border:4px solid var(--ink);border-radius:16px;background:#fff;box-shadow:4px 4px 0 var(--ink);padding:8px 18px';
-  const stage = el('div', 'tile st-stage'); stage.style.cursor = 'default';
+/* ===================== 11 小鱼朝哪边（选择性注意与抑制 / flanker） =====================
+   替换掉原来的红绿灯反转：反转「红灯停绿灯行」会污染孩子的交通安全认知，
+   为了练执行功能去改一条每天要用的生活规则，这笔账不划算。
+   flanker（NIH Toolbox 儿童版就用小鱼）语义中性，干扰纯粹来自视觉，
+   而且顺带练左右辨别。
+   ================================================================================== */
+function fishEl(dir, size, color) {
+  const svg = svgEl('svg'); svg.setAttribute('viewBox', '0 0 100 60');
+  svg.style.width = px(size); svg.style.height = px(size * .6); svg.style.display = 'block';
+  const g = svgEl('g');
+  if (dir < 0) g.setAttribute('transform', 'translate(100,0) scale(-1,1)');
+  const body = svgEl('ellipse');
+  body.setAttribute('cx', 52); body.setAttribute('cy', 30); body.setAttribute('rx', 30); body.setAttribute('ry', 19);
+  body.setAttribute('fill', color); body.setAttribute('stroke', '#2A2523'); body.setAttribute('stroke-width', 4);
+  const tail = svgEl('polygon');
+  tail.setAttribute('points', '22,30 2,12 2,48');
+  tail.setAttribute('fill', color); tail.setAttribute('stroke', '#2A2523'); tail.setAttribute('stroke-width', 4);
+  const eye = svgEl('circle');
+  eye.setAttribute('cx', 68); eye.setAttribute('cy', 24); eye.setAttribute('r', 4.5); eye.setAttribute('fill', '#2A2523');
+  g.appendChild(tail); g.appendChild(body); g.appendChild(eye); svg.appendChild(g);
+  return svg;
+}
+function arrowEl(dir, size, color) {
+  const svg = svgEl('svg'); svg.setAttribute('viewBox', '0 0 100 60');
+  svg.style.width = px(size); svg.style.height = px(size * .6); svg.style.display = 'block';
+  const g = svgEl('g');
+  if (dir < 0) g.setAttribute('transform', 'translate(100,0) scale(-1,1)');
+  const a = svgEl('polygon');
+  a.setAttribute('points', '5,22 58,22 58,6 95,30 58,54 58,38 5,38');
+  a.setAttribute('fill', color); a.setAttribute('stroke', '#2A2523'); a.setAttribute('stroke-width', 4);
+  g.appendChild(a); svg.appendChild(g);
+  return svg;
+}
+function gFish(board, lv) {
+  const cfg = G.fish.levels[lv - 1].cfg, N = cfg.n, PRACTICE = 2;
+  const holder = el('div', 'col2'); holder.style.gap = '16px';
+  const row = el('div', 'row2 fish-row'); row.style.gap = '10px';
   const bar = el('div'); bar.style.cssText = 'height:14px;border:3px solid var(--ink);border-radius:999px;background:#fff;overflow:hidden';
   const barIn = el('div'); barIn.style.cssText = 'height:100%;width:100%;background:var(--yellow)';
   bar.appendChild(barIn);
-  const btns = el('div', 'row2 st-btns'); btns.style.gap = '18px';
+  const btns = el('div', 'row2 fish-btns'); btns.style.gap = '22px';
+  const leftBtn = el('div', 'tile', '⬅️'), rightBtn = el('div', 'tile', '➡️');
+  leftBtn.addEventListener('click', () => answer(-1));
+  rightBtn.addEventListener('click', () => answer(1));
+  btns.appendChild(leftBtn); btns.appendChild(rightBtn);
   const tally = el('div'); tally.style.cssText = 'font-size:15px;color:var(--ink-soft)';
 
   const seq = [];
   for (let k = 0; k < N; k++) {
-    if (cfg.kind === 'stroop') seq.push({ t: 'stroop', v: rnd(2) });
-    else if (cfg.kind === 'mix') seq.push(rnd(2) ? { t: 'stroop', v: rnd(2) } : { t: 'light', go: Math.random() >= .5 });
-    else seq.push({ t: 'light', go: Math.random() >= cfg.noRate });
+    const d = rnd(2) ? 1 : -1;
+    seq.push({ d: d, inc: k >= PRACTICE && Math.random() < cfg.inc });
   }
-  // 头两张固定给简单的，当练习
-  if (seq[0].t === 'light') seq[0].go = !cfg.rev; else seq[0].v = 0;
-  const goLight = cfg.rev ? '🔴' : '🟢', noLight = cfg.rev ? '🟢' : '🔴';
-
-  function ruleRow() {
-    ruleCard.innerHTML = '';
-    const mk = (a, b2) => { const r = el('div', 'row2'); r.style.gap = '6px'; r.appendChild(el('span', null, a)); r.appendChild(el('span', null, '→')); r.appendChild(el('b', null, b2)); return r; };
-    if (cfg.kind === 'stroop') { ruleCard.appendChild(mk('☀️', '点 🌙')); ruleCard.appendChild(mk('🌙', '点 ☀️')); }
-    else if (cfg.kind === 'mix') { ruleCard.appendChild(mk('🟢', '走')); ruleCard.appendChild(mk('🔴', '停')); ruleCard.appendChild(mk('☀️', '点 🌙')); ruleCard.appendChild(mk('🌙', '点 ☀️')); }
-    else { ruleCard.appendChild(mk(goLight, '走')); ruleCard.appendChild(mk(noLight, '停住不动')); }
-  }
-  const sunBtn = el('div', 'tile', '☀️'), moonBtn = el('div', 'tile', '🌙');
-  sunBtn.addEventListener('click', () => answer('sun'));
-  moonBtn.addEventListener('click', () => answer('moon'));
-  const goBtn = el('div', 'tile', '👆 走');
-  goBtn.addEventListener('click', () => answer('go'));
-
-  let i = 0, right = 0, timer = null, answered = false, over = false;
-  function layout(kind) { btns.innerHTML = ''; if (kind === 'stroop') { btns.appendChild(sunBtn); btns.appendChild(moonBtn); } else btns.appendChild(goBtn); Fit.run(); }
+  let i = 0, right = 0, timer = null, answered = false, over = false, size = 70;
+  const draw = () => {
+    row.innerHTML = '';
+    if (i >= N) return;
+    const it = seq[i], mk = cfg.arrow ? arrowEl : fishEl;
+    const flankDir = it.inc ? -it.d : it.d;
+    for (let k = 0; k < cfg.flank; k++) row.appendChild(mk(flankDir, size, '#9AA7B5'));
+    const mid = el('div'); mid.style.cssText = 'padding:4px;border:4px solid var(--orange);border-radius:12px;background:#FFF7E2';
+    mid.appendChild(mk(it.d, size, '#F5B921'));
+    row.appendChild(mid);
+    for (let k = 0; k < cfg.flank; k++) row.appendChild(mk(flankDir, size, '#9AA7B5'));
+  };
   function tallyTx() { tally.textContent = (i < PRACTICE ? '练习中 · ' : '') + '第 ' + Math.min(i + 1, N) + ' / ' + N + '　答对 ' + right; }
   function show() {
     if (over) return;
     if (i >= N) return finish();
-    answered = false;
-    const it = seq[i];
-    stage.textContent = it.t === 'stroop' ? (it.v ? '🌙' : '☀️') : (it.go ? goLight : noLight);
-    stage.style.background = '#fff';
-    layout(it.t); tallyTx();
-    const t0 = Date.now();
-    barIn.style.width = '100%';
+    answered = false; draw(); tallyTx();
+    const t0 = Date.now(); barIn.style.width = '100%';
     clearInterval(timer);
     timer = every(70, tm => {
       if (over) { clearInterval(tm); return; }
       const p2 = 1 - (Date.now() - t0) / cfg.win;
       barIn.style.width = Math.max(0, p2 * 100) + '%';
-      if (p2 <= 0) { clearInterval(tm); if (!answered) timeUp(); }
+      if (p2 <= 0) { clearInterval(tm); if (!answered) { answered = true; Audio2.soft(); i++; later(420, show); } }
     });
   }
-  function scored() { return i >= PRACTICE; }
-  function good() { answered = true; clearInterval(timer); if (scored()) right++; Audio2.good(); stage.style.background = '#BFE8C4'; i++; later(520, show); }
-  function bad(say) { answered = true; clearInterval(timer); if (scored()) miss(); stage.style.background = '#FBD5CE'; if (say) Voice.say(say); i++; later(820, show); }
-  function answer(kind) {
+  function answer(dir) {
     if (answered || over) return;
+    answered = true; clearInterval(timer);
     const it = seq[i];
-    if (it.t === 'stroop') { const want = it.v ? 'sun' : 'moon'; if (kind === want) good(); else bad('看到太阳点月亮，看到月亮点太阳'); }
-    else if (it.go) good();
-    else bad(cfg.rev ? '绿灯要停住哦' : '红灯要停住，不能点');
-  }
-  function timeUp() {
-    const it = seq[i];
-    if (it.t === 'light' && !it.go) { answered = true; if (scored()) right++; Audio2.pop(); stage.style.background = '#BFE8C4'; toast('停得好 👍'); i++; later(420, show); }
-    else { answered = true; Audio2.soft(); stage.style.background = '#F3EEDF'; i++; later(420, show); }
+    if (dir === it.d) { if (i >= PRACTICE) right++; Audio2.good(); row.style.background = '#BFE8C4'; i++; later(460, () => { row.style.background = ''; show(); }); }
+    else { if (i >= PRACTICE) miss(); row.style.background = '#FBD5CE'; Voice.say('只看中间那一条，它朝哪边'); i++; later(820, () => { row.style.background = ''; show(); }); }
   }
   function finish() {
     if (over) return; over = true; clearInterval(timer);
     const scoreable = N - PRACTICE, pass = right >= Math.ceil(scoreable * .7);
-    tallyTx();
-    setPrompt(pass ? ('答对 <span class="num">' + right + '</span> / ' + scoreable + '，很稳！') : ('答对 <span class="num">' + right + '</span> / ' + scoreable + '，再来一次会更好'));
-    Voice.say(pass ? '答对 ' + right + ' 个，很稳' : '答对 ' + right + ' 个，再来一次');
-    if (pass) later(600, () => roundWin(stage)); else later(1600, () => nextRound());
+    tallyTx(); row.innerHTML = '';
+    setPrompt(pass ? ('答对 <span class="num">' + right + '</span> / ' + scoreable + '，眼睛很稳！') : ('答对 <span class="num">' + right + '</span> / ' + scoreable + '，再来一次会更好'));
+    Voice.say(pass ? '答对 ' + right + ' 个，眼睛很稳' : '答对 ' + right + ' 个，再来一次');
+    if (pass) later(600, () => roundWin(row)); else later(1600, () => nextRound());
   }
-  ruleRow();
-  holder.appendChild(ruleCard); holder.appendChild(stage); holder.appendChild(bar); holder.appendChild(btns); holder.appendChild(tally);
+  holder.appendChild(row); holder.appendChild(bar); holder.appendChild(btns); holder.appendChild(tally);
   board.appendChild(holder);
-  setPrompt(cfg.kind === 'stroop' ? '看到 ☀️ 点 🌙，看到 🌙 点 ☀️'
-    : cfg.kind === 'mix' ? '红绿灯和太阳月亮混着来，看清楚再动'
-      : (cfg.rev ? '这次反过来：🔴 红灯才走，🟢 绿灯要停住' : '🟢 绿灯走，🔴 红灯停住不动'));
-  Voice.say(cfg.kind === 'stroop' ? '看到太阳就点月亮，看到月亮就点太阳'
-    : cfg.rev ? '这次反过来，红灯才可以走，绿灯要停住不动'
-      : '绿灯亮了就点走，红灯亮了要停住，什么都别做');
-  later(1100, show);
+  setPrompt(cfg.flank ? '只看<b>中间</b>那一条，它朝哪边就点哪边' : '它朝哪边，就点哪边');
+  Voice.say(cfg.flank ? '只看中间那一条，它朝左就点左边，朝右就点右边。旁边的不用管' : '它朝左就点左边，朝右就点右边');
+  later(1200, show);
   Fit.cb = () => {
     const b = boardBox();
-    const ss = clamp(Math.min(b.h * .34, b.w * .3), 76, 210);
-    stage.style.width = px(ss); stage.style.height = px(ss); stage.style.fontSize = px(ss * .58);
-    bar.style.width = px(ss * 1.5);
-    const bs = clamp(Math.min(b.h * .19, b.w * .17), 50, 120);
-    [sunBtn, moonBtn].forEach(x => { x.style.width = px(bs); x.style.height = px(bs); x.style.fontSize = px(bs * .5); });
-    goBtn.style.width = px(bs * 2.3); goBtn.style.height = px(bs); goBtn.style.fontSize = px(bs * .3);
-    ruleCard.style.fontSize = px(clamp(b.w * .024, 13, 21));
+    const n = cfg.flank * 2 + 1;
+    size = clamp(Math.min(b.w * .82 / n, b.h * .34), 34, 130);
+    draw();
+    bar.style.width = px(size * n * .9);
+    const bs = clamp(Math.min(b.h * .2, b.w * .18), 54, 130);
+    [leftBtn, rightBtn].forEach(x => { x.style.width = px(bs * 1.3); x.style.height = px(bs); x.style.fontSize = px(bs * .5); });
   };
 }
 
@@ -2500,7 +2595,7 @@ function gSpan(board, lv) {
   };
 }
 
-const GAME_IMPL = { switch: gSwitch, stop: gStop, span: gSpan, schulte: gSchulte, dots: gDots, bond: gBond, match: gMatch, mirror: gMirror, connect: gConnect, link: gLink, maze: gMaze, pattern: gPattern };
+const GAME_IMPL = { fit: gFit, fish: gFish, span: gSpan, schulte: gSchulte, dots: gDots, bond: gBond, match: gMatch, mirror: gMirror, connect: gConnect, link: gLink, maze: gMaze, pattern: gPattern };
 
 
 /* ===================== 家长设置 / 贴纸册 ===================== */
