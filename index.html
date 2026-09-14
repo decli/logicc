@@ -219,8 +219,9 @@ body{
 .utilcol{display:flex;flex-direction:column;align-items:center;gap:1px}
 .utillab{font-size:11px;color:var(--ink-soft);white-space:nowrap}
 .droptop{display:flex;align-items:center;justify-content:center;gap:14px;width:100%}
-.nextbox{position:absolute;left:0;top:0;display:flex;align-items:center;gap:8px;border:3px solid var(--ink);
-  border-radius:14px;background:#fff;box-shadow:3px 3px 0 var(--ink);padding:5px 10px;z-index:2}
+.boardrow{display:flex;align-items:flex-start;justify-content:center}
+.nextbox{display:flex;flex-direction:column;align-items:center;gap:6px;border:3px solid var(--ink);
+  border-radius:14px;background:#fff;box-shadow:3px 3px 0 var(--ink);padding:8px 10px;flex:0 0 auto}
 .pausemask{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:4;
   background:rgba(255,252,242,.72);font-size:28px;font-weight:700;border-radius:10px}
 .grid-paused{filter:grayscale(.55)}
@@ -628,9 +629,9 @@ const GAMES = [
       { t: '转一下才合适', d: '要先在脑子里把它转过来再选', cfg: { kind: 'hole', rot: true } },
       { t: '两块拼满', d: '自己选块、自己放位置', cfg: { kind: 'tile', pieces: 2, rot: false } },
       { t: '三块拼满', d: '可以按 🔄 把方块转个方向', cfg: { kind: 'tile', pieces: 3, rot: true } },
-      { t: '会掉下来了', d: '方块开始往下掉，棋盘 6×14 有足够堆的地方。右边可以随时调快慢，消掉 2 行过关', cfg: { kind: 'drop', w: 6, h: 14, defIdx: 0, goal: 2 } },
-      { t: '棋盘更高', d: '7×16，消掉 3 行；速度默认中档，可自己调', cfg: { kind: 'drop', w: 7, h: 16, defIdx: 1, goal: 3 } },
-      { t: '又高又宽', d: '8×18，消掉 4 行', cfg: { kind: 'drop', w: 8, h: 18, defIdx: 1, goal: 4 } }
+      { t: '会掉下来了', d: '方块开始往下掉。默认中速，底下 🐢 随时能调快慢；消掉 2 行过关', cfg: { kind: 'drop', w: 6, h: 16, goal: 2 } },
+      { t: '棋盘更高', d: '7×18，消掉 3 行', cfg: { kind: 'drop', w: 7, h: 18, goal: 3 } },
+      { t: '又高又宽', d: '8×20，消掉 4 行', cfg: { kind: 'drop', w: 8, h: 20, goal: 4 } }
     ]
   },
   {
@@ -2339,7 +2340,7 @@ function gFit(board, lv) {
     const BW = cfg.w;
     // 格子太小对近距离观看的孩子不友好。先按可用高度反推能放几行，
     // 保证每格不低于 34px；屏幕够高时才用到关卡设定的行数
-    const MIN_CELL = 34;
+    const MIN_CELL = 26;    // 放小一点换更多行，别几块就触顶
     const vhNow = (window.visualViewport ? visualViewport.height : window.innerHeight) || 800;
     const BH = clamp(Math.floor((vhNow - 160) / MIN_CELL), 10, cfg.h);
     const SPEEDS = [2400, 1500, 950];
@@ -2355,7 +2356,7 @@ function gFit(board, lv) {
     ];
     let occ = {}, cur = null, nextP = null, cleared = 0, over = false, busy = false;
     let tick = null, cellPx2 = 24, lockAt = 0, bag = [];
-    let spdIdx = (S.dropStep == null ? (cfg.defIdx || 0) : S.dropStep);
+    let spdIdx = (S.dropStep == null ? 1 : S.dropStep);   // 默认中档
     const history = [];
     const takeBag = () => { if (!bag.length) bag = shuffle(TETRO.map((_, i) => i)); return TETRO[bag.pop()]; };
 
@@ -2366,15 +2367,16 @@ function gFit(board, lv) {
          误触代价高的键（撤销 / 调速）做小、做淡，单独放中间，和高频键拉开距离
        ─ 移动与下落支持按住连发，免得孩子反复戳 */
     const colWrap = el('div', 'col2'); colWrap.style.cssText = 'width:100%;height:100%;justify-content:space-between;gap:8px';
-    const gridHold = el('div'); gridHold.style.cssText = 'flex:1 1 auto;min-height:0;width:100%;position:relative;display:flex;align-items:center;justify-content:center';
+    const gridHold = el('div'); gridHold.style.cssText = 'flex:1 1 auto;min-height:0;width:100%;display:flex;align-items:center;justify-content:center';
+    const boardRow = el('div', 'boardrow');
+    const grid = el('div'); grid.className = 'fit-board';
+    grid.style.cssText = 'display:grid;background:#FFFDF7;border:4px solid var(--ink);border-radius:10px;padding:4px;position:relative';
     const nextBox = el('div', 'nextbox');
     const nextLab = el('div', 'nextlab', '下一个');
     const nextIn = el('div');
     nextBox.appendChild(nextLab); nextBox.appendChild(nextIn);
-    gridHold.appendChild(nextBox);                       // 浮在棋盘区左上角，不再单占一条顶栏
-    const grid = el('div'); grid.className = 'fit-board';
-    grid.style.cssText = 'display:grid;background:#FFFDF7;border:4px solid var(--ink);border-radius:10px;padding:4px;position:relative';
-    gridHold.appendChild(grid);
+    boardRow.appendChild(grid); boardRow.appendChild(nextBox);   // 紧挨棋盘右侧，视线不用来回横跳
+    gridHold.appendChild(boardRow);
     const pauseMask = el('div', 'pausemask', '⏸ 暂停中'); pauseMask.style.display = 'none';
     grid.appendChild(pauseMask);
     const consoleBar = el('div', 'console');
@@ -2408,13 +2410,13 @@ function gFit(board, lv) {
     }
     const bL = mkBtn('◀', '', () => move(0, -1), true);
     const bUndo = mkBtn('↩︎', 'util', () => undo());
-    const bSpd = mkBtn('🐢', 'util', () => cycleSpeed());
+    const bSpd = mkBtn(SPEED_ICON[spdIdx], 'util', () => cycleSpeed());
     const bPause = mkBtn('⏸', 'util', () => togglePause());
     const bD = mkBtn('▼', '', softDrop, true);
     const bRot = mkBtn('🔄', 'prim', () => rotate());
     const bR = mkBtn('▶', '', () => move(0, 1), true);
     const cell2 = (btn, lab) => { const c = el('div', 'utilcol'); c.appendChild(btn); c.appendChild(el('div', 'utillab', lab)); return c; };
-    const undoLab = el('div', 'utillab', '退回'), spdLab = el('div', 'utillab', '慢'), pauseLab = el('div', 'utillab', '暂停');
+    const undoLab = el('div', 'utillab', '退回'), spdLab = el('div', 'utillab', SPEED_NAME[spdIdx]), pauseLab = el('div', 'utillab', '暂停');
     const cU = el('div', 'utilcol'); cU.appendChild(bUndo); cU.appendChild(undoLab);
     const cS = el('div', 'utilcol'); cS.appendChild(bSpd); cS.appendChild(spdLab);
     const cP = el('div', 'utilcol'); cP.appendChild(bPause); cP.appendChild(pauseLab);
@@ -2590,12 +2592,14 @@ function gFit(board, lv) {
       const labH = Math.round(clamp(btnPx * .24, 12, 18));
       const consoleH = btnPx + slop * 2 + labH;
       nextLab.style.fontSize = px(clamp(btnPx * .24, 10, 15));
-      nextBox.style.transform = 'scale(' + clamp(btnPx / 70, .7, 1.1).toFixed(2) + ')';
-      nextBox.style.transformOrigin = 'left top';
+      const nextW = Math.round(clamp(btnPx * 2.1, 84, 150));      // 预览框宽度
+      const nextGap = Math.round(clamp(btnPx * .42, 16, 42));     // 与棋盘的间距：贴近但不挨着
+      nextBox.style.width = px(nextW);
+      boardRow.style.gap = px(nextGap);
       const GAP = 2, CHROME = 4 * 2 + 4 * 2;
       const availH = b.h - consoleH - 14 - CHROME - GAP * (BH - 1);
-      const availW = b.w - 24 - CHROME - GAP * (BW - 1);
-      cellPx2 = clamp(Math.floor(Math.min(availW / BW, availH / BH)), 12, 76);
+      const availW = b.w - 24 - nextW - nextGap - CHROME - GAP * (BW - 1);
+      cellPx2 = clamp(Math.floor(Math.min(availW / BW, availH / BH)), 12, 52);
       grid.style.gap = '2px';
       grid.style.gridTemplateColumns = 'repeat(' + BW + ',' + px(cellPx2) + ')';
       grid.style.gridAutoRows = px(cellPx2);
