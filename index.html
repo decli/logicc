@@ -13,6 +13,7 @@
 <link rel="icon" href="./icon-192.png">
 <title>思维小画本</title>
 <style>
+
 :root{
   --paper:#FFFCF2; --ink:#2A2523; --ink-soft:#6F665E; --line:#E4DCC9;
   --red:#E8452C; --orange:#F08A24; --yellow:#F5B921; --green:#3FA34D;
@@ -190,21 +191,120 @@ body{
 .sw.on{background:var(--green);color:#fff}
 .hide{display:none!important}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ===== 大屏横屏改版：首页 / 阶梯选难度 / 伙伴侧栏 / 奖励 / 家长设置 ===== */
+:root{--k:1}
+
+.pane{position:absolute;inset:0;display:flex;flex-direction:column;padding:0;overflow:hidden}
+.topbar{flex:0 0 auto;display:flex;align-items:center;gap:calc(16px * var(--k));padding:calc(14px * var(--k)) calc(24px * var(--k))}
+.iconbtn{width:calc(72px * var(--k));height:calc(72px * var(--k));flex:0 0 auto;border:calc(4px * var(--k)) solid var(--ink);background:#fff;border-radius:calc(20px * var(--k));font-size:calc(32px * var(--k));line-height:1;display:flex;align-items:center;justify-content:center;box-shadow:calc(4px * var(--k)) calc(4px * var(--k)) 0 var(--ink);cursor:pointer;padding:0;font-family:inherit}
+.iconbtn:active{transform:translate(calc(4px * var(--k)),calc(4px * var(--k)));box-shadow:0 0 0 var(--ink)}
+.barTitle{flex:0 0 auto;min-width:0;font-size:calc(34px * var(--k));font-weight:700;white-space:nowrap;display:flex;align-items:baseline;gap:calc(16px * var(--k))}
+.barTitle small{font-size:calc(22px * var(--k));font-weight:400;color:var(--ink-soft)}
+.grow{flex:1 1 auto;min-width:0}
+.pill{flex:0 0 auto;display:flex;align-items:center;gap:calc(10px * var(--k));font-size:calc(28px * var(--k));padding:calc(8px * var(--k)) calc(18px * var(--k));border:calc(4px * var(--k)) solid var(--ink);border-radius:calc(999px * var(--k));background:#fff;box-shadow:calc(4px * var(--k)) calc(4px * var(--k)) 0 var(--ink);white-space:nowrap}
+.dayPill{flex:1 1 auto;min-width:0;gap:calc(14px * var(--k));font-size:calc(24px * var(--k));font-weight:700}
+.dayBar{flex:1 1 auto;height:calc(20px * var(--k));border:calc(3px * var(--k)) solid var(--ink);border-radius:calc(999px * var(--k));background:#F5F0E2;overflow:hidden;min-width:calc(60px * var(--k))}
+.dayBar i{display:block;height:100%;background:var(--green)}
+#cards{flex:1 1 auto;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:calc(18px * var(--k));min-height:0;padding:calc(4px * var(--k)) calc(24px * var(--k)) calc(24px * var(--k))}
+.card,.card:nth-child(odd),.card:nth-child(even){display:flex;overflow:hidden;border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(24px * var(--k));background:#fff;box-shadow:calc(7px * var(--k)) calc(7px * var(--k)) 0 var(--ink);cursor:pointer;min-height:0;padding:0;transform:none;flex-direction:row;align-items:stretch;justify-content:flex-start}
+.card:active{transform:translate(calc(5px * var(--k)),calc(5px * var(--k)));box-shadow:0 0 0 var(--ink)}
+.cardArt{flex:0 0 calc(148px * var(--k));background:var(--c);display:flex;align-items:center;justify-content:center;font-size:calc(84px * var(--k));line-height:1}
+.cardTx{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:calc(6px * var(--k));padding:calc(14px * var(--k)) calc(18px * var(--k))}
+.cardName{font-size:calc(38px * var(--k));font-weight:700;line-height:1.1}
+.cardTip{font-size:calc(21px * var(--k));color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cardMeta{display:flex;align-items:center;gap:calc(12px * var(--k));margin-top:calc(4px * var(--k))}
+.cardMeta .s{flex:none;white-space:nowrap;font-size:calc(25px * var(--k));font-weight:700;color:var(--orange)}
+.cardMeta .b{flex:none;white-space:nowrap;font-size:calc(21px * var(--k));color:var(--ink-soft)}
+.stair{flex:1 1 auto;min-height:0;display:flex;align-items:flex-end;gap:calc(20px * var(--k));padding:calc(132px * var(--k)) calc(26px * var(--k)) 0}
+.step{flex:1 1 0;min-width:0;border:calc(5px * var(--k)) solid var(--ink);border-bottom:0;border-radius:calc(26px * var(--k)) calc(26px * var(--k)) 0 0;display:flex;flex-direction:column;align-items:center;gap:calc(10px * var(--k));padding:calc(18px * var(--k)) calc(12px * var(--k)) 0;position:relative;cursor:pointer}
+.step .no{width:calc(92px * var(--k));height:calc(92px * var(--k));flex:none;border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(26px * var(--k));background:#fff;color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:calc(50px * var(--k))}
+.step .nm{flex:none;width:100%;font-size:calc(25px * var(--k));font-weight:700;text-align:center;line-height:1.22;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.step .mid{flex:1 1 auto;min-height:0;min-width:0;width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.step .ft{flex:none;display:flex;flex-direction:column;align-items:center;gap:calc(4px * var(--k));padding-bottom:calc(16px * var(--k))}
+.step .ft i{font-size:calc(21px * var(--k));font-style:normal;font-weight:700;white-space:nowrap}
+.step .go{flex:none;width:100%;margin-bottom:calc(10px * var(--k));height:calc(88px * var(--k));border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(22px * var(--k));background:var(--ink);color:#fff;font-family:inherit;font-size:calc(30px * var(--k));font-weight:700;cursor:pointer}
+.step .me{position:absolute;top:auto;bottom:100%;left:50%;margin-bottom:calc(42px * var(--k));font-size:calc(86px * var(--k));line-height:1;transform:translateX(-50%);animation:bob 3s infinite;pointer-events:none}
+.step .tag{position:absolute;top:auto;bottom:100%;left:50%;margin-bottom:calc(8px * var(--k));transform:translateX(-50%);border:calc(4px * var(--k)) solid var(--ink);border-radius:999px;background:var(--green);color:#fff;font-size:calc(20px * var(--k));font-weight:700;padding:calc(3px * var(--k)) calc(14px * var(--k));white-space:nowrap;pointer-events:none}
+@keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-calc(10px * var(--k)))}}
+.pv{display:grid;gap:calc(5px * var(--k))}
+.pv span{border:calc(3px * var(--k)) solid var(--ink);border-radius:calc(8px * var(--k));background:#fff;display:block}
+.pv span.hi{background:var(--yellow)}
+.play{flex-direction:row}
+.boardWrap{flex:1 1 auto;min-width:0;position:relative;display:flex;align-items:center;justify-content:center;padding:calc(28px * var(--k))}
+#board{flex:1 1 auto;width:100%;height:100%;min-height:0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.side{flex:0 0 calc(380px * var(--k));background:#FFF4D6;border-left:calc(5px * var(--k)) solid var(--ink);display:flex;flex-direction:column;align-items:center;gap:calc(16px * var(--k));padding:calc(24px * var(--k));overflow:hidden}
+.owl{display:flex;align-items:center;gap:calc(10px * var(--k));align-self:stretch;flex:none}
+.owl .f{font-size:calc(56px * var(--k));line-height:1;flex:none;animation:bob2 3s infinite}
+@keyframes bob2{0%,100%{transform:translateY(0)}50%{transform:translateY(-calc(8px * var(--k)))}}
+#prompt{flex:1 1 auto;min-width:0;font-size:calc(24px * var(--k));font-weight:700;line-height:1.35;background:#fff;border:calc(4px * var(--k)) solid var(--ink);border-radius:calc(18px * var(--k));padding:calc(10px * var(--k)) calc(14px * var(--k));text-align:left}
+#targetChip{display:inline-flex;align-items:center;justify-content:center;border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(24px * var(--k));background:var(--yellow);box-shadow:calc(6px * var(--k)) calc(6px * var(--k)) 0 var(--ink);padding:0 calc(12px * var(--k));margin:calc(6px * var(--k)) calc(4px * var(--k));vertical-align:middle}
+#dots{flex:0 0 auto;display:flex;gap:calc(12px * var(--k));justify-content:center;padding:0}
+#dots i{width:calc(40px * var(--k));height:calc(40px * var(--k));border-radius:50%;border:calc(5px * var(--k)) solid var(--ink);background:#fff;display:block}
+#dots i.on{background:var(--yellow)}
+.timer{align-self:stretch;flex:none;display:flex;flex-direction:column;align-items:center;gap:calc(2px * var(--k));border:calc(4px * var(--k)) solid var(--ink);border-radius:calc(22px * var(--k));background:#fff;box-shadow:calc(5px * var(--k)) calc(5px * var(--k)) 0 var(--ink);padding:calc(12px * var(--k))}
+.timer .t{display:flex;align-items:baseline;gap:calc(10px * var(--k));font-size:calc(52px * var(--k));line-height:1}
+.timer .l{font-size:calc(19px * var(--k));color:var(--ink-soft)}
+.extras{align-self:stretch;flex:none;display:flex;flex-direction:column;gap:calc(10px * var(--k))}
+.sidebtn{height:calc(76px * var(--k));border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(22px * var(--k));background:#fff;box-shadow:calc(5px * var(--k)) calc(5px * var(--k)) 0 var(--ink);font-family:inherit;font-size:calc(26px * var(--k));font-weight:700;color:var(--ink);cursor:pointer;width:100%}
+.sidebtn.y{background:var(--yellow);height:calc(80px * var(--k));font-size:calc(28px * var(--k))}
+.sidebtn:active{transform:translate(calc(4px * var(--k)),calc(4px * var(--k)));box-shadow:0 0 0 var(--ink)}
+.tile{border:calc(4px * var(--k)) solid var(--ink);border-radius:calc(16px * var(--k));box-shadow:calc(4px * var(--k)) calc(4px * var(--k)) 0 var(--ink)}
+.tile:active{transform:translate(calc(4px * var(--k)),calc(4px * var(--k)));box-shadow:0 0 0 var(--ink)}
+.ll{border:calc(4px * var(--k)) solid var(--ink);border-radius:calc(16px * var(--k));box-shadow:calc(4px * var(--k)) calc(4px * var(--k)) 0 var(--ink)}
+.sw{border:calc(4px * var(--k)) solid var(--ink);border-radius:calc(999px * var(--k));padding:calc(10px * var(--k)) calc(22px * var(--k));font-size:calc(24px * var(--k));font-family:inherit;font-weight:700;cursor:pointer}
+#reward .big{font-size:calc(200px * var(--k));line-height:1}
+#reward h2{font-size:calc(56px * var(--k));margin:0}
+.timeline{display:flex;align-items:center;gap:calc(14px * var(--k));border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(999px * var(--k));background:var(--green);color:#fff;box-shadow:calc(6px * var(--k)) calc(6px * var(--k)) 0 var(--ink);padding:calc(12px * var(--k)) calc(28px * var(--k));font-size:calc(30px * var(--k));font-weight:700;flex-wrap:wrap;justify-content:center}
+.timeline b{font-size:calc(26px * var(--k));background:#fff;color:var(--green);border-radius:calc(999px * var(--k));padding:calc(4px * var(--k)) calc(18px * var(--k))}
+.album{display:flex;align-items:center;gap:calc(12px * var(--k));border:calc(4px * var(--k)) solid var(--ink);border-radius:calc(24px * var(--k));background:#fff;box-shadow:calc(5px * var(--k)) calc(5px * var(--k)) 0 var(--ink);padding:calc(14px * var(--k)) calc(20px * var(--k))}
+.album .t{font-size:calc(24px * var(--k));font-weight:700;white-space:nowrap}
+.album s{width:calc(68px * var(--k));height:calc(68px * var(--k));flex:none;border:calc(4px * var(--k)) solid var(--ink);border-radius:calc(16px * var(--k));background:#FFF4D6;display:flex;align-items:center;justify-content:center;font-size:calc(38px * var(--k));text-decoration:none}
+.album s.q{border-style:dashed;border-color:#C9C2B4;background:#fff;color:#C9C2B4;font-size:calc(28px * var(--k))}
+.album s.new{border-color:var(--yellow);background:var(--yellow);box-shadow:0 0 0 calc(7px * var(--k)) rgba(245,185,33,.35)}
+.bigbtn{border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(24px * var(--k));background:var(--yellow);box-shadow:calc(7px * var(--k)) calc(7px * var(--k)) 0 var(--ink);font-size:calc(34px * var(--k));font-weight:700;padding:calc(18px * var(--k)) calc(34px * var(--k));font-family:inherit;color:var(--ink);cursor:pointer}
+.bigbtn.ghost{background:#fff;font-size:calc(26px * var(--k));padding:calc(14px * var(--k)) calc(26px * var(--k));border-width:calc(4px * var(--k));box-shadow:calc(5px * var(--k)) calc(5px * var(--k)) 0 var(--ink)}
+.btnrow{display:flex;gap:calc(16px * var(--k));flex-wrap:wrap;justify-content:center;align-items:center}
+.sheet{position:absolute;inset:0;background:var(--paper);background-image:radial-gradient(var(--line) calc(1.2px * var(--k)),transparent calc(1.3px * var(--k)));background-size:calc(22px * var(--k)) calc(22px * var(--k));display:flex;flex-direction:column;z-index:40;overflow:hidden}
+.sheetBody{flex:1 1 auto;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:calc(20px * var(--k));padding:calc(6px * var(--k)) calc(24px * var(--k)) calc(24px * var(--k))}
+.pcols{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:1fr 1fr 1fr;gap:calc(20px * var(--k));align-items:start}
+.pcard{display:flex;flex-direction:column;border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(26px * var(--k));background:#fff;box-shadow:calc(6px * var(--k)) calc(6px * var(--k)) 0 var(--ink);padding:calc(16px * var(--k)) calc(22px * var(--k));overflow:hidden}
+.sheet h3{margin:0 0 calc(8px * var(--k));font-size:calc(26px * var(--k));line-height:1.25}
+.prow{display:flex;align-items:center;gap:calc(16px * var(--k));padding:calc(14px * var(--k)) 0;border-bottom:calc(3px * var(--k)) solid var(--line)}
+.prow:last-child{border-bottom:0}
+.prow .tx{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:calc(4px * var(--k))}
+.prow .tx b{font-size:calc(25px * var(--k))}
+.prow .tx span{font-size:calc(18px * var(--k));line-height:1.5;color:var(--ink-soft)}
+.prow .tx span.warn{color:var(--red);font-weight:700}
+.tg{flex:none;width:calc(104px * var(--k));height:calc(56px * var(--k));border:calc(4px * var(--k)) solid var(--ink);border-radius:calc(999px * var(--k));background:#fff;color:var(--ink-soft);font-size:calc(24px * var(--k));font-weight:700;font-family:inherit;cursor:pointer}
+.tg.on{background:var(--green);color:#fff}
+.lvbox{flex:none;height:auto;display:flex;flex-direction:column;gap:calc(10px * var(--k));border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(26px * var(--k));background:#fff;box-shadow:calc(6px * var(--k)) calc(6px * var(--k)) 0 var(--ink);padding:calc(16px * var(--k)) calc(22px * var(--k));overflow:hidden}
+.lvgrid{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:calc(62px * var(--k));gap:calc(12px * var(--k));align-content:start}
+.lvchip{display:flex;align-items:center;gap:calc(10px * var(--k));border:calc(3px * var(--k)) solid var(--line);border-radius:calc(16px * var(--k));background:var(--paper);padding:calc(6px * var(--k)) calc(10px * var(--k))}
+.lvchip span.n{flex:1 1 auto;min-width:0;font-size:calc(20px * var(--k));font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lvchip button{width:calc(44px * var(--k));height:calc(44px * var(--k));flex:none;border:calc(3px * var(--k)) solid var(--ink);border-radius:calc(13px * var(--k));background:#fff;font-size:calc(24px * var(--k));font-family:inherit;font-weight:700;cursor:pointer;padding:0}
+.lvchip b{flex:none;width:calc(52px * var(--k));text-align:center;font-size:calc(22px * var(--k))}
+.albumGrid{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:repeat(8,1fr);gap:calc(18px * var(--k));padding:0 calc(24px * var(--k)) calc(24px * var(--k));align-content:center}
+.albumGrid s{border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(24px * var(--k));background:#fff;box-shadow:calc(6px * var(--k)) calc(6px * var(--k)) 0 var(--ink);display:flex;align-items:center;justify-content:center;font-size:calc(76px * var(--k));text-decoration:none;aspect-ratio:1}
+.albumGrid s.q{border-style:dashed;border-color:#C9C2B4;box-shadow:none;color:#C9C2B4;font-size:calc(46px * var(--k))}
+
+.mc.on{background:var(--onc,var(--blue));clip-path:var(--mcs,none);border-radius:var(--mcr,calc(6px * var(--k)))}
+.mc.put{background:var(--putc,var(--pink));clip-path:var(--mcs,none);border-radius:var(--mcr,calc(6px * var(--k)))}
+.mc.bad{background:var(--red);clip-path:var(--mcs,none);border-radius:var(--mcr,calc(6px * var(--k)))}
+
+.extras .sw,.extras .row2 .sw{width:100%;height:calc(74px * var(--k));border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(22px * var(--k));background:#fff;box-shadow:calc(5px * var(--k)) calc(5px * var(--k)) 0 var(--ink);font-size:calc(23px * var(--k));font-weight:700;padding:0;line-height:1.2}
+.extras .row2{display:flex;flex-direction:column;align-items:stretch;gap:calc(10px * var(--k));width:100%;margin:0}
+.extras .sw:active{transform:translate(calc(4px * var(--k)),calc(4px * var(--k)));box-shadow:0 0 0 var(--ink)}
+.extras .sw[disabled]{opacity:.5}
+
 </style>
 </head>
 <body>
-<div id="app">
-  <div id="topbar">
-    <button class="iconbtn hide" id="backBtn" aria-label="返回">🏠</button>
-    <div id="barTitle">思维小画本</div>
-    <div id="starBox"><span>⭐</span><span class="num" id="starNum">0</span></div>
-    <button class="iconbtn" id="sayBtn" aria-label="再读一遍">🔊</button>
-    <button class="iconbtn" id="gearBtn" aria-label="家长设置">⚙️</button>
-  </div>
-  <div id="screen"></div>
-</div>
+<div id="app"><div id="screen"></div></div>
 <div id="fx"></div>
 <script>
+
+
 /* ===================== 工具 ===================== */
 const $ = s => document.querySelector(s);
 const el = (t, c, x) => { const n = document.createElement(t); if (c) n.className = c; if (x != null) n.textContent = x; return n; };
@@ -220,7 +320,7 @@ document.addEventListener('gesturestart', e => e.preventDefault());
 /* 按真实容器尺寸排版：cols×rows 的格子能用多大 */
 function cellFit(w, h, cols, rows, gap, max) {
   const cw = (w - gap * (cols - 1)) / cols, ch = (h - gap * (rows - 1)) / rows;
-  return clamp(Math.floor(Math.min(cw, ch)), 22, max || 220);
+  return clamp(Math.floor(Math.min(cw, ch)), 22, Math.round((max || 220) * 1.7));
 }
 
 /* ===================== 声音 ===================== */
@@ -369,7 +469,7 @@ if ('speechSynthesis' in window) {
 /* ===================== 状态 ===================== */
 const STICKERS = ['🐣', '🦄', '🐙', '🍓', '🚀', '🌈', '🐢', '🦋', '🍭', '🐧', '🦖', '🌻', '🐬', '🎠', '🐨', '🍉'];
 const S = { stars: 0, stickers: [], level: {}, streak: {}, autoLevel: true };
-function addStars(n) { S.stars += n; $('#starNum').textContent = S.stars; Audio2.star(); }
+function addStars(n) { S.stars += n; const sn = $('#starNum'); if (sn) sn.textContent = S.stars; Audio2.star(); }
 
 /* ===================== 游戏清单与关卡设计 ===================== */
 const GAMES = [
@@ -488,168 +588,313 @@ function toast(t) {
   $('#screen').appendChild(n); setTimeout(() => n.remove(), 1700);
 }
 
-/* ===================== 首页 ===================== */
+
+/* ===================== 新外壳：首页 / 阶梯 / 游戏中 / 奖励 ===================== */
+Object.assign(S, { hints: false, showTimer: true, persist: true, best: {}, days: {} });
+var SKEY = 'logicc.design.v2';
+function todayKey() { var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+function save() { if (!S.persist) return; try { localStorage.setItem(SKEY, JSON.stringify({ level: S.level, stars: S.stars, stickers: S.stickers, best: S.best, days: S.days, hints: S.hints, showTimer: S.showTimer, autoLevel: S.autoLevel, snd: Audio2.on, voi: Voice.on, mus: Music.on })); } catch (e) { } }
+function load() {
+  try {
+    var raw = localStorage.getItem(SKEY); if (!raw) return;
+    var r = JSON.parse(raw); if (!r) return;
+    if (r.level) Object.keys(r.level).forEach(function (k) { if (S.level[k]) S.level[k] = r.level[k]; });
+    S.stars = r.stars || 0; S.stickers = r.stickers || []; S.best = r.best || {}; S.days = r.days || {};
+    if (typeof r.hints === 'boolean') S.hints = r.hints;
+    if (typeof r.showTimer === 'boolean') S.showTimer = r.showTimer;
+    if (typeof r.autoLevel === 'boolean') S.autoLevel = r.autoLevel;
+    if (typeof r.snd === 'boolean') Audio2.on = r.snd;
+    if (typeof r.voi === 'boolean') Voice.on = r.voi;
+    if (typeof r.mus === 'boolean') Music.on = r.mus;
+  } catch (e) { }
+}
+var HEXOF = {
+  'var(--red)': '#E8452C', 'var(--orange)': '#F08A24', 'var(--yellow)': '#F5B921', 'var(--green)': '#3FA34D',
+  'var(--blue)': '#2E7DD1', 'var(--purple)': '#7B4BC9', 'var(--pink)': '#E4568E', 'var(--teal)': '#12A5A0'
+};
+function lumOf(rgb) {
+  var f = rgb.map(function (v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+  return 0.2126 * f[0] + 0.7152 * f[1] + 0.0722 * f[2];
+}
+function ratio(a, b) { return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05); }
+// 台阶底色 = 游戏色叠一层白，按合成后的真实亮度决定黑字还是白字
+function inkOrWhite(colorVar, whiteAlpha) {
+  var hex = HEXOF[colorVar] || '#888888';
+  var r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
+  var mixed = [r + (255 - r) * whiteAlpha, g + (255 - g) * whiteAlpha, b + (255 - b) * whiteAlpha];
+  var L = lumOf(mixed), inkL = lumOf([42, 37, 35]);
+  return ratio(1, L) > ratio(inkL, L) ? '#fff' : 'var(--ink)';
+}
+function fmt(s) { return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
+function bestOf(g) { var b = null; g.levels.forEach(function (L, i) { var v = S.best[g.id + '.' + (i + 1)]; if (v && (b === null || v < b)) b = v; }); return b; }
+var K = 1;
+function fitScale() {
+  var a = document.getElementById('app');
+  var w = a ? a.clientWidth : window.innerWidth, h = a ? a.clientHeight : window.innerHeight;
+  K = Math.max(0.4, Math.min(1.7, Math.min(w / 1440, h / 900)));
+  document.documentElement.style.setProperty('--k', String(K));
+}
+var T = { t0: 0, id: null };
+function startTimer() { stopTimer(); T.t0 = Date.now(); T.id = setInterval(paintTimer, 250); paintTimer(); }
+function stopTimer() { if (T.id) clearInterval(T.id); T.id = null; }
+function elapsed() { return T.t0 ? Math.floor((Date.now() - T.t0) / 1000) : 0; }
+function paintTimer() { var n = $('#timeNow'); if (n) n.textContent = fmt(elapsed()); }
+
+function ibtn(icon, bg, fn, id) { var b = el('button', 'iconbtn', icon); if (bg) b.style.background = bg; if (id) b.id = id; b.addEventListener('click', fn); return b; }
+function starPill() { var p = el('div', 'pill'); p.appendChild(el('span', null, '⭐')); var n = el('span', 'num', String(S.stars)); n.id = 'starNum'; p.appendChild(n); return p; }
+function topbar(o) {
+  var bar = el('div', 'topbar');
+  if (o.back) bar.appendChild(ibtn('🏠', '#fff', o.back));
+  var t = el('div', 'barTitle'); t.appendChild(el('span', null, o.title)); if (o.sub) t.appendChild(el('small', null, o.sub)); bar.appendChild(t);
+  if (o.day) {
+    var n = S.days[todayKey()] || 0, goal = 6;
+    var d = el('div', 'pill dayPill');
+    d.appendChild(el('span', null, '🌞'));
+    d.appendChild(el('span', null, '今天玩了 ' + n + ' 关'));
+    var bx = el('div', 'dayBar'); var fi = el('i'); fi.style.width = Math.min(100, n / goal * 100) + '%'; bx.appendChild(fi); d.appendChild(bx);
+    d.appendChild(el('span', null, n >= goal ? '够啦 🎉' : '再 ' + (goal - n) + ' 关'));
+    bar.appendChild(d);
+  } else bar.appendChild(el('div', 'grow'));
+  bar.appendChild(starPill());
+  if (o.book) bar.appendChild(ibtn('📖', 'var(--pink)', openAlbum));
+  bar.appendChild(ibtn('🔊', 'var(--yellow)', function () { Audio2.init(); Voice.unlock(); Voice.repeat(); }, 'sayBtn'));
+  if (o.gear) bar.appendChild(ibtn('⚙️', '#fff', openPanel));
+  return bar;
+}
+
 function home() {
-  Session = null; Fit.cb = null; ROUND_ID++;
-  $('#backBtn').classList.add('hide');
-  $('#barTitle').textContent = '思维小画本';
-  const p = el('div', 'pane');
-  const hero = el('div', 'hero');
-  hero.appendChild(el('h1', null, '今天玩哪一个？'));
-  hero.appendChild(el('p', null, '一次三关，很快就玩完'));
-  const cards = el('div'); cards.id = 'cards';
-  GAMES.forEach(g => {
-    const c = el('div', 'card'); c.style.setProperty('--c', g.color);
-    const band = el('div', 'band'); band.appendChild(el('i')); c.appendChild(band);
-    c.appendChild(el('div', 'emoji', g.emoji));
-    c.appendChild(el('div', 'name', g.name));
-    c.appendChild(el('div', 'lv', '第 ' + S.level[g.id] + ' 关'));
-    c.addEventListener('click', () => { Audio2.page(); levelPicker(g); });
+  Session = null; Fit.cb = null; ROUND_ID++; stopTimer();
+  var p = el('div', 'pane');
+  p.appendChild(topbar({ title: '思维小画本', day: true, book: true, gear: true }));
+  var cards = el('div'); cards.id = 'cards';
+  GAMES.forEach(function (g) {
+    var c = el('div', 'card'); c.style.setProperty('--c', g.color);
+    c.appendChild(el('div', 'cardArt', g.emoji));
+    var tx = el('div', 'cardTx');
+    tx.appendChild(el('div', 'cardName', g.name));
+    tx.appendChild(el('div', 'cardTip', g.tip));
+    var m = el('div', 'cardMeta');
+    m.appendChild(el('span', 's', '★ ' + S.level[g.id] + '/' + g.levels.length + ' 关'));
+    var b = bestOf(g);
+    m.appendChild(el('span', 'b', b ? '⏱ 最快 ' + fmt(b) : '还没玩过'));
+    tx.appendChild(m); c.appendChild(tx);
+    c.addEventListener('click', function () { Audio2.page(); levelPicker(g); });
     cards.appendChild(c);
   });
-  const bar = el('div'); bar.id = 'stickerBar';
-  if (!S.stickers.length) bar.appendChild(el('span', null, '玩完一组就能收到一张贴纸'));
-  else { bar.appendChild(el('span', null, '我的贴纸')); S.stickers.forEach(s => bar.appendChild(el('b', null, s))); }
-  p.appendChild(hero); p.appendChild(cards); p.appendChild(bar);
+  p.appendChild(cards);
   $('#screen').innerHTML = ''; $('#screen').appendChild(p);
-  Fit.cb = () => {
-    const r = cards.getBoundingClientRect();
-    if (!r.width) return;
-    const cols = r.width > r.height * 1.35 ? (r.width > 900 ? 5 : 3) : (r.width < 380 ? 2 : 3);
-    const rows = Math.ceil(GAMES.length / cols);
-    cards.style.gridTemplateColumns = 'repeat(' + cols + ',1fr)';
-    cards.style.gridTemplateRows = 'repeat(' + rows + ',1fr)';
-    const ch = (r.height - 10 * (rows - 1)) / rows;
-    const cw = (r.width - 10 * (cols - 1)) / cols;
-    const u = Math.min(ch, cw);
-    cards.querySelectorAll('.emoji').forEach(n => n.style.fontSize = px(clamp(u * .38, 20, 60)));
-    cards.querySelectorAll('.name').forEach(n => n.style.fontSize = px(clamp(u * .17, 12, 24)));
-  };
-  Fit.run();
+  Voice.say('今天玩哪一个？', false);
 }
 
-/* ===================== 选难度 ===================== */
+function previewShape(g, i) {
+  var c = g.levels[i].cfg, cols = 3, rows = 3;
+  if (g.id === 'schulte' || g.id === 'maze') { cols = c.n; rows = c.n; }
+  else if (g.id === 'mirror') { cols = c.w * 2; rows = c.h; }
+  else if (g.id === 'link') { cols = c.w; rows = c.h; }
+  else if (g.id === 'match') { cols = 2; rows = Math.min(5, c.n); }
+  else if (g.id === 'pattern') { cols = 6; rows = 1; }
+  else if (g.id === 'dots') { cols = c.kind === 'make3' ? 3 : 2; rows = 1; }
+  else if (g.id === 'bond') { cols = c.miss === 'three' ? 3 : 2; rows = 2; }
+  else if (g.id === 'connect') { cols = Math.min(6, SHAPES[c.sh].pts.length); rows = 1; }
+  return { cols: cols, rows: rows };
+}
+function previewGrid(g, i) {
+  var sh = previewShape(g, i);
+  var box = el('div', 'pv');
+  box.dataset.cols = sh.cols; box.dataset.rows = sh.rows;
+  for (var k = 0; k < sh.cols * sh.rows; k++) { var sp = el('span'); if (k === 0) sp.className = 'hi'; box.appendChild(sp); }
+  return box;
+}
+function scheduleFit(tries) {
+  Fit.run();
+  if (tries < 6) setTimeout(function () { scheduleFit(tries + 1); }, 60);
+}
+function sizePreviews() {
+  var mids = document.querySelectorAll('.step .mid');
+  for (var i = 0; i < mids.length; i++) {
+    var mid = mids[i], pv = mid.querySelector('.pv');
+    if (!pv) continue;
+    var cols = +pv.dataset.cols, rows = +pv.dataset.rows;
+    var w = mid.clientWidth, h = mid.clientHeight;
+    if (!w || !h) continue;
+    if (h < 34 || w < 34) { pv.style.display = 'none'; continue; }
+    pv.style.display = 'grid';
+    var gp = Math.max(2, Math.round(5 * K));
+    var s = Math.floor(Math.min((w - (cols - 1) * gp) / cols, (h - (rows - 1) * gp) / rows));
+    s = Math.max(5, Math.min(s, Math.round(46 * K)));
+    if (s < 12) gp = 2;
+    pv.style.gap = gp + 'px';
+    pv.style.gridTemplateColumns = 'repeat(' + cols + ',' + s + 'px)';
+    pv.style.gridAutoRows = s + 'px';
+    pv.querySelectorAll('span').forEach(function (n) { n.style.borderWidth = (s < 16 ? 2 : 3) + 'px'; n.style.borderRadius = Math.max(2, Math.round(s * .18)) + 'px'; });
+  }
+}
 function levelPicker(g) {
-  Session = null; Fit.cb = null; ROUND_ID++;
-  $('#backBtn').classList.remove('hide');
-  $('#barTitle').textContent = g.name;
-  const p = el('div', 'pane');
-  const hero = el('div', 'hero');
-  hero.appendChild(el('h1', null, '选一个难度'));
-  hero.appendChild(el('p', null, g.tip));
-  const wrap = el('div'); wrap.id = 'lvWrap';
-  g.levels.forEach((L, i) => {
-    const lv = i + 1;
-    const c = el('div', 'lvcard'); c.style.setProperty('--c', g.color);
-    c.appendChild(el('div', 'no num', String(lv)));
-    const tx = el('div', 'tx');
-    tx.appendChild(el('div', 't1', L.t));
-    if (L.d) tx.appendChild(el('div', 't2', L.d));
-    c.appendChild(tx);
-    c.appendChild(el('div', 'st', '★'.repeat(lv) + '☆'.repeat(g.levels.length - lv)));
-    if (lv === S.level[g.id]) c.appendChild(el('div', 'tag', '上次玩到这'));
-    c.addEventListener('click', () => { Audio2.tap(); S.level[g.id] = lv; Voice.say(g.name + '，' + L.t); startSession(g, lv); });
-    wrap.appendChild(c);
+  Session = null; Fit.cb = null; ROUND_ID++; stopTimer();
+  var p = el('div', 'pane');
+  p.appendChild(topbar({ title: g.emoji + ' ' + g.name, sub: '往上走，一级比一级难', back: home }));
+  var st = el('div', 'stair');
+  var n = g.levels.length, cur = S.level[g.id];
+  g.levels.forEach(function (L, i) {
+    var lv = i + 1, isCur = lv === cur;
+    var col = el('div', 'step');
+    col.style.height = (56 + (n > 1 ? i * (40 / (n - 1)) : 0)) + '%';
+    if (isCur) col.style.background = 'var(--yellow)';
+    else {
+      var a = n > 1 ? 0.8 - 0.8 * i / (n - 1) : 0.4;
+      col.style.background = g.color;
+      col.style.boxShadow = 'inset 0 0 0 9999px rgba(255,255,255,' + a.toFixed(2) + ')';
+      col.style.color = inkOrWhite(g.color, a);
+    }
+    if (isCur) { col.appendChild(el('div', 'me', '🐰')); col.appendChild(el('div', 'tag', '上次玩到这')); }
+    col.appendChild(el('div', 'no num', String(lv)));
+    col.appendChild(el('div', 'nm', L.t));
+    var mid = el('div', 'mid');
+    mid.appendChild(previewGrid(g, i));
+    col.appendChild(mid);
+    if (isCur) col.appendChild(el('button', 'go', '▶ 就玩这级'));
+    var ft = el('div', 'ft');
+    var b = S.best[g.id + '.' + lv];
+    ft.appendChild(el('i', null, b ? '⏱ 最快 ' + fmt(b) : '还没玩过'));
+    col.appendChild(ft);
+    col.addEventListener('click', function () { Audio2.tap(); S.level[g.id] = lv; save(); Voice.say(g.name + '，' + L.t); startSession(g, lv); });
+    st.appendChild(col);
   });
-  p.appendChild(hero); p.appendChild(wrap);
+  p.appendChild(st);
   $('#screen').innerHTML = ''; $('#screen').appendChild(p);
-  Fit.cb = () => {
-    const r = wrap.getBoundingClientRect(); if (!r.width) return;
-    const cols = r.width > 720 ? 2 : 1;
-    wrap.style.gridTemplateColumns = 'repeat(' + cols + ',1fr)';
-  };
-  Fit.run();
+  Fit.cb = sizePreviews;
+  scheduleFit(0);
 }
 
-/* ===================== 关卡外壳 ===================== */
-let Session = null, ROUND_ID = 0;
-const ROUNDS = 3;
-// 关卡内的延时回调统一走这里：换关后旧的定时器自动失效
-function later(ms, fn) { const id = ROUND_ID; return setTimeout(() => { if (id === ROUND_ID) fn(); }, ms); }
-function every(ms, fn) { const id = ROUND_ID; const t = setInterval(() => { if (id !== ROUND_ID) return clearInterval(t); fn(t); }, ms); return t; }
-const Fit = {
+var Session = null, ROUND_ID = 0;
+var ROUNDS = 3;
+function later(ms, fn) { var id = ROUND_ID; return setTimeout(function () { if (id === ROUND_ID) fn(); }, ms); }
+function every(ms, fn) { var id = ROUND_ID; var t = setInterval(function () { if (id !== ROUND_ID) return clearInterval(t); fn(t); }, ms); return t; }
+var Fit = {
   cb: null, ro: null,
-  run() { if (this.cb) { try { this.cb(); } catch (e) { } } },
-  boot() {
-    const go = () => requestAnimationFrame(() => this.run());
-    addEventListener('resize', go); addEventListener('orientationchange', () => setTimeout(go, 250));
+  run: function () { if (this.cb) { try { this.cb(); } catch (err) { console.error('Fit.cb failed:', err); } } },
+  boot: function () {
+    var self = this;
+    var go = function () { requestAnimationFrame(function () { fitScale(); self.run(); }); };
+    addEventListener('resize', go);
+    addEventListener('orientationchange', function () { setTimeout(go, 250); });
     if (window.visualViewport) visualViewport.addEventListener('resize', go);
     if (window.ResizeObserver) { this.ro = new ResizeObserver(go); this.ro.observe($('#screen')); }
   }
 };
-function boardBox() { const r = $('#board').getBoundingClientRect(); return { w: r.width, h: r.height }; }
+function addExtra(node, fallback) {
+  var slot = $('#extras');
+  if (slot) slot.appendChild(node); else if (fallback) fallback.appendChild(node);
+}
+function boardBox() { var r = $('#board').getBoundingClientRect(); return { w: r.width, h: r.height }; }
 function startSession(g, lv) {
   Audio2.init();
-  Session = { g, lv, round: 0, doneRounds: 0, miss: 0, hintTimer: null };
-  $('#backBtn').classList.remove('hide');
-  $('#barTitle').textContent = g.name + ' · 第 ' + lv + ' 关';
-  const p = el('div', 'pane');
-  const dots = el('div'); dots.id = 'dots';
-  for (let i = 0; i < ROUNDS; i++) dots.appendChild(el('i'));
-  const prompt = el('div'); prompt.id = 'prompt';
-  const board = el('div'); board.id = 'board';
-  p.appendChild(dots); p.appendChild(prompt); p.appendChild(board);
+  Session = { g: g, lv: lv, startLv: lv, round: 0, doneRounds: 0, miss: 0, totalMiss: 0, hintTimer: null };
+  var p = el('div', 'pane play');
+  var bw = el('div', 'boardWrap');
+  var board = el('div'); board.id = 'board'; bw.appendChild(board);
+  var side = el('div', 'side');
+  var owl = el('div', 'owl'); owl.appendChild(el('span', 'f', '🦉'));
+  var pr = el('div'); pr.id = 'prompt'; owl.appendChild(pr); side.appendChild(owl);
+  var dots = el('div'); dots.id = 'dots';
+  for (var i = 0; i < ROUNDS; i++) dots.appendChild(el('i'));
+  side.appendChild(dots);
+  if (S.showTimer) {
+    var tm = el('div', 'timer');
+    var t1 = el('div', 't'); t1.appendChild(el('span', null, '⏱'));
+    var tn = el('span', 'num', '0:00'); tn.id = 'timeNow'; t1.appendChild(tn); tm.appendChild(t1);
+    var bt = S.best[g.id + '.' + lv];
+    tm.appendChild(el('div', 'l', bt ? '上次最快 ' + fmt(bt) : '第一次玩这一关'));
+    side.appendChild(tm);
+  }
+  var ex = el('div', 'extras'); ex.id = 'extras'; side.appendChild(ex);
+  var sp = el('div'); sp.style.cssText = 'margin-top:auto;align-self:stretch;display:flex;flex-direction:column;gap:12px';
+  var say = el('button', 'sidebtn y', '🔊 再读一遍'); say.id = 'sayBtn';
+  say.addEventListener('click', function () { Audio2.init(); Voice.unlock(); Voice.repeat(); });
+  var hm = el('button', 'sidebtn', '🏠 回家');
+  hm.addEventListener('click', function () { Audio2.page(); clearHint(); stopTimer(); levelPicker(g); });
+  sp.appendChild(say); sp.appendChild(hm); side.appendChild(sp);
+  p.appendChild(bw); p.appendChild(side);
   $('#screen').innerHTML = ''; $('#screen').appendChild(p);
+  startTimer();
   nextRound();
 }
-function updateDots() { document.querySelectorAll('#dots i').forEach((d, i) => d.classList.toggle('on', i < Session.doneRounds)); }
+function updateDots() { var ds = document.querySelectorAll('#dots i'); for (var i = 0; i < ds.length; i++) ds[i].classList.toggle('on', i < Session.doneRounds); }
 function setPrompt(html) {
-  const p = $('#prompt'); if (!p) return;
+  var p = $('#prompt'); if (!p) return;
   p.innerHTML = html;
-  const w = p.getBoundingClientRect().width || 360;
-  p.style.fontSize = px(clamp(w * .046, 15, 30));
-  const chip = $('#targetChip');
-  if (chip) { const s = clamp(w * .075, 30, 56); chip.style.height = px(s); chip.style.minWidth = px(s); chip.style.fontSize = px(s * .62); }
+  var chip = $('#targetChip');
+  if (chip) { var cs = Math.round(104 * K); chip.style.height = cs + 'px'; chip.style.minWidth = cs + 'px'; chip.style.fontSize = Math.round(66 * K) + 'px'; }
 }
-function miss() { if (Session) Session.miss++; Audio2.soft(); }
+function miss() { if (Session) { Session.miss++; Session.totalMiss++; } Audio2.soft(); }
 function clearHint() { if (Session && Session.hintTimer) { clearTimeout(Session.hintTimer); Session.hintTimer = null; } }
-function hintIn(ms, fn) { clearHint(); if (!Session) return; Session.hintTimer = setTimeout(() => { if (Session) fn(); }, ms); }
+function hintIn(ms, fn) { clearHint(); if (!Session || !S.hints) return; Session.hintTimer = setTimeout(function () { if (Session) fn(); }, ms); }
 function nextRound() {
   if (!Session) return;
   clearHint(); Fit.cb = null; ROUND_ID++;
   if (Session.doneRounds >= ROUNDS) return rewardScreen();
   Session.round++; Session.miss = 0;
   updateDots();
-  const board = $('#board'); board.innerHTML = ''; board.style.cssText = '';
+  var board = $('#board'); board.innerHTML = ''; board.style.cssText = '';
+  var ex = $('#extras'); if (ex) ex.innerHTML = '';
   GAME_IMPL[Session.g.id](board, Session.lv);
-  requestAnimationFrame(() => Fit.run());
+  scheduleFit(0);
 }
 function roundWin(node) {
   if (!Session || Session.won === ROUND_ID) return;
   Session.won = ROUND_ID;
   clearHint(); Audio2.win(); Voice.praise();
-  const id = Session.g.id, maxLv = Session.g.levels.length;
+  var id = Session.g.id, maxLv = Session.g.levels.length;
   if (Session.miss === 0) S.streak[id]++; else if (Session.miss >= 3) S.streak[id] = 0;
   if (S.autoLevel) {
-    if (S.streak[id] >= 3 && Session.lv < maxLv) { Session.lv++; S.level[id] = Session.lv; S.streak[id] = 0; toast('升到第 ' + Session.lv + ' 关啦 💪'); $('#barTitle').textContent = Session.g.name + ' · 第 ' + Session.lv + ' 关'; }
-    else if (Session.miss >= 5 && Session.lv > 1) { Session.lv--; S.level[id] = Session.lv; toast('换个简单点的 🙂'); $('#barTitle').textContent = Session.g.name + ' · 第 ' + Session.lv + ' 关'; }
+    if (S.streak[id] >= 3 && Session.lv < maxLv) { Session.lv++; S.level[id] = Session.lv; S.streak[id] = 0; toast('升到第 ' + Session.lv + ' 关啦 💪'); }
+    else if (Session.miss >= 5 && Session.lv > 1) { Session.lv--; S.level[id] = Session.lv; toast('换个简单点的 🙂'); }
   }
   addStars(Session.miss === 0 ? 3 : 2);
   sparkleAt(node);
-  Session.doneRounds++; updateDots();
-  setTimeout(() => { if (Session) nextRound(); }, 1300);
+  Session.doneRounds++; updateDots(); save();
+  setTimeout(function () { if (Session) nextRound(); }, 1300);
 }
 function rewardScreen() {
-  const left = STICKERS.filter(s => !S.stickers.includes(s));
-  const sticker = pick(left.length ? left : STICKERS);
-  S.stickers.push(sticker);
+  stopTimer();
+  var g = Session.g, lv = Session.startLv || Session.lv, total = elapsed();
+  var key = g.id + '.' + lv, prev = S.best[key];
+  var faster = (prev && total < prev) ? prev - total : 0;
+  if (!prev || total < prev) S.best[key] = total;
+  var dk = todayKey(); S.days[dk] = (S.days[dk] || 0) + ROUNDS;
+  var left = STICKERS.filter(function (s) { return S.stickers.indexOf(s) < 0; });
+  var sticker = pick(left.length ? left : STICKERS);
+  S.stickers.push(sticker); save();
   Audio2.fanfare(); Voice.say('三关都通过了，得到一张贴纸');
-  const r = el('div'); r.id = 'reward';
+  var r = el('div'); r.id = 'reward';
   r.appendChild(el('div', 'big', sticker));
-  r.appendChild(el('h2', null, '三关都通过了'));
-  const row = el('div', 'btnrow');
-  const again = el('button', 'bigbtn', '再玩三关');
-  again.addEventListener('click', () => { Audio2.tap(); r.remove(); Session.doneRounds = 0; nextRound(); });
-  const other = el('button', 'bigbtn ghost', '换个难度');
-  other.addEventListener('click', () => { Audio2.tap(); levelPicker(Session.g); });
-  const back = el('button', 'bigbtn ghost', '回首页');
-  back.addEventListener('click', () => { Audio2.tap(); home(); });
-  row.appendChild(again); row.appendChild(other); row.appendChild(back); r.appendChild(row);
+  r.appendChild(el('h2', null, '三关都通过了！'));
+  var tl = el('div', 'timeline');
+  tl.appendChild(el('span', null, '⏱ 一共用了 ' + fmt(total)));
+  if (faster) tl.appendChild(el('b', null, '比上次快 ' + faster + ' 秒 🚀'));
+  else if (prev) tl.appendChild(el('b', null, '最快纪录 ' + fmt(prev)));
+  else tl.appendChild(el('b', null, '新纪录'));
+  if (Session.totalMiss === 0) tl.appendChild(el('b', null, '一次都没点错'));
+  r.appendChild(tl);
+  var al = el('div', 'album');
+  al.appendChild(el('div', 't', '我的贴纸 ' + S.stickers.length + '/' + STICKERS.length));
+  var shown = S.stickers.slice(-5);
+  shown.forEach(function (s) { var n = el('s', s === sticker ? 'new' : null, s); al.appendChild(n); });
+  for (var q = 0; q < Math.min(3, STICKERS.length - S.stickers.length); q++) al.appendChild(el('s', 'q', '?'));
+  r.appendChild(al);
+  var row = el('div', 'btnrow');
+  var again = el('button', 'bigbtn', g.emoji + ' 再玩三关');
+  again.addEventListener('click', function () { Audio2.tap(); r.remove(); Session.doneRounds = 0; Session.totalMiss = 0; Session.startLv = Session.lv; startTimer(); nextRound(); });
+  var other = el('button', 'bigbtn ghost', '换个难度');
+  other.addEventListener('click', function () { Audio2.tap(); levelPicker(g); });
+  var back = el('button', 'bigbtn ghost', '🏠 回家');
+  back.addEventListener('click', function () { Audio2.tap(); home(); });
+  row.appendChild(again); row.appendChild(other); row.appendChild(back);
+  r.appendChild(row);
   $('#screen').appendChild(r);
   sparkle(innerWidth / 2, innerHeight / 3, ['🎉', '⭐', '✨', '🎈']);
-  setTimeout(() => sparkle(innerWidth / 2, innerHeight / 3, ['🎉', '⭐', '✨']), 400);
+  setTimeout(function () { sparkle(innerWidth / 2, innerHeight / 3, ['🎉', '⭐', '✨']); }, 400);
 }
-
 /* ===================== 点子图案 ===================== */
 const DIE = { 1: [4], 2: [0, 8], 3: [0, 4, 8], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] };
 function faceEl(n) {
@@ -871,7 +1116,7 @@ function gBond(board, lv) {
     });
     opts.appendChild(o);
   });
-  const help = el('button', 'sw', '💡 看点点');
+  const help = el('button', 'sw', '💡 把点点摆出来');
   help.addEventListener('click', () => {
     Audio2.tap(); help.disabled = true; help.style.opacity = .5;
     const box = el('div', 'row2'); box.style.flexWrap = 'wrap'; box.style.gap = '5px'; box.style.marginTop = '6px';
@@ -879,7 +1124,7 @@ function gBond(board, lv) {
     for (let i = 0; i < N; i++) { const d = el('b'); d.style.cssText = 'width:18px;height:18px;border-radius:50%;display:block;background:' + (i < first ? 'var(--blue)' : 'var(--line)'); box.appendChild(d); }
     wrap.appendChild(box); Fit.run();
   });
-  wrap.appendChild(top); wrap.appendChild(svg); wrap.appendChild(leaves); wrap.appendChild(opts); wrap.appendChild(help);
+  wrap.appendChild(top); wrap.appendChild(svg); wrap.appendChild(leaves); wrap.appendChild(opts); addExtra(help, wrap);
   board.appendChild(wrap);
   hintIn(11000, () => { if (!help.disabled) help.click(); });
   Fit.cb = () => {
@@ -980,6 +1225,26 @@ function gMirror(board, lv) {
   }
   const mapKey = (y, x) => cfg.axis === 'x' ? (y + ',' + (W - 1 - x)) : cfg.axis === 'y' ? ((H - 1 - y) + ',' + x) : ((H - 1 - y) + ',' + (W - 1 - x));
   const holder = el('div', 'col2');
+  const BRUSH = [
+    { n: '圆点', r: '50%', c: 'none' },
+    { n: '方块', r: '18%', c: 'none' },
+    { n: '星星', r: '0', c: 'polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)' },
+    { n: '爱心', r: '0', c: 'polygon(50% 100%,8% 58%,0% 32%,16% 8%,34% 8%,50% 26%,66% 8%,84% 8%,100% 32%,92% 58%)' },
+    { n: '菱形', r: '8%', c: 'polygon(50% 0%,100% 50%,50% 100%,0% 50%)' },
+    { n: '花瓣', r: '50% 8% 50% 8%', c: 'none' },
+    { n: '六边形', r: '0', c: 'polygon(25% 4%,75% 4%,100% 50%,75% 96%,25% 96%,0% 50%)' },
+    { n: '小房子', r: '0', c: 'polygon(50% 0%,100% 40%,100% 100%,0% 100%,0% 40%)' }
+  ];
+  const PAIRS = [
+    ['var(--blue)', 'var(--pink)'], ['var(--purple)', 'var(--teal)'],
+    ['var(--green)', 'var(--orange)'], ['var(--red)', 'var(--blue)'],
+    ['var(--teal)', 'var(--purple)']
+  ];
+  const brush = pick(BRUSH), pair = pick(PAIRS);
+  holder.style.setProperty('--mcs', brush.c);
+  holder.style.setProperty('--mcr', brush.r);
+  holder.style.setProperty('--onc', pair[0]);
+  holder.style.setProperty('--putc', pair[1]);
   const stage = el('div'); stage.style.position = 'relative';
   const stack = el('div'); stack.style.display = 'flex'; stack.style.alignItems = 'center'; stack.style.justifyContent = 'center';
   const gA = el('div', 'mgrid'), gB = el('div', 'mgrid');
@@ -1042,7 +1307,7 @@ function gMirror(board, lv) {
   stack.appendChild(gA); stack.appendChild(gB);
   stage.appendChild(stack); stage.appendChild(divider);
   const bar = el('div', 'row2'); bar.style.gap = '10px'; bar.style.marginTop = '10px';
-  const hint = el('button', 'sw', '💡 看一眼');
+  const hint = el('button', 'sw', '💡 看一眼（少一颗星）');
   hint.addEventListener('click', () => { if (finished) return; miss(); flashAnswer(); });
   bar.appendChild(hint);
   if (!cfg.instant) {
@@ -1051,7 +1316,7 @@ function gMirror(board, lv) {
     doneBtn.addEventListener('click', () => { if (finished) return; if (!placed()) { Voice.say('先在格子上点一点'); return; } check(); });
     bar.appendChild(doneBtn);
   }
-  holder.appendChild(stage); holder.appendChild(bar); board.appendChild(holder);
+  holder.appendChild(stage); board.appendChild(holder); addExtra(bar, holder);
   const tips = { x: '右边点一点，画出和左边一样的', y: '下面点一点，画出和上面一样的', rot: '把左边的图案转半圈，画到右边（不是照镜子）' };
   setPrompt(tips[cfg.axis]);
   Voice.say(cfg.axis === 'rot' ? '把左边的图案转半圈画到右边，注意不是照镜子'
@@ -1312,9 +1577,9 @@ function gMaze(board, lv) {
     path.forEach(p => nodes[p[0]][p[1]].classList.add('sol'));
     setTimeout(() => path.forEach(p => nodes[p[0]][p[1]].classList.remove('sol')), 1400);
   }
-  const help = el('button', 'sw', '💡 看一眼路');
+  const help = el('button', 'sw', '💡 看一眼路（少一颗星）');
   help.addEventListener('click', () => { if (won) return; miss(); flash(); });
-  holder.appendChild(wrap); holder.appendChild(help); board.appendChild(holder);
+  holder.appendChild(wrap); board.appendChild(holder); addExtra(help, holder);
   setPrompt(cfg.key ? '先拿钥匙 🔑 再去开门 🚪' : '带小兔子走到胡萝卜那里');
   Voice.say(cfg.key ? '先用手指带小兔子拿到钥匙，再去开门' : '用手指按住小兔子，带它走到胡萝卜那里');
   hintIn(22000, () => { if (!won) flash(); });
@@ -1387,80 +1652,95 @@ function gPattern(board, lv) {
 
 const GAME_IMPL = { schulte: gSchulte, dots: gDots, bond: gBond, match: gMatch, mirror: gMirror, connect: gConnect, link: gLink, maze: gMaze, pattern: gPattern };
 
-/* ===================== 家长设置 ===================== */
+
+/* ===================== 家长设置 / 贴纸册 ===================== */
+function sheet(title, back) {
+  var s = el('div', 'sheet');
+  var bar = el('div', 'topbar');
+  bar.appendChild(ibtn('⬅', '#fff', function () { s.remove(); if (back) back(); }));
+  var t = el('div', 'barTitle'); t.appendChild(el('span', null, title)); bar.appendChild(t);
+  bar.appendChild(el('div', 'grow'));
+  s.appendChild(bar);
+  return s;
+}
+function toggleRow(name, desc, get, set, warn) {
+  var r = el('div', 'prow');
+  var tx = el('div', 'tx'); tx.appendChild(el('b', null, name));
+  tx.appendChild(el('span', warn ? 'warn' : null, desc));
+  r.appendChild(tx);
+  var b = el('button', 'tg' + (get() ? ' on' : ''), get() ? '开' : '关');
+  b.addEventListener('click', function () { set(!get()); b.className = 'tg' + (get() ? ' on' : ''); b.textContent = get() ? '开' : '关'; save(); });
+  r.appendChild(b);
+  return r;
+}
 function openPanel() {
-  if ($('#panel')) return;
-  const p = el('div'); p.id = 'panel';
-  p.appendChild(el('h3', null, '家长设置'));
-  const mk = (label, get, set) => {
-    const r = el('div', 'prow'); r.appendChild(el('span', null, label));
-    const b = el('button', 'sw' + (get() ? ' on' : ''), get() ? '开' : '关');
-    b.addEventListener('click', () => { set(!get()); b.className = 'sw' + (get() ? ' on' : ''); b.textContent = get() ? '开' : '关'; });
-    r.appendChild(b); p.appendChild(r);
-  };
-  mk('音效', () => Audio2.on, v => Audio2.on = v);
-  mk('语音读题', () => Voice.on, v => { Voice.on = v; if (!v && 'speechSynthesis' in window) speechSynthesis.cancel(); });
-  mk('背景音乐', () => Music.on, v => { Music.on = v; if (v) Music.start(); else Music.stop(); });
-  mk('玩得顺时自动升关', () => S.autoLevel, v => S.autoLevel = v);
-  const vRow = el('div', 'prow'); vRow.style.display = 'block';
-  vRow.appendChild(el('div', null, '中文语音自检'));
-  const vInfo = el('div', null, Voice.status());
-  vInfo.style.cssText = 'font-size:13px;color:var(--ink-soft);margin:4px 0 8px;line-height:1.5';
-  vRow.appendChild(vInfo);
-  const vSel = document.createElement('select');
-  vSel.style.cssText = 'font:inherit;font-size:14px;padding:5px 8px;border:3px solid var(--ink);border-radius:10px;background:#fff;max-width:100%;margin-right:8px';
-  const fill = () => {
-    vSel.innerHTML = '';
-    const c = Voice.candidates(), use = c.length ? c : Voice.list();
-    use.forEach((v, i) => { const o = document.createElement('option'); o.value = String(i); o.textContent = v.name + '（' + v.lang + '）'; if (Voice.voice === v || (!Voice.voice && !i)) o.selected = true; vSel.appendChild(o); });
-  };
-  fill();
-  vSel.addEventListener('change', () => {
-    const c = Voice.candidates(), use = c.length ? c : Voice.list();
-    Voice.forced = use[+vSel.value] || null; Voice.voice = Voice.forced; Voice.failed = false;
-    vInfo.textContent = Voice.status();
-    const w = Voice.on; Voice.on = true; Voice.say('你好，我们一起来玩游戏吧'); Voice.on = w;
+  if (document.querySelector('.sheet')) return;
+  Audio2.init();
+  var s = sheet('⚙️ 家长设置');
+  var body = el('div', 'sheetBody');
+  var cols = el('div', 'pcols');
+  var c1 = el('div', 'pcard'); c1.appendChild(el('h3', null, '声音'));
+  c1.appendChild(toggleRow('音效', '点对、消除、通关的提示音', function () { return Audio2.on; }, function (v) { Audio2.on = v; }));
+  c1.appendChild(toggleRow('语音读题', '每道题自动朗读一遍，不识字也能玩', function () { return Voice.on; }, function (v) { Voice.on = v; if (!v && 'speechSynthesis' in window) speechSynthesis.cancel(); }));
+  c1.appendChild(toggleRow('背景音乐', '朗读时自动压低', function () { return Music.on; }, function (v) { Music.on = v; if (v) Music.start(); else Music.stop(); }));
+  var c2 = el('div', 'pcard'); c2.appendChild(el('h3', null, '玩法'));
+  c2.appendChild(toggleRow('玩得顺时自动升关', '连续三关零失误升一级，一关错五次降一级', function () { return S.autoLevel; }, function (v) { S.autoLevel = v; }));
+  c2.appendChild(toggleRow('卡住时发光提示', '默认关闭。打开后没动作时会点亮正确答案——等于替孩子做完了搜索，训练效果会打折。', function () { return S.hints; }, function (v) { S.hints = v; }, true));
+  var c3 = el('div', 'pcard'); c3.appendChild(el('h3', null, '计时与记录'));
+  c3.appendChild(toggleRow('给孩子看秒表', '关掉后孩子看不到计时，后台照常记录用时；容易紧张的孩子建议关', function () { return S.showTimer; }, function (v) { S.showTimer = v; }));
+  c3.appendChild(toggleRow('跨天保存进度', '关卡、星星、贴纸、每关最快用时留在这台平板上', function () { return S.persist; }, function (v) { S.persist = v; if (v) save(); }));
+  var clr = el('div', 'prow');
+  var ctx = el('div', 'tx'); ctx.appendChild(el('span', null, '已记录 ' + Object.keys(S.days).length + ' 天 · 星星 ' + S.stars + ' 颗 · 贴纸 ' + S.stickers.length + ' 张'));
+  clr.appendChild(ctx);
+  var cb = el('button', 'tg'); cb.textContent = '清空'; cb.style.color = 'var(--red)'; cb.style.width = '110px';
+  cb.addEventListener('click', function () {
+    S.stars = 0; S.stickers = []; S.best = {}; S.days = {};
+    GAMES.forEach(function (g) { S.level[g.id] = 1; S.streak[g.id] = 0; });
+    save(); s.remove(); home(); toast('记录清空了');
   });
-  const vTest = el('button', 'sw', '🔊 测试朗读');
-  vTest.addEventListener('click', () => {
-    Audio2.init(); Voice.unlock(); fill(); vInfo.textContent = Voice.status();
-    const w = Voice.on; Voice.on = true; Voice.say('你好，我们一起来玩游戏吧'); Voice.on = w;
-    setTimeout(() => vInfo.textContent = Voice.status(), 400);
-    setTimeout(() => { vInfo.textContent = Voice.status(); fill(); }, 2500);
+  clr.appendChild(cb); c3.appendChild(clr);
+  cols.appendChild(c1); cols.appendChild(c2); cols.appendChild(c3);
+  var box = el('div', 'lvbox');
+  var hd = el('div'); hd.style.cssText = 'display:flex;align-items:baseline;gap:14px';
+  hd.appendChild(el('h3', null, '手动调关卡'));
+  hd.appendChild(el('span', null, '孩子也能在每个游戏的台阶里自己选')).style.cssText = 'font-size:19px;color:var(--ink-soft)';
+  box.appendChild(hd);
+  var grid = el('div', 'lvgrid');
+  GAMES.forEach(function (g) {
+    var ch = el('div', 'lvchip');
+    ch.appendChild(el('span', 'n', g.emoji + ' ' + g.name));
+    var mn = el('button', null, '−'), val = el('b', 'num', String(S.level[g.id]) + '/' + g.levels.length), pl = el('button', null, '+');
+    mn.addEventListener('click', function () { S.level[g.id] = Math.max(1, S.level[g.id] - 1); val.textContent = S.level[g.id] + '/' + g.levels.length; save(); });
+    pl.addEventListener('click', function () { S.level[g.id] = Math.min(g.levels.length, S.level[g.id] + 1); val.textContent = S.level[g.id] + '/' + g.levels.length; save(); });
+    ch.appendChild(mn); ch.appendChild(val); ch.appendChild(pl);
+    grid.appendChild(ch);
   });
-  vRow.appendChild(vSel); vRow.appendChild(vTest); p.appendChild(vRow);
-  const lvRow = el('div', 'prow'); lvRow.style.display = 'block';
-  lvRow.appendChild(el('div', null, '各游戏关卡（也可以在每个游戏里直接选）'));
-  const box = el('div'); box.style.cssText = 'display:flex;flex-wrap:wrap;gap:7px;margin-top:7px';
-  GAMES.forEach(g => {
-    const chip = el('div'); chip.style.cssText = 'display:flex;align-items:center;gap:5px;border:2px solid var(--line);border-radius:11px;padding:3px 7px;font-size:14px';
-    chip.appendChild(el('span', null, g.emoji + ' ' + g.name));
-    const minus = el('button', 'sw', '−'); minus.style.padding = '1px 9px';
-    const val = el('b', 'num', String(S.level[g.id]));
-    const plus = el('button', 'sw', '+'); plus.style.padding = '1px 9px';
-    minus.addEventListener('click', () => { S.level[g.id] = Math.max(1, S.level[g.id] - 1); val.textContent = S.level[g.id]; });
-    plus.addEventListener('click', () => { S.level[g.id] = Math.min(g.levels.length, S.level[g.id] + 1); val.textContent = S.level[g.id]; });
-    chip.appendChild(minus); chip.appendChild(val); chip.appendChild(plus); box.appendChild(chip);
+  box.appendChild(grid);
+  body.appendChild(cols); body.appendChild(box);
+  s.appendChild(body);
+  $('#screen').appendChild(s);
+}
+function openAlbum() {
+  if (document.querySelector('.sheet')) return;
+  var s = sheet('📖 我的贴纸 ' + S.stickers.length + '/' + STICKERS.length);
+  var g = el('div', 'albumGrid');
+  STICKERS.forEach(function (st) {
+    var has = S.stickers.indexOf(st) >= 0;
+    g.appendChild(el('s', has ? null : 'q', has ? st : '?'));
   });
-  lvRow.appendChild(box); p.appendChild(lvRow);
-  const close = el('button', 'bigbtn', '好了');
-  close.style.cssText += 'width:100%;margin-top:10px';
-  close.addEventListener('click', () => { p.remove(); Fit.run(); });
-  p.appendChild(close);
-  $('#screen').appendChild(p);
+  s.appendChild(g);
+  $('#screen').appendChild(s);
+}
+function boot() {
+  load();
+  fitScale();
+  Fit.boot();
+  home();
+  document.addEventListener('pointerdown', function () { Audio2.init(); Voice.unlock(); Music.start(); }, { once: true });
+  document.addEventListener('visibilitychange', function () { if (document.hidden) { Music.stop(); if ('speechSynthesis' in window) speechSynthesis.cancel(); } else Music.start(); });
 }
 
-/* ===================== 启动 ===================== */
-$('#backBtn').addEventListener('click', () => {
-  Audio2.page(); clearHint();
-  if (Session) levelPicker(Session.g); else home();
-});
-$('#sayBtn').addEventListener('click', () => { Audio2.init(); Voice.unlock(); Voice.repeat(); });
-$('#gearBtn').addEventListener('click', () => { Audio2.init(); openPanel(); });
-document.addEventListener('pointerdown', () => { Audio2.init(); Voice.unlock(); Music.start(); }, { once: true });
-document.addEventListener('visibilitychange', () => { if (document.hidden) { Music.stop(); if ('speechSynthesis' in window) speechSynthesis.cancel(); } else Music.start(); });
-Fit.boot();
-home();
+boot();
 </script>
 </body>
 </html>
