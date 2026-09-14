@@ -219,8 +219,11 @@ body{
 .utilcol{display:flex;flex-direction:column;align-items:center;gap:1px}
 .utillab{font-size:11px;color:var(--ink-soft);white-space:nowrap}
 .droptop{display:flex;align-items:center;justify-content:center;gap:14px;width:100%}
-.nextbox{display:flex;align-items:center;gap:8px;border:3px solid var(--ink);border-radius:14px;background:#fff;
-  box-shadow:3px 3px 0 var(--ink);padding:5px 12px}
+.nextbox{position:absolute;left:0;top:0;display:flex;align-items:center;gap:8px;border:3px solid var(--ink);
+  border-radius:14px;background:#fff;box-shadow:3px 3px 0 var(--ink);padding:5px 10px;z-index:2}
+.pausemask{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:4;
+  background:rgba(255,252,242,.72);font-size:28px;font-weight:700;border-radius:10px}
+.grid-paused{filter:grayscale(.55)}
 .nextlab{font-size:12px;color:var(--ink-soft)}
 .dpad{display:grid;grid-template-columns:repeat(3,auto);gap:8px;justify-items:center;align-items:center}
 .dbtn{border:4px solid var(--ink);border-radius:16px;background:#fff;box-shadow:4px 4px 0 var(--ink);
@@ -2333,7 +2336,12 @@ function gFit(board, lv) {
 
   /* ---------- 落体模式：会掉下来的方块 ---------- */
   if (cfg.kind === 'drop') {
-    const BW = cfg.w, BH = cfg.h;
+    const BW = cfg.w;
+    // 格子太小对近距离观看的孩子不友好。先按可用高度反推能放几行，
+    // 保证每格不低于 34px；屏幕够高时才用到关卡设定的行数
+    const MIN_CELL = 34;
+    const vhNow = (window.visualViewport ? visualViewport.height : window.innerHeight) || 800;
+    const BH = clamp(Math.floor((vhNow - 160) / MIN_CELL), 10, cfg.h);
     const SPEEDS = [2400, 1500, 950];
     const SPEED_ICON = ['🐢', '🐇', '🚀'], SPEED_NAME = ['慢', '中', '快'];
     const TETRO = [
@@ -2358,19 +2366,20 @@ function gFit(board, lv) {
          误触代价高的键（撤销 / 调速）做小、做淡，单独放中间，和高频键拉开距离
        ─ 移动与下落支持按住连发，免得孩子反复戳 */
     const colWrap = el('div', 'col2'); colWrap.style.cssText = 'width:100%;height:100%;justify-content:space-between;gap:8px';
-    const topRow = el('div', 'droptop');
+    const gridHold = el('div'); gridHold.style.cssText = 'flex:1 1 auto;min-height:0;width:100%;position:relative;display:flex;align-items:center;justify-content:center';
     const nextBox = el('div', 'nextbox');
     const nextLab = el('div', 'nextlab', '下一个');
     const nextIn = el('div');
     nextBox.appendChild(nextLab); nextBox.appendChild(nextIn);
-    topRow.appendChild(nextBox);
-    const gridHold = el('div'); gridHold.style.cssText = 'flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center';
+    gridHold.appendChild(nextBox);                       // 浮在棋盘区左上角，不再单占一条顶栏
     const grid = el('div'); grid.className = 'fit-board';
-    grid.style.cssText = 'display:grid;background:#FFFDF7;border:4px solid var(--ink);border-radius:10px;padding:4px';
+    grid.style.cssText = 'display:grid;background:#FFFDF7;border:4px solid var(--ink);border-radius:10px;padding:4px;position:relative';
     gridHold.appendChild(grid);
+    const pauseMask = el('div', 'pausemask', '⏸ 暂停中'); pauseMask.style.display = 'none';
+    grid.appendChild(pauseMask);
     const consoleBar = el('div', 'console');
 
-    let primPx = 84, utilPx = 48, holdTimer = null;
+    let btnPx = 66, holdTimer = null, paused = false, pauseAt = 0;
     function mkBtn(face, kind, fn, repeat) {
       const wrapEl = el('div', 'btnwrap');
       const b2 = el('div', 'dbtn2' + (kind ? ' ' + kind : ''), face);
@@ -2379,36 +2388,39 @@ function gFit(board, lv) {
       wrapEl.addEventListener('pointerdown', ev => {
         ev.preventDefault(); Audio2.init();
         b2.classList.add('act'); fn();
-        if (repeat) {
-          clearInterval(holdTimer);
-          let started = false;
-          holdTimer = setInterval(() => { started = true; fn(); }, 150);
-          setTimeout(() => { if (!started && holdTimer) { } }, 0);
-        }
+        if (repeat) { clearInterval(holdTimer); holdTimer = setInterval(fn, 150); }
         try { wrapEl.setPointerCapture(ev.pointerId); } catch (e) { }
       });
       ['pointerup', 'pointercancel', 'pointerleave'].forEach(t => wrapEl.addEventListener(t, stop));
       wrapEl._face = b2;
       return wrapEl;
     }
-    const softDrop = () => { if (Date.now() - lockAt < 260 || busy) return; if (!move(1, 0)) lock(); };
+    const softDrop = () => { if (paused || busy || Date.now() - lockAt < 260) return; if (!move(1, 0)) lock(); };
+    function togglePause() {
+      if (over) return;
+      paused = !paused;
+      bPause._face.textContent = paused ? '▶️' : '⏸';
+      pauseLab.textContent = paused ? '继续' : '暂停';
+      pauseMask.style.display = paused ? 'flex' : 'none';
+      grid.classList.toggle('grid-paused', paused);
+      if (paused) { pauseAt = Date.now(); Voice.say('暂停了'); }
+      else if (pauseAt) { T.t0 += Date.now() - pauseAt; pauseAt = 0; }   // 暂停不计进本关用时
+    }
     const bL = mkBtn('◀', '', () => move(0, -1), true);
-    const bR = mkBtn('▶', '', () => move(0, 1), true);
-    const bD = mkBtn('▼', '', softDrop, true);
-    const bRot = mkBtn('🔄', 'prim', () => rotate());
     const bUndo = mkBtn('↩︎', 'util', () => undo());
     const bSpd = mkBtn('🐢', 'util', () => cycleSpeed());
+    const bPause = mkBtn('⏸', 'util', () => togglePause());
+    const bD = mkBtn('▼', '', softDrop, true);
+    const bRot = mkBtn('🔄', 'prim', () => rotate());
+    const bR = mkBtn('▶', '', () => move(0, 1), true);
+    const cell2 = (btn, lab) => { const c = el('div', 'utilcol'); c.appendChild(btn); c.appendChild(el('div', 'utillab', lab)); return c; };
+    const undoLab = el('div', 'utillab', '退回'), spdLab = el('div', 'utillab', '慢'), pauseLab = el('div', 'utillab', '暂停');
+    const cU = el('div', 'utilcol'); cU.appendChild(bUndo); cU.appendChild(undoLab);
+    const cS = el('div', 'utilcol'); cS.appendChild(bSpd); cS.appendChild(spdLab);
+    const cP = el('div', 'utilcol'); cP.appendChild(bPause); cP.appendChild(pauseLab);
+    [bL, cU, cS, cP, bD, bRot, bR].forEach(x => consoleBar.appendChild(x));
 
-    const gLeft = el('div', 'cgroup'); gLeft.appendChild(bL); gLeft.appendChild(bR);
-    const gMid = el('div', 'cgroup');
-    const uUndo = el('div', 'utilcol'); uUndo.appendChild(bUndo); uUndo.appendChild(el('div', 'utillab', '退回'));
-    const uSpd = el('div', 'utilcol'); uSpd.appendChild(bSpd);
-    const spdLab = el('div', 'utillab', '慢'); uSpd.appendChild(spdLab);
-    gMid.appendChild(uUndo); gMid.appendChild(uSpd);
-    const gRight = el('div', 'cgroup'); gRight.appendChild(bD); gRight.appendChild(bRot);
-    consoleBar.appendChild(gLeft); consoleBar.appendChild(gMid); consoleBar.appendChild(gRight);
-
-    colWrap.appendChild(topRow); colWrap.appendChild(gridHold); colWrap.appendChild(consoleBar);
+    colWrap.appendChild(gridHold); colWrap.appendChild(consoleBar);
     holder.style.cssText = 'width:100%;height:100%';
     holder.appendChild(colWrap); board.appendChild(holder);
 
@@ -2435,19 +2447,19 @@ function gFit(board, lv) {
       return yy >= 0 && yy < BH && xx >= 0 && xx < BW && !occ[yy + ',' + xx];
     });
     function move(dy, dx) {
-      if (!cur || over || busy) return false;
+      if (!cur || over || busy || paused) return false;
       if (fits(cur.cs, cur.y + dy, cur.x + dx)) { cur.y += dy; cur.x += dx; if (dx) Audio2.tap(); paint(); return true; }
       return false;
     }
     function rotate() {
-      if (!cur || over || busy) return;
+      if (!cur || over || busy || paused) return;
       const r = pRot(cur.cs);
       for (const kick of [0, -1, 1, -2, 2]) if (fits(r, cur.y, cur.x + kick)) { cur.cs = r; cur.x += kick; Audio2.step(); paint(); return; }
       Audio2.soft();
     }
     function restartTick() {
       if (tick) clearInterval(tick);
-      tick = every(SPEEDS[spdIdx], () => { if (over || busy) return; if (!move(1, 0)) lock(); });
+      tick = every(SPEEDS[spdIdx], () => { if (over || busy || paused) return; if (!move(1, 0)) lock(); });
     }
     function cycleSpeed() {
       spdIdx = (spdIdx + 1) % SPEEDS.length;
@@ -2458,7 +2470,7 @@ function gFit(board, lv) {
       restartTick();
     }
     function undo() {
-      if (over || busy) return;
+      if (over || busy || paused) return;
       if (!history.length) { Voice.say('还没有可以退回的一步'); toast('还没有可以退回的'); return; }
       const h = history.pop();
       occ = h.occ; cleared = h.cleared;
@@ -2552,6 +2564,7 @@ function gFit(board, lv) {
       else if (k === 'ArrowDown') { softDrop(); ev.preventDefault(); }
       else if (k === 'ArrowUp' || k === ' ') { rotate(); ev.preventDefault(); }
       else if (k === 'z' || k === 'Backspace') { undo(); ev.preventDefault(); }
+      else if (k === 'p' || k === 'Escape') { togglePause(); ev.preventDefault(); }
     };
     addEventListener('keydown', onKey);
     nextP = takeBag(); spawn();
@@ -2560,35 +2573,33 @@ function gFit(board, lv) {
     restartTick();
     Fit.cb = () => {
       const b = boardBox();
-      // 主键取 ~20mm（96dpi 下约 80~105 CSS px）：4~6 岁的点击精度远低于成人，
-      // 成人下限 44pt 对她不够用。副键做到主键的 0.56 倍并拉开距离，降低误触代价
-      primPx = Math.round(clamp(Math.min(b.w * .112, b.h * .155), 58, 108));
-      utilPx = Math.round(primPx * .56);
-      const slop = Math.round(clamp(primPx * .13, 7, 15));          // 每个键外扩的隐形热区
-      [bL, bR, bD, bRot].forEach(x => {
+      // 按钮统一到原来「退回／速度」那一档：把省下的高度全部还给棋盘。
+      // 格子太小比按钮小一点更伤——孩子是贴近了看的
+      btnPx = Math.round(clamp(Math.min(b.w * .058, b.h * .105), 46, 78));
+      const slop = Math.round(clamp(btnPx * .14, 6, 13));
+      [bL, bUndo, bSpd, bPause, bD, bRot, bR].forEach(x => {
         x.style.padding = px(slop);
-        x._face.style.width = px(primPx); x._face.style.height = px(primPx);
-        x._face.style.fontSize = px(primPx * .44);
+        x._face.style.width = px(btnPx); x._face.style.height = px(btnPx);
+        x._face.style.fontSize = px(btnPx * .46);
       });
-      [bUndo, bSpd].forEach(x => {
-        x.style.padding = px(slop);
-        x._face.style.width = px(utilPx); x._face.style.height = px(utilPx);
-        x._face.style.fontSize = px(utilPx * .46);
-      });
-      const inGap = Math.round(clamp(primPx * .3, 14, 34));          // 同组相邻键的间隔
-      gLeft.style.gap = px(inGap); gRight.style.gap = px(inGap);
-      gMid.style.gap = px(Math.round(inGap * .8));
-      consoleBar.style.padding = '0 ' + px(clamp(b.w * .02, 6, 26));
-      const consoleH = primPx + slop * 2;
-      const topH = Math.round(utilPx * 1.5);
-      nextLab.style.fontSize = px(clamp(utilPx * .28, 11, 16));
+      [undoLab, spdLab, pauseLab].forEach(l => l.style.fontSize = px(clamp(btnPx * .2, 10, 15)));
+      // 一排七个：左右两端顶到行宽两侧，正好落在双手拇指处；行宽收窄避免大屏上拉太开
+      const rowW = Math.round(clamp(b.w * .82, 460, 1040));
+      consoleBar.style.width = px(rowW);
+      consoleBar.style.margin = '0 auto';
+      const labH = Math.round(clamp(btnPx * .24, 12, 18));
+      const consoleH = btnPx + slop * 2 + labH;
+      nextLab.style.fontSize = px(clamp(btnPx * .24, 10, 15));
+      nextBox.style.transform = 'scale(' + clamp(btnPx / 70, .7, 1.1).toFixed(2) + ')';
+      nextBox.style.transformOrigin = 'left top';
       const GAP = 2, CHROME = 4 * 2 + 4 * 2;
-      const availH = b.h - topH - consoleH - 16 - CHROME - GAP * (BH - 1);
+      const availH = b.h - consoleH - 14 - CHROME - GAP * (BH - 1);
       const availW = b.w - 24 - CHROME - GAP * (BW - 1);
-      cellPx2 = clamp(Math.floor(Math.min(availW / BW, availH / BH)), 10, 46);
+      cellPx2 = clamp(Math.floor(Math.min(availW / BW, availH / BH)), 12, 76);
       grid.style.gap = '2px';
       grid.style.gridTemplateColumns = 'repeat(' + BW + ',' + px(cellPx2) + ')';
       grid.style.gridAutoRows = px(cellPx2);
+      pauseMask.style.fontSize = px(clamp(cellPx2 * .9, 20, 48));
       paint();
     };
     return;
