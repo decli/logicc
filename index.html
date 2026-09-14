@@ -377,6 +377,16 @@ const Music = {
     this.i++; this.timer = setTimeout(() => this.tick(), 340);
   }
 };
+const CN_DIG = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+function cnNum(n) {
+  n = parseInt(n, 10);
+  if (isNaN(n) || n < 0) return String(n);
+  if (n < 10) return CN_DIG[n];
+  if (n < 20) return n === 10 ? '十' : '十' + CN_DIG[n % 10];
+  if (n < 100) return CN_DIG[(n / 10) | 0] + '十' + (n % 10 ? CN_DIG[n % 10] : '');
+  return String(n);
+}
+function cnText(t) { return String(t).replace(/\d+/g, function (m) { return cnNum(m); }); }
 const PRAISE = ['对啦', '真棒', '好厉害', '答对啦', '你真行'];
 const Voice = {
   on: true, last: '', unlocked: false, voice: null, forced: null, scanned: false, failed: false, lastErr: '', tried: 0,
@@ -447,7 +457,7 @@ const Voice = {
       if (ss.speaking || ss.pending) ss.cancel();
       if (ss.paused) ss.resume();
       this.tried++;
-      const u = new SpeechSynthesisUtterance(t);
+      const u = new SpeechSynthesisUtterance(cnText(t));
       if (v) { u.voice = v; u.lang = v.lang || 'zh-CN'; } else u.lang = 'zh-CN';
       u.rate = .9; u.pitch = 1.12; u.volume = 1;
       u.onstart = () => { started = true; this.failed = false; if (v) this.voice = v; Music.duck(true); if (btn) btn.classList.add('talking'); };
@@ -525,14 +535,14 @@ const GAMES = [
     ]
   },
   {
-    id: 'connect', name: '连点成画', emoji: '✏️', color: 'var(--orange)', tip: '按顺序连起来，看看是什么',
+    id: 'connect', name: '连点成画', emoji: '✏️', color: 'var(--orange)', tip: '按数字顺序连起来，看看是什么',
     levels: [
-      { t: '7 个点·小房子', d: '', cfg: { sh: 0, step: 1 } },
-      { t: '8 个点·小鱼', d: '', cfg: { sh: 1, step: 1 } },
-      { t: '10 个点·星星', d: '', cfg: { sh: 2, step: 1 } },
-      { t: '12 个点·爱心', d: '', cfg: { sh: 3, step: 1 } },
-      { t: '16 个点·小花', d: '', cfg: { sh: 4, step: 1 } },
-      { t: '20 个点·太阳·数双数', d: '2、4、6…按双数连，练数的规律', cfg: { sh: 5, step: 2 } }
+      { t: '一笔画完', d: '8 到 10 个点，先熟悉规则', cfg: { pts: 10, strokes: 1, step: 1 } },
+      { t: '点变多了', d: '14 个点上下', cfg: { pts: 14, strokes: 1, step: 1 } },
+      { t: '要抬笔', d: '画完一笔要跳到别处接着画，不能只顺着最近的点连', cfg: { pts: 16, strokes: 2, step: 1 } },
+      { t: '数双数', d: '2、4、6…按双数连', cfg: { pts: 18, strokes: 2, step: 2 } },
+      { t: '三笔画', d: '跳两次，图案也更复杂', cfg: { pts: 22, strokes: 3, step: 1 } },
+      { t: '倒着数', d: '从最大的数往回连，得压住顺数的习惯', cfg: { pts: 20, strokes: 2, step: 1, down: true } }
     ]
   },
   {
@@ -547,24 +557,25 @@ const GAMES = [
     ]
   },
   {
-    id: 'maze', name: '走迷宫', emoji: '🐰', color: 'var(--yellow)', tip: '用手指带小兔子找到胡萝卜',
+    id: 'maze', name: '走迷宫', emoji: '🐰', color: 'var(--yellow)', tip: '用手指带小兔子走出去',
     levels: [
-      { t: '4×4', d: '', cfg: { n: 4 } },
-      { t: '5×5', d: '', cfg: { n: 5 } },
-      { t: '6×6', d: '', cfg: { n: 6 } },
-      { t: '7×7', d: '', cfg: { n: 7 } },
-      { t: '8×8', d: '', cfg: { n: 8 } },
-      { t: '8×8 先拿钥匙', d: '必须先取到钥匙才能开门，要先规划路线', cfg: { n: 8, key: true } }
+      { t: '5×5 认认路', d: '只有一条通路', cfg: { w: 5, h: 5, algo: 'dfs' } },
+      { t: '6×6 起点会变', d: '出入口每局不一样，不能靠记位置', cfg: { w: 6, h: 6, algo: 'prim', rndEnds: true } },
+      { t: '7×7 有岔路圈', d: '路会绕回来，得真的看路而不是瞎撞', cfg: { w: 7, h: 7, algo: 'dfs', braid: .25, rndEnds: true } },
+      { t: '8×6 捡一根胡萝卜', d: '先去拿胡萝卜再出门，要先想好顺序', cfg: { w: 8, h: 6, algo: 'prim', braid: .15, rndEnds: true, items: 1 } },
+      { t: '8×8 捡两根', d: '两根都要捡到，怎么走最省事', cfg: { w: 8, h: 8, algo: 'dfs', braid: .2, rndEnds: true, items: 2 } },
+      { t: '9×9 钥匙和门', d: '先找钥匙再开门，路上还有岔路圈', cfg: { w: 9, h: 9, algo: 'prim', braid: .2, rndEnds: true, key: true } }
     ]
   },
   {
-    id: 'pattern', name: '找规律', emoji: '🧩', color: 'var(--purple)', tip: '看看下一个该是什么',
+    id: 'pattern', name: '找规律', emoji: '🧩', color: 'var(--purple)', tip: '看看规律，把空格补上',
     levels: [
-      { t: 'AB AB', d: '两个一循环', cfg: { kind: 'rep', p: 2 } },
-      { t: 'ABC ABC', d: '三个一循环', cfg: { kind: 'rep', p: 3 } },
-      { t: 'AAB AAB', d: '循环里有重复，更绕一点', cfg: { kind: 'aab' } },
-      { t: '数字接龙', d: '按加 1、加 2 的规律往下数', cfg: { kind: 'num' } },
-      { t: '越来越多', d: '数量或大小在变，看趋势', cfg: { kind: 'grow' } }
+      { t: '补中间的空', d: '两个一循环，空在中间——先学会「看两边推中间」', cfg: { kind: 'fix', units: ['AB'] } },
+      { t: '接着往下排', d: '两个或三个一循环，空在最后', cfg: { kind: 'extend', units: ['AB', 'ABC'] } },
+      { t: '循环里有重复', d: 'AAB、ABB、AABB 这类单元，空的位置不固定', cfg: { kind: 'mixed', units: ['AAB', 'ABB', 'AABB'] } },
+      { t: '形状和颜色一起变', d: '两个属性各按各的周期走，得同时盯住两条线', cfg: { kind: 'dual' } },
+      { t: '换一套东西，同样的规律', d: '上排是参考，下排换了材料但规律一样——研究里这一步明显更难', cfg: { kind: 'translate', units: ['AB', 'ABC', 'AAB', 'ABB'] } },
+      { t: '找出一直重复的那一小段', d: '不是补空，是指认循环单元本身；四岁儿童里很少有人做得到', cfg: { kind: 'unit', units: ['AB', 'ABC', 'AAB', 'ABB', 'AABB'] } }
     ]
   }
 ];
@@ -689,14 +700,15 @@ function home() {
 
 function previewShape(g, i) {
   var c = g.levels[i].cfg, cols = 3, rows = 3;
-  if (g.id === 'schulte' || g.id === 'maze') { cols = c.n; rows = c.n; }
+  if (g.id === 'schulte') { cols = c.n; rows = c.n; }
+  else if (g.id === 'maze') { cols = c.w || c.n; rows = c.h || c.n; }
   else if (g.id === 'mirror') { cols = c.w * 2; rows = c.h; }
   else if (g.id === 'link') { cols = c.w; rows = c.h; }
   else if (g.id === 'match') { cols = 2; rows = Math.min(5, c.n); }
   else if (g.id === 'pattern') { cols = 6; rows = 1; }
   else if (g.id === 'dots') { cols = c.kind === 'make3' ? 3 : 2; rows = 1; }
   else if (g.id === 'bond') { cols = c.miss === 'three' ? 3 : 2; rows = 2; }
-  else if (g.id === 'connect') { cols = Math.min(6, SHAPES[c.sh].pts.length); rows = 1; }
+  else if (g.id === 'connect') { cols = Math.min(6, Math.round(c.pts / 3)); rows = 1; }
   return { cols: cols, rows: rows };
 }
 function previewGrid(g, i) {
@@ -1372,53 +1384,123 @@ function gMirror(board, lv) {
   };
 }
 
-/* ===================== 6 连点成画 ===================== */
-function starPts(sp, R, r) { const p = []; for (let i = 0; i < sp * 2; i++) { const a = -Math.PI / 2 + i * Math.PI / sp, rad = i % 2 ? r : R; p.push([50 + Math.cos(a) * rad, 50 + Math.sin(a) * rad]); } return p; }
-function heartPts(n) { const p = []; for (let i = 0; i < n; i++) { const t = -Math.PI / 2 + (i / n) * Math.PI * 2; const x = 16 * Math.pow(Math.sin(t), 3); const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t); p.push([50 + x * 2.4, 48 - y * 2.4]); } return p; }
-const SHAPES = [
-  { name: '小房子', emoji: '🏠', pts: [[50, 10], [86, 38], [76, 38], [76, 86], [24, 86], [24, 38], [14, 38]] },
-  { name: '小鱼', emoji: '🐟', pts: [[16, 50], [42, 28], [66, 32], [86, 16], [90, 50], [86, 84], [66, 68], [42, 72]] },
-  { name: '星星', emoji: '⭐', pts: starPts(5, 42, 18) },
-  { name: '爱心', emoji: '💖', pts: heartPts(12) },
-  { name: '小花', emoji: '🌸', pts: starPts(8, 42, 22) },
-  { name: '太阳', emoji: '☀️', pts: starPts(10, 44, 26) }
+/* ===================== 6 连点成画 =====================
+   原来只有 6 个固定单环图形：点排成一圈，下一个点永远是视觉上最近的，
+   不看数字也能连完。现在改成：多笔画（要抬笔跳到别处）+ 每局随机旋转/镜像/
+   抖动 + 多种编号规则（顺数/双数/倒数），从形状库里随机取。
+   ================================================================ */
+function polyPts(n, R, cx, cy, rot) {
+  const p = [];
+  for (let i = 0; i < n; i++) { const a = rot + i * Math.PI * 2 / n; p.push([cx + Math.cos(a) * R, cy + Math.sin(a) * R]); }
+  return p;
+}
+function starPts2(sp, R, r, cx, cy) {
+  const p = [];
+  for (let i = 0; i < sp * 2; i++) { const a = -Math.PI / 2 + i * Math.PI / sp, rad = i % 2 ? r : R; p.push([cx + Math.cos(a) * rad, cy + Math.sin(a) * rad]); }
+  return p;
+}
+// 每个图形 = 若干笔画，笔画之间要抬笔
+const SHAPE_LIB = [
+  { n: '小房子', e: '🏠', st: [[[50, 10], [88, 36], [78, 36], [78, 88], [22, 88], [22, 36], [12, 36]], [[40, 88], [40, 62], [60, 62], [60, 88]]] },
+  { n: '小鱼', e: '🐟', st: [[[14, 50], [40, 26], [66, 30], [88, 12], [92, 50], [88, 88], [66, 70], [40, 74]], [[26, 42], [34, 42], [34, 50], [26, 50]]] },
+  { n: '帆船', e: '⛵', st: [[[8, 68], [92, 68], [78, 88], [22, 88]], [[50, 64], [50, 10], [86, 58]]] },
+  { n: '小树', e: '🌳', st: [[[50, 8], [78, 44], [64, 44], [86, 74], [14, 74], [36, 44], [22, 44]], [[42, 74], [42, 92], [58, 92], [58, 74]]] },
+  { n: '火箭', e: '🚀', st: [[[50, 6], [70, 40], [70, 74], [30, 74], [30, 40]], [[30, 56], [12, 84], [30, 78]], [[70, 56], [88, 84], [70, 78]]] },
+  { n: '雪人', e: '⛄', st: [polyPts(7, 20, 50, 28, -Math.PI / 2), polyPts(9, 28, 50, 70, -Math.PI / 2)] },
+  { n: '蝴蝶', e: '🦋', st: [[[50, 20], [16, 6], [8, 40], [30, 52], [50, 50]], [[50, 50], [30, 56], [12, 84], [44, 92], [50, 72]], [[50, 20], [84, 6], [92, 40], [70, 52], [50, 50]]] },
+  { n: '小猫', e: '🐱', st: [[[26, 30], [30, 8], [44, 24], [56, 24], [70, 8], [74, 30], [78, 56], [50, 80], [22, 56]], [[38, 44], [44, 50], [38, 56]], [[62, 44], [56, 50], [62, 56]]] },
+  { n: '星星', e: '⭐', st: [starPts2(5, 44, 18, 50, 52)] },
+  { n: '小花', e: '🌸', st: [starPts2(6, 34, 15, 50, 38), [[46, 62], [46, 92], [54, 92], [54, 62]]] },
+  { n: '汽车', e: '🚗', st: [[[10, 66], [18, 44], [40, 44], [46, 26], [74, 26], [80, 44], [90, 48], [90, 66]], polyPts(6, 10, 28, 74, 0), polyPts(6, 10, 72, 74, 0)] },
+  { n: '爱心', e: '💖', st: [(function () { const p = []; for (let i = 0; i < 12; i++) { const t = -Math.PI / 2 + i / 12 * Math.PI * 2; const x = 16 * Math.pow(Math.sin(t), 3); const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t); p.push([50 + x * 2.3, 48 - y * 2.3]); } return p; })()] },
+  { n: '月亮', e: '🌙', st: [[[58, 8], [34, 18], [22, 42], [26, 68], [44, 88], [66, 92], [50, 74], [44, 50], [48, 28]]] },
+  { n: '闪电', e: '⚡', st: [[[56, 6], [26, 52], [46, 52], [36, 94], [72, 44], [50, 44], [66, 6]]] },
+  { n: '叶子', e: '🍃', st: [[[50, 6], [72, 20], [84, 44], [78, 70], [50, 92], [22, 70], [16, 44], [28, 20]]] },
+  { n: '箭头', e: '➡️', st: [[[10, 38], [58, 38], [58, 18], [92, 50], [58, 82], [58, 62], [10, 62]]] },
+  { n: '六角星', e: '✨', st: [starPts2(6, 44, 20, 50, 50)] },
+  { n: '眼镜', e: '👓', st: [polyPts(7, 18, 28, 54, 0), polyPts(7, 18, 72, 54, 0)] },
+  { n: '苹果', e: '🍎', st: [polyPts(10, 34, 50, 58, -Math.PI / 2), [[50, 24], [56, 8], [68, 10], [58, 22]]] },
+  { n: '皇冠', e: '👑', st: [[[10, 78], [16, 26], [32, 48], [50, 18], [68, 48], [84, 26], [90, 78]]] }
 ];
 function gConnect(board, lv) {
-  const cfg = G.connect.levels[lv - 1].cfg, sh = SHAPES[cfg.sh], pts = sh.pts, N = pts.length, step = cfg.step || 1;
-  const label = i => (i + 1) * step;
+  const cfg = G.connect.levels[lv - 1].cfg;
+  // 选一个笔画数合适、点数接近目标的图形
+  const cnt = sh2 => sh2.st.reduce((n, x) => n + x.length, 0);
+  let cand = SHAPE_LIB.filter(x => x.st.length === cfg.strokes);
+  if (!cand.length) cand = SHAPE_LIB;
+  const near = cand.filter(x => Math.abs(cnt(x) - cfg.pts) <= 8);
+  const sh = pick(near.length >= 2 ? near : cand);
+  // 每局随机：镜像 + 旋转 + 轻微抖动
+  const mir = rnd(2) ? 1 : -1, rot = (rnd(4) * 90 + (rnd(25) - 12)) * Math.PI / 180;
+  const ca = Math.cos(rot), sa = Math.sin(rot);
+  const tf = p => {
+    let x = (p[0] - 50) * mir, y = p[1] - 50;
+    let nx = x * ca - y * sa, ny = x * sa + y * ca;
+    return [50 + nx * .86 + (rnd(5) - 2) * .3, 50 + ny * .86 + (rnd(5) - 2) * .3];
+  };
+  const strokes = sh.st.map(st => st.map(tf));
+  const flat = []; strokes.forEach((st, si) => st.forEach((p, pi) => flat.push({ p: p, s: si, first: pi === 0 })));
+  const N = flat.length;
+  const label = i => cfg.down ? (N - i) * (cfg.step || 1) : (i + 1) * (cfg.step || 1);
+
   const box = el('div');
-  const svg = svgEl('svg'); svg.id = 'cSvg'; svg.setAttribute('viewBox', '0 0 100 100'); svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-  svg.style.width = '100%'; svg.style.height = '100%';
-  const fill = svgEl('polygon'); fill.setAttribute('class', 'shapefill'); fill.setAttribute('points', pts.map(p => p.join(',')).join(' ')); svg.appendChild(fill);
+  const svg = svgEl('svg'); svg.id = 'cSvg'; svg.setAttribute('viewBox', '0 0 100 100');
+  svg.setAttribute('preserveAspectRatio', 'xMidYMid meet'); svg.style.width = '100%'; svg.style.height = '100%';
+  const fills = svgEl('g'); svg.appendChild(fills);
+  strokes.forEach(st => {
+    const f = svgEl('polygon'); f.setAttribute('class', 'shapefill');
+    f.setAttribute('points', st.map(p => p.join(',')).join(' ')); fills.appendChild(f);
+  });
   const segs = svgEl('g'); svg.appendChild(segs);
   let next = 0; const dots = [];
-  pts.forEach((p, i) => {
+  flat.forEach((node, i) => {
     const g2 = svgEl('g'); g2.style.cursor = 'pointer';
-    const c = svgEl('circle'); c.setAttribute('cx', p[0]); c.setAttribute('cy', p[1]); c.setAttribute('r', 6.4);
+    const c = svgEl('circle'); c.setAttribute('cx', node.p[0]); c.setAttribute('cy', node.p[1]);
+    c.setAttribute('r', N > 18 ? 5.4 : 6.2);
     c.setAttribute('class', 'dot' + (i === 0 ? ' next' : ''));
-    const t = svgEl('text'); t.setAttribute('x', p[0]); t.setAttribute('y', p[1]); t.setAttribute('dy', '0.35em'); t.textContent = String(label(i));
+    const t = svgEl('text'); t.setAttribute('x', node.p[0]); t.setAttribute('y', node.p[1]); t.setAttribute('dy', '0.35em');
+    t.setAttribute('style', 'font-size:' + (N > 18 ? 5 : 6) + 'px');
+    t.textContent = String(label(i));
     g2.appendChild(c); g2.appendChild(t);
     g2.addEventListener('click', () => {
       if (i === next) {
         Audio2.good(); c.setAttribute('class', 'dot on');
-        if (next > 0) { const l = svgEl('line'), q = pts[next - 1]; l.setAttribute('x1', q[0]); l.setAttribute('y1', q[1]); l.setAttribute('x2', p[0]); l.setAttribute('y2', p[1]); l.setAttribute('class', 'seg'); segs.appendChild(l); }
+        if (next > 0 && !node.first) {
+          const l = svgEl('line'), q = flat[next - 1].p;
+          l.setAttribute('x1', q[0]); l.setAttribute('y1', q[1]); l.setAttribute('x2', node.p[0]); l.setAttribute('y2', node.p[1]);
+          l.setAttribute('class', 'seg'); segs.appendChild(l);
+        }
         next++;
         if (next >= N) {
-          const l = svgEl('line'); l.setAttribute('x1', pts[N - 1][0]); l.setAttribute('y1', pts[N - 1][1]); l.setAttribute('x2', pts[0][0]); l.setAttribute('y2', pts[0][1]); l.setAttribute('class', 'seg'); segs.appendChild(l);
-          fill.classList.add('show'); setPrompt('是一个' + sh.name + ' ' + sh.emoji);
-          Voice.say('画好啦，是一个' + sh.name);
-          later(600, () => roundWin(box));
-        } else { dots[next].setAttribute('class', 'dot next'); setPrompt('下一个是 <span class="num">' + label(next) + '</span>'); Voice.say('下一个是 ' + label(next)); }
-      } else { miss(); g2.classList.remove('shake'); void svg.clientWidth; g2.classList.add('shake'); setTimeout(() => g2.classList.remove('shake'), 350); }
+          strokes.forEach(st => {
+            const l = svgEl('line');
+            l.setAttribute('x1', st[st.length - 1][0]); l.setAttribute('y1', st[st.length - 1][1]);
+            l.setAttribute('x2', st[0][0]); l.setAttribute('y2', st[0][1]);
+            l.setAttribute('class', 'seg'); segs.appendChild(l);
+          });
+          fills.querySelectorAll('.shapefill').forEach(f => f.classList.add('show'));
+          setPrompt('是一个' + sh.n + ' ' + sh.e);
+          Voice.say('画好啦，是一个' + sh.n);
+          later(700, () => roundWin(box));
+        } else {
+          dots[next].setAttribute('class', 'dot next');
+          const jump = flat[next].first;
+          setPrompt((jump ? '抬笔，跳到 ' : '下一个是 ') + '<span class="num">' + label(next) + '</span>');
+          Voice.say((jump ? '这一笔画完了，跳到 ' : '下一个是 ') + label(next));
+        }
+      } else { miss(); g2.classList.remove('shake'); g2.classList.add('shake'); setTimeout(() => g2.classList.remove('shake'), 350); }
     });
     dots.push(c); svg.appendChild(g2);
   });
   box.appendChild(svg); board.appendChild(box);
-  setPrompt('从 <span class="num">' + label(0) + '</span> 开始，按顺序连');
-  Voice.say(step > 1 ? '按双数连，2、4、6 这样往下' : '从 1 开始，按数字顺序连起来');
-  const arm = () => hintIn(8000, () => { if (dots[next]) dots[next].setAttribute('class', 'dot next pulse'); arm(); });
+  setPrompt('从 <span class="num">' + label(0) + '</span> 开始，按数字连');
+  Voice.say(cfg.down ? '这次倒着数，从 ' + label(0) + ' 开始往回连'
+    : cfg.step > 1 ? '按双数连，' + label(0) + '、' + label(1) + '、' + label(2) + ' 这样往下'
+      : '从 ' + label(0) + ' 开始，按数字顺序连起来'
+    + (cfg.strokes > 1 ? '，中间要抬笔跳一次' : ''));
+  const arm = () => hintIn(9000, () => { if (dots[next]) dots[next].setAttribute('class', 'dot next pulse'); arm(); });
   arm();
-  Fit.cb = () => { const b = boardBox(), s = Math.min(b.w, b.h); box.style.width = px(s); box.style.height = px(s); };
+  Fit.cb = () => { const b = boardBox(), s2 = Math.min(b.w, b.h); box.style.width = px(s2); box.style.height = px(s2); };
 }
 
 /* ===================== 7 水果连连看 ===================== */
@@ -1516,35 +1598,124 @@ function gLink(board, lv) {
   };
 }
 
-/* ===================== 8 走迷宫 ===================== */
-function genMaze(W, H) {
-  const g = Array.from({ length: H }, () => Array.from({ length: W }, () => ({ n: 1, e: 1, s: 1, w: 1, v: false })));
-  const st = [[0, 0]]; g[0][0].v = true;
-  while (st.length) {
-    const [y, x] = st[st.length - 1], nb = [];
-    if (y > 0 && !g[y - 1][x].v) nb.push([y - 1, x, 'n', 's']);
-    if (y < H - 1 && !g[y + 1][x].v) nb.push([y + 1, x, 's', 'n']);
-    if (x > 0 && !g[y][x - 1].v) nb.push([y, x - 1, 'w', 'e']);
-    if (x < W - 1 && !g[y][x + 1].v) nb.push([y, x + 1, 'e', 'w']);
-    if (!nb.length) { st.pop(); continue; }
-    const [ny, nx, a, b] = pick(nb);
-    g[y][x][a] = 0; g[ny][nx][b] = 0; g[ny][nx].v = true; st.push([ny, nx]);
+/* ===================== 8 走迷宫 =====================
+   原来固定：递归回溯生成、永远左上到右下、永远只有唯一通路。
+   走几局就摸到套路了。现在每局随机：生成算法（DFS 长廊 / Prim 多岔）、
+   起终点、是否打通死胡同形成环路、要不要顺路捡东西。
+   ================================================================ */
+function mazeCarve(W, H, algo) {
+  const g = [];
+  for (let y = 0; y < H; y++) { g[y] = []; for (let x = 0; x < W; x++) g[y][x] = { n: 1, e: 1, s: 1, w: 1, v: false }; }
+  const nbs = (y, x) => {
+    const r = [];
+    if (y > 0) r.push([y - 1, x, 'n', 's']);
+    if (y < H - 1) r.push([y + 1, x, 's', 'n']);
+    if (x > 0) r.push([y, x - 1, 'w', 'e']);
+    if (x < W - 1) r.push([y, x + 1, 'e', 'w']);
+    return r;
+  };
+  const open = (y, x, ny, nx, a2, b2) => { g[y][x][a2] = 0; g[ny][nx][b2] = 0; };
+  const sy = rnd(H), sx = rnd(W);
+  g[sy][sx].v = true;
+  if (algo === 'prim') {                       // 岔路多、走廊短
+    let front = nbs(sy, sx).map(n => [sy, sx].concat(n));
+    while (front.length) {
+      const k = rnd(front.length), f = front.splice(k, 1)[0];
+      const [y, x, ny, nx, a2, b2] = f;
+      if (g[ny][nx].v) continue;
+      open(y, x, ny, nx, a2, b2); g[ny][nx].v = true;
+      nbs(ny, nx).forEach(n => { if (!g[n[0]][n[1]].v) front.push([ny, nx].concat(n)); });
+    }
+  } else {                                     // DFS：长走廊、转折少
+    const st = [[sy, sx]];
+    while (st.length) {
+      const [y, x] = st[st.length - 1];
+      const cand = nbs(y, x).filter(n => !g[n[0]][n[1]].v);
+      if (!cand.length) { st.pop(); continue; }
+      const [ny, nx, a2, b2] = pick(cand);
+      open(y, x, ny, nx, a2, b2); g[ny][nx].v = true; st.push([ny, nx]);
+    }
   }
   return g;
 }
+function mazeBraid(g, W, H, ratio) {           // 打通部分死胡同 → 出现环路，唯一解不再成立
+  if (!ratio) return;
+  const dead = [];
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    let open = 0;
+    ['n', 'e', 's', 'w'].forEach(k => { if (!g[y][x][k]) open++; });
+    if (open === 1) dead.push([y, x]);
+  }
+  shuffle(dead).slice(0, Math.floor(dead.length * ratio)).forEach(([y, x]) => {
+    const walls = [];
+    if (y > 0 && g[y][x].n) walls.push(['n', y - 1, x, 's']);
+    if (y < H - 1 && g[y][x].s) walls.push(['s', y + 1, x, 'n']);
+    if (x > 0 && g[y][x].w) walls.push(['w', y, x - 1, 'e']);
+    if (x < W - 1 && g[y][x].e) walls.push(['e', y, x + 1, 'w']);
+    if (!walls.length) return;
+    const [k, ny, nx, ok] = pick(walls);
+    g[y][x][k] = 0; g[ny][nx][ok] = 0;
+  });
+}
+function mazeBFS(g, W, H, from) {
+  const dist = {}, prev = {}, q = [from];
+  dist[from.join(',')] = 0; prev[from.join(',')] = null;
+  while (q.length) {
+    const [y, x] = q.shift(), k = y + ',' + x;
+    [['n', -1, 0], ['s', 1, 0], ['w', 0, -1], ['e', 0, 1]].forEach(([w, dy, dx]) => {
+      if (g[y][x][w]) return;
+      const ny = y + dy, nx = x + dx, nk = ny + ',' + nx;
+      if (ny < 0 || nx < 0 || ny >= H || nx >= W || nk in dist) return;
+      dist[nk] = dist[k] + 1; prev[nk] = k; q.push([ny, nx]);
+    });
+  }
+  return { dist: dist, prev: prev };
+}
 function gMaze(board, lv) {
-  const cfg = G.maze.levels[lv - 1].cfg, n = cfg.n, W = n, H = n;
-  const g = genMaze(W, H);
+  const cfg = G.maze.levels[lv - 1].cfg, W = cfg.w, H = cfg.h;
+  const g = mazeCarve(W, H, cfg.algo);
+  mazeBraid(g, W, H, cfg.braid);
+  // 起终点：默认对角，rndEnds 时取「离起点最远」的格子当出口
+  let start = [0, 0], goal = [H - 1, W - 1];
+  if (cfg.rndEnds) {
+    start = [rnd(H), rnd(W)];
+    const r = mazeBFS(g, W, H, start);
+    let bestK = null, bestD = -1;
+    Object.keys(r.dist).forEach(k => { if (r.dist[k] > bestD) { bestD = r.dist[k]; bestK = k; } });
+    goal = bestK.split(',').map(Number);
+  }
+  // 收集物：放在离起点和终点都不太近的地方
+  const items = [];
+  const need = cfg.key ? 1 : (cfg.items || 0);
+  if (need) {
+    const ds = mazeBFS(g, W, H, start).dist, dg = mazeBFS(g, W, H, goal).dist;
+    const cand = Object.keys(ds).filter(k => {
+      const p = k.split(',').map(Number);
+      return ds[k] > 2 && (dg[k] || 0) > 2 && !(p[0] === start[0] && p[1] === start[1]) && !(p[0] === goal[0] && p[1] === goal[1]);
+    });
+    shuffle(cand).slice(0, need).forEach(k => items.push(k.split(',').map(Number)));
+  }
+  const ICON = cfg.key ? '🔑' : '🥕';
+  const GOAL_ICON = cfg.key ? '🚪' : (need ? '🏠' : '🥕');
+
   const holder = el('div', 'col2');
   const wrap = el('div'); wrap.id = 'mzWrap';
   const nodes = [];
-  for (let y = 0; y < H; y++) { nodes[y] = []; for (let x = 0; x < W; x++) { const c = el('div', 'mz' + (g[y][x].n ? ' wn' : '') + (g[y][x].w ? ' ww' : '')); nodes[y][x] = c; wrap.appendChild(c); } }
-  let keyPos = null, hasKey = !cfg.key;
-  if (cfg.key) { do { keyPos = [rnd(H), rnd(W)]; } while ((keyPos[0] < H / 2 && keyPos[1] < W / 2) || (keyPos[0] === H - 1 && keyPos[1] === W - 1)); nodes[keyPos[0]][keyPos[1]].textContent = '🔑'; }
-  nodes[H - 1][W - 1].textContent = cfg.key ? '🚪' : '🥕';
-  let cur = [0, 0], trail = [[0, 0]], won = false;
-  nodes[0][0].classList.add('trail');
-  const runner = el('span', null, '🐰'); nodes[0][0].appendChild(runner);
+  for (let y = 0; y < H; y++) {
+    nodes[y] = [];
+    for (let x = 0; x < W; x++) {
+      const c = el('div', 'mz' + (g[y][x].n ? ' wn' : '') + (g[y][x].w ? ' ww' : ''));
+      if (y === H - 1) c.style.borderBottom = '4px solid var(--ink)';
+      if (x === W - 1) c.style.borderRight = '4px solid var(--ink)';
+      nodes[y][x] = c; wrap.appendChild(c);
+    }
+  }
+  items.forEach(p => nodes[p[0]][p[1]].textContent = ICON);
+  nodes[goal[0]][goal[1]].textContent = GOAL_ICON;
+  let left = items.length, cur = start.slice(), trail = [start.slice()], won = false;
+  nodes[start[0]][start[1]].classList.add('trail');
+  const runner = el('span', null, '🐰'); nodes[start[0]][start[1]].appendChild(runner);
+
   function step(y, x) {
     if (won) return false;
     const [cy, cx] = cur, dy = y - cy, dx = x - cx;
@@ -1554,21 +1725,29 @@ function gMaze(board, lv) {
     if (trail.length > 1 && trail[trail.length - 2][0] === y && trail[trail.length - 2][1] === x) { nodes[cy][cx].classList.remove('trail'); trail.pop(); }
     else { trail.push([y, x]); nodes[y][x].classList.add('trail'); }
     cur = [y, x]; nodes[y][x].appendChild(runner); Audio2.step();
-    if (cfg.key && !hasKey && keyPos && y === keyPos[0] && x === keyPos[1]) {
-      hasKey = true; nodes[y][x].textContent = ''; nodes[y][x].appendChild(runner);
-      Audio2.pop(); toast('拿到钥匙 🔑'); Voice.say('拿到钥匙了，去开门'); setPrompt('钥匙拿到了，去开门 🚪');
+    const hit = items.findIndex(p => p[0] === y && p[1] === x && !p[2]);
+    if (hit >= 0) {
+      items[hit][2] = true; left--;
+      nodes[y][x].textContent = ''; nodes[y][x].appendChild(runner);
+      Audio2.pop();
+      if (cfg.key) { toast('拿到钥匙 🔑'); Voice.say('拿到钥匙了，去开门'); setPrompt('钥匙拿到了，去开门 🚪'); }
+      else { toast('捡到一根 🥕'); setPrompt(left ? ('还差 <span class="num">' + left + '</span> 根胡萝卜') : '都捡到啦，回家 🏠'); Voice.say(left ? '还差 ' + left + ' 根' : '都捡到啦，回家吧'); }
     }
-    if (y === H - 1 && x === W - 1) {
-      if (!hasKey) { Voice.say('先去拿钥匙'); toast('要先拿到钥匙 🔑'); return true; }
+    if (y === goal[0] && x === goal[1]) {
+      if (left > 0) {
+        Voice.say(cfg.key ? '先去拿钥匙' : '还有胡萝卜没捡到');
+        toast(cfg.key ? '要先拿钥匙 🔑' : '还有 ' + left + ' 根没捡 🥕');
+        return true;
+      }
       won = true; clearHint();
       trail.forEach(t => nodes[t[0]][t[1]].classList.add('won'));
-      setPrompt(cfg.key ? '门开啦 🎉' : '小兔子吃到胡萝卜啦');
+      setPrompt(cfg.key ? '门开啦 🎉' : '到家啦 🎉');
       later(400, () => roundWin(wrap));
     }
     return true;
   }
   function toward(y, x) {
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 10; i++) {
       const [cy, cx] = cur; if (cy === y && cx === x) return;
       const dy = Math.sign(y - cy), dx = Math.sign(x - cx);
       let moved = false;
@@ -1589,35 +1768,27 @@ function gMaze(board, lv) {
   wrap.addEventListener('pointermove', ev => { if (dragging) at(ev); });
   wrap.addEventListener('pointerup', () => dragging = false);
   wrap.addEventListener('pointercancel', () => dragging = false);
-  function solve(from, to) {
-    const pv = {}; const q = [from]; pv[from.join(',')] = null;
-    while (q.length) {
-      const [y, x] = q.shift();
-      if (y === to[0] && x === to[1]) { const path = []; let c = y + ',' + x; while (c) { path.push(c.split(',').map(Number)); c = pv[c]; } return path; }
-      [['n', -1, 0], ['s', 1, 0], ['w', 0, -1], ['e', 0, 1]].forEach(([w, dy, dx]) => {
-        if (g[y][x][w]) return;
-        const ny = y + dy, nx = x + dx, nk = ny + ',' + nx;
-        if (ny < 0 || nx < 0 || ny >= H || nx >= W || nk in pv) return;
-        pv[nk] = y + ',' + x; q.push([ny, nx]);
-      });
-    }
-    return [];
-  }
   function flash() {
-    const target = (cfg.key && !hasKey) ? keyPos : [H - 1, W - 1];
-    const path = solve(cur, target);
+    const tgt = left > 0 ? (items.find(p => !p[2]) || goal) : goal;
+    const r = mazeBFS(g, W, H, cur);
+    const path = []; let k = tgt[0] + ',' + tgt[1];
+    while (k != null && k in r.prev) { path.push(k.split(',').map(Number)); k = r.prev[k]; }
     path.forEach(p => nodes[p[0]][p[1]].classList.add('sol'));
-    setTimeout(() => path.forEach(p => nodes[p[0]][p[1]].classList.remove('sol')), 1400);
+    later(1400, () => path.forEach(p => nodes[p[0]][p[1]].classList.remove('sol')));
   }
   const help = el('button', 'sw', '💡 看一眼路（少一颗星）');
   help.addEventListener('click', () => { if (won) return; miss(); flash(); });
-  holder.appendChild(wrap); board.appendChild(holder); addExtra(help, holder);
-  setPrompt(cfg.key ? '先拿钥匙 🔑 再去开门 🚪' : '带小兔子走到胡萝卜那里');
-  Voice.say(cfg.key ? '先用手指带小兔子拿到钥匙，再去开门' : '用手指按住小兔子，带它走到胡萝卜那里');
-  hintIn(22000, () => { if (!won) flash(); });
+  holder.appendChild(wrap); holder.appendChild(help); board.appendChild(holder);
+  const tip = cfg.key ? '先拿钥匙 🔑 再去开门 🚪'
+    : need ? ('捡齐 <span class="num">' + need + '</span> 根胡萝卜 🥕 再回家 🏠')
+      : '带小兔子走到胡萝卜那里 🥕';
+  setPrompt(tip);
+  Voice.say(cfg.key ? '先用手指带小兔子拿到钥匙，再去开门'
+    : need ? '先把 ' + need + ' 根胡萝卜都捡到，再回家' : '用手指按住小兔子，带它走到胡萝卜那里');
+  hintIn(25000, () => { if (!won) flash(); });
   Fit.cb = () => {
     const b = boardBox();
-    const c = cellFit(b.w, b.h - 46, W, H, 0, 110);
+    const c = cellFit(b.w, b.h - 48, W, H, 0, 110);
     wrap.style.gridTemplateColumns = 'repeat(' + W + ',' + px(c) + ')';
     wrap.style.gridAutoRows = px(c);
     wrap.querySelectorAll('.mz').forEach(n => n.style.fontSize = px(c * .6));
@@ -1625,59 +1796,183 @@ function gMaze(board, lv) {
   };
 }
 
-/* ===================== 9 找规律 ===================== */
-const PAT_TOKENS = ['🔴', '🔵', '🟡', '🟢', '🟣', '🟠', '⭐', '❤️', '🐶', '🐱', '🌸', '🍎'];
+/* ===================== 9 找规律 =====================
+   任务层级参考 Rittle-Johnson 等人对 4 岁儿童规律任务难度的实测排序：
+   补空 < 延伸 < 复杂单元 < 双属性 < 换材料重现(translate) < 指认循环单元(identify unit)。
+   每局随机：单元结构、材料、序列长度、空位位置、干扰项构成。
+   ================================================================ */
+const PAT_GLYPH = ['●', '■', '▲', '★', '♥', '◆', '✚', '⬟'];
+const PAT_COLOR = ['var(--red)', 'var(--blue)', 'var(--yellow)', 'var(--green)', 'var(--purple)', 'var(--orange)', 'var(--teal)', 'var(--pink)'];
+const PAT_UNITS = { AB: [0, 1], ABC: [0, 1, 2], AAB: [0, 0, 1], ABB: [0, 1, 1], AABB: [0, 0, 1, 1], ABCC: [0, 1, 2, 2] };
+function patToken(g, c) { return { g: g, c: c }; }
+function patSame(a, b) { return a && b && a.g === b.g && a.c === b.c; }
+// 一套材料：n 个彼此在形状和颜色上都不同的记号
+function patMaterials(n, avoidG, avoidC) {
+  const gs = shuffle(PAT_GLYPH.map((_, i) => i).filter(i => !avoidG || avoidG.indexOf(i) < 0));
+  const cs = shuffle(PAT_COLOR.map((_, i) => i).filter(i => !avoidC || avoidC.indexOf(i) < 0));
+  const out = [];
+  for (let i = 0; i < n; i++) out.push(patToken(gs[i % gs.length], cs[i % cs.length]));
+  return out;
+}
 function gPattern(board, lv) {
   const cfg = G.pattern.levels[lv - 1].cfg;
-  let seq = [], answer = null, opts3 = [];
-  if (cfg.kind === 'rep' || cfg.kind === 'aab') {
-    const p = cfg.kind === 'aab' ? 3 : cfg.p;
-    const toks = shuffle(PAT_TOKENS).slice(0, cfg.kind === 'aab' ? 2 : p);
-    const unit = cfg.kind === 'aab' ? [toks[0], toks[0], toks[1]] : toks;
-    const len = p === 2 ? 7 : 8;
-    for (let i = 0; i < len; i++) seq.push(unit[i % unit.length]);
-    answer = seq[len - 1]; seq[len - 1] = null;
-    opts3 = shuffle(Array.from(new Set([answer, ...shuffle(unit.concat(PAT_TOKENS)).filter(t => t !== answer)])).slice(0, 3));
-  } else if (cfg.kind === 'num') {
-    const stepv = pick([1, 2, 2, 3, 5]), start = 1 + rnd(4);
-    for (let i = 0; i < 6; i++) seq.push(String(start + stepv * i));
-    answer = seq[5]; seq[5] = null;
-    const nA = +answer;
-    opts3 = shuffle(Array.from(new Set([answer, String(nA + stepv), String(Math.max(0, nA - stepv)), String(nA + 1)])).slice(0, 3));
-  } else {
-    const tok = pick(PAT_TOKENS);
-    for (let i = 1; i <= 5; i++) seq.push(tok.repeat(i));
-    answer = seq[4]; seq[4] = null;
-    opts3 = shuffle([answer, tok.repeat(3), tok.repeat(6)]);
-  }
   const holder = el('div', 'col2');
-  const row = el('div', 'seqrow');
-  const cells = [];
-  seq.forEach(v => { const c = el('div', 'seq' + (v == null ? ' q' : ''), v == null ? '?' : v); cells.push(c); row.appendChild(c); });
+  const rows = el('div', 'col2'); rows.style.gap = '10px';
   const opts = el('div', 'seqrow');
-  const oc = [];
-  opts3.forEach(v => {
-    const o = el('div', 'seq tile', v);
-    o.addEventListener('click', () => {
-      if (v === answer) {
-        Audio2.good(); const q = cells[cells.length - 1]; q.textContent = v; q.classList.remove('q'); q.classList.add('pop');
-        q.style.background = 'var(--green)'; later(600, () => roundWin(q));
-      } else { miss(); o.classList.remove('shake'); void o.offsetWidth; o.classList.add('shake'); }
+  const cellEls = [], optEls = [];
+  let answer = null, blankCell = null, askUnit = false;
+
+  const mkCell = (tok, q) => {
+    const c = el('div', 'seq' + (q ? ' q' : ''));
+    if (q) { c.textContent = '?'; }
+    else { c.textContent = PAT_GLYPH[tok.g]; c.style.color = PAT_COLOR[tok.c]; }
+    return c;
+  };
+  const mkRow = (toks, blankIdx) => {
+    const r = el('div', 'seqrow');
+    toks.forEach((t, i) => {
+      const c = mkCell(t, i === blankIdx);
+      if (i === blankIdx) blankCell = c;
+      cellEls.push(c); r.appendChild(c);
     });
-    oc.push(o); opts.appendChild(o);
+    return r;
+  };
+
+  if (cfg.kind === 'unit') {
+    // —— 指认循环单元：选出“一直在重复的那一小段” ——
+    askUnit = true;
+    const uname = pick(cfg.units), unit = PAT_UNITS[uname];
+    const mat = patMaterials(Math.max.apply(null, unit) + 1);
+    const cycles = 3, seq = [];
+    for (let i = 0; i < cycles * unit.length; i++) seq.push(mat[unit[i % unit.length]]);
+    rows.appendChild(mkRow(seq, -1));
+    const right = unit.map(i => mat[i]);
+    const rot = unit.slice(1).concat(unit.slice(0, 1)).map(i => mat[i]);      // 错位一格
+    const longer = unit.concat([unit[0]]).map(i => mat[i]);                    // 多取一个
+    const cand = [right, rot, longer].filter((x, i) => i === 0 || !x.every((t, k) => patSame(t, right[k])));
+    while (cand.length < 3) cand.push(unit.slice(0, Math.max(1, unit.length - 1)).map(i => mat[i]));
+    shuffle(cand).forEach(seg => {
+      const o = el('div', 'seq tile'); o.style.padding = '0 6px'; o.style.gap = '4px'; o.style.display = 'flex';
+      seg.forEach(t => { const sp = el('span', null, PAT_GLYPH[t.g]); sp.style.color = PAT_COLOR[t.c]; o.appendChild(sp); });
+      o.addEventListener('click', () => {
+        const good = seg.length === right.length && seg.every((t, k) => patSame(t, right[k]));
+        if (good) { Audio2.good(); o.classList.add('done'); later(500, () => roundWin(o)); }
+        else { miss(); o.classList.remove('shake'); void o.offsetWidth; o.classList.add('shake'); }
+      });
+      optEls.push(o); opts.appendChild(o);
+    });
+    setPrompt('哪一小段在一直重复？');
+    Voice.say('这一排里，哪一小段一直在重复？');
+
+  } else if (cfg.kind === 'translate') {
+    // —— 换材料重现同一结构 ——
+    const uname = pick(cfg.units), unit = PAT_UNITS[uname];
+    const kinds = Math.max.apply(null, unit) + 1;
+    const matA = patMaterials(kinds);
+    const matB = patMaterials(kinds, matA.map(t => t.g), matA.map(t => t.c));
+    const len = unit.length * 2 + rnd(unit.length);
+    const top = [], bot = [];
+    for (let i = 0; i < len; i++) { top.push(matA[unit[i % unit.length]]); bot.push(matB[unit[i % unit.length]]); }
+    rows.appendChild(mkRow(top, -1));
+    const arrow = el('div', null, '同样的规律 ↓'); arrow.style.cssText = 'font-size:14px;color:var(--ink-soft)';
+    rows.appendChild(arrow);
+    rows.appendChild(mkRow(bot, len - 1));
+    answer = bot[len - 1];
+    buildOpts(matB, answer, bot, len - 1);
+    setPrompt('下面一排换了材料，规律一样，该放哪个？');
+    Voice.say('下面这排换了材料，但规律和上面一样，空格该放哪个？');
+
+  } else if (cfg.kind === 'dual') {
+    // —— 形状走一个周期、颜色走另一个周期 ——
+    const gp = pick([2, 3]), cp = gp === 2 ? 3 : 2;
+    const gs = shuffle(PAT_GLYPH.map((_, i) => i)).slice(0, gp);
+    const cs = shuffle(PAT_COLOR.map((_, i) => i)).slice(0, cp);
+    const len = 7 + rnd(2), seq = [];
+    for (let i = 0; i < len; i++) seq.push(patToken(gs[i % gp], cs[i % cp]));
+    const blank = len - 1 - rnd(2);
+    rows.appendChild(mkRow(seq, blank));
+    answer = seq[blank];
+    const pool = [answer,
+      patToken(gs[(blank + 1) % gp], cs[blank % cp]),     // 形状错一格
+      patToken(gs[blank % gp], cs[(blank + 1) % cp]),     // 颜色错一格
+      patToken(gs[(blank + 1) % gp], cs[(blank + 1) % cp])];
+    buildOptsFrom(pool, answer);
+    setPrompt('形状和颜色各有各的规律，空格是哪个？');
+    Voice.say('形状和颜色各走各的规律，空格该是哪一个？');
+
+  } else {
+    // —— 补空 / 延伸 / 复杂单元 ——
+    const uname = pick(cfg.units), unit = PAT_UNITS[uname];
+    const kinds = Math.max.apply(null, unit) + 1;
+    const mat = patMaterials(kinds);
+    const cycles = 2 + (unit.length <= 2 ? 1 + rnd(2) : rnd(2));
+    const len = Math.min(9, unit.length * cycles + (cfg.kind === 'extend' ? 1 : 0));
+    const seq = [];
+    for (let i = 0; i < len; i++) seq.push(mat[unit[i % unit.length]]);
+    let blank;
+    if (cfg.kind === 'extend') blank = len - 1;
+    else if (cfg.kind === 'fix') blank = unit.length + rnd(len - unit.length - 1);   // 至少留完整一轮在前面
+    else blank = rnd(2) ? len - 1 : unit.length + rnd(Math.max(1, len - unit.length - 1));
+    rows.appendChild(mkRow(seq, blank));
+    answer = seq[blank];
+    buildOpts(mat, answer, seq, blank);
+    const ask = blank === len - 1 ? '接下来该是哪一个？' : '中间空的该是哪一个？';
+    setPrompt(ask);
+    Voice.say(blank === len - 1 ? '看看规律，接下来该是哪一个？' : '看看左右两边，中间空的该是哪一个？');
+  }
+
+  // 干扰项：优先用“循环里错一格”的那个，再补同材料的其他记号
+  function buildOpts(mat, ans, seq, blank) {
+    const pool = [ans];
+    const near = [seq[(blank + 1) % seq.length], seq[(blank - 1 + seq.length) % seq.length]];
+    near.forEach(t => { if (t && !patSame(t, ans) && !pool.some(x => patSame(x, t))) pool.push(t); });
+    mat.forEach(t => { if (!pool.some(x => patSame(x, t))) pool.push(t); });
+    while (pool.length < 3) pool.push(patMaterials(1)[0]);
+    buildOptsFrom(pool.slice(0, 3), ans);
+  }
+  function buildOptsFrom(pool, ans) {
+    const uniq = [];
+    pool.forEach(t => { if (!uniq.some(x => patSame(x, t))) uniq.push(t); });
+    while (uniq.length < 3) { const t = patMaterials(1)[0]; if (!uniq.some(x => patSame(x, t))) uniq.push(t); }
+    shuffle(uniq.slice(0, 4)).forEach(t => {
+      const o = mkCell(t, false); o.classList.add('tile');
+      o.addEventListener('click', () => {
+        if (patSame(t, ans)) {
+          Audio2.good();
+          if (blankCell) {
+            blankCell.textContent = PAT_GLYPH[t.g]; blankCell.style.color = PAT_COLOR[t.c];
+            blankCell.classList.remove('q'); blankCell.classList.add('pop');
+          }
+          later(600, () => roundWin(blankCell || o));
+        } else { miss(); o.classList.remove('shake'); void o.offsetWidth; o.classList.add('shake'); }
+      });
+      optEls.push(o); opts.appendChild(o);
+    });
+  }
+
+  holder.appendChild(rows); holder.appendChild(opts); board.appendChild(holder);
+  hintIn(14000, () => {
+    optEls.forEach(o => {
+      const good = askUnit ? o.classList.contains('right') : (answer && o.textContent === PAT_GLYPH[answer.g] && o.style.color === PAT_COLOR[answer.c]);
+      if (good) o.classList.add('pulse');
+    });
   });
-  holder.appendChild(row); holder.appendChild(opts); board.appendChild(holder);
-  setPrompt('接下来该是哪一个？');
-  Voice.say('看看前面的规律，接下来该是哪一个？');
-  hintIn(12000, () => oc.forEach(o => { if (o.textContent === answer) o.classList.add('pulse'); }));
   Fit.cb = () => {
-    const b = boardBox(), gap = clamp(b.w / 80, 5, 12);
-    const cs = cellFit(b.w, b.h * .45, cells.length, 1, gap, 110);
-    row.style.gap = px(gap);
-    cells.forEach(c => { c.style.width = px(cs); c.style.height = px(cs); c.style.fontSize = px(cs * (cfg.kind === 'grow' ? .3 : .5)); });
-    const os = cellFit(b.w, b.h * .34, 3, 1, gap * 2, 130);
-    opts.style.gap = px(gap * 2); opts.style.marginTop = px(clamp(b.h * .06, 8, 26));
-    oc.forEach(o => { o.style.width = px(os); o.style.height = px(os); o.style.fontSize = px(os * (cfg.kind === 'grow' ? .26 : .5)); });
+    const b = boardBox(), gap = clamp(b.w / 90, 4, 12);
+    const rowEls = rows.querySelectorAll('.seqrow');
+    let maxN = 1;
+    rowEls.forEach(r => { maxN = Math.max(maxN, r.children.length); });
+    const cs = cellFit(b.w, b.h * (rowEls.length > 1 ? .3 : .46), maxN, 1, gap, 104);
+    rowEls.forEach(r => { r.style.gap = px(gap); });
+    cellEls.forEach(c => { c.style.width = px(cs); c.style.height = px(cs); c.style.fontSize = px(cs * .62); });
+    const n = optEls.length || 3;
+    const os = cellFit(b.w, b.h * .3, askUnit ? n * 2.2 : n, 1, gap * 2, 118);
+    opts.style.gap = px(gap * 2); opts.style.marginTop = px(clamp(b.h * .06, 10, 30));
+    optEls.forEach(o => {
+      o.style.height = px(os);
+      if (askUnit) { o.style.width = 'auto'; o.style.minWidth = px(os); o.style.fontSize = px(os * .48); }
+      else { o.style.width = px(os); o.style.fontSize = px(os * .62); }
+    });
     holder.style.gap = '0';
   };
 }
