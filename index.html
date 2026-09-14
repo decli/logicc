@@ -2611,10 +2611,18 @@ function gFit(board, lv) {
       const GAP = 2, CHROME = 4 * 2 + 4 * 2;
       const boxH = b.h - consoleH - 14 - CHROME;         // 棋盘真正能用的高度
       const availW = b.w - 24 - nextW - nextGap - CHROME - GAP * (BW - 1);
-      if (!built) {                                       // 量到尺寸后再决定行数并开局
-        BH = clamp(Math.floor((boxH + GAP) / (MIN_CELL + GAP)), 10, cfg.h);
-        buildCells(); built = true;
+      // 首帧的测量往往还没稳定（ResizeObserver 会在布局落定前先响一次），
+      // 拿那个偏小的高度定行数，就会掉到下限 10。所以：棋盘还空着的时候，
+      // 只要测量值变了就按新值重建——一旦落下第一块就锁死，不再改动
+      const wantBH = clamp(Math.floor((boxH + GAP) / (MIN_CELL + GAP)), 10, cfg.h);
+      if (!built) {
+        if (b.h < 240) return;                            // 明显不合理的测量，等下一帧
+        BH = wantBH; buildCells(); built = true;
         nextP = takeBag(); spawn(); restartTick();
+      } else if (wantBH !== BH && !history.length && !Object.keys(occ).length) {
+        BH = wantBH; buildCells();
+        if (cur) cur.y = Math.min(cur.y, BH - pDims(cur.cs)[0]);
+        paint();
       }
       const availH = boxH - GAP * (BH - 1);
       cellPx2 = clamp(Math.floor(Math.min(availW / BW, availH / BH)), 12, 52);
