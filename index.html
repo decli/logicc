@@ -102,10 +102,10 @@ body{
 .row2{display:flex;align-items:center;justify-content:center}
 .col2{display:flex;flex-direction:column;align-items:center;justify-content:center}
 /* 点子 */
-.face{display:grid;width:100%;height:100%;padding:9%;gap:4%;
-  grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr)}
-.face.wide{grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(2,1fr)}
-.face b{border-radius:50%;background:var(--ink);width:100%;aspect-ratio:1;align-self:center;justify-self:center;display:block}
+.face{display:grid;width:100%;height:100%;place-content:center;gap:var(--dotgap,3px);overflow:hidden;
+  grid-template-columns:repeat(3,var(--dotsz,8px));grid-template-rows:repeat(3,var(--dotsz,8px))}
+.face.wide{grid-template-columns:repeat(5,var(--dotsz,8px));grid-template-rows:repeat(2,var(--dotsz,8px))}
+.face b{border-radius:50%;background:var(--ink);width:100%;height:100%;display:block}
 .face b.off{background:transparent}
 .face b.lit{background:var(--red);animation:pp .3s}
 .domino{display:flex;flex-direction:column;border:4px solid var(--ink);border-radius:16px;background:#fff;
@@ -771,9 +771,26 @@ var Session = null, ROUND_ID = 0;
 var ROUNDS = 3;
 function later(ms, fn) { var id = ROUND_ID; return setTimeout(function () { if (id === ROUND_ID) fn(); }, ms); }
 function every(ms, fn) { var id = ROUND_ID; var t = setInterval(function () { if (id !== ROUND_ID) return clearInterval(t); fn(t); }, ms); return t; }
+// 骰子点阵：按父盒实测宽高定点的直径，宽扁或细高的卡片里都不会顶出边框
+function fitFaces() {
+  var list = document.querySelectorAll('.face'), G = 0.22;
+  for (var i = 0; i < list.length; i++) {
+    var f = list[i], r = f.getBoundingClientRect();
+    if (!r.width || !r.height) continue;
+    var wide = f.classList.contains('wide'), cols = wide ? 5 : 3, rows = wide ? 2 : 3;
+    var cw = r.width * 0.86 / (cols + G * (cols - 1));
+    var ch = r.height * 0.86 / (rows + G * (rows - 1));
+    var d = Math.max(3, Math.floor(Math.min(cw, ch)));
+    f.style.setProperty('--dotsz', d + 'px');
+    f.style.setProperty('--dotgap', Math.max(2, Math.round(d * G)) + 'px');
+  }
+}
 var Fit = {
   cb: null, ro: null,
-  run: function () { if (this.cb) { try { this.cb(); } catch (err) { console.error('Fit.cb failed:', err); } } },
+  run: function () {
+    if (this.cb) { try { this.cb(); } catch (err) { console.error('Fit.cb failed:', err); } }
+    fitFaces();
+  },
   boot: function () {
     var self = this;
     var go = function () { requestAnimationFrame(function () { fitScale(); self.run(); }); };
@@ -1017,7 +1034,7 @@ function gDots(board, lv) {
       choices.forEach(v => {
         const o = el('div', 'tile num', String(v));
         o.addEventListener('click', () => {
-          if (v === N) { Audio2.good(); o.classList.add('done'); card.innerHTML = ''; card.appendChild(faceEl(N)); later(500, () => roundWin(card)); }
+          if (v === N) { Audio2.good(); o.classList.add('done'); card.innerHTML = ''; card.appendChild(faceEl(N)); fitFaces(); later(500, () => roundWin(card)); }
           else { miss(); o.classList.remove('shake'); void o.offsetWidth; o.classList.add('shake'); }
         });
         opts.appendChild(o);
@@ -1046,7 +1063,7 @@ function gDots(board, lv) {
       const o = el('div', 'tile'); o.appendChild(faceEl(v));
       o.addEventListener('click', () => {
         if (v === need) {
-          Audio2.good(); qh.innerHTML = ''; qh.appendChild(faceEl(v)); o.classList.add('done');
+          Audio2.good(); qh.innerHTML = ''; qh.appendChild(faceEl(v)); fitFaces(); o.classList.add('done');
           const dots = dom.querySelectorAll('b:not(.off)'); let i = 0;
           every(170, tm => {
             if (i >= dots.length) { clearInterval(tm); later(250, () => roundWin(dom)); return; }
