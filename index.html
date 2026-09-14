@@ -206,7 +206,7 @@ body{
 .dayPill{flex:1 1 auto;min-width:0;gap:calc(14px * var(--k));font-size:calc(24px * var(--k));font-weight:700}
 .dayBar{flex:1 1 auto;height:calc(20px * var(--k));border:calc(3px * var(--k)) solid var(--ink);border-radius:calc(999px * var(--k));background:#F5F0E2;overflow:hidden;min-width:calc(60px * var(--k))}
 .dayBar i{display:block;height:100%;background:var(--green)}
-#cards{flex:1 1 auto;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:calc(18px * var(--k));min-height:0;padding:calc(4px * var(--k)) calc(24px * var(--k)) calc(24px * var(--k))}
+#cards{flex:1 1 auto;display:grid;gap:calc(18px * var(--k));min-height:0;padding:calc(4px * var(--k)) calc(24px * var(--k)) calc(24px * var(--k))}
 .card,.card:nth-child(odd),.card:nth-child(even){display:flex;overflow:hidden;border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(24px * var(--k));background:#fff;box-shadow:calc(7px * var(--k)) calc(7px * var(--k)) 0 var(--ink);cursor:pointer;min-height:0;padding:0;transform:none;flex-direction:row;align-items:stretch;justify-content:flex-start}
 .card:active{transform:translate(calc(5px * var(--k)),calc(5px * var(--k)));box-shadow:0 0 0 var(--ink)}
 .cardArt{flex:0 0 calc(148px * var(--k));background:var(--c);display:flex;align-items:center;justify-content:center;font-size:calc(84px * var(--k));line-height:1}
@@ -577,6 +577,36 @@ const GAMES = [
       { t: '换一套东西，同样的规律', d: '上排是参考，下排换了材料但规律一样——研究里这一步明显更难', cfg: { kind: 'translate', units: ['AB', 'ABC', 'AAB', 'ABB'] } },
       { t: '找出一直重复的那一小段', d: '不是补空，是指认循环单元本身；四岁儿童里很少有人做得到', cfg: { kind: 'unit', units: ['AB', 'ABC', 'AAB', 'ABB', 'AABB'] } }
     ]
+  },
+  {
+    id: 'switch', name: '换规则分类', emoji: '🔀', color: 'var(--blue)', tip: '把卡片放进对的盒子，规则中途会变',
+    levels: [
+      { t: '按颜色分', d: '先建立一条规则', cfg: { rule: 'color', cards: 6 } },
+      { t: '按形状分', d: '换一条规则重新来', cfg: { rule: 'shape', cards: 6 } },
+      { t: '玩到一半换规则', d: '这是 DCCS 的经典考法：旧规则用顺手了再叫你改，学龄前最难的一关', cfg: { rule: 'color', switchAt: 4, cards: 8 } },
+      { t: '来回换', d: '每三张换一次，得一直盯着现在按什么分', cfg: { rule: 'shape', every: 3, cards: 9 } },
+      { t: '看边框决定', d: '有黑边按形状分，没黑边按颜色分——规则藏在卡片自己身上', cfg: { rule: 'border', cards: 8 } }
+    ]
+  },
+  {
+    id: 'stop', name: '忍住别点', emoji: '🚦', color: 'var(--red)', tip: '看清楚再点，有些东西不能点',
+    levels: [
+      { t: '看到小鱼就点', d: '鲨鱼来了要忍住', cfg: { go: '🐟', no: '🦈', n: 10, noRate: .3, win: 2600 } },
+      { t: '鲨鱼变多了', d: '要忍的次数变多', cfg: { go: '🐟', no: '🦈', n: 12, noRate: .45, win: 2300 } },
+      { t: '反过来', d: '这次看到鲨鱼才点，小鱼不能点——旧习惯要压住', cfg: { go: '🦈', no: '🐟', n: 12, noRate: .45, win: 2300 } },
+      { t: '白天黑夜', d: '看到太阳要点月亮，看到月亮要点太阳（经典 day-night 任务）', cfg: { stroop: true, n: 10, win: 3200 } },
+      { t: '又快又乱', d: '两种考法混着来', cfg: { stroop: true, mix: true, n: 14, win: 2600 } }
+    ]
+  },
+  {
+    id: 'span', name: '记住亮过的', emoji: '💡', color: 'var(--teal)', tip: '看哪些格子亮过，照原样点一遍',
+    levels: [
+      { t: '亮 2 个', d: '3×3 格子，记两个', cfg: { w: 3, h: 3, len: 2 } },
+      { t: '亮 3 个', d: '学龄前工作记忆大约就在 3 个上下', cfg: { w: 3, h: 3, len: 3 } },
+      { t: '格子变多', d: '4×4 里记 3 个', cfg: { w: 4, h: 4, len: 3 } },
+      { t: '亮 4 个', d: '到这里已经超过同龄平均了', cfg: { w: 4, h: 4, len: 4 } },
+      { t: '倒着点', d: '记住顺序后反过来点——不只是记住，还要在脑子里翻转', cfg: { w: 3, h: 3, len: 3, rev: true } }
+    ]
   }
 ];
 const G = {}; GAMES.forEach(g => { G[g.id] = g; S.level[g.id] = 1; S.streak[g.id] = 0; });
@@ -695,6 +725,16 @@ function home() {
   });
   p.appendChild(cards);
   $('#screen').innerHTML = ''; $('#screen').appendChild(p);
+  Fit.cb = function () {
+    var r = cards.getBoundingClientRect();
+    if (!r.width) return;
+    var n = GAMES.length;
+    var cols = r.width >= r.height * 1.1 ? Math.ceil(n / 3) : Math.ceil(n / 4);
+    cols = clamp(cols, 2, 5);
+    cards.style.gridTemplateColumns = 'repeat(' + cols + ',1fr)';
+    cards.style.gridTemplateRows = 'repeat(' + Math.ceil(n / cols) + ',1fr)';
+  };
+  Fit.run();
   Voice.say('今天玩哪一个？', false);
 }
 
@@ -708,6 +748,9 @@ function previewShape(g, i) {
   else if (g.id === 'pattern') { cols = 6; rows = 1; }
   else if (g.id === 'dots') { cols = c.kind === 'make3' ? 3 : 2; rows = 1; }
   else if (g.id === 'bond') { cols = c.miss === 'three' ? 3 : 2; rows = 2; }
+  else if (g.id === 'switch') { cols = 2; rows = 2; }
+  else if (g.id === 'stop') { cols = 3; rows = 1; }
+  else if (g.id === 'span') { cols = c.w; rows = c.h; }
   else if (g.id === 'connect') { cols = Math.min(6, Math.round(c.pts / 3)); rows = 1; }
   return { cols: cols, rows: rows };
 }
@@ -1977,7 +2020,250 @@ function gPattern(board, lv) {
   };
 }
 
-const GAME_IMPL = { schulte: gSchulte, dots: gDots, bond: gBond, match: gMatch, mirror: gMirror, connect: gConnect, link: gLink, maze: gMaze, pattern: gPattern };
+/* ===================== 10 换规则分类（认知灵活性 / DCCS） =====================
+   Dimensional Change Card Sort：先按一个维度分，用顺手之后改成另一个维度。
+   学龄前儿童在「换规则」这一步失败率最高（前测平均 6.9/12），
+   也是执行功能三件套里最晚成熟的一块。
+   ============================================================================ */
+const SW_SHAPES = [{ g: '🐰', n: '兔子' }, { g: '⛵', n: '小船' }, { g: '🌸', n: '花' }, { g: '🚗', n: '汽车' }, { g: '🐟', n: '小鱼' }, { g: '⭐', n: '星星' }];
+const SW_COLORS = [{ c: 'var(--red)', n: '红色' }, { c: 'var(--blue)', n: '蓝色' }, { c: 'var(--green)', n: '绿色' }, { c: 'var(--yellow)', n: '黄色' }, { c: 'var(--purple)', n: '紫色' }];
+function gSwitch(board, lv) {
+  const cfg = G.switch.levels[lv - 1].cfg;
+  const shapes = shuffle(SW_SHAPES).slice(0, 2), colors = shuffle(SW_COLORS).slice(0, 2);
+  const total = cfg.cards;
+  // 每张卡的形状与颜色独立随机，保证两条规则会给出不同答案（冲突卡）
+  const deck = [];
+  for (let i = 0; i < total; i++) deck.push({ s: rnd(2), c: rnd(2), border: cfg.rule === 'border' ? rnd(2) : 0 });
+  let idx = 0, rule = cfg.rule === 'border' ? null : cfg.rule;
+
+  const holder = el('div', 'col2'); holder.style.gap = '14px';
+  const ruleTag = el('div'); ruleTag.style.cssText = 'font-size:16px;font-weight:700;border:3px solid var(--ink);border-radius:999px;padding:5px 16px;background:#fff';
+  const cardBox = el('div', 'row2');
+  const bins = el('div', 'row2'); bins.style.gap = '24px';
+  const binEls = [];
+  for (let i = 0; i < 2; i++) {
+    const b = el('div', 'tile'); b.style.flexDirection = 'column'; b.dataset.i = i;
+    b.addEventListener('click', () => drop(i));
+    binEls.push(b); bins.appendChild(b);
+  }
+  let cardEl = null;
+  function curRule() { return rule === 'border' || cfg.rule === 'border' ? (deck[idx].border ? 'shape' : 'color') : rule; }
+  function paintBins() {
+    const r = cfg.rule === 'border' ? null : curRule();
+    binEls.forEach((b, i) => {
+      b.innerHTML = '';
+      if (cfg.rule === 'border') {
+        const g1 = el('div', null, shapes[i].g); g1.style.fontSize = '1em'; g1.style.color = colors[i].c;
+        b.appendChild(g1);
+        b.style.background = '#fff';
+      } else if (r === 'color') {
+        b.style.background = colors[i].c;
+        const q = el('div', null, '🎨'); b.appendChild(q);
+      } else {
+        b.style.background = '#fff';
+        const q = el('div', null, shapes[i].g); b.appendChild(q);
+      }
+    });
+    ruleTag.textContent = cfg.rule === 'border' ? '有黑边→按形状　没黑边→按颜色'
+      : (r === 'color' ? '现在：按颜色分 🎨' : '现在：按形状分 ' + shapes[0].g);
+  }
+  function showCard() {
+    cardBox.innerHTML = '';
+    const d = deck[idx];
+    cardEl = el('div', 'tile'); cardEl.textContent = shapes[d.s].g;
+    cardEl.style.color = colors[d.c].c;
+    cardEl.style.borderWidth = d.border ? '10px' : '3px';
+    cardBox.appendChild(cardEl);
+    Fit.run();
+  }
+  function drop(i) {
+    const d = deck[idx], r = curRule();
+    const right = r === 'color' ? d.c : d.s;
+    if (i === right) {
+      Audio2.good(); cardEl.classList.add('pop');
+      binEls[i].classList.add('pop');
+      idx++;
+      if (idx >= total) { setPrompt('全部分完啦'); return roundWin(bins); }
+      // 规则切换
+      if (cfg.switchAt && idx === cfg.switchAt) { rule = rule === 'color' ? 'shape' : 'color'; announce(); }
+      else if (cfg.every && idx % cfg.every === 0) { rule = rule === 'color' ? 'shape' : 'color'; announce(); }
+      paintBins(); showCard(); tick();
+    } else {
+      miss(); binEls[i].classList.remove('shake'); void binEls[i].offsetWidth; binEls[i].classList.add('shake');
+      Voice.say(cfg.rule === 'border' ? (d.border ? '这张有黑边，要按形状分' : '这张没黑边，要按颜色分')
+        : (r === 'color' ? '现在是按颜色分' : '现在是按形状分'));
+    }
+  }
+  function announce() {
+    const r = rule === 'color' ? '颜色' : '形状';
+    toast('规则变了！现在按' + r + '分'); Voice.say('注意，规则变了，现在按' + r + '分');
+  }
+  function tick() { setPrompt('第 <span class="num">' + (idx + 1) + '</span> / ' + total + ' 张'); }
+  holder.appendChild(ruleTag); holder.appendChild(cardBox); holder.appendChild(bins);
+  board.appendChild(holder);
+  paintBins(); showCard(); tick();
+  Voice.say(cfg.rule === 'border' ? '有黑边的按形状分，没黑边的按颜色分'
+    : (cfg.rule === 'color' ? '把卡片按颜色放进盒子' : '把卡片按形状放进盒子'));
+  hintIn(12000, () => { const r = curRule(); const right = r === 'color' ? deck[idx].c : deck[idx].s; binEls[right].classList.add('pulse'); later(2200, () => binEls[right].classList.remove('pulse')); });
+  Fit.cb = () => {
+    const b = boardBox();
+    const cs = clamp(Math.min(b.h * .3, b.w * .22), 56, 150);
+    if (cardEl) { cardEl.style.width = px(cs); cardEl.style.height = px(cs); cardEl.style.fontSize = px(cs * .58); }
+    const bs = clamp(Math.min(b.h * .3, b.w * .26), 60, 170);
+    binEls.forEach(x => { x.style.width = px(bs * 1.15); x.style.height = px(bs); x.style.fontSize = px(bs * .46); });
+    ruleTag.style.fontSize = px(clamp(b.w * .028, 13, 22));
+  };
+}
+
+/* ===================== 11 忍住别点（抑制控制 / Go-No-Go、day-night） =====================
+   Go/No-Go 与 day-night Stroop 都是抑制控制的标准儿童范式：
+   优势反应已经建立之后，要求在特定信号下压住它。
+   ======================================================================================= */
+function gStop(board, lv) {
+  const cfg = G.stop.levels[lv - 1].cfg;
+  const holder = el('div', 'col2'); holder.style.gap = '16px';
+  const stage = el('div', 'tile'); stage.style.cursor = 'default';
+  const bar = el('div'); bar.style.cssText = 'height:12px;border:3px solid var(--ink);border-radius:999px;background:#fff;overflow:hidden';
+  const barIn = el('div'); barIn.style.cssText = 'height:100%;width:100%;background:var(--yellow)';
+  bar.appendChild(barIn);
+  const btns = el('div', 'row2'); btns.style.gap = '18px';
+  let i = 0, right = 0, timer = null, answered = false, seq = [];
+  const N = cfg.n;
+  for (let k = 0; k < N; k++) {
+    if (cfg.stroop) seq.push({ kind: 'stroop', v: rnd(2) });                 // 0=太阳 1=月亮
+    else seq.push({ kind: Math.random() < cfg.noRate ? 'no' : 'go' });
+  }
+  if (cfg.mix) seq = seq.map(x => Math.random() < .4 ? { kind: Math.random() < .4 ? 'no' : 'go' } : x);
+  const goIcon = cfg.go || '🐟', noIcon = cfg.no || '🦈';
+
+  const sunBtn = el('div', 'tile', '☀️'), moonBtn = el('div', 'tile', '🌙');
+  sunBtn.addEventListener('click', () => answer('sun'));
+  moonBtn.addEventListener('click', () => answer('moon'));
+  const tapBtn = el('div', 'tile', '👆 点一下');
+  tapBtn.addEventListener('click', () => answer('tap'));
+
+  function layoutBtns(kind) {
+    btns.innerHTML = '';
+    if (kind === 'stroop') { btns.appendChild(sunBtn); btns.appendChild(moonBtn); }
+    else btns.appendChild(tapBtn);
+    Fit.run();
+  }
+  function show() {
+    if (i >= N) return finish();
+    answered = false;
+    const it = seq[i];
+    stage.textContent = it.kind === 'stroop' ? (it.v ? '🌙' : '☀️') : (it.kind === 'go' ? goIcon : noIcon);
+    stage.style.background = '#fff';
+    layoutBtns(it.kind);
+    setPrompt('第 <span class="num">' + (i + 1) + '</span> / ' + N + '　答对 <span class="num">' + right + '</span>');
+    const t0 = Date.now();
+    barIn.style.width = '100%';
+    clearInterval(timer);
+    timer = every(60, tm => {
+      const p2 = 1 - (Date.now() - t0) / cfg.win;
+      barIn.style.width = Math.max(0, p2 * 100) + '%';
+      if (p2 <= 0) { clearInterval(tm); if (!answered) timeout(); }
+    });
+  }
+  function good(msg) { answered = true; right++; Audio2.good(); stage.style.background = '#BFE8C4'; if (msg) setPrompt(msg); i++; later(520, show); }
+  function bad(say) { answered = true; miss(); stage.style.background = '#FBD5CE'; if (say) Voice.say(say); i++; later(760, show); }
+  function answer(kind) {
+    if (answered) return;
+    const it = seq[i];
+    if (it.kind === 'stroop') {
+      const want = it.v ? 'sun' : 'moon';                 // 看到月亮点太阳，看到太阳点月亮
+      if (kind === want) good(); else bad('看到太阳要点月亮，看到月亮要点太阳');
+    } else if (it.kind === 'go') { if (kind === 'tap') good(); else bad(); }
+    else bad('这个不能点，要忍住');
+  }
+  function timeout() {
+    const it = seq[i];
+    if (it.kind === 'no') { answered = true; right++; Audio2.pop(); stage.style.background = '#BFE8C4'; i++; later(420, show); }
+    else { answered = true; Audio2.soft(); stage.style.background = '#F3EEDF'; i++; later(420, show); }
+  }
+  function finish() {
+    clearInterval(timer);
+    const pass = right >= Math.ceil(N * .7);
+    setPrompt(pass ? ('答对 ' + right + ' / ' + N + '，很稳！') : ('答对 ' + right + ' / ' + N + '，再来一次会更好'));
+    Voice.say(pass ? '答对 ' + right + ' 个，很稳' : '答对 ' + right + ' 个，再来一次');
+    if (pass) later(500, () => roundWin(stage)); else later(1400, () => nextRound());
+  }
+  holder.appendChild(stage); holder.appendChild(bar); holder.appendChild(btns);
+  board.appendChild(holder);
+  Voice.say(cfg.stroop ? '看到太阳要点月亮，看到月亮要点太阳，别弄反了'
+    : '看到' + (cfg.go === '🦈' ? '鲨鱼' : '小鱼') + '就点一下，看到' + (cfg.no === '🐟' ? '小鱼' : '鲨鱼') + '要忍住不点');
+  later(900, show);
+  Fit.cb = () => {
+    const b = boardBox();
+    const ss = clamp(Math.min(b.h * .42, b.w * .34), 80, 240);
+    stage.style.width = px(ss); stage.style.height = px(ss); stage.style.fontSize = px(ss * .56);
+    bar.style.width = px(ss * 1.4);
+    const bs = clamp(Math.min(b.h * .22, b.w * .2), 54, 130);
+    [sunBtn, moonBtn].forEach(x => { x.style.width = px(bs); x.style.height = px(bs); x.style.fontSize = px(bs * .5); });
+    tapBtn.style.width = px(bs * 2.2); tapBtn.style.height = px(bs); tapBtn.style.fontSize = px(bs * .28);
+  };
+}
+
+/* ===================== 12 记住亮过的（空间工作记忆 / Corsi） =====================
+   Corsi 方块范式。学龄前工作记忆容量实测大约 3.2 个条目，
+   所以跨度定在 2~4；倒序版需要在脑子里翻转序列，负荷明显更高。
+   =============================================================================== */
+function gSpan(board, lv) {
+  const cfg = G.span.levels[lv - 1].cfg, W = cfg.w, H = cfg.h, L = cfg.len;
+  const holder = el('div', 'col2');
+  const grid = el('div'); grid.style.display = 'grid';
+  const cells = [];
+  const all = [];
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) all.push(y * W + x);
+  const seq = shuffle(all).slice(0, L);
+  let phase = 'show', step = 0;
+  for (let k = 0; k < W * H; k++) {
+    const c = el('div', 'tile'); c.dataset.k = k;
+    c.addEventListener('click', () => tap(k, c));
+    cells.push(c); grid.appendChild(c);
+  }
+  function light(k, on) { cells[k].style.background = on ? 'var(--yellow)' : '#fff'; if (on) cells[k].classList.add('pop'); else cells[k].classList.remove('pop'); }
+  function playSeq() {
+    setPrompt('看好哪些格子亮了');
+    let i = 0;
+    every(720, tm => {
+      if (i > 0) light(seq[i - 1], false);
+      if (i >= L) {
+        clearInterval(tm); phase = 'input';
+        setPrompt(cfg.rev ? '倒着点一遍（从最后一个开始）' : '照原样点一遍');
+        Voice.say(cfg.rev ? '现在倒着点一遍，从最后亮的那个开始' : '现在照刚才的顺序点一遍');
+        return;
+      }
+      light(seq[i], true); Audio2.count(i); i++;
+    });
+  }
+  function want() { return cfg.rev ? seq.slice().reverse() : seq; }
+  function tap(k, c) {
+    if (phase !== 'input') return;
+    const w = want();
+    if (k === w[step]) {
+      c.style.background = 'var(--green)'; c.classList.add('pop'); Audio2.good(); step++;
+      if (step >= L) { setPrompt('全对！'); later(400, () => roundWin(grid)); }
+    } else {
+      miss(); c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake');
+      Voice.say('不是这个，再想想');
+    }
+  }
+  holder.appendChild(grid); board.appendChild(holder);
+  setPrompt('看好哪些格子亮了');
+  Voice.say(cfg.rev ? '看好格子亮的顺序，等一下要倒着点一遍' : '看好哪些格子亮了，等一下照原样点一遍');
+  later(700, playSeq);
+  hintIn(20000, () => { if (phase === 'input') { const w = want(); cells[w[step]].classList.add('pulse'); later(1600, () => cells[w[step]] && cells[w[step]].classList.remove('pulse')); } });
+  Fit.cb = () => {
+    const b = boardBox(), gap = clamp(b.w / 80, 6, 14);
+    const c = cellFit(b.w, b.h, W, H, gap, 130);
+    grid.style.gap = px(gap);
+    grid.style.gridTemplateColumns = 'repeat(' + W + ',' + px(c) + ')';
+    grid.style.gridAutoRows = px(c);
+  };
+}
+
+const GAME_IMPL = { switch: gSwitch, stop: gStop, span: gSpan, schulte: gSchulte, dots: gDots, bond: gBond, match: gMatch, mirror: gMirror, connect: gConnect, link: gLink, maze: gMaze, pattern: gPattern };
 
 
 /* ===================== 家长设置 / 贴纸册 ===================== */
