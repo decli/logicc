@@ -18,6 +18,7 @@ onResize((oW, oH) => {
   for (const cl of world.clouds) { cl.x *= sx; cl.y = Math.min(cl.y, GROUND - U * 0.3); }
   for (const f of world.fruits || []) { f.x *= sx; const gy = groundY(f.x); f.floor = Math.min(Math.max(f.floor, gy + 4), H - 6); if (f.rest) f.y = f.floor; }
   world.birds.forEach(b => { b.x *= sx; });
+  Doodles.onResize(sx);
 });
 
 /* ---------- save & restore (this browser only) ---------- */
@@ -31,11 +32,12 @@ const Save = (() => {
         trees: world.trees.filter(t => !t.dying).map(t => ({ x: t.x / W, d: t.depthT, type: t.type, seed: t.seed })),
         creatures: world.creatures.filter(c => c.birth >= 1).map(c => c.toJSON()),
         flowers: world.flowers.slice(-80).map(f => ({ x: f.x / W, d: clamp((f.y - groundY(f.x)) / Math.max(1, H - groundY(f.x)), 0, 1), v: f.v })),
+        doodles: Doodles.toJSON(),
       };
-      if (data.trees.length || data.creatures.length) localStorage.setItem(KEY, JSON.stringify(data));
+      if (data.trees.length || data.creatures.length || data.doodles.length) localStorage.setItem(KEY, JSON.stringify(data));
     } catch (_) { }
   }
-  function read() { try { const s = localStorage.getItem(KEY); if (!s) return null; const d = JSON.parse(s); return d && ((d.trees && d.trees.length) || (d.creatures && d.creatures.length)) ? d : null; } catch (_) { return null; } }
+  function read() { try { const s = localStorage.getItem(KEY); if (!s) return null; const d = JSON.parse(s); return d && ((d.trees && d.trees.length) || (d.creatures && d.creatures.length) || (d.doodles && d.doodles.length)) ? d : null; } catch (_) { return null; } }
   function restore(d) {
     world.phase = 'world'; world.reveal = 1; world.time = typeof d.time === 'number' ? d.time : 0.33;
     if (world.time > 0.8 || world.time < 0.22) world.time = 0.3;
@@ -48,9 +50,11 @@ const Save = (() => {
       const cx = clamp(c.x * W, U * 0.1, W - U * 0.1), cy = GROUND - U * rand(0.15, 0.4);
       const pts = c.q[0].map((qx, i) => ({ x: cx + qx, y: cy + c.q[1][i] }));
       const cr = new Creature(pts, { instant: true, hue: c.hue, name: c.name, nameIdx: c.nameIdx, vrole: c.vrole, meals: c.meals, growth: c.growth, raw: true });
+      if (c.hat) cr.hat = Doodles.hatFrom(c.hat);
       world.creatures.push(cr);
     }
     if (world.trees.length >= 2) Birds.spawn(randi(9, 14));
+    Doodles.restore(d.doodles || []);
     $('#resume').hidden = true;
     Story.resumed();
   }
@@ -116,6 +120,7 @@ function frame(now) {
   Petals.update(dt); Sparks.update(dt); Birds.update(dt); Flies.update(dt);
   Creatures.update(dt);
   Fruits.update(dt); Catch.update(dt); Ring.update(dt); Echo.update();
+  Doodles.update(dt); Draw.update(dt); Learn.update(dt);
   Story.update(dt);
   Music.update(dt);
 
@@ -138,6 +143,7 @@ function render() {
   Sky.drawSunMoon(ctx, skyA);
   Sky.drawLandscape(ctx, rise);
   Weather.drawClouds(ctx);
+  Doodles.drawSky(ctx);
   Birds.draw(ctx);
 
   // foreground: ground and everything living on it, then tinted by the hour
@@ -148,8 +154,9 @@ function render() {
   for (const f of world.flowers) drawList.push({ y: f.y, o: f, k: 1 });
   for (const c of world.creatures) drawList.push({ y: c.floor(c.comx) + 0.5, o: c, k: 2 });
   for (const f of world.fruits || []) drawList.push({ y: f.rest ? f.floor : Math.min(f.y, f.floor), o: f, k: 3 });
+  for (const d of Doodles.ground) drawList.push({ y: d.y, o: d, k: 4 });
   drawList.sort((a, b) => a.y - b.y);
-  for (const d of drawList) { if (d.k === 1) Flowers.draw(fctx, d.o); else if (d.k === 3) Fruits.draw(fctx, d.o); else d.o.draw(fctx); }
+  for (const d of drawList) { if (d.k === 1) Flowers.draw(fctx, d.o); else if (d.k === 3) Fruits.draw(fctx, d.o); else if (d.k === 4) Doodles.drawGround(fctx, d.o); else d.o.draw(fctx); }
   Petals.draw(fctx);
   Sparks.draw(fctx, 'fg');
   const s = world.sky;
@@ -170,6 +177,7 @@ function render() {
   ctx.restore();
   Sparks.draw(ctx, 'text');
   for (const c of world.creatures) c.drawBubble(ctx);
+  Doodles.drawFlying(ctx); Draw.drawFlying(ctx); Marks.draw(ctx);
   Input.drawStroke(ctx);
   if (inGen) Genesis.drawGenesisOverlay(ctx);
   if (world.xray) XRay.draw(ctx);
@@ -198,6 +206,7 @@ function paintControls() {
   $('#xLabel').textContent = L('ui_xray'); $('#bookLabel').textContent = L('ui_book'); $('#homeLabel').textContent = L('ui_home');
   $('#skip').textContent = L('ui_skip'); $('#resume').textContent = L('ui_resume'); $('#bookClose').textContent = L('ui_close');
   $('#echoLabel').textContent = L('echo_btn'); $('#echoExit').textContent = L('echo_exit');
+  $('#echoBtn').setAttribute('aria-label', L('echo_btn'));
   cvs.setAttribute('aria-label', L('canvas_aria'));
   ['btnS', 'btnV', 'btnX', 'bookBtn', 'homeBtn'].forEach(id => { const b = $('#' + id); const l = b.querySelector('.lbl'); if (l) b.setAttribute('aria-label', l.textContent); });
 }
@@ -249,4 +258,4 @@ Voice.load(I18N.lang);
 requestAnimationFrame(t => { lastT = t; frame(t); });
 
 // for the curious: open the console and play with window.zaowu
-window.zaowu = { world, Creatures, Input, Weather, XRay, Story, Snd, Sky, Voice, Stickers, Echo, Ring, Fruits, setLang, render };
+window.zaowu = { world, Creatures, Input, Weather, XRay, Story, Snd, Sky, Voice, Stickers, Echo, Ring, Fruits, Learn, Draw, Doodles, Words, Look, Sketch, Mic, WORD, PAINTS, DRAW_THEMES, SAYS, setLang, render };

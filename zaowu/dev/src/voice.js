@@ -34,11 +34,14 @@ const Voice = (() => {
   /* ---------- the queue ---------- */
   function say(text, o = {}) {
     if (!text || !on) return false;
-    const item = { text, role: o.role || 'n', lang: o.lang || I18N.lang, rate: o.rate || 1, pitch: o.pitch || 1, prio: o.prio === undefined ? 2 : o.prio, x: o.x, tag: o.tag, onstart: o.onstart, onend: o.onend };
+    // lang = which bank to look in (the page language); speech = the language of the words themselves
+    const item = { text, role: o.role || 'n', lang: o.lang || I18N.lang, speech: /[\u4e00-\u9fff]/.test(text) ? 'zh' : 'en', rate: o.rate || 1, prio: o.prio === undefined ? 2 : o.prio, x: o.x, tag: o.tag, onstart: o.onstart, onend: o.onend };
     if (!cur) { start(item); return true; }
     if (item.prio >= 3) {
-      const was = cur; halt(was); cur = null;
-      if (was.prio === 2 && !was.requeued) queue.unshift(Object.assign({}, was, { requeued: true, cancelled: false, src: null }));
+      const was = cur; cur = null; halt(was);
+      // only the guided story picks up again where it was cut off
+      if (was.prio === 2 && was.tag === 'story' && !was.requeued) queue.unshift(Object.assign({}, was, { requeued: true, cancelled: false, ended: false, src: null }));
+      if (cur) { const c2 = cur; cur = null; halt(c2); }   // an onend above may have started something already
       start(item); return true;
     }
     if (item.prio === 2) { queue.push(item); sortQ(); return true; }
@@ -61,18 +64,20 @@ const Voice = (() => {
     const b = banks[item.lang], e = b && b.state === 'ready' ? b.map[fnv(item.role + '|' + item.text)] : null;
     if (e && Snd.live) playBank(item, e); else playSystem(item, 0);
   }
+  function ended(item) { if (item.ended) return; item.ended = true; if (item.onend) item.onend(); }
   function finish(item) {
     if (cur !== item) return;
     cur = null;
-    if (item.onend) item.onend();
+    ended(item);
     if (queue.length) start(queue.shift());
     else setTimeout(() => { if (!cur) Snd.duck(false); }, 300);
   }
   function halt(item) {
+    if (item.cancelled) return;
     item.cancelled = true;
     if (item.src) { try { item.src.onended = null; item.src.stop(); } catch (_) { } }
     if (item.sys && SS) { try { SS.cancel(); } catch (_) { } }
-    if (item.onend) item.onend();
+    ended(item);
   }
 
   async function playBank(item, e) {
@@ -125,7 +130,7 @@ const Voice = (() => {
   }
   function playSystem(item, idx) {
     if (!SS) { if (item.onstart) item.onstart(0); setTimeout(() => finish(item), 50); item.silent = true; return; }
-    const chain = candidates(item.lang, item.role).concat([null]);
+    const chain = candidates(item.speech, item.role).concat([null]);
     if (idx >= chain.length || idx > 4) { item.silent = true; finish(item); return; }
     const v = chain[idx]; let started = false, moved = false;
     const tryNext = () => { if (moved || started || item.cancelled || cur !== item) return; moved = true; playSystem(item, idx + 1); };
@@ -133,12 +138,12 @@ const Voice = (() => {
       if (SS.speaking || SS.pending) SS.cancel();
       if (SS.paused) SS.resume();
       const u = new SpeechSynthesisUtterance(item.text);
-      if (v) { u.voice = v; u.lang = v.lang; } else u.lang = item.lang === 'en' ? 'en-US' : 'zh-CN';
+      if (v) { u.voice = v; u.lang = v.lang; } else u.lang = item.speech === 'en' ? 'en-US' : 'zh-CN';
       const isN = item.role === 'n';
       u.rate = isN ? 0.92 : clamp(0.95 + (item.rate - 1) * 0.4, 0.9, 1.2);
       u.pitch = isN ? 1.02 : clamp(1.15 + (item.rate - 1) * 1.6, 1.1, 1.9);
       item.sys = true;
-      u.onstart = () => { if (item.cancelled || cur !== item) return; started = true; if (v) sysWorking[item.lang + (isN ? 'n' : 'c')] = v; if (item.onstart) item.onstart(0); };
+      u.onstart = () => { if (item.cancelled || cur !== item) return; started = true; if (v) sysWorking[item.speech + (isN ? 'n' : 'c')] = v; if (item.onstart) item.onstart(0); };
       u.onend = () => { if (started) finish(item); };
       u.onerror = () => { if (!started) tryNext(); else finish(item); };
       SS.speak(u);
@@ -155,8 +160,16 @@ const Voice = (() => {
   return {
     say, load, has, unlock,
     narrate(text, tag = 'story', o = {}) { return say(text, Object.assign({ role: 'n', prio: 2, tag }, o)); },
+    // several lines in a row: the first one cuts in, the rest wait their turn; onend after the last
+    seq(lines, tag, onend) {
+      queue = queue.filter(q => q.tag !== tag);
+      const L = lines.filter(Boolean).map(l => (typeof l === 'string' ? { text: l } : l));
+      if (!L.length || !on) { if (onend) setTimeout(onend, L.length ? 700 : 0); return; }
+      L.forEach((l, i) => say(l.text, { role: l.role || 'n', prio: i ? 2 : 3, tag, x: l.x, onstart: l.onstart, onend: i === L.length - 1 ? onend : l.onend }));
+    },
+    playing(tag) { return !!cur && (!tag || cur.tag === tag) || queue.some(q => !tag || q.tag === tag); },
     clear(tag) { queue = queue.filter(q => q.tag !== tag); },
-    stopAll() { queue = []; if (cur) { const c = cur; halt(c); cur = null; } Snd.duck(false); },
+    stopAll() { queue = []; if (cur) { const c = cur; cur = null; halt(c); } Snd.duck(false); },
     get busy() { return !!cur; },
     get on() { return on; }, set on(v) { on = v; if (!v) this.stopAll(); },
     state(lang) { const b = banks[lang || I18N.lang]; return b ? b.state : (BASE ? 'idle' : 'none'); },

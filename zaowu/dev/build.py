@@ -3,7 +3,7 @@ Also copies freshly synthesized voice banks (dev/voice/out) next to it, if any."
 import pathlib, json, shutil
 dev = pathlib.Path(__file__).resolve().parent
 src, site = dev / 'src', dev.parent
-ORDER = ['core', 'i18n', 'sky', 'audio', 'voice', 'life', 'weather', 'creature', 'game', 'genesis', 'story', 'input', 'xray', 'main']
+ORDER = ['core', 'i18n', 'sky', 'audio', 'voice', 'life', 'weather', 'creature', 'game', 'genesis', 'story', 'input', 'learn', 'draw', 'xray', 'main']
 js = '\n'.join((src / f'{n}.js').read_text(encoding='utf-8') for n in ORDER)
 js = js.replace('__LOC__', str(js.count('\n') + 1))
 head = (src / 'head.html').read_text(encoding='utf-8')

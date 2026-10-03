@@ -211,6 +211,8 @@ const Story = (() => {
       }
     },
     wantsFlowers() { return step === 'cloud'; },
+    // a game is starting: stop talking over it
+    hush() { Voice.clear('story'); Voice.clear('invite'); clearTimeout(toastTimer); line(null); hint(null); },
     toast,
     update,
   };

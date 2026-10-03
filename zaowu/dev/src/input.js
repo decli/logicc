@@ -21,6 +21,7 @@ const Input = (() => {
     Snd.init(); Voice.unlock();
     if (world.phase === 'chaos') { mode = 'chaos'; return; }
     if (world.phase !== 'world') { mode = null; return; }
+    if (Learn.capturing) { mode = 'learn'; return; }
     const cr = Creatures.at(x, y);
     if (cr && Echo.active && cr.echo) { mode = 'echo'; Echo.tap(cr); return; }
     if (Ring.target && Ring.target !== cr) Ring.close();
@@ -64,6 +65,7 @@ const Input = (() => {
       grabbed = null;
     } else if (mode === 'sun') { draggingSky = false; }
     else if (mode === 'stroke') classify(stroke, dur);
+    else if (mode === 'learn' && moved < Math.max(14, U * 0.03)) Learn.tap(x, y);
     mode = null; stroke = [];
   }
 
@@ -99,6 +101,7 @@ const Input = (() => {
 
   function tap(x, y) {
     if (Catch.at(x, y)) return;
+    if (Doodles.tap(x, y)) return;
     for (let i = world.trees.length - 1; i >= 0; i--) { const t = world.trees[i]; if (t.hit(x, y)) { t.shake(false); return; } }
     const gy = groundY(x);
     if (y >= gy - U * 0.012) {

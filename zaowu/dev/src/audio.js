@@ -178,6 +178,46 @@ const Snd = (() => {
   }
 
   // babble: one blip per character, with a formant filter (used when speech is off or busy)
+  /* a sung "la": a buzzy voice through three vowel formants, with a little vibrato.
+     k > 1 shifts the formants up for a small, child-like voice. */
+  function la(freq, t, dur, x, vol = 0.2, k = 1.12) {
+    if (!ok()) return;
+    const o = ac.createOscillator(), o2 = ac.createOscillator(), vib = ac.createOscillator(), vibG = ac.createGain(), src = ac.createGain(), out = ac.createGain();
+    o.type = 'sawtooth'; o2.type = 'triangle'; o.frequency.value = freq; o2.frequency.value = freq; o2.detune.value = 6;
+    vib.frequency.value = 5.4; vibG.gain.setValueAtTime(0, t); vibG.gain.linearRampToValueAtTime(freq * 0.014, t + Math.min(0.35, dur * 0.6));
+    vib.connect(vibG); vibG.connect(o.frequency); vibG.connect(o2.frequency);
+    // scoop up into the note, like a child does
+    o.frequency.setValueAtTime(freq * 0.94, t); o.frequency.exponentialRampToValueAtTime(freq, t + 0.06);
+    o.connect(src); const g2 = ac.createGain(); g2.gain.value = 0.6; o2.connect(g2); g2.connect(src);
+    const F = [[800, 7, 1], [1200, 9, 0.55], [2700, 12, 0.18]];
+    F.forEach(([f, q, gain], i) => {
+      const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = q;
+      // the "l": formants start low and open into "a"
+      if (i === 0) { bp.frequency.setValueAtTime(330 * k, t); bp.frequency.exponentialRampToValueAtTime(f * k, t + 0.07); } else bp.frequency.value = f * k;
+      const gg = ac.createGain(); gg.gain.value = gain * (i === 0 ? 2.2 : 3); src.connect(bp); bp.connect(gg); gg.connect(out);
+    });
+    const end = t + dur;
+    out.gain.setValueAtTime(0.0001, t); out.gain.exponentialRampToValueAtTime(0.35, t + 0.018); out.gain.linearRampToValueAtTime(0.25, t + 0.04);
+    out.gain.exponentialRampToValueAtTime(1, t + 0.09); out.gain.setValueAtTime(1, Math.max(t + 0.1, end - 0.08)); out.gain.exponentialRampToValueAtTime(0.0001, end + 0.05);
+    route(out, x, vol);
+    [o, o2, vib].forEach(n => { n.start(t); n.stop(end + 0.1); });
+  }
+  // a whole tune: notes = [[semitones above base, beats], …]; onNote(i, seconds) as each note starts
+  function sing(notes, base, x, o = {}) {
+    if (!ok()) { if (o.done) setTimeout(o.done, 300); return 0; }
+    const beat = 60 / (o.bpm || 112), t0 = ac.currentTime + 0.05;
+    let t = t0;
+    duck(true);
+    notes.forEach(([st, b], i) => {
+      const f = base * Math.pow(2, st / 12), d = b * beat;
+      la(f, t, d * 0.92, x, o.vol || 0.2, o.k || 1.12);
+      if (o.onNote) setTimeout(() => o.onNote(i, d), (t - ac.currentTime) * 1000);
+      t += d;
+    });
+    const total = t - t0;
+    setTimeout(() => { duck(false); if (o.done) o.done(); }, total * 1000 + 120);
+    return total;
+  }
   function talk(text, baseDeg, x, vol = 0.12) {
     if (!ok()) return;
     const n = Math.min([...text].length, 8), t0 = ac.currentTime;
@@ -358,7 +398,7 @@ const Snd = (() => {
   return {
     init, setOn, get on() { return on; }, get running() { return ok(); }, get live() { return live(); }, get ctx() { return ac; },
     pluck, bell, marimba, flute, musicbox, play, INSTRUMENT, boop, talk, chirp, cuckoo, owl, crack, cricket, genesis, chime, sparkle, whoosh, pop, rustle, chomp, jingle, catchFly, rain, thump, noiseHit,
-    startPad, stepPad, flutePhrase, lullaby, duck, voiceOut, degFreq, NAMES,
+    startPad, stepPad, flutePhrase, lullaby, duck, voiceOut, degFreq, NAMES, la, sing,
     get analyser() { return analyser; }, get lastNotes() { return lastNotes; },
   };
 })();

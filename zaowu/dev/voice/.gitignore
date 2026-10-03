@@ -1,7 +1,10 @@
 models/
 cache/
 out/
+prompts/
 lines.json
+zh-lexicon.txt
+zh-report.json
 check-*.json
 __pycache__/
 *.log

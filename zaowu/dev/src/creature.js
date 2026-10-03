@@ -74,9 +74,8 @@ class Creature {
     this.setHue(opts.hue || BODY_HUES[hueCursor++ % BODY_HUES.length]);
     let ni = opts.nameIdx !== undefined ? opts.nameIdx : opts.name ? NAME_PAIRS.findIndex(p => p[0] === opts.name || p[1] === opts.name) : -1;
     this.nameIdx = ni >= 0 && ni < NAME_PAIRS.length ? ni : nextNameIdx();
-    // a voice of its own: one of two speakers, pitched by size (small = squeaky)
+    // a voice of its own: one of two young speakers, played at their natural speed
     this.vrole = opts.vrole || (voiceCursor++ % 2 ? 'c1' : 'c0');
-    this.vrate = lerp(1.3, 1.04, this.size) + rand(-0.03, 0.03);
     this.meals = opts.meals || 0; this.growth = opts.growth || 1; this.paint = -1; this.full = 0; this.fruit = null; this.wantFood = false;
     this.flipT = 0; this.echo = null; this.echoFlash = 0;
     this.deg = Math.round(lerp(10, 3, this.size));                     // big bodies sing low
@@ -148,7 +147,7 @@ class Creature {
     let after = o.after, fired = false;
     const go = () => { if (!fired && after) { fired = true; after(); } };
     const ok = Voice.say(text, {
-      role: this.vrole, rate: this.vrate, prio: o.prio === undefined ? 1 : o.prio, x: this.comx,
+      role: this.vrole, prio: o.prio === undefined ? 1 : o.prio, x: this.comx,
       onstart: d => { if (this.bubble === b) { b.hold = true; b.talking = true; if (d) b.life = Math.max(b.life, d + 0.6); } },
       onend: () => { if (this.bubble === b) { b.hold = false; b.talking = false; b.age = Math.max(b.age, b.life - 0.8); } go(); },
     });
@@ -241,7 +240,8 @@ class Creature {
     this.brain(dt);
     this.updateFace(dt);
     if (this.bubble) { const b = this.bubble; b.age += dt; if (b.hold) b.age = Math.min(b.age, b.life - 0.4); if (b.age > b.life) this.bubble = null; }
-    this.mouth = this.bubble && this.bubble.talking ? 0.35 + 0.65 * Math.abs(Math.sin(this.age * 13)) : Math.max(0, this.mouth - dt * 2.2);
+    if (this.singT > 0) { this.singT -= dt; this.mouth = Math.max(this.mouth - dt * 0.6, 0.55); }
+    else this.mouth = this.bubble && this.bubble.talking ? 0.35 + 0.65 * Math.abs(Math.sin(this.age * 13)) : Math.max(0, this.mouth - dt * 2.2);
     this.full = Math.max(0, this.full - dt);
     this.echoFlash = Math.max(0, this.echoFlash - dt * 2.2);
     if (this.flipT > 0) { this.flipT -= dt; if (this.flipT <= 0.0001 && this.flipDone) { this.flipDone = false; } }
@@ -279,10 +279,11 @@ class Creature {
     if (this.sleep) {
       this.sqT = 1 + Math.sin(this.age * 1.8) * 0.035;
       if (Math.random() < dt * 0.6) Sparks.sign(this.comx + this.R * 0.4, this.comy - this.R * 0.8, pick(['z', 'Z', 'z']), 'rgba(230,236,255,.9)', 0.9);
-      if (night < 0.25) this.wake();
+      if (this.napT > 0) { this.napT -= dt; if (this.napT <= 0 && night < 0.5) this.wake(); }
+      else if (night < 0.25) this.wake();
       return;
     }
-    if (night > 0.72 && this.grounded && !this.grab && !this.fruit) { this.sleepT -= dt; if (this.sleepT < 0) { this.sleep = 1; this.speak('c_sleep', null, { prio: 0 }); return; } }
+    if (night > 0.72 && this.grounded && !this.grab && !this.fruit && !this.singing) { this.sleepT -= dt; if (this.sleepT < 0) { this.sleep = 1; this.speak('c_sleep', null, { prio: 0 }); return; } }
     this.sqT = this.crouch > 0 ? 0.74 : 1;
     if (this.crouch > 0) { this.crouch -= dt; if (this.crouch <= 0) this.launch(); }
     // wander targets
@@ -310,7 +311,7 @@ class Creature {
     if (this.chatT < 0) {
       this.chatT = rand(10, 22);
       const near = world.creatures.filter(c => c !== this && !c.sleep && c.birth >= 1 && Math.abs(c.comx - this.comx) < U * 0.45);
-      if (near.length && !this.bubble && !Voice.busy) {
+      if (near.length && !this.bubble && !Voice.busy && !this.singing && !near.some(c => c.singing)) {
         const o = pick(near), pair = pick(CHATS()), a = pair[0].replace('{name}', this.name), b = pair[1].replace('{name}', o.name);
         this.lookAt = o; o.lookAt = this;
         this.say(a, { prio: 0, after: () => setTimeout(() => { if (world.creatures.includes(o) && !o.sleep) o.say(b, { prio: 1 }); }, 250) });
@@ -320,6 +321,7 @@ class Creature {
   }
 
   onTick(n) {
+    if (this.singing) return;
     if (this.birth < 1 || this.sleep || this.grab || this.echo || this.flipT > 0 || this.dizzy > 0 || !this.grounded || this.crouch > 0) return;
     let p = this.hopiness * (n % 2 === 0 ? 1 : 0.35);
     if (this.fruit) p = Math.max(p, 0.55);
@@ -390,27 +392,43 @@ class Creature {
     this.growth *= k;
     for (let i = 0; i < this.N; i++) { this.qx[i] *= k; this.qy[i] *= k; this.px[i] = this.comx + (this.px[i] - this.comx) * k; this.py[i] = this.comy + (this.py[i] - this.comy) * k; }
     this.R *= k; this.area *= k * k; this.hx *= k; this.hy *= k; this.ed *= k; this.eyeR *= k; this.headR *= k;
-    this.vrate = Math.max(1, this.vrate - 0.03);
   }
   sing() {
-    if (this.sleep) this.wake();
+    if (this.sleep) this.wake(null, 0);
+    if (this.singing) return;
     Stickers.give('sing');
-    this.speak('c_sing', null, {
-      prio: 3, after: () => {
-        if (!world.creatures.includes(this)) return;
-        const tick = Clock.TICK * 1000, RH = pick([[1, 1, 2, 1, 1, 2, 4], [2, 1, 1, 2, 2, 4], [1, 1, 1, 1, 2, 2, 4]]);
-        let deg = this.deg + pick([0, 2]), t = 0;
-        RH.forEach((d, k) => {
-          const g = deg;
-          setTimeout(() => { this.hum(g, k === RH.length - 1); }, t);
-          t += d * tick; deg = clamp(deg + pick([-2, -1, 1, 1, 2]), this.deg - 3, this.deg + 5);
-        });
-        // friends nearby join in on the last note
-        const friends = world.creatures.filter(c => c !== this && !c.sleep && !c.echo && c.birth >= 1 && Math.abs(c.comx - this.comx) < U * 0.7).slice(0, 4);
-        friends.forEach((c, i) => setTimeout(() => c.hum(this.deg + [2, 4, 5, 7][i], true), t - RH[RH.length - 1] * tick));
-        if (friends.length >= 2) setTimeout(() => Stickers.give('chorus'), t);
-      },
-    });
+    const song = pick(SONGS), base = lerp(440, 300, this.size) / Math.sqrt(this.growth);
+    this.singing = true; this.targetX = this.comx;
+    let started = false;
+    const go = () => {
+      if (started) return; started = true;
+      if (!world.creatures.includes(this)) { this.singing = false; return; }
+      this.bubble = { text: '♪ ' + (isEn() ? song.en : song.zh) + ' ♪', age: 0, life: 99, hold: true, talking: true };
+      const last = song.n.length - 1;
+      const total = Snd.sing(song.n, base, this.comx, {
+        onNote: (i, d) => {
+          if (!world.creatures.includes(this)) return;
+          this.mouth = 1; this.singT = d; this.sqv += i === last ? 6 : 2.5;
+          for (let k = 0; k < this.N; k++) this.vy[k] -= U * (i === last ? 0.55 : 0.16);
+          if (i % 2 === 0 || i === last) Sparks.sign(this.comx + rand(-1, 1) * this.R * 0.5, this.comy - this.R * 1.15, pick(['♪', '♫']), rgba(this.colLight), 1.1);
+          // friends nearby join in on the last note, a little lower
+          if (i === last) {
+            const friends = world.creatures.filter(c => c !== this && !c.sleep && !c.echo && !c.singing && c.birth >= 1 && Math.abs(c.comx - this.comx) < U * 0.7).slice(0, 3);
+            friends.forEach((c, j) => { Snd.la(base * Math.pow(2, (song.n[last][0] - [3, 5, 8][j]) / 12) * (c.size < this.size ? 1.25 : 1), Snd.ctx.currentTime + 0.02, d * 0.9, c.comx, 0.12); c.mouth = 1; c.singT = d; c.happy = 1.2; for (let k = 0; k < c.N; k++) c.vy[k] -= U * 0.4; });
+            if (friends.length >= 2) setTimeout(() => Stickers.give('chorus'), d * 1000);
+          }
+        },
+        done: () => {
+          this.singing = false; this.singT = 0; this.happy = 1.5;
+          if (this.bubble && this.bubble.text.startsWith('♪')) this.bubble = null;
+          if (world.creatures.includes(this)) setTimeout(() => this.speak('c_sang', null, { prio: 1 }), 400);
+        },
+      });
+      if (!total) this.singing = false;
+    };
+    // say which song first, then sing — but never wait long for the voice
+    this.speak('c_sing_t', { song: isEn() ? song.en : song.zh }, { prio: 3, after: go });
+    setTimeout(go, 3200);
   }
   hum(deg, last) {
     for (let i = 0; i < this.N; i++) this.vy[i] -= U * (last ? 0.55 : 0.3);
@@ -450,6 +468,69 @@ class Creature {
     Stickers.give('flip');
   }
   talk() { if (this.sleep) this.wake(); this.happy = 0.8; this.speak('c_talk', null, { prio: 3 }); }
+  /* asked for in 说一说 */
+  dance() {
+    if (this.sleep) this.wake(null, 0);
+    this.speak('c_dance', null, { prio: 3 }); this.happy = 3;
+    const step = Clock.TICK * 1000 * 1.25, notes = [0, 2, 4, 2, 0, 2, 4, 7];
+    notes.forEach((n, k) => setTimeout(() => {
+      if (!world.creatures.includes(this) || this.grab || this.sleep) return;
+      const dir = k % 2 ? 1 : -1;
+      for (let i = 0; i < this.N; i++) { this.vy[i] -= U * (k === notes.length - 1 ? 0.75 : 0.42); this.vx[i] += dir * U * 0.13; }
+      this.sqv += 4; this.happy = 1; this.mouth = 1;
+      Snd.boop(Snd.degFreq(this.deg + n), this.comx, 0.12, 0.2, 1.25);
+      if (k % 2 === 0) Sparks.sign(this.comx + dir * this.R * 0.6, this.comy - this.R, pick(['♪', '♫']), rgba(this.colLight), 0.9);
+    }, 700 + k * step));
+  }
+  spin() {
+    if (this.sleep) this.wake(null, 0);
+    if (!this.grounded || this.flipT > 0) return;
+    this.speak('c_spin', null, { prio: 3 });
+    const dir = Math.random() < 0.5 ? -1 : 1, vy = -U * 1.75, air = 2 * 1.75 / 2.6, w = dir * TAU * 2 / air;
+    this.crouch = 0; this.flipT = air + 0.2; this.flipping = true; this.sqv += 5;
+    for (let i = 0; i < this.N; i++) { const rx = this.px[i] - this.comx, ry = this.py[i] - this.comy; this.vx[i] += -w * ry; this.vy[i] += vy + w * rx; }
+    Snd.whoosh(this.comx, 0.7);
+  }
+  jumpHigh() {
+    if (this.sleep) this.wake(null, 0);
+    if (!this.grounded) return;
+    this.speak('c_jump', null, { prio: 3 });
+    this.sqv -= 6;
+    setTimeout(() => { if (!world.creatures.includes(this)) return; for (let i = 0; i < this.N; i++) this.vy[i] -= U * 2.4; this.sqv += 8; Snd.whoosh(this.comx, 0.5); Sparks.burst(this.comx, this.floor(this.comx), 14, { speed: U * 0.25, g: U * 0.6, life: 0.7, size: U * 0.018 }); }, 380);
+  }
+  nap(key) {
+    this.fruit = null; this.wantFood = false;
+    if (key) this.speak(key, null, { prio: 3, after: () => { this.sleep = 1; this.napT = 9; } });
+    else { this.sleep = 1; this.napT = 9; }
+  }
+  setPaint(i) {
+    if (this.sleep) this.wake(null, 0);
+    this.paint = i; this.setHue(PAINTS[i].h);
+    Sparks.burst(this.comx, this.comy, 22, { col: rgba(this.colLight), speed: U * 0.35, g: 0, life: 0.9, size: U * 0.03 });
+    Snd.sparkle(this.comx, 4, 7, 0.1); this.sqv -= 4; this.happy = 1;
+    this.speak('c_color', { c: PAINTS[i][isEn() ? 'en' : 'zh'] }, { prio: 3 });
+    Stickers.give('color');
+  }
+  // the closest of the seven named colours, so it can be talked about
+  get paintIdx() {
+    if (this.paint >= 0) return this.paint;
+    let best = 0, bd = Infinity;
+    PAINTS.forEach((p, i) => { const dh = Math.min(Math.abs(p.h[0] - this.hue[0]), 360 - Math.abs(p.h[0] - this.hue[0])); if (dh < bd) { bd = dh; best = i; } });
+    return best;
+  }
+  wear(hat) { this.hat = hat; this.happy = 2; this.sqv -= 5; for (let i = 0; i < this.N; i++) this.vy[i] -= U * 0.5; this.speak('c_hat', null, { prio: 3 }); Stickers.give('hat'); }
+  // where a hat sits: the top of the head, in the rest frame
+  hatSpot() {
+    let top = Infinity; for (let i = 0; i < this.N; i++) if (Math.abs(this.qx[i] - this.hx) < this.R * 0.55) top = Math.min(top, this.qy[i]);
+    if (top === Infinity) top = Math.min(...this.qy);
+    return top;
+  }
+  drawHat(c) {
+    const h = this.hat; if (!h || !h.img) return;
+    const top = this.hatSpot(), [x, y] = this.local(this.hx, top), w = clamp(this.R * 1.25, U * 0.05, U * 0.16) * (h.k || 1), hh = w * h.img.height / h.img.width;
+    c.save(); c.translate(x, y); c.rotate(this.theta + Math.sin(this.age * 2.1) * 0.04);
+    c.drawImage(h.img, -w / 2, -hh * 0.9, w, hh); c.restore();
+  }
   echoSing() {
     this.echoFlash = 1;
     for (let i = 0; i < this.N; i++) this.vy[i] -= U * 0.45;
@@ -522,6 +603,7 @@ class Creature {
     const [gx, gy] = this.local(this.hx - this.ed * 1.6, this.hy - this.headR * 0.55);
     c.fillStyle = '#fff'; c.beginPath(); c.ellipse(gx, gy, R * 0.13, R * 0.07, this.theta - 0.5, 0, TAU); c.fill(); c.restore();
     this.drawFace(c, b);
+    if (this.hat && b >= 1) this.drawHat(c);
   }
 
   drawFace(c, b) {
@@ -624,7 +706,7 @@ class Creature {
     c.restore();
   }
 
-  toJSON() { return { q: [Array.from(this.qx, v => Math.round(v * 10) / 10), Array.from(this.qy, v => Math.round(v * 10) / 10)], x: this.comx / W, hue: this.hue, nameIdx: this.nameIdx, vrole: this.vrole, meals: this.meals, growth: this.growth }; }
+  toJSON() { return { q: [Array.from(this.qx, v => Math.round(v * 10) / 10), Array.from(this.qy, v => Math.round(v * 10) / 10)], x: this.comx / W, hue: this.hue, nameIdx: this.nameIdx, vrole: this.vrole, meals: this.meals, growth: this.growth, hat: this.hat ? this.hat.data : undefined }; }
 }
 
 function star(c, x, y, r, rot) {
@@ -647,9 +729,9 @@ const CHATS = () => {
 
 const Creatures = {
   max: 16,
-  spawn(pts) {
+  spawn(pts, opts) {
     if (world.creatures.length >= this.max) { Story.toast(L('full_toast')); return null; }
-    const c = new Creature(pts); world.creatures.push(c);
+    const c = new Creature(pts, opts); world.creatures.push(c);
     if (world.creatures.length >= 5) setTimeout(() => Stickers.give('family'), 2500);
     return c;
   },

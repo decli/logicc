@@ -102,6 +102,51 @@ const STR = {
   echo_bye: ['下次再一起唱！', 'Let us sing again soon!'],
   echo_exit: ['结束', 'Done'],
 
+  // ---- play dock & learning games ----
+  dock_words: ['认一认', 'Words'],
+  dock_spy: ['找一找', 'I Spy'],
+  dock_say: ['说一说', 'Say It'],
+  dock_draw: ['画一画', 'Draw'],
+  dock_invite: ['看下面，有好多新游戏：认一认、找一找、说一说、画一画。', 'Look down here, there are new games: Words, I Spy, Say It and Draw.'],
+  words_on: ['点一点任何东西，我告诉你它叫什么。', 'Tap anything, and I will tell you its name.'],
+  words_hint: ['点一点任何东西', 'Tap anything'],
+  words_count: ['认识了 {n} 个词', '{n} words learned'],
+  words_bye: ['今天又认识了好多词！', 'You learned lots of words today!'],
+  book_tab_st: ['贴纸', 'Stickers'],
+  book_tab_words: ['词语', 'Words'],
+  words_sub: ['认识了 {n} / {m} 个词，点一下再听一遍', '{n} of {m} words learned. Tap one to hear it again'],
+  words_locked: ['还没找到这个词，去画面里点一点吧。', 'You have not found this word yet. Go and tap around!'],
+
+  spy_start: ['我说一样东西，你在画面里找到它，点一下。', 'I will name something. Find it in the picture and tap it.'],
+  spy_ok: [['找到啦！', '对啦，就是它！', '你真棒！', '好眼力！'], ['You found it!', 'Yes, that is it!', 'Great job!', 'Good eyes!']],
+  spy_no: [['不是这个哦，再找一找。', '嗯，再看看别的地方？'], ['Not that one. Look again!', 'Hmm, try somewhere else?']],
+  spy_help: ['看，它在闪光的地方。', 'Look where it is sparkling.'],
+  spy_win: ['五个都找到了，你的眼睛真亮！', 'You found all five. What sharp eyes!'],
+  spy_none: ['东西还太少啦，先种几棵树、画几个小伙伴吧。', 'There is not much to find yet. Plant some trees and draw some friends first.'],
+
+  say_start: ['选一句话，听一听，再跟着说一说。', 'Pick a sentence, listen, then say it too.'],
+  say_your: ['轮到你说啦！', 'Your turn to say it!'],
+  say_mic: ['按这里，说给它听', 'Tap here and say it'],
+  say_listening: ['我在听……', 'Listening…'],
+  say_done_btn: ['我说好了', 'I said it'],
+  say_again_btn: ['再听一遍', 'Hear it again'],
+  say_good: [['说得真好！', '你说得真清楚！', '太棒啦！', '说得真响亮！'], ['Well said!', 'You said it so clearly!', 'Wonderful!', 'Nice and loud!']],
+  say_parrot: ['听，它在学你说话呢！', 'Listen, it is copying you!'],
+  say_need: ['先画一个小伙伴，它会听你说话。', 'Draw a friend first. It will listen to you.'],
+  say_f_give: ['请你吃', 'Have a…'],
+  say_f_do: ['请你做', 'Please…'],
+  say_f_like: ['我喜欢', 'I like'],
+  say_f_want: ['我想要', 'I want'],
+  say_f_hi: ['打招呼', 'Hello!'],
+
+  draw_pick: ['你想画什么？选一个吧。', 'What do you want to draw? Pick one.'],
+  draw_done: ['画好了', 'Done'],
+  draw_undo: ['擦掉一笔', 'Undo'],
+  draw_clear: ['重画', 'Clear'],
+  draw_back: ['换一个', 'Change'],
+  draw_empty: ['先画几笔吧。', 'Draw something first.'],
+  draw_nofriend: ['先画一个小伙伴，再给它画帽子吧。', 'Draw a friend first, then make it a hat.'],
+
   // ---- creature actions ----
   act_sing: ['唱歌', 'Sing'],
   act_feed: ['吃果子', 'Eat'],
@@ -136,7 +181,22 @@ const STR = {
   c_flip: [['看我的！', '我要翻跟头啦！', '嘿哈，翻过去！'], ['Watch this!', 'Here comes a flip!', 'Hi-yah, over I go!']],
   c_flipdone: [['成功啦！', '我帅不帅？', '要不要再来一个？'], ['Ta-da!', 'Cool, right?', 'Want to see another one?']],
   c_sing: [['我来唱一首歌！', '啦啦啦，听我唱～', '你听我唱哦！'], ['Let me sing a song!', 'La la la, listen to me!', 'Listen, I will sing!']],
-  c_echo_oops: [['咦，不是我哦！', '好像不是我呀。', '再想一想吧！'], ['Oops, not me!', 'Hmm, I do not think it was me.', 'Think again!']],
+  c_sing_t: ['我来唱{song}！', 'I will sing {song}!'],
+  c_sang: [['唱完啦，好听吗？', '你也跟我一起唱吧！'], ['All done! Did you like it?', 'Sing it with me next time!']],
+  c_mycolor: ['我是{c}的！', 'I am {c}!'],
+  c_thanks: [['谢谢你！', '谢谢，我最喜欢了！', '哇，谢谢你！'], ['Thank you!', 'Thanks, I love it!', 'Wow, thank you!']],
+  c_okay: [['好呀！', '没问题！', '看我的！'], ['Okay!', 'No problem!', 'Watch me!']],
+  c_r_hi: [['你好呀！', '你好你好！'], ['Hi there!', 'Hello, hello!']],
+  c_r_thanks: [['不客气！', '不用谢！'], ['You are welcome!', 'Any time!']],
+  c_r_night: ['晚安，做个好梦！', 'Good night, sweet dreams!'],
+  c_r_morning: ['早上好！今天天气真好！', 'Good morning! What a nice day!'],
+  c_r_love: [['我也爱你！', '我也最爱你了！'], ['I love you too!', 'I love you so much!']],
+  c_r_bye: ['再见，明天见！', 'Bye! See you tomorrow!'],
+  c_hat: [['我有新帽子啦！', '谢谢你的帽子！', '我戴上帽子好看吗？'], ['I have a new hat!', 'Thank you for the hat!', 'Do I look good in my hat?']],
+  c_dance: [['我会跳舞！', '一二三，跳起来！'], ['I can dance!', 'One, two, three, dance!']],
+  c_spin: ['转呀转，转圈圈！', 'Round and round I go!'],
+  c_jump: ['看我跳得多高！', 'Look how high I can jump!'],
+  c_echo_oops:[['咦，不是我哦！', '好像不是我呀。', '再想一想吧！'], ['Oops, not me!', 'Hmm, I do not think it was me.', 'Think again!']],
   c_talk: [[
     '你知道吗？蜜蜂会跳舞，告诉朋友花在哪里。', '我最喜欢下雨天，可以踩水坑！', '你今天开心吗？', '你画画真好看。',
     '树会把水从根一直吸到树梢上。', '月亮自己不会发光，是太阳照亮了它。', '萤火虫的尾巴会发光！', '彩虹有七种颜色：红橙黄绿青蓝紫。',
@@ -169,8 +229,8 @@ const STR = {
   x_wind_p: ['天上的箭头是风。平时是一阵若有若无的微风，你在天上划一下，就加进一股阵风，它会慢慢衰减。树枝、花瓣、云和小生灵都在同一阵风里。',
     'The arrows in the sky are the wind. Normally there is a faint breeze; a swipe adds a gust that slowly fades. Branches, petals, clouds and creatures all feel the same wind.'],
   x_voice_h: ['它们怎么说话', 'How they talk'],
-  x_voice_p: ['说话用的是你设备自带的语音合成。程序会在所有音色里挑最自然的一个，生灵的音调比旁白高，越小的生灵声音越尖；如果某个音色发不出声，就自动换下一个。',
-    'The voices come from your device\'s own speech synthesis. The program picks the most natural voice it can find; creatures speak higher than the narrator, and smaller ones squeak more. If a voice stays silent, it quietly tries the next one.'],
+  x_voice_p: ['每一句话都是提前用开源语音模型录好的：中文用 ZipVoice（流匹配），英文用 Kokoro。多音字的读音由程序先查好拼音再交给模型，录完还会让语音识别模型“听”一遍，读错了就重录。万一语音包没加载，就改用你设备自带的语音。',
+    'Every line was recorded in advance with open-source voice models: ZipVoice for Chinese and Kokoro for English. For Chinese, the pinyin of tricky characters is worked out first, and a speech recogniser listens to each take; if a word comes out wrong, it is recorded again. If the voice pack cannot load, your device\'s own voice takes over.'],
   x_none_h: ['没有一张图片', 'Not a single picture'],
   x_none_p: ['这一页里没有图片、没有录音，也没有引用任何外部代码库。山、云、花、生灵和歌声，全由 __LOC__ 行代码在你眼前实时算出来。',
     'This page has no pictures, no recordings and no outside code libraries. The mountains, clouds, flowers, creatures and songs all come from __LOC__ lines of code running in front of you.'],
@@ -191,6 +251,15 @@ const NAME_PAIRS = [['团团', 'Roly'], ['啾啾', 'Chirpy'], ['米粒', 'Rice']
   ['阿福', 'Lucky'], ['果冻', 'Jelly'], ['汤圆', 'Dumpling'], ['咕噜', 'Gurgle'], ['棉花', 'Cotton'], ['芝麻', 'Sesame'], ['小橘', 'Tangerine'], ['嘟嘟', 'Toot'], ['毛毛', 'Fuzzy'], ['星星', 'Twinkle'],
   ['云朵', 'Cloudy'], ['蘑菇', 'Mushroom'], ['包子', 'Bao'], ['花卷', 'Swirl'], ['栗子', 'Chestnut'], ['桃桃', 'Peachy'], ['乐乐', 'Happy'], ['皮皮', 'Pip'], ['球球', 'Bubble'], ['叮当', 'Jingle'],
   ['奶糖', 'Toffee'], ['小雨', 'Drizzle'], ['豌豆', 'Pea'], ['年糕', 'Ricecake'], ['馒头', 'Muffin'], ['阿宝', 'Bobo']];
+
+/* tunes the creatures sing on "la" (all traditional / public domain).
+   notes: [semitones above the singer's own note, beats] */
+const SONGS = [
+  { id: 'star', zh: '小星星', en: 'Twinkle Twinkle Little Star', n: [[0, 1], [0, 1], [7, 1], [7, 1], [9, 1], [9, 1], [7, 2], [5, 1], [5, 1], [4, 1], [4, 1], [2, 1], [2, 1], [0, 2]] },
+  { id: 'tigers', zh: '两只老虎', en: 'Frère Jacques', n: [[0, 1], [2, 1], [4, 1], [0, 1], [0, 1], [2, 1], [4, 1], [0, 1], [4, 1], [5, 1], [7, 2], [4, 1], [5, 1], [7, 2]] },
+  { id: 'joy', zh: '欢乐颂', en: 'Ode to Joy', n: [[4, 1], [4, 1], [5, 1], [7, 1], [7, 1], [5, 1], [4, 1], [2, 1], [0, 1], [0, 1], [2, 1], [4, 1], [4, 1.5], [2, 0.5], [2, 2]] },
+  { id: 'lamb', zh: '玛丽有只小羊羔', en: 'Mary Had a Little Lamb', n: [[4, 1.5], [2, 0.5], [0, 1], [2, 1], [4, 1], [4, 1], [4, 2], [2, 1], [2, 1], [2, 2], [4, 1], [7, 1], [7, 2]] },
+];
 
 /* colours a creature can turn into, with words a child can learn */
 const PAINTS = [
@@ -247,6 +316,11 @@ const STICKERS = [
   { id: 'flowers', e: '🌸', n: ['花海', 'Flower Field'], h: ['让地上开出三十朵花。', 'Grow thirty flowers.'] },
   { id: 'xray', e: '🔍', n: ['透视眼', 'X-ray Eyes'], h: ['点左上角的透视。', 'Tap X-ray at the top left.'] },
   { id: 'echo', e: '🎼', n: ['好耳朵', 'Good Ears'], h: ['玩「跟我唱」，记住五个音。', 'Play Sing With Me and remember five notes.'] },
+  { id: 'words', e: '📖', n: ['小小词典', 'Word Explorer'], h: ['玩「认一认」，认识十个词。', 'Play Words and learn ten words.'] },
+  { id: 'spy', e: '👀', n: ['火眼金睛', 'Sharp Eyes'], h: ['玩「找一找」，一次找到五样东西。', 'Play I Spy and find five things in a row.'] },
+  { id: 'say', e: '💬', n: ['小小演说家', 'Chatterbox'], h: ['玩「说一说」，说三句话。', 'Play Say It and say three sentences.'] },
+  { id: 'draw', e: '🖍️', n: ['小画家', 'Little Artist'], h: ['玩「画一画」，让你的画活过来。', 'Play Draw and bring a picture to life.'] },
+  { id: 'hat', e: '🎩', n: ['戴帽子', 'Hat Day'], h: ['给小伙伴画一顶帽子。', 'Draw a hat for a friend.'] },
 ];
 STICKERS.forEach(s => { STR['st_' + s.id + '_n'] = s.n; STR['st_' + s.id + '_h'] = s.h; });
 
@@ -256,3 +330,104 @@ function cnum(n) { return n < 10 ? CN_DIG[n] : n < 20 ? '十' + (n % 10 ? CN_DIG
 function dayNum(n) { return isEn() ? String(n) : cnum(n); }
 /* what the narrator says for a quote: the two halves joined into one sentence */
 function quoteSpeech(key) { const s = L(key); return isEn() ? s : s.split('|').join('，') + '。'; }
+
+/* ---------- words a child can find in the world ----------
+   zh + pinyin + en, a short sentence, and the I-Spy question */
+const WORDS = [
+  { id: 'sky', e: '🌤️', zh: '天空', py: 'tiān kōng', en: 'sky', s: ['天空蓝蓝的，好大好大。', 'The sky is blue and very big.'], q: ['天空在哪里？', 'Where is the sky?'] },
+  { id: 'sun', e: '☀️', zh: '太阳', py: 'tài yáng', en: 'sun', s: ['太阳出来了，暖洋洋的。', 'The sun is out. It feels warm.'], q: ['太阳在哪里？', 'Where is the sun?'] },
+  { id: 'moon', e: '🌙', zh: '月亮', py: 'yuè liang', en: 'moon', s: ['月亮弯弯的，像一条小船。', 'The moon is curved, like a little boat.'], q: ['月亮在哪里？', 'Where is the moon?'] },
+  { id: 'star', e: '⭐', zh: '星星', py: 'xīng xing', en: 'star', s: ['星星一闪一闪亮晶晶。', 'Twinkle, twinkle, little star.'], q: ['星星在哪里？', 'Where are the stars?'] },
+  { id: 'cloud', e: '☁️', zh: '云', py: 'yún', en: 'cloud', s: ['白白的云，在天上飘。', 'White clouds float in the sky.'], q: ['云在哪里？', 'Where is a cloud?'] },
+  { id: 'rain', e: '🌧️', zh: '雨', py: 'yǔ', en: 'rain', s: ['下雨了，滴答滴答。', 'It is raining. Drip, drop.'], q: ['雨在哪里？', 'Where is the rain?'] },
+  { id: 'rainbow', e: '🌈', zh: '彩虹', py: 'cǎi hóng', en: 'rainbow', s: ['彩虹有七种颜色。', 'A rainbow has seven colors.'], q: ['彩虹在哪里？', 'Where is the rainbow?'] },
+  { id: 'mountain', e: '⛰️', zh: '山', py: 'shān', en: 'mountain', s: ['远处的山，一座连着一座。', 'The mountains go on and on, far away.'], q: ['山在哪里？', 'Where are the mountains?'] },
+  { id: 'grass', e: '🌿', zh: '草地', py: 'cǎo dì', en: 'grass', s: ['绿绿的草地，软软的。', 'The green grass is soft.'], q: ['草地在哪里？', 'Where is the grass?'] },
+  { id: 'flower', e: '🌸', zh: '花', py: 'huā', en: 'flower', s: ['花开了，香香的。', 'The flowers are open. They smell sweet.'], q: ['花在哪里？', 'Where is a flower?'] },
+  { id: 'tree', e: '🌳', zh: '树', py: 'shù', en: 'tree', s: ['大树长得高高的。', 'The tree grows tall.'], q: ['树在哪里？', 'Where is a tree?'] },
+  { id: 'peach', e: '🌸', zh: '桃树', py: 'táo shù', en: 'peach tree', s: ['桃树开粉色的花，结甜甜的桃子。', 'Peach trees have pink flowers and sweet peaches.'], q: ['桃树在哪里？', 'Where is the peach tree?'] },
+  { id: 'pine', e: '🌲', zh: '松树', py: 'sōng shù', en: 'pine tree', s: ['松树一年四季都是绿的。', 'Pine trees stay green all year.'], q: ['松树在哪里？', 'Where is the pine tree?'] },
+  { id: 'maple', e: '🍁', zh: '枫树', py: 'fēng shù', en: 'maple tree', s: ['秋天到了，枫叶变红了。', 'In autumn, maple leaves turn red.'], q: ['枫树在哪里？', 'Where is the maple tree?'] },
+  { id: 'willow', e: '🌿', zh: '柳树', py: 'liǔ shù', en: 'willow tree', s: ['柳树的枝条长长的，随风飘。', 'Willow branches are long. They sway in the wind.'], q: ['柳树在哪里？', 'Where is the willow tree?'] },
+  { id: 'ginkgo', e: '🍂', zh: '银杏树', py: 'yín xìng shù', en: 'ginkgo tree', s: ['银杏叶像一把小扇子。', 'Ginkgo leaves look like little fans.'], q: ['银杏树在哪里？', 'Where is the ginkgo tree?'] },
+  { id: 'f_peach', e: '🍑', zh: '桃子', py: 'táo zi', en: 'peach', s: ['桃子甜甜的，水水的。', 'Peaches are sweet and juicy.'], q: ['桃子在哪里？', 'Where is the peach?'] },
+  { id: 'f_pine', e: '🌰', zh: '松果', py: 'sōng guǒ', en: 'pine cone', s: ['小松鼠最爱松果。', 'Squirrels love pine cones.'], q: ['松果在哪里？', 'Where is the pine cone?'] },
+  { id: 'f_maple', e: '🍒', zh: '樱桃', py: 'yīng táo', en: 'cherries', s: ['樱桃红红的，圆圆的。', 'Cherries are red and round.'], q: ['樱桃在哪里？', 'Where are the cherries?'] },
+  { id: 'f_willow', e: '🍏', zh: '苹果', py: 'píng guǒ', en: 'apple', s: ['苹果脆脆的，甜甜的。', 'Apples are crunchy and sweet.'], q: ['苹果在哪里？', 'Where is the apple?'] },
+  { id: 'f_ginkgo', e: '🟡', zh: '杏子', py: 'xìng zi', en: 'apricot', s: ['杏子黄黄的，酸酸甜甜。', 'Apricots are yellow, sweet and a little sour.'], q: ['杏子在哪里？', 'Where is the apricot?'] },
+  { id: 'f_grape', e: '🍇', zh: '葡萄', py: 'pú tao', en: 'grapes', s: ['葡萄一串一串的。', 'Grapes grow in bunches.'], q: ['葡萄在哪里？', 'Where are the grapes?'] },
+  { id: 'f_orange', e: '🍊', zh: '橘子', py: 'jú zi', en: 'orange', s: ['橘子剥开，一瓣一瓣的。', 'Peel an orange and it comes apart in pieces.'], q: ['橘子在哪里？', 'Where is the orange?'] },
+  { id: 'bird', e: '🐦', zh: '小鸟', py: 'xiǎo niǎo', en: 'bird', s: ['小鸟在天上飞。', 'Birds fly in the sky.'], q: ['小鸟在哪里？', 'Where is a bird?'] },
+  { id: 'firefly', e: '✨', zh: '萤火虫', py: 'yíng huǒ chóng', en: 'firefly', s: ['萤火虫在夜里发光。', 'Fireflies glow at night.'], q: ['萤火虫在哪里？', 'Where is a firefly?'] },
+  { id: 'friend', e: '🐣', zh: '小伙伴', py: 'xiǎo huǒ bàn', en: 'friend', s: ['它是我的好朋友。', 'It is my good friend.'], q: ['小伙伴在哪里？', 'Where is a friend?'] },
+  { id: 'house', e: '🏠', zh: '房子', py: 'fáng zi', en: 'house', s: ['小房子是我们的家。', 'A little house is a home.'], q: ['房子在哪里？', 'Where is the house?'] },
+  { id: 'hat', e: '🎩', zh: '帽子', py: 'mào zi', en: 'hat', s: ['戴上帽子，真神气。', 'A hat looks so cool.'], q: ['帽子在哪里？', 'Where is the hat?'] },
+  { id: 'picture', e: '🎨', zh: '画', py: 'huà', en: 'picture', s: ['这是你画的画。', 'This is a picture you drew.'], q: ['你的画在哪里？', 'Where is your picture?'] },
+];
+const WORD = {}; WORDS.forEach(w => { WORD[w.id] = w; });
+STR.spy_friend = ['{c}的小伙伴在哪里？', 'Where is the {c} friend?'];
+
+/* 说一说 · sentences to say, in five everyday patterns */
+const SAYS = [
+  { id: 'give', k: 'say_f_give', items: [
+    { id: 'peach', e: '🍑', w: ['桃子', 'peach'], s: ['请你吃桃子！', 'Here is a peach for you!'], fruit: 'peach' },
+    { id: 'apple', e: '🍏', w: ['苹果', 'apple'], s: ['请你吃苹果！', 'Here is an apple for you!'], fruit: 'willow' },
+    { id: 'cherry', e: '🍒', w: ['樱桃', 'cherries'], s: ['请你吃樱桃！', 'Here are some cherries for you!'], fruit: 'maple' },
+    { id: 'grape', e: '🍇', w: ['葡萄', 'grapes'], s: ['请你吃葡萄！', 'Here are some grapes for you!'], fruit: 'grape' },
+    { id: 'orange', e: '🍊', w: ['橘子', 'orange'], s: ['请你吃橘子！', 'Here is an orange for you!'], fruit: 'orange' },
+    { id: 'cone', e: '🌰', w: ['松果', 'pine cone'], s: ['请你吃松果！', 'Here is a pine cone for you!'], fruit: 'pine' },
+  ] },
+  { id: 'do', k: 'say_f_do', items: [
+    { id: 'sing', e: '🎵', w: ['唱歌', 'sing'], s: ['请你唱首歌！', 'Please sing a song!'] },
+    { id: 'dance', e: '💃', w: ['跳舞', 'dance'], s: ['请你跳个舞！', 'Please dance for me!'] },
+    { id: 'flip', e: '🤸', w: ['翻跟头', 'flip'], s: ['请你翻个跟头！', 'Please do a flip!'] },
+    { id: 'jump', e: '🦘', w: ['跳高', 'jump'], s: ['请你跳得高高的！', 'Please jump up high!'] },
+    { id: 'spin', e: '🌀', w: ['转圈', 'spin'], s: ['请你转个圈！', 'Please spin around!'] },
+    { id: 'nap', e: '😴', w: ['睡觉', 'sleep'], s: ['请你睡一会儿吧！', 'Please take a nap!'] },
+  ] },
+  { id: 'like', k: 'say_f_like', items: PAINTS.map((p, i) => ({ id: 'c' + i, paint: i, w: [p.zh, p.en], s: ['我喜欢' + p.zh + '。', 'I like ' + p.en + '.'] })) },
+  { id: 'want', k: 'say_f_want', items: [
+    { id: 'rain', e: '🌧️', w: ['下雨', 'rain'], s: ['我想要下雨。', 'I want some rain.'] },
+    { id: 'rainbow', e: '🌈', w: ['彩虹', 'rainbow'], s: ['我想看彩虹。', 'I want to see a rainbow.'] },
+    { id: 'wind', e: '🍃', w: ['刮风', 'wind'], s: ['我想要一阵风。', 'I want some wind.'] },
+    { id: 'stars', e: '🌙', w: ['星星', 'stars'], s: ['我想看星星。', 'I want to see the stars.'] },
+    { id: 'sun', e: '☀️', w: ['太阳', 'sun'], s: ['我想看太阳。', 'I want to see the sun.'] },
+    { id: 'flowers', e: '🌸', w: ['好多花', 'flowers'], s: ['我想要好多花。', 'I want lots of flowers.'] },
+  ] },
+  { id: 'hi', k: 'say_f_hi', items: [
+    { id: 'hello', e: '👋', w: ['你好', 'hello'], s: ['你好！', 'Hello!'], reply: 'c_r_hi' },
+    { id: 'thanks', e: '🙏', w: ['谢谢', 'thank you'], s: ['谢谢你！', 'Thank you!'], reply: 'c_r_thanks' },
+    { id: 'love', e: '❤️', w: ['我爱你', 'I love you'], s: ['我爱你！', 'I love you!'], reply: 'c_r_love' },
+    { id: 'morning', e: '🌅', w: ['早上好', 'good morning'], s: ['早上好！', 'Good morning!'], reply: 'c_r_morning' },
+    { id: 'night', e: '🌙', w: ['晚安', 'good night'], s: ['晚安！', 'Good night!'], reply: 'c_r_night' },
+    { id: 'bye', e: '👋', w: ['再见', 'goodbye'], s: ['再见！', 'Goodbye!'], reply: 'c_r_bye' },
+  ] },
+];
+
+/* 画一画 · what to draw, and what happens to it */
+const DRAW_THEMES = [
+  { id: 'sun', e: '☀️', w: 'sun', p: ['我们来画一个太阳吧！', 'Let us draw a sun!'], done: ['太阳升到天上去啦！', 'Up goes the sun into the sky!'] },
+  { id: 'cloud', e: '☁️', w: 'cloud', p: ['我们来画一朵云吧！', 'Let us draw a cloud!'], done: ['小云朵飘起来啦，点一点它会下雨哦。', 'The little cloud floats up. Tap it to make rain!'] },
+  { id: 'flower', e: '🌸', w: 'flower', p: ['我们来画一朵花吧！', 'Let us draw a flower!'], done: ['花种在草地上啦。', 'The flower is planted in the grass.'] },
+  { id: 'house', e: '🏠', w: 'house', p: ['我们来画一座房子吧！', 'Let us draw a house!'], done: ['小房子盖好啦！', 'The little house is ready!'] },
+  { id: 'hat', e: '🎩', w: 'hat', p: ['给小伙伴画一顶帽子吧！', 'Let us draw a hat for a friend!'], done: ['帽子戴上啦，真神气！', 'The hat is on. Looking great!'] },
+  { id: 'bird', e: '🐦', w: 'bird', p: ['我们来画一只小鸟吧！', 'Let us draw a bird!'], done: ['小鸟飞起来啦！', 'The bird flies away!'] },
+  { id: 'star', e: '⭐', w: 'star', p: ['我们来画一颗星星吧！', 'Let us draw a star!'], done: ['星星挂到天上啦，一闪一闪。', 'The star is up in the sky, twinkling.'] },
+  { id: 'friend', e: '🐣', w: 'friend', p: ['画一个小伙伴吧，画一个圈就行！', 'Draw a new friend. A loop is enough!'], done: ['你画的小伙伴活过来啦！', 'Your friend has come alive!'] },
+  { id: 'free', e: '🎨', w: 'picture', p: ['想画什么就画什么吧！', 'Draw anything you like!'], done: ['你的画变成气球，飞上天啦！', 'Your picture turns into a balloon and flies up!'] },
+];
+/* words for how a drawing looks: one is picked from the shape */
+const ADJ = [
+  { id: 'round', zh: '圆圆的', en: 'round' }, { id: 'pointy', zh: '尖尖的', en: 'pointy' }, { id: 'long', zh: '长长的', en: 'long' },
+  { id: 'tall', zh: '高高的', en: 'tall' }, { id: 'curly', zh: '弯弯的', en: 'curly' }, { id: 'big', zh: '大大的', en: 'big' },
+  { id: 'small', zh: '小小的', en: 'little' }, { id: 'cute', zh: '可爱的', en: 'lovely' },
+];
+function adjLine(adj, theme, li) { const a = ADJ.find(q => q.id === adj), w = WORD[DRAW_THEMES.find(t => t.id === theme).w]; return li ? 'Wow, a ' + a.en + ' ' + w.en + '!' : '哇，' + a.zh + w.zh + '！'; }
+/* crayons */
+const CRAYONS = [
+  { id: 'red', hex: '#e9473c', zh: '红色', en: 'red' }, { id: 'orange', hex: '#f7931e', zh: '橙色', en: 'orange' }, { id: 'yellow', hex: '#ffd23f', zh: '黄色', en: 'yellow' },
+  { id: 'green', hex: '#45b058', zh: '绿色', en: 'green' }, { id: 'blue', hex: '#2f80ed', zh: '蓝色', en: 'blue' }, { id: 'purple', hex: '#8e5bd8', zh: '紫色', en: 'purple' },
+  { id: 'pink', hex: '#ff7eb6', zh: '粉色', en: 'pink' }, { id: 'brown', hex: '#8d5a3b', zh: '棕色', en: 'brown' }, { id: 'black', hex: '#2b2b33', zh: '黑色', en: 'black' },
+  { id: 'white', hex: '#ffffff', zh: '白色', en: 'white' },
+];
+function colorLine(id, li) { if (id === 'many') return li ? 'So many colors, so pretty!' : '五颜六色的，真漂亮！'; const c = CRAYONS.find(q => q.id === id); return li ? 'I love the ' + c.en + '!' : c.zh + '的，真好看！'; }

@@ -3,8 +3,8 @@
 const fs = require('fs'), vm = require('vm');
 const ctx = { pick: a => a[0], localStorage: { getItem: () => null, setItem() { } }, document: { documentElement: {} }, console };
 vm.createContext(ctx);
-vm.runInContext(fs.readFileSync(__dirname + '/../src/i18n.js', 'utf8') + '\n;this.STR=STR;this.NAME_PAIRS=NAME_PAIRS;this.PAINTS=PAINTS;this.CHAT_PAIRS=CHAT_PAIRS;this.STICKERS=STICKERS;this.cnum=cnum;', ctx);
-const { STR, NAME_PAIRS, PAINTS, CHAT_PAIRS, STICKERS, cnum } = ctx;
+vm.runInContext(fs.readFileSync(__dirname + '/../src/i18n.js', 'utf8') + '\n;this.STR=STR;this.NAME_PAIRS=NAME_PAIRS;this.PAINTS=PAINTS;this.CHAT_PAIRS=CHAT_PAIRS;this.STICKERS=STICKERS;this.cnum=cnum;this.WORDS=WORDS;this.SAYS=SAYS;this.DRAW_THEMES=DRAW_THEMES;this.ADJ=ADJ;this.CRAYONS=CRAYONS;this.adjLine=adjLine;this.colorLine=colorLine;this.SONGS=SONGS;', ctx);
+const { STR, NAME_PAIRS, PAINTS, CHAT_PAIRS, STICKERS, cnum, WORDS, SAYS, DRAW_THEMES, ADJ, CRAYONS, adjLine, colorLine, SONGS } = ctx;
 const out = [], seen = new Set();
 function add(lang, role, text) { const k = lang + '|' + role + '|' + text; if (!text || seen.has(k)) return; seen.add(k); out.push({ lang, role, text }); }
 const raw = (key, li) => { const v = STR[key][li]; return v === undefined ? STR[key][0] : v; };
@@ -22,11 +22,20 @@ for (const [li, lang] of [[0, 'zh'], [1, 'en']]) {
     add(lang, 'n', fill(raw('sticker_got', li), { name: s.n[li] }));
     add(lang, 'n', fill(raw('st_tap', li), { name: s.n[li] })); add(lang, 'n', s.h[li]);
   }
+  // learning games. Words and model sentences are heard in both languages, so both banks carry both.
+  for (const k of ['dock_invite', 'words_on', 'words_bye', 'words_locked', 'spy_start', 'spy_ok', 'spy_no', 'spy_help', 'spy_win', 'spy_none', 'say_start', 'say_your', 'say_good', 'say_parrot', 'say_need', 'draw_pick', 'draw_empty', 'draw_nofriend']) for (const s of items(k, li)) add(lang, 'n', s);
+  for (const w of WORDS) { add(lang, 'n', w.zh); add(lang, 'n', w.en); add(lang, 'n', w.s[li]); add(lang, 'n', w.q[li]); }
+  for (const p of PAINTS) add(lang, 'n', fill(raw('spy_friend', li), { c: p[lang] }));
+  for (const f of SAYS) for (const it of f.items) { add(lang, 'n', it.s[0]); add(lang, 'n', it.s[1]); }
+  for (const t of DRAW_THEMES) { add(lang, 'n', t.p[li]); add(lang, 'n', t.done[li]); for (const a of ADJ) add(lang, 'n', adjLine(a.id, t.id, li)); }
+  for (const c of CRAYONS) { add(lang, 'n', c.zh); add(lang, 'n', c.en); add(lang, 'n', colorLine(c.id, li)); }
+  add(lang, 'n', colorLine('many', li));
   // creatures: both voices say everything
   for (const role of ['c0', 'c1']) {
     for (const k of Object.keys(STR).filter(k => k.startsWith('c_'))) {
       for (const s of items(k, li)) {
-        if (k === 'c_color') { for (const p of PAINTS) add(lang, role, fill(s, { c: p[lang] })); continue; }
+        if (s.includes('{song}')) { for (const g of SONGS) add(lang, role, fill(s, { song: g[lang] })); continue; }
+        if (s.includes('{c}')) { for (const p of PAINTS) add(lang, role, fill(s, { c: p[lang] })); continue; }
         if (s.includes('{name}')) { for (const n of names) add(lang, role, fill(s, { name: n })); continue; }
         add(lang, role, s);
       }

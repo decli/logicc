@@ -66,6 +66,7 @@ body{color:var(--paper);font-family:var(--font-ui);touch-action:none;-webkit-use
 /* ---------- story line + hint ---------- */
 .story{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 26px);transform:translateX(-50%);width:min(680px,calc(100% - 32px));display:flex;flex-direction:column;align-items:center;gap:12px;z-index:5;pointer-events:none;text-align:center;transition:opacity .5s ease;}
 body.xray .story{opacity:0}
+body.gaming .inscr,body.gaming .story{opacity:0!important}
 body.xray .story .skip,body.xray .story .resume{pointer-events:none}
 .line{font-family:var(--font-serif);font-weight:600;font-size:clamp(17px,2.3vw,23px);line-height:1.55;letter-spacing:.04em;text-shadow:var(--shadow-text);text-wrap:balance;opacity:0;transform:translateY(8px);transition:opacity .9s ease,transform .9s ease;}
 .line.on{opacity:1;transform:none}
@@ -142,6 +143,126 @@ body.xray .story .skip,body.xray .story .resume{pointer-events:none}
 .stickerPop.out{transition:transform .6s cubic-bezier(.6,0,.4,1),opacity .6s ease .1s;opacity:0}
 .stickerCap{font:600 20px/1.3 var(--font-serif);color:var(--paper);text-shadow:var(--shadow-text);margin-top:8px;white-space:nowrap}
 
+/* ---------- play dock: the little games ---------- */
+.dock{position:fixed;right:max(12px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:7;display:flex;flex-direction:column-reverse;gap:8px;opacity:0;transform:translateX(16px);transition:opacity .5s ease,transform .5s cubic-bezier(.3,1.5,.5,1)}
+.dock.on{opacity:1;transform:none}
+.dk{appearance:none;border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--paper);width:64px;-webkit-tap-highlight-color:transparent}
+.dk .di{display:grid;place-items:center;width:50px;height:50px;border-radius:50%;background:rgba(255,253,246,.94);box-shadow:0 3px 12px rgba(0,0,0,.28),inset 0 -3px 0 rgba(0,0,0,.08);font-size:25px;line-height:1;transition:transform .2s cubic-bezier(.3,1.6,.5,1),background .2s ease}
+.dk .dl{font:600 12px/1.15 var(--font-ui);text-shadow:var(--shadow-text);white-space:nowrap}
+.dk:hover .di{transform:scale(1.06)}
+.dk:active .di{transform:scale(.92)}
+.dk:focus-visible .di{outline:3px solid #ffe7a8;outline-offset:2px}
+.dock.hello .dk .di{animation:bump .6s ease 3}
+.dock.hello .dk:nth-child(2) .di{animation-delay:.1s}.dock.hello .dk:nth-child(3) .di{animation-delay:.2s}.dock.hello .dk:nth-child(4) .di{animation-delay:.3s}
+.dk.cur .di{background:#ffe7a8;box-shadow:0 0 0 4px rgba(255,231,168,.45),0 3px 12px rgba(0,0,0,.28)}
+#echoBtn:not(.on) .di{background:rgba(255,253,246,.62)}
+.modeInfo{display:flex;gap:7px;align-items:center;font:600 13px/1 var(--font-ui);color:#7a6a63;white-space:nowrap}
+.modeBar{max-width:calc(100% - 24px)}
+.modeBar b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.modeInfo i{width:13px;height:13px;border-radius:50%;background:#e6dccb;display:block;transition:background .3s ease,transform .3s ease}
+.modeInfo i.now{background:#ffcf5a;transform:scale(1.25)}
+.modeInfo i.done{background:#5bb37a}
+
+/* ---------- word card ---------- */
+.wcard{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 74px);z-index:9;transform:translate(-50%,-12px) scale(.94);opacity:0;transition:opacity .3s ease,transform .35s cubic-bezier(.3,1.5,.5,1);appearance:none;border:0;cursor:pointer;display:flex;align-items:center;gap:16px;padding:14px 22px 14px 16px;border-radius:22px;background:#fffaf0;color:#3a2a33;box-shadow:0 10px 30px rgba(0,0,0,.3);max-width:calc(100% - 24px);text-align:left}
+.wcard.on{opacity:1;transform:translate(-50%,0)}
+.wcard .we{font-size:52px;line-height:1;flex:none}
+.wcard .wtx{display:flex;flex-direction:column;gap:2px;min-width:0}
+.wcard .wz{font:400 40px/1.25 var(--font-brush);letter-spacing:.06em}
+.wcard .wz ruby{ruby-position:over}
+.wcard .wz rt{font:500 13px/1 var(--font-ui);letter-spacing:.02em;color:#b0573f}
+.wcard .wn{font:600 22px/1.2 var(--font-serif);color:#2f6f8f}
+.wcard .ws{font:14px/1.45 var(--font-ui);color:#7a6a63;margin-top:4px}
+.wcard .ws b{display:block;font-weight:500;color:#9a8a83}
+
+/* ---------- say it: the sentence sheet ---------- */
+.sheet{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 70px);transform:translate(-50%,-14px);opacity:0;z-index:9;width:min(720px,calc(100% - 20px));max-height:calc(76vh - 80px);overflow:auto;overscroll-behavior:contain;background:#fffaf0;color:#3a2a33;border-radius:22px;padding:12px 14px 14px;box-shadow:0 14px 40px rgba(0,0,0,.35);transition:opacity .3s ease,transform .35s cubic-bezier(.3,1.4,.5,1)}
+.sheet.on{opacity:1;transform:translate(-50%,0)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.tabs button{appearance:none;border:2px solid #eadcc6;background:#fff;color:#5a3f33;border-radius:999px;padding:7px 14px;font:600 14px/1 var(--font-ui);cursor:pointer}
+.tabs button[aria-selected="true"]{background:#3a2a33;border-color:#3a2a33;color:#fff}
+.tabs button:focus-visible{outline:3px solid #f2a93b;outline-offset:2px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.tile{appearance:none;border:2px solid #f2c26b;background:#fff;border-radius:16px;padding:8px 4px 7px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:#3a2a33;box-shadow:0 3px 0 #f2c26b;min-width:0}
+.tile .te{font-size:32px;line-height:1.1}
+.tile .sw{width:34px;height:34px;border-radius:50%;box-shadow:inset 0 -3px 0 rgba(0,0,0,.12)}
+.tile .tz{font:600 15px/1.2 var(--font-ui)}
+.tile .tn{font:12px/1.2 var(--font-ui);color:#7a6a63}
+.tile:active{transform:translateY(2px);box-shadow:0 1px 0 #f2c26b}
+.tile:focus-visible{outline:3px solid #f2a93b;outline-offset:2px}
+.tile.pick{background:#fff3cf}
+.sheet.mini .tabs,.sheet.mini .tiles,.sheet.mini .row{display:none}
+.sheet.mini .sent{margin:0;padding:0;border:0}
+.sent{margin-top:12px;padding-top:12px;border-top:2px dashed #eadcc6;text-align:center}
+.sent .s1{font:600 clamp(22px,4.6vw,30px)/1.35 var(--font-serif)}
+.sent .s1 em,.sent .s2 em{font-style:normal;color:#d0523e}
+.sent .s2{font:500 16px/1.4 var(--font-serif);color:#5a6f7f;margin-top:2px}
+.sent .row{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:12px}
+.mic{appearance:none;border:0;position:relative;overflow:hidden;display:flex;align-items:center;gap:8px;background:#d0523e;color:#fff;border-radius:999px;padding:10px 20px 10px 12px;font:600 16px/1 var(--font-ui);cursor:pointer;box-shadow:0 4px 0 #9e3a2c}
+.mic .mi{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.22);font-size:20px}
+.mic .lvl{position:absolute;left:0;bottom:0;height:5px;width:0;background:#ffe7a8;transition:width .08s linear}
+.mic.rec{background:#2f8f5b;box-shadow:0 4px 0 #1f6a42;animation:pulse 1.2s ease-in-out infinite}
+.mic:disabled{opacity:.5}
+.mic:focus-visible,.pill:focus-visible{outline:3px solid #f2a93b;outline-offset:2px}
+.pill{appearance:none;border:0;background:#3a2a33;color:#fff;border-radius:999px;padding:12px 18px;font:600 15px/1 var(--font-ui);cursor:pointer}
+.pill.ghost{background:transparent;color:#5a3f33;border:2px solid #eadcc6;padding:10px 16px}
+
+/* ---------- draw: the drawing board ---------- */
+.pad{position:fixed;inset:0;z-index:15;display:flex;flex-direction:column;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 10px) 10px calc(env(safe-area-inset-bottom,0px) + 10px);background:rgba(5,8,18,.38);opacity:0;transition:opacity .3s ease}
+.pad.on{opacity:1}
+.padTop{display:flex;align-items:center;gap:8px;width:min(760px,100%);background:rgba(255,253,246,.96);color:#3a2a33;border-radius:999px;padding:6px 6px 6px 18px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.padTop b{font:600 17px/1.25 var(--font-serif);min-width:0}
+.padTop .sp{flex:1}
+.padTop button,.padBar .tools button{appearance:none;border:0;background:#3a2a33;color:#fff;border-radius:999px;padding:9px 14px;font:600 14px/1 var(--font-ui);cursor:pointer;flex:none}
+.padTop #padBack{background:transparent;color:#5a3f33;border:2px solid #eadcc6;padding:7px 12px}
+.themes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;width:min(560px,100%);margin:auto 0;overflow:auto}
+.theme{appearance:none;border:0;background:#fffaf0;border-radius:20px;padding:12px 6px 10px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;color:#3a2a33;box-shadow:0 5px 0 #e2cfae,0 8px 20px rgba(0,0,0,.2)}
+.theme .te{font-size:44px;line-height:1.1}
+.theme .tz{font:600 17px/1.2 var(--font-ui)}
+.theme .tn{font:13px/1.2 var(--font-ui);color:#7a6a63}
+.theme:disabled{opacity:.45}
+.theme:active{transform:translateY(3px);box-shadow:0 2px 0 #e2cfae}
+.theme:focus-visible{outline:3px solid #ffe7a8;outline-offset:3px}
+.board{flex:1;min-height:0;width:100%;display:grid;place-items:center}
+.board canvas{background:#fffdf6;border-radius:22px;box-shadow:0 8px 30px rgba(0,0,0,.35),inset 0 0 0 1px rgba(0,0,0,.06);touch-action:none;cursor:crosshair;display:block}
+.padBar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;width:min(760px,100%);background:rgba(255,253,246,.96);border-radius:24px;padding:8px 10px;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.crayons{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.crayon{appearance:none;width:36px;height:36px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.18),0 2px 4px rgba(0,0,0,.2);cursor:pointer;padding:0;transition:transform .15s ease}
+.crayon[aria-checked="true"]{transform:scale(1.2);box-shadow:0 0 0 3px #3a2a33,0 2px 6px rgba(0,0,0,.3)}
+.crayon:focus-visible{outline:3px solid #f2a93b;outline-offset:3px}
+.tools{display:flex;gap:6px}
+.padBar .tools button{background:transparent;color:#5a3f33;border:2px solid #eadcc6;padding:8px 12px}
+.padBar .tools .go{background:#2f8f5b;border-color:#2f8f5b;color:#fff;padding:10px 18px;font-size:15px}
+.bookTabs{margin:0 0 12px}
+@media (max-width:560px){
+  .dk{width:56px}.dk .di{width:44px;height:44px;font-size:22px}.dk .dl{font-size:11px}
+  .wcard{gap:10px;padding:10px 16px 10px 12px;top:calc(env(safe-area-inset-top,0px) + 64px)}
+  .wcard .we{font-size:40px}.wcard .wz{font-size:32px}.wcard .wn{font-size:18px}
+  .crayon{width:30px;height:30px}
+  .theme .te{font-size:36px}
+}
+@media (orientation:landscape){ body.docked .story{width:min(680px,calc(100% - 190px))} }
+@media (orientation:portrait) and (max-width:760px){
+  .modeBar{top:calc(env(safe-area-inset-top,0px) + 98px);max-width:calc(100% - 24px)}
+  .modeBar b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;font-size:15px}
+  .modeInfo{white-space:nowrap}
+  .wcard{top:calc(env(safe-area-inset-top,0px) + 150px)}
+  .sheet{top:calc(env(safe-area-inset-top,0px) + 146px);max-height:calc(72vh - 150px)}
+  .tile .te{font-size:26px}.tile{padding:6px 4px 5px}
+  .dock{flex-direction:row;left:50%;right:auto;transform:translate(-50%,16px);gap:2px}
+  .dock.on{transform:translate(-50%,0)}
+}
+@media (max-height:500px) and (orientation:landscape){
+  .dock{gap:4px;bottom:calc(env(safe-area-inset-bottom,0px) + 8px)}
+  .dk{width:52px}.dk .di{width:38px;height:38px;font-size:19px}.dk .dl{font-size:10px}
+  .themes{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .theme .te{font-size:30px}
+  .wcard{top:calc(env(safe-area-inset-top,0px) + 56px)}
+  .sheet{max-height:calc(100% - 64px);top:calc(env(safe-area-inset-top,0px) + 60px);padding:8px 10px}
+  .tabs{margin-bottom:6px}.tabs button{padding:6px 11px;font-size:13px}
+  .tile .te{font-size:24px}.tile{padding:5px 3px 4px}
+  .sent{margin-top:8px;padding-top:8px}.sent .s1{font-size:20px}.sent .s2{font-size:13px}.sent .row{margin-top:8px}
+}
 @media (max-width:560px){
   .title b{font-size:28px}
   .btn .lbl{display:none}
@@ -208,12 +329,45 @@ body.xray .story .skip,body.xray .story .resume{pointer-events:none}
 
 <div class="ring" id="ring" role="group" hidden></div>
 
-<button class="echoBtn" id="echoBtn" type="button"><span class="ee" aria-hidden="true">🎼</span><span class="el" id="echoLabel">跟我唱</span></button>
+<nav class="dock" id="dock" aria-label="小游戏" hidden>
+  <button class="dk" id="dkWords" type="button" data-m="words"><span class="di" aria-hidden="true">🔍</span><span class="dl" id="dlWords">认一认</span></button>
+  <button class="dk" id="dkSpy" type="button" data-m="spy"><span class="di" aria-hidden="true">👀</span><span class="dl" id="dlSpy">找一找</span></button>
+  <button class="dk" id="dkSay" type="button" data-m="say"><span class="di" aria-hidden="true">💬</span><span class="dl" id="dlSay">说一说</span></button>
+  <button class="dk" id="dkDraw" type="button" data-m="draw"><span class="di" aria-hidden="true">🖍️</span><span class="dl" id="dlDraw">画一画</span></button>
+  <button class="dk" id="echoBtn" type="button"><span class="di" aria-hidden="true">🎼</span><span class="dl" id="echoLabel">跟我唱</span></button>
+</nav>
 <div class="echoBar" id="echoBar" role="status" hidden><b id="echoTitle">跟我唱</b><span class="echoDots" id="echoDots"></span><button id="echoExit" type="button">结束</button></div>
+<div class="echoBar modeBar" id="modeBar" role="status" hidden><b id="modeTitle"></b><span class="modeInfo" id="modeInfo"></span><button id="modeExit" type="button">结束</button></div>
+
+<button class="wcard" id="wcard" type="button" hidden>
+  <span class="we" id="wcE" aria-hidden="true"></span>
+  <span class="wtx"><span class="wz" id="wcZh"></span><span class="wn" id="wcEn"></span><span class="ws" id="wcS"></span></span>
+</button>
+
+<div class="sheet" id="sayPanel" role="dialog" aria-labelledby="modeTitle" hidden>
+  <div class="tabs" id="sayTabs" role="tablist"></div>
+  <div class="tiles" id="sayTiles"></div>
+  <div class="sent" id="saySent" hidden>
+    <div class="s1" id="sayS1"></div><div class="s2" id="sayS2"></div>
+    <div class="row">
+      <button class="mic" id="sayMic" type="button"><span class="mi" aria-hidden="true">🎤</span><b id="sayMicL"></b><i class="lvl" id="sayLvl"></i></button>
+      <button class="pill" id="sayDone" type="button"></button>
+      <button class="pill ghost" id="sayAgain" type="button"></button>
+    </div>
+  </div>
+</div>
+
+<div class="pad" id="pad" role="dialog" aria-labelledby="padPrompt" hidden>
+  <div class="padTop"><b id="padPrompt"></b><span class="sp"></span><button id="padBack" type="button"></button><button id="padExit" type="button"></button></div>
+  <div class="themes" id="padThemes"></div>
+  <div class="board" id="board" hidden><canvas id="padCvs" aria-label="画板"></canvas></div>
+  <div class="padBar" id="padBar" hidden><div class="crayons" id="crayons" role="radiogroup"></div><div class="tools"><button id="padUndo" type="button"></button><button id="padClear" type="button"></button><button class="go" id="padDone" type="button"></button></div></div>
+</div>
 
 <div class="book" id="book" role="dialog" aria-modal="true" aria-labelledby="bookTitle" hidden>
   <div class="bookCard">
     <div class="bookHead"><div><h2 id="bookTitle">发现册</h2><p id="bookSub"></p></div><button id="bookClose" type="button">关上</button></div>
+    <div class="tabs bookTabs" id="bookTabs" role="tablist"><button type="button" data-t="st" role="tab" id="bookTabSt">贴纸</button><button type="button" data-t="words" role="tab" id="bookTabW">词语</button></div>
     <div class="bookGrid" id="bookGrid"></div>
     <p class="bookTip" id="bookTip" aria-live="polite"></p>
   </div>

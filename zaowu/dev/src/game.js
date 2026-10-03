@@ -12,6 +12,8 @@ const FRUIT_LOOK = {
   maple: { a: '#ff7070', b: '#c81e3a', cherry: true, r: 0.8 },
   willow: { a: '#d8f08a', b: '#79b84a', leaf: '#4f8f3e', r: 0.95 },
   ginkgo: { a: '#ffe58a', b: '#e0a42a', r: 0.72 },
+  grape: { a: '#c9a6ff', b: '#6b3fb5', grape: true, r: 1 },
+  orange: { a: '#ffc266', b: '#f07f12', leaf: '#4f9a4a', r: 1 },
 };
 const Fruits = {
   drop(x, y, type, fromSky) {
@@ -51,7 +53,12 @@ const Fruits = {
     c.save(); c.globalAlpha = f.fade === undefined ? 1 : clamp(f.fade, 0, 1);
     c.fillStyle = 'rgba(30,60,40,.2)'; c.beginPath(); c.ellipse(f.x, f.floor + r * 0.9, r * 0.9, r * 0.25, 0, 0, TAU); c.fill();
     c.translate(f.x, f.y); c.rotate(f.rot);
-    if (L.cherry) {
+    if (L.grape) {
+      c.strokeStyle = '#5a7a3a'; c.lineWidth = Math.max(1, r * 0.12); c.beginPath(); c.moveTo(0, -r * 0.9); c.lineTo(r * 0.15, -r * 1.35); c.stroke();
+      const g = c.createRadialGradient(-r * 0.3, -r * 0.4, r * 0.05, 0, 0, r * 1.2); g.addColorStop(0, L.a); g.addColorStop(1, L.b); c.fillStyle = g;
+      for (const [dx, dy] of [[-0.42, -0.55], [0.0, -0.6], [0.42, -0.55], [-0.24, -0.12], [0.24, -0.12], [0, 0.32]]) { c.beginPath(); c.arc(dx * r, dy * r, r * 0.3, 0, TAU); c.fill(); }
+      c.fillStyle = 'rgba(255,255,255,.4)'; c.beginPath(); c.arc(-r * 0.5, -r * 0.65, r * 0.09, 0, TAU); c.fill();
+    } else if (L.cherry) {
       c.strokeStyle = '#5a7a3a'; c.lineWidth = Math.max(1, r * 0.12); c.beginPath(); c.moveTo(-r * 0.45, 0); c.quadraticCurveTo(-r * 0.2, -r * 1.3, r * 0.2, -r * 1.5); c.moveTo(r * 0.5, r * 0.1); c.quadraticCurveTo(r * 0.4, -r * 1.1, r * 0.2, -r * 1.5); c.stroke();
       for (const dx of [-0.45, 0.5]) { const g = c.createRadialGradient(dx * r - r * 0.2, -r * 0.2, r * 0.1, dx * r, 0, r * 0.75); g.addColorStop(0, L.a); g.addColorStop(1, L.b); c.fillStyle = g; c.beginPath(); c.arc(dx * r, dx > 0 ? r * 0.1 : 0, r * 0.62, 0, TAU); c.fill(); }
     } else if (L.cone) {
@@ -100,9 +107,36 @@ const Stickers = (() => {
       setTimeout(() => { el.remove(); btn.classList.add('bump'); setTimeout(() => btn.classList.remove('bump'), 500); next(); }, 650);
     }, 1700);
   }
-  function open() {
+  let tab = 'st';
+  function paintTabs() { document.querySelectorAll('#bookTabs button').forEach(b => { b.setAttribute('aria-selected', b.dataset.t === tab ? 'true' : 'false'); b.textContent = L(b.dataset.t === 'st' ? 'book_tab_st' : 'book_tab_words'); }); }
+  function openWords() {
+    grid.innerHTML = ''; tip.textContent = '';
+    $('#bookSub').textContent = L('words_sub', { n: Words.count, m: WORDS.length });
+    const en = isEn();
+    for (const w of WORDS) {
+      const has = Words.has(w.id), b = document.createElement('button');
+      b.type = 'button'; b.className = 'sticker' + (has ? '' : ' locked');
+      b.innerHTML = `<span class="se">${w.e}</span><span class="sn">${has ? (en ? w.en + '<br>' + w.zh : w.zh + '<br>' + w.en) : '？'}</span>`;
+      b.setAttribute('aria-label', has ? w.zh + ' ' + w.en : L('words_locked'));
+      b.addEventListener('click', () => {
+        if (has) { tip.textContent = en ? w.s[1] : w.s[0]; Voice.seq(en ? [w.en, w.zh, w.s[1]] : [w.zh, w.en, w.s[0]], 'learn'); }
+        else { tip.textContent = L('words_locked'); Voice.say(L('words_locked'), { role: 'n', prio: 3 }); }
+        b.classList.remove('wiggle'); void b.offsetWidth; b.classList.add('wiggle'); Snd.pop(W / 2, 0.1);
+      });
+      grid.appendChild(b);
+    }
+  }
+  document.querySelectorAll('#bookTabs button').forEach(b => b.addEventListener('click', () => { tab = b.dataset.t; paintTabs(); fill(); Snd.pop(W / 2, 0.08); }));
+  function fill() { if (tab === 'words') openWords(); else openStickers(); }
+  function open(which) {
+    if (which) tab = which;
+    $('#bookTitle').textContent = L('book_title'); paintTabs(); fill();
+    book.hidden = false; requestAnimationFrame(() => book.classList.add('on'));
+    Snd.pop(W / 2, 0.12);
+    $('#bookClose').focus();
+  }
+  function openStickers() {
     grid.innerHTML = '';
-    $('#bookTitle').textContent = L('book_title');
     $('#bookSub').textContent = L('book_sub', { n: got.size, m: STICKERS.length });
     tip.textContent = '';
     for (const s of STICKERS) {
@@ -117,12 +151,10 @@ const Stickers = (() => {
       });
       grid.appendChild(b);
     }
-    book.hidden = false; requestAnimationFrame(() => book.classList.add('on'));
-    Snd.pop(W / 2, 0.12);
-    $('#bookClose').focus();
   }
   function close() { book.classList.remove('on'); setTimeout(() => { book.hidden = true; }, 300); btn.focus(); }
   btn.addEventListener('click', () => { Snd.init(); open(); });
+  onLang(() => { if (!book.hidden) { $('#bookTitle').textContent = L('book_title'); paintTabs(); fill(); } });
   $('#bookClose').addEventListener('click', close);
   book.addEventListener('click', e => { if (e.target === book) close(); });
   book.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
@@ -190,6 +222,8 @@ const Echo = (() => {
   function paintDots() { dots.innerHTML = ''; for (let k = 2; k <= 5; k++) { const d = document.createElement('i'); if (k < len || (k === len && phase === 'won')) d.className = 'done'; else if (k === len) d.className = 'now'; dots.appendChild(d); } }
   function start() {
     Snd.init();
+    if (active) { stop(false); return; }
+    Learn.stop(true); Draw.close(true); Story.hush();
     const ready = awake();
     if (ready.length < 3) { Voice.narrate(L('echo_need'), 'echo', { prio: 3 }); return; }
     Ring.close();
@@ -198,7 +232,7 @@ const Echo = (() => {
     active = true; len = 2; phase = 'intro'; paintDots();
     $('#echoTitle').textContent = L('echo_title');
     bar.hidden = false; requestAnimationFrame(() => bar.classList.add('on'));
-    btn.classList.remove('on');
+    btn.classList.add('cur');
     Voice.stopAll();
     Voice.say(L('echo_start'), { role: 'n', prio: 3, tag: 'echo', onend: () => later(newRound, 300) });
     later(() => { if (phase === 'intro') newRound(); }, 7000);
@@ -248,7 +282,7 @@ const Echo = (() => {
     later(() => stop(true), 5200);
   }
   function stop(quiet) {
-    clearT(); active = false; phase = 'idle';
+    clearT(); active = false; phase = 'idle'; btn.classList.remove('cur');
     players.forEach(c => { c.echo = null; }); players = [];
     bar.classList.remove('on'); setTimeout(() => { if (!active) bar.hidden = true; }, 300);
     if (!quiet) Voice.say(L('echo_bye'), { role: 'n', prio: 3, tag: 'echo' });
@@ -263,9 +297,8 @@ const Echo = (() => {
         if (players.some(c => !world.creatures.includes(c))) stop(true);
         return;
       }
-      const can = world.phase === 'world' && awake().length >= 3 && world.sky.night < 0.7 && !document.querySelector('#book.on');
+      const can = world.phase === 'world' && awake().length >= 3 && world.sky.night < 0.7;
       btn.classList.toggle('on', can);
-      if (can && !invited && ['done', 'night', 'free'].includes(Story.step)) { invited = true; Voice.narrate(L('echo_invite'), 'invite'); }
     },
   };
 })();
