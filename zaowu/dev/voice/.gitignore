@@ -1,0 +1,7 @@
+models/
+cache/
+out/
+lines.json
+check-*.json
+__pycache__/
+*.log

@@ -1,0 +1,227 @@
+<title>造物</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+/* Layout: one full-bleed living canvas. Words float over it like inscriptions on a hand scroll:
+   seal + controls top-left, vertical calligraphy top-right, story line and hint at the bottom. */
+:root{
+  --ink:#070a16;            /* the void before the world */
+  --paper:#f7f2e6;          /* rice-paper white, for words */
+  --paper-dim:rgba(247,242,230,.74);
+  --seal:#c8463a;           /* cinnabar seal red */
+  --seal-deep:#9e2f26;
+  --glass:rgba(10,14,30,.34);
+  --glass-hi:rgba(10,14,30,.52);
+  --glass-line:rgba(255,255,255,.18);
+  --jade:#9fe3c4;           /* x-ray annotation colour */
+  --font-brush:"Ma Shan Zheng","STXingkai","STKaiti","KaiTi","Kaiti SC",serif;
+  --font-serif:"Noto Serif SC","Songti SC","STSong","SimSun",serif;
+  --font-ui:system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --font-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --shadow-text:0 1px 2px rgba(0,0,0,.35),0 0 18px rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+html,body{height:100%;margin:0;overflow:hidden;background:var(--ink);}
+[hidden]{display:none!important}
+body{color:var(--paper);font-family:var(--font-ui);touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;overscroll-behavior:none;}
+#world{position:fixed;inset:0;width:100%;height:100%;display:block;cursor:crosshair;}
+#world:focus{outline:none}
+#world:focus-visible{outline:2px solid rgba(255,236,190,.6);outline-offset:-4px}
+#world.grab{cursor:grab}
+#world.grabbing{cursor:grabbing}
+
+/* ---------- seal + controls ---------- */
+.brand{position:fixed;left:max(16px,env(safe-area-inset-left,0px));top:calc(env(safe-area-inset-top,0px) + 14px);display:flex;flex-direction:column;gap:10px;z-index:7;max-width:calc(100% - 120px);}
+.brand:not(.world) .wonly{display:none}
+.brand .title{opacity:.0;transition:opacity 1.6s ease}
+.brand.world .title{opacity:1}
+.title{display:flex;align-items:center;gap:10px;}
+.title b{font-family:var(--font-brush);font-weight:400;font-size:34px;line-height:1;letter-spacing:.04em;text-shadow:var(--shadow-text);}
+.seal{display:grid;place-items:center;width:26px;height:26px;border-radius:4px;background:var(--seal);color:var(--paper);font-family:var(--font-serif);font-size:10px;line-height:1.05;text-align:center;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.28);transform:rotate(-4deg);}
+.ctrls{display:flex;gap:8px;flex-wrap:wrap;}
+.btn .lbl{white-space:nowrap}
+.btn.lang{font-family:var(--font-serif);font-weight:600;padding:0 13px;min-width:44px;justify-content:center}
+.btn.home{text-decoration:none;padding:0 12px 0 10px}
+.btn .badge{font:600 11px/1 var(--font-mono);background:rgba(255,255,255,.18);border-radius:8px;padding:3px 6px;margin-left:2px}
+.btn.bump{animation:bump .45s ease}
+@keyframes bump{40%{transform:scale(1.18)}}
+.btn[aria-pressed="false"].tog{opacity:.62}
+.day{font-family:var(--font-serif);font-size:13px;letter-spacing:.18em;color:var(--paper-dim);text-shadow:var(--shadow-text);margin-left:2px}
+.btn{appearance:none;border:1px solid var(--glass-line);background:var(--glass);color:var(--paper);font:500 13px/1 var(--font-ui);letter-spacing:.06em;height:34px;padding:0 13px 0 10px;border-radius:17px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:background .2s ease,border-color .2s ease,transform .15s ease;}
+.btn svg{width:16px;height:16px;flex:none}
+.btn:hover{background:var(--glass-hi)}
+.btn:active{transform:scale(.96)}
+.btn:focus-visible{outline:2px solid var(--paper);outline-offset:2px}
+.btn[aria-pressed="true"]{background:rgba(159,227,196,.22);border-color:rgba(159,227,196,.6);color:#e9fff4}
+.btn.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,236,190,.0)}50%{box-shadow:0 0 0 7px rgba(255,236,190,.28)}}
+
+/* ---------- vertical inscription ---------- */
+.inscr{position:fixed;right:max(18px,env(safe-area-inset-right,0px));top:calc(env(safe-area-inset-top,0px) + 18px);display:flex;flex-direction:row-reverse;align-items:flex-start;gap:6px;z-index:4;pointer-events:none;opacity:0;transform:translateY(-6px);transition:opacity 1.4s ease,transform 1.4s ease;}
+.inscr.on{opacity:1;transform:none}
+.inscr .q{writing-mode:vertical-rl;font-family:var(--font-brush);font-size:clamp(24px,3.4vw,38px);line-height:1.18;letter-spacing:.12em;text-shadow:var(--shadow-text);max-height:58vh;}
+.inscr .s{writing-mode:vertical-rl;font-family:var(--font-serif);font-size:12px;letter-spacing:.2em;color:var(--paper-dim);text-shadow:var(--shadow-text);margin-top:10px;}
+.inscr .stamp{margin-top:12px;width:20px;height:20px;border-radius:3px;background:var(--seal);opacity:.92;display:grid;place-items:center;font-family:var(--font-serif);font-size:9px;line-height:1;color:var(--paper);writing-mode:horizontal-tb;}
+
+/* ---------- story line + hint ---------- */
+.story{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 26px);transform:translateX(-50%);width:min(680px,calc(100% - 32px));display:flex;flex-direction:column;align-items:center;gap:12px;z-index:5;pointer-events:none;text-align:center;transition:opacity .5s ease;}
+body.xray .story{opacity:0}
+body.xray .story .skip,body.xray .story .resume{pointer-events:none}
+.line{font-family:var(--font-serif);font-weight:600;font-size:clamp(17px,2.3vw,23px);line-height:1.55;letter-spacing:.04em;text-shadow:var(--shadow-text);text-wrap:balance;opacity:0;transform:translateY(8px);transition:opacity .9s ease,transform .9s ease;}
+.line.on{opacity:1;transform:none}
+.hint{display:inline-flex;align-items:center;gap:8px;font-size:14px;letter-spacing:.06em;padding:9px 16px;border-radius:999px;background:var(--glass);border:1px solid var(--glass-line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;transform:translateY(8px);transition:opacity .7s ease,transform .7s ease;}
+.hint.on{opacity:1;transform:none}
+.hint i{font-style:normal;display:inline-block;width:8px;height:8px;border-radius:50%;background:#ffe7a8;box-shadow:0 0 10px #ffe7a8;animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{50%{opacity:.25}}
+.skip{pointer-events:none;appearance:none;border:0;background:none;color:var(--paper-dim);font:13px var(--font-ui);letter-spacing:.08em;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:4px 8px;opacity:0;transition:opacity .6s ease;}
+.skip.on{opacity:.85;pointer-events:auto}
+.resume{text-decoration:none;font-size:14px;padding:9px 18px;border-radius:999px;background:rgba(255,236,190,.14);border:1px solid rgba(255,236,190,.4);color:var(--paper)}
+.resume.on{opacity:1}
+.skip:focus-visible{outline:2px solid var(--paper);outline-offset:2px;border-radius:4px}
+
+/* ---------- x-ray card ---------- */
+.xcard{position:fixed;left:max(16px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 18px);width:min(330px,calc(100% - 32px));padding:14px 16px 13px;border-radius:12px;background:rgba(4,16,14,.72);border:1px solid rgba(159,227,196,.35);color:#dff7ec;font:13px/1.65 var(--font-ui);z-index:6;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease;pointer-events:none;}
+.xcard.on{opacity:1;transform:none;pointer-events:auto}
+.xcard h3{margin:0 0 6px;font:600 14px/1.3 var(--font-serif);color:var(--jade);letter-spacing:.06em}
+.xcard p{margin:0}
+.xcard .tag{font-family:var(--font-mono);font-size:11px;color:rgba(159,227,196,.8);margin-top:8px;display:block}
+.xcard nav{display:flex;gap:6px;margin-top:10px}
+.xcard nav button{appearance:none;border:1px solid rgba(159,227,196,.35);background:transparent;color:#dff7ec;font:12px var(--font-ui);padding:4px 10px;border-radius:12px;cursor:pointer}
+.xcard nav button:focus-visible{outline:2px solid var(--jade);outline-offset:2px}
+/* ---------- english translation under the calligraphy ---------- */
+.qen{position:absolute;right:0;top:calc(100% + 10px);width:min(250px,46vw);text-align:right;font:italic 13px/1.5 var(--font-serif);color:var(--paper);text-shadow:var(--shadow-text);writing-mode:horizontal-tb}
+
+/* ---------- action ring ---------- */
+.ring{position:fixed;left:0;top:0;display:flex;gap:6px;z-index:8;opacity:0;transition:opacity .2s ease;--bw:60px;will-change:transform}
+.ring.on{opacity:1}
+.act{appearance:none;border:0;background:none;padding:0;width:var(--bw);display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--paper);-webkit-tap-highlight-color:transparent}
+.act .ae{display:grid;place-items:center;width:calc(var(--bw) - 8px);height:calc(var(--bw) - 8px);border-radius:50%;background:rgba(255,253,246,.94);box-shadow:0 3px 10px rgba(0,0,0,.25),inset 0 -3px 0 rgba(0,0,0,.08);font-size:calc(var(--bw) * .42);line-height:1;transform:scale(.6);transition:transform .25s cubic-bezier(.3,1.6,.5,1)}
+.ring.on .act .ae{transform:none}
+.ring.on .act:nth-child(2) .ae{transition-delay:.03s}.ring.on .act:nth-child(3) .ae{transition-delay:.06s}.ring.on .act:nth-child(4) .ae{transition-delay:.09s}.ring.on .act:nth-child(5) .ae{transition-delay:.12s}
+.act:active .ae{transform:scale(.9)}
+.act:focus-visible .ae{outline:3px solid #ffe7a8;outline-offset:2px}
+.act .al{font:600 12px/1.2 var(--font-ui);text-shadow:var(--shadow-text);white-space:nowrap}
+
+/* ---------- sing-with-me ---------- */
+.echoBtn{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 22px);z-index:7;appearance:none;border:0;background:rgba(255,253,246,.95);color:#3a2a33;border-radius:999px;display:flex;align-items:center;gap:8px;padding:8px 18px 8px 8px;font:600 15px/1 var(--font-ui);box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;opacity:0;transform:translateY(16px) scale(.9);pointer-events:none;transition:opacity .4s ease,transform .4s cubic-bezier(.3,1.5,.5,1)}
+.echoBtn.on{opacity:1;transform:none;pointer-events:auto}
+.echoBtn .ee{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:#ffe7a8;font-size:22px}
+.echoBtn:focus-visible{outline:3px solid #ffe7a8;outline-offset:3px}
+.echoBar{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 14px);transform:translate(-50%,-10px);z-index:8;display:flex;align-items:center;gap:14px;padding:8px 8px 8px 18px;border-radius:999px;background:rgba(255,253,246,.95);color:#3a2a33;box-shadow:0 4px 14px rgba(0,0,0,.25);opacity:0;transition:opacity .3s ease,transform .3s ease}
+.echoBar.on{opacity:1;transform:translate(-50%,0)}
+.echoBar b{font:600 16px/1 var(--font-serif)}
+.echoDots{display:flex;gap:7px}
+.echoDots i{width:13px;height:13px;border-radius:50%;background:#e6dccb;display:block;transition:background .3s ease,transform .3s ease}
+.echoDots i.now{background:#ffcf5a;transform:scale(1.25)}
+.echoDots i.done{background:#5bb37a}
+.echoBar button{appearance:none;border:0;background:#3a2a33;color:#fff;border-radius:999px;padding:8px 14px;font:600 13px/1 var(--font-ui);cursor:pointer}
+.echoBar button:focus-visible{outline:3px solid #ffcf5a;outline-offset:2px}
+
+/* ---------- sticker book ---------- */
+.book{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:rgba(5,8,18,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);opacity:0;transition:opacity .3s ease;padding:16px}
+.book.on{opacity:1}
+.bookCard{width:min(760px,100%);max-height:calc(100% - 20px);overflow:auto;background:#fffaf0;color:#3a2a33;border-radius:22px;padding:20px 20px 16px;box-shadow:0 20px 50px rgba(0,0,0,.35);transform:translateY(14px) scale(.97);transition:transform .35s cubic-bezier(.3,1.4,.5,1)}
+.book.on .bookCard{transform:none}
+.bookHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.bookHead h2{margin:0;font:400 30px/1.1 var(--font-brush)}
+.bookHead p{margin:6px 0 0;font:14px/1.5 var(--font-ui);color:#7a6a63}
+.bookHead button{appearance:none;border:0;background:#3a2a33;color:#fff;border-radius:999px;padding:10px 16px;font:600 14px/1 var(--font-ui);cursor:pointer;flex:none}
+.bookGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.sticker{appearance:none;border:2px dashed #e7d9c3;background:#fff;border-radius:16px;padding:10px 6px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;min-width:0}
+.sticker .se{font-size:40px;line-height:1.1}
+.sticker .sn{font:600 13px/1.25 var(--font-ui);text-align:center;color:#3a2a33}
+.sticker:not(.locked){border-style:solid;border-color:#f2c26b;box-shadow:0 3px 0 #f2c26b}
+.sticker.locked .se{filter:grayscale(1) brightness(.35) opacity(.45)}
+.sticker.locked .sn{color:#b3a59a}
+.sticker:focus-visible{outline:3px solid #f2a93b;outline-offset:2px}
+.sticker.wiggle{animation:wiggle .45s ease}
+@keyframes wiggle{25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+.bookTip{min-height:1.6em;margin:12px 2px 0;font:600 16px/1.5 var(--font-serif);color:#5a3f33}
+.stickerPop{position:fixed;left:50%;top:42%;z-index:30;font-size:min(22vw,150px);line-height:1;transform:translate(-50%,-50%) scale(.2);opacity:0;transition:transform .6s cubic-bezier(.3,1.6,.5,1),opacity .3s ease;pointer-events:none;text-align:center;filter:drop-shadow(0 8px 18px rgba(0,0,0,.35))}
+.stickerPop.in{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.stickerPop.out{transition:transform .6s cubic-bezier(.6,0,.4,1),opacity .6s ease .1s;opacity:0}
+.stickerCap{font:600 20px/1.3 var(--font-serif);color:var(--paper);text-shadow:var(--shadow-text);margin-top:8px;white-space:nowrap}
+
+@media (max-width:560px){
+  .title b{font-size:28px}
+  .btn .lbl{display:none}
+  .btn{padding:0 9px}
+  .echoBtn .el{display:none}
+  .echoBtn{padding:8px}
+  .brand{max-width:calc(100% - 96px)}
+  .inscr .q{font-size:24px;max-height:46vh}
+  .btn{height:32px;font-size:12px;padding:0 11px 0 9px}
+}
+@media (orientation:portrait) and (max-width:760px){
+  .story{top:calc(env(safe-area-inset-top,0px) + 24vh);bottom:auto}
+  .xcard{top:calc(env(safe-area-inset-top,0px) + 108px);bottom:auto}
+}
+@media (max-height:500px) and (orientation:landscape){
+  .story{bottom:calc(env(safe-area-inset-bottom,0px) + 8px);gap:6px}
+  .line{font-size:15px}
+  .hint{font-size:12px;padding:6px 12px}
+  .inscr .q{font-size:20px;max-height:70vh}
+  .title b{font-size:24px}
+  .brand{gap:6px}
+}
+@media (prefers-reduced-motion:reduce){
+  .btn.pulse,.hint i,.btn.bump,.sticker.wiggle{animation:none}
+}
+</style>
+
+<canvas id="world" aria-label="一个可以互动的小世界：点草地种树，点天空召云，画一个圈创造会动的小生灵，拖动太阳改变昼夜。键盘：空格敲开混沌，T 种树，C 召云，B 造一个小生灵，N 推进时间，X 透视，左右方向键起风" tabindex="0"></canvas>
+
+<div class="brand" id="brand">
+  <div class="title"><b>造物</b><span class="seal" aria-hidden="true">克劳<br>德制</span><span class="day" id="day"></span></div>
+  <div class="ctrls">
+    <a class="btn home" id="homeBtn" href="../" hidden>
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2.5 7.5 8 3l5.5 4.5"/><path d="M4 6.5V13h3v-3.2h2V13h3V6.5"/></svg><span class="lbl" id="homeLabel">回首页</span>
+    </a>
+    <button class="btn wonly" id="btnX" aria-pressed="false">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="M10.4 10.4 14 14"/><path d="M5 7h4M7 5v4" stroke-width="1.1"/></svg><span class="lbl" id="xLabel">透视</span>
+    </button>
+    <button class="btn tog" id="btnS" aria-pressed="true">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M2.5 6h2.6L8.6 3v10L5.1 10H2.5z" fill="currentColor" stroke="none"/><path id="sWave" d="M10.8 5.4a3.6 3.6 0 0 1 0 5.2M12.6 3.6a6.2 6.2 0 0 1 0 8.8"/></svg><span class="lbl" id="sLabel">声音</span>
+    </button>
+    <button class="btn tog" id="btnV" aria-pressed="true">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M2.5 3.5h11v7h-6l-3 2.5v-2.5h-2z" stroke-linejoin="round"/><path id="vDots" d="M5.5 7h.01M8 7h.01M10.5 7h.01" stroke-width="2" stroke-linecap="round"/></svg><span class="lbl" id="vLabel">语音</span>
+    </button>
+    <button class="btn lang" id="btnL" type="button">EN</button>
+    <button class="btn" id="bookBtn" type="button">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M8 4.2C6.6 3.2 4.6 3 2.5 3.3v9c2.1-.3 4.1-.1 5.5.9 1.4-1 3.4-1.2 5.5-.9v-9C11.4 3 9.4 3.2 8 4.2zM8 4.2v9" stroke-linejoin="round"/></svg><span class="lbl" id="bookLabel">发现册</span><span class="badge" id="bookN">0/20</span>
+    </button>
+  </div>
+</div>
+
+<div class="inscr" id="inscr" aria-live="polite">
+  <div class="q" id="quote"></div>
+  <div class="s" id="quoteSrc"></div>
+  <div class="qen" id="quoteEn" hidden></div>
+</div>
+
+<div class="story">
+  <div class="line" id="line" aria-live="polite"></div>
+  <div class="hint" id="hint"><i aria-hidden="true"></i><span id="hintText"></span></div>
+  <button class="skip resume" id="resume" type="button" hidden>回到我上次的世界</button>
+  <button class="skip" id="skip" type="button">跳过引导</button>
+</div>
+
+<div class="ring" id="ring" role="group" hidden></div>
+
+<button class="echoBtn" id="echoBtn" type="button"><span class="ee" aria-hidden="true">🎼</span><span class="el" id="echoLabel">跟我唱</span></button>
+<div class="echoBar" id="echoBar" role="status" hidden><b id="echoTitle">跟我唱</b><span class="echoDots" id="echoDots"></span><button id="echoExit" type="button">结束</button></div>
+
+<div class="book" id="book" role="dialog" aria-modal="true" aria-labelledby="bookTitle" hidden>
+  <div class="bookCard">
+    <div class="bookHead"><div><h2 id="bookTitle">发现册</h2><p id="bookSub"></p></div><button id="bookClose" type="button">关上</button></div>
+    <div class="bookGrid" id="bookGrid"></div>
+    <p class="bookTip" id="bookTip" aria-live="polite"></p>
+  </div>
+</div>
+
+<div class="xcard" id="xcard" role="dialog" aria-label="透视说明">
+  <h3 id="xTitle"></h3>
+  <p id="xBody"></p>
+  <span class="tag" id="xTag"></span>
+  <nav><button id="xPrev" type="button">上一条</button><button id="xNext" type="button">下一条</button></nav>
+</div>
