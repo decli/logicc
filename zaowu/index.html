@@ -1283,7 +1283,7 @@ const Voice = (() => {
     b.state = 'loading';
     b.p = Promise.all([
       fetch(BASE + 'voice-' + lang + '.json').then(r => (r.ok ? r.json() : Promise.reject(r.status))),
-      fetch(BASE + 'voice-' + lang + '.bin').then(r => (r.ok ? r.arrayBuffer() : Promise.reject(r.status))),
+      fetch(BASE + 'voice-' + lang + '.' + ((typeof BUILD !== 'undefined' && BUILD.ext) || 'bin')).then(r => (r.ok ? r.arrayBuffer() : Promise.reject(r.status))),
     ]).then(([ix, bin]) => { b.map = ix.u; b.buf = bin; b.state = 'ready'; }).catch(() => { b.state = 'failed'; });
     return b.p;
   }
