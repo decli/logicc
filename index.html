@@ -724,9 +724,9 @@ const GAMES = [
       { t: '转一下才合适', d: '要先在脑子里把它转过来再选', cfg: { kind: 'hole', rot: true } },
       { t: '两块拼满', d: '自己选块、自己放位置', cfg: { kind: 'tile', pieces: 2, rot: false } },
       { t: '三块拼满', d: '可以按 🔄 把方块转个方向', cfg: { kind: 'tile', pieces: 3, rot: true } },
-      { t: '会掉下来了', d: '方块开始往下掉，消掉 2 行过关。右边「速度」随时能调快慢，消得越多分越高', cfg: { kind: 'drop', w: 6, h: 16, goal: 2 } },
-      { t: '棋盘更高', d: '7×18，消掉 3 行', cfg: { kind: 'drop', w: 7, h: 18, goal: 3 } },
-      { t: '又高又宽', d: '8×20，消掉 4 行', cfg: { kind: 'drop', w: 8, h: 20, goal: 4 } }
+      { t: '会掉下来了', d: '方块开始往下掉，三局分别消掉 3、4、5 行。右边「速度」随时能调快慢，消得越多分越高', cfg: { kind: 'drop', w: 6, h: 16, goals: [3, 4, 5] } },
+      { t: '先挖开地基', d: '7×18，底下先垫着几行带缺口的石块，补上缺口才消得掉；三局垫 2、3、4 行，要消 4、5、6 行', cfg: { kind: 'drop', w: 7, h: 18, goals: [4, 5, 6], junk: [2, 3, 4] } },
+      { t: '越消越快', d: '8×20，垫底的石块更多，每消 3 行自动快一档；三局要消 6、8、10 行', cfg: { kind: 'drop', w: 8, h: 20, goals: [6, 8, 10], junk: [2, 3, 4], accel: 3 } }
     ]
   },
   {
@@ -767,10 +767,10 @@ function toast(t) {
 
 
 /* ===================== 新外壳：首页 / 阶梯 / 游戏中 / 奖励 ===================== */
-Object.assign(S, { hints: false, hideTarget: false, easeIn: true, dropSpeed: 1, dropBest: {}, showTimer: true, persist: true, best: {}, days: {} });
+Object.assign(S, { hints: false, hideTarget: false, easeIn: true, dropSpeed: 1, dropBest: {}, dropRules: 2, showTimer: true, persist: true, best: {}, days: {} });
 var SKEY = 'logicc.design.v2';
 function todayKey() { var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
-function save() { if (!S.persist) return; try { localStorage.setItem(SKEY, JSON.stringify({ level: S.level, stars: S.stars, stickers: S.stickers, best: S.best, days: S.days, hints: S.hints, hideTarget: S.hideTarget, easeIn: S.easeIn, dropSpeed: S.dropSpeed, dropBest: S.dropBest, showTimer: S.showTimer, autoLevel: S.autoLevel, snd: Audio2.on, voi: Voice.on, mus: Music.on })); } catch (e) { } }
+function save() { if (!S.persist) return; try { localStorage.setItem(SKEY, JSON.stringify({ level: S.level, stars: S.stars, stickers: S.stickers, best: S.best, days: S.days, hints: S.hints, hideTarget: S.hideTarget, easeIn: S.easeIn, dropSpeed: S.dropSpeed, dropBest: S.dropBest, dropRules: S.dropRules, showTimer: S.showTimer, autoLevel: S.autoLevel, snd: Audio2.on, voi: Voice.on, mus: Music.on })); } catch (e) { } }
 function load() {
   try {
     var raw = localStorage.getItem(SKEY); if (!raw) return;
@@ -782,6 +782,8 @@ function load() {
     if (typeof r.easeIn === 'boolean') S.easeIn = r.easeIn;
     if (typeof r.dropSpeed === 'number' && r.dropSpeed >= .7 && r.dropSpeed <= 1.3) S.dropSpeed = r.dropSpeed;
     if (r.dropBest && typeof r.dropBest === 'object') S.dropBest = r.dropBest;
+    // 落体关第 2 版规则（目标行数逐局加码、垫底石块、自动加速）：旧规则下的用时和分数没法比，清掉重新记
+    if ((r.dropRules || 1) < 2) { delete S.best['fit.5']; delete S.best['fit.6']; delete S.best['fit.7']; S.dropBest = {}; }
     if (typeof r.showTimer === 'boolean') S.showTimer = r.showTimer;
     if (typeof r.autoLevel === 'boolean') S.autoLevel = r.autoLevel;
     if (typeof r.snd === 'boolean') Audio2.on = r.snd;
@@ -2261,6 +2263,33 @@ function gFit(board, lv) {
     let tick = null, cellPx2 = 24, lockAt = 0, bag = [];
     let speed = SPEED_OPTS.indexOf(S.dropSpeed) >= 0 ? S.dropSpeed : 1;
     const history = [];
+    /* 难度递进：原来三关只差在棋盘大小，消 2~4 行就过，大孩子一会儿就玩腻了。现在每关加一条新的难度轴，
+       每关里的三局再逐局加码——
+       ─ 第 5 关：只学消行，三局要消 3 / 4 / 5 行
+       ─ 第 6 关：底下先垫几行带缺口的石块（2 / 3 / 4 行），得先补缺口、往下挖，棋盘也矮了一截
+       ─ 第 7 关：石块之外，每消 3 行自动快一档（不改孩子自己选的速度，下一局从头算） */
+    const RND = clamp(((Session && Session.round) || 1) - 1, 0, 2);
+    const pickR = a => Array.isArray(a) ? a[Math.min(RND, a.length - 1)] : (a || 0);
+    const goal = pickR(cfg.goals || cfg.goal), JUNK = pickR(cfg.junk), ACCEL = cfg.accel || 0;
+    const JUNK_C = '#B9B1A5';
+    let boostFrom = 0, pristine = true;
+    // 自动加速：从孩子最近一次自己调速时消掉的行数算起，每 ACCEL 行 +0.1，最多到 1.6
+    const eff = () => Math.min(1.6, Math.round((speed + (ACCEL ? Math.floor(Math.max(0, cleared - boostFrom) / ACCEL) * .1 : 0)) * 10) / 10);
+    // 垫底石块：每行留一个缺口；往上一行大多跟下一行同一列（挖得通），偶尔错开一列（得先清上面那行）
+    function makeJunk() {
+      const o = {};
+      let hole = (Math.random() * BW) | 0;
+      for (let i = 0; i < JUNK; i++) {
+        if (i && Math.random() < .45) hole = (hole + 1 + ((Math.random() * (BW - 1)) | 0)) % BW;
+        for (let x = 0; x < BW; x++) if (x !== hole) o[(BH - 1 - i) + ',' + x] = JUNK_C;
+      }
+      return o;
+    }
+    function startPlay() {
+      occ = makeJunk(); pristine = true; boostFrom = 0; paintSpd();
+      nextP = takeBag(); spawn(); restartTick();
+      toast('这一局消 ' + goal + ' 行' + (JUNK ? ' · 底下垫了 ' + JUNK + ' 行石块 ⛏️' : '') + (ACCEL ? ' · 每消 ' + ACCEL + ' 行快一档 🚀' : ''));
+    }
     /* 得分：让每一块都有回报，消行越多、连着消、速度越快，分越高。
        每关记一个最高分，打破了当场告诉孩子；退回一步会把那一步的分也退回去 */
     const LINE_PTS = [0, 100, 300, 600, 1000];
@@ -2334,7 +2363,7 @@ function gFit(board, lv) {
     const xUndo = sideBtn('↩︎ 退回一步', () => undo());
     const xSpd = sideBtn('', () => openSpeedPicker());
     const xPause = sideBtn('⏸ 暂停', () => togglePause());
-    const paintSpd = () => { xSpd.textContent = spdIcon(speed) + ' 速度 ' + speed.toFixed(1); };
+    const paintSpd = () => { const e = eff(); xSpd.textContent = spdIcon(e) + ' 速度 ' + e.toFixed(1) + (e > speed ? ' ⬆' : ''); };
     const paintUndo = () => { xUndo.style.opacity = history.length ? '' : '.5'; };
     function paintScore(bump) {
       scoreNum.textContent = score.toLocaleString('en-US');
@@ -2405,10 +2434,11 @@ function gFit(board, lv) {
     }
     function restartTick() {
       if (tick) clearInterval(tick);
-      tick = every(Math.round(BASE_MS / speed), () => { if (over || busy || paused) return; if (!move(1, 0)) lock(); });
+      tick = every(Math.round(BASE_MS / eff()), () => { if (over || busy || paused) return; if (!move(1, 0)) lock(); });
     }
     function setSpeed(v) {
       speed = v; S.dropSpeed = v; save();
+      boostFrom = cleared;                                        // 自己调了速度，自动加速从这里重新算
       paintSpd();
       toast('速度 ' + v.toFixed(1) + ' ' + spdIcon(v));
       restartTick();
@@ -2442,7 +2472,7 @@ function gFit(board, lv) {
       document.body.appendChild(f); setTimeout(() => f.remove(), 1200);
     }
     function addScore(pts, at) {
-      const got = Math.round(pts * speed / 10) * 10;          // 速度越快，分越高
+      const got = Math.round(pts * eff() / 10) * 10;          // 速度越快（含自动加速），分越高
       score += got;
       if (at) floatPts('+' + got, at[0], at[1]);
       if (!beat && best0 && score > best0) { beat = true; toast('破纪录啦 🏆'); Audio2.fanfare(); }
@@ -2452,11 +2482,13 @@ function gFit(board, lv) {
       if (over || busy || paused) return;
       if (!history.length) { Voice.say('还没有可以退回的一步'); toast('还没有可以退回的'); return; }
       const h = history.pop();
+      const e0 = eff();
       occ = h.occ; cleared = h.cleared; score = h.score; combo = h.combo; beat = h.beat; paintScore();
+      if (eff() !== e0) { paintSpd(); restartTick(); }
       cur = { cs: h.piece.cs.slice(), c: h.piece.c, y: 0, x: h.piece.x };
       if (!fits(cur.cs, cur.y, cur.x)) cur.y = 0, cur.x = 0;
       Audio2.step(); toast('退回一步 ↩︎');
-      setPrompt('已经消掉 <span class="num">' + cleared + '</span> / ' + cfg.goal + ' 行');
+      setPrompt('已经消掉 <span class="num">' + cleared + '</span> / ' + goal + ' 行');
       paint(); paintUndo();
     }
     function spawn() {
@@ -2468,6 +2500,7 @@ function gFit(board, lv) {
     }
     function lock() {
       if (!cur || over || busy) return;
+      pristine = false;
       history.push({ occ: Object.assign({}, occ), cleared: cleared, score: score, combo: combo, beat: beat, piece: { cs: cur.cs.slice(), c: cur.c, x: cur.x } });
       if (history.length > 15) history.shift();
       paintUndo();
@@ -2504,10 +2537,11 @@ function gFit(board, lv) {
         for (let y = BH - 1; y >= 0; y--) if (full.indexOf(y) < 0) keep.push(y);
         let ny = BH - 1;
         keep.forEach(y => { for (let x = 0; x < BW; x++) if (occ[y + ',' + x]) n2[ny + ',' + x] = occ[y + ',' + x]; ny--; });
+        const e0 = eff();
         occ = n2; cleared += full.length; busy = false;
-        setPrompt('已经消掉 <span class="num">' + cleared + '</span> / ' + cfg.goal + ' 行');
+        setPrompt('已经消掉 <span class="num">' + cleared + '</span> / ' + goal + ' 行');
         paint();
-        if (cleared >= cfg.goal) {
+        if (cleared >= goal) {
           // 过关：棋盘上盖一层半透明的「过关」，剩下的方块留在底下看得见，再进下一局——
           // 不然看起来像是「消了三行，整个棋盘都被清空了」。
           // 也不再紧接着念「消够啦」：先让「一次消掉 N 行」念完，过关的表扬接在后面
@@ -2523,6 +2557,7 @@ function gFit(board, lv) {
           grid.appendChild(w);
           return Voice.whenIdle(() => roundWin(grid), 3500);
         }
+        if (eff() !== e0) { paintSpd(); restartTick(); later(700, () => toast('加速啦 🚀 速度 ' + eff().toFixed(1))); }
         spawn();
       });
     }
@@ -2547,12 +2582,12 @@ function gFit(board, lv) {
       Voice.say('方块堆满啦，要再来一局吗');
     }
     function reset() {
-      occ = {}; cur = null; nextP = null; cleared = 0; over = false; busy = false;
+      cur = null; nextP = null; cleared = 0; over = false; busy = false;
       score = 0; combo = 0; beat = false; paintScore();
       history.length = 0; bag = []; paintUndo();
       cellsD.forEach(c => c.classList.remove('lineboom'));
-      setPrompt('已经消掉 <span class="num">0</span> / ' + cfg.goal + ' 行');
-      nextP = takeBag(); spawn(); restartTick();
+      setPrompt('已经消掉 <span class="num">0</span> / ' + goal + ' 行');
+      startPlay();
     }
     const rid = ROUND_ID;
     const onKey = ev => {
@@ -2566,7 +2601,7 @@ function gFit(board, lv) {
       else if (k === 'p' || k === 'Escape') { togglePause(); ev.preventDefault(); }
     };
     addEventListener('keydown', onKey);
-    setPrompt('已经消掉 <span class="num">0</span> / ' + cfg.goal + ' 行');
+    setPrompt('已经消掉 <span class="num">0</span> / ' + goal + ' 行');
     Voice.say('方块会往下掉。左右挪位置，转一下换方向，向下让它快点落。放错了可以按退回。填满一整行就消掉');
     // 兜底：万一量不到棋盘尺寸（某些环境首帧拿到 0），退回按视口估算，别让棋盘一直空着
     later(450, () => {
@@ -2574,7 +2609,7 @@ function gFit(board, lv) {
       const vh = (window.visualViewport ? window.visualViewport.height : window.innerHeight) || 800;
       BH = clamp(Math.floor((vh * .78) / (MIN_CELL + 2)), 10, cfg.h);
       buildCells(); built = true;
-      nextP = takeBag(); spawn(); restartTick(); Fit.run();
+      startPlay(); Fit.run();
     });
     Fit.cb = () => {
       const b = boardBox();
@@ -2621,9 +2656,10 @@ function gFit(board, lv) {
       if (!built) {
         if (b.h < 240) return;                            // 明显不合理的测量，等下一帧
         BH = wantBH; buildCells(); built = true;
-        nextP = takeBag(); spawn(); restartTick();
-      } else if (wantBH !== BH && !history.length && !Object.keys(occ).length) {
+        startPlay();
+      } else if (wantBH !== BH && pristine) {
         BH = wantBH; buildCells();
+        occ = makeJunk();                                 // 垫底石块跟着新行数贴到底
         if (cur) cur.y = Math.min(cur.y, BH - pDims(cur.cs)[0]);
         paint();
       }
