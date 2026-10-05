@@ -199,16 +199,13 @@ body{
 #gameover .gtitle{font-size:26px;font-weight:700}
 #gameover .gsub{font-size:16px;color:var(--ink-soft)}
 .spdbtn{font-size:12px;color:var(--ink-soft);text-align:center;margin-top:2px}
-.console{display:flex;align-items:flex-end;justify-content:space-between;width:100%;gap:10px}
-.cgroup{display:flex;align-items:flex-end}
 .btnwrap{display:flex;align-items:center;justify-content:center;touch-action:none;-webkit-user-select:none;user-select:none;cursor:pointer}
 .dbtn2{border:4px solid var(--ink);border-radius:20px;background:#fff;box-shadow:5px 5px 0 var(--ink);
   display:flex;align-items:center;justify-content:center;line-height:1;font-weight:700;transition:transform .05s,box-shadow .05s}
 .dbtn2.prim{background:var(--yellow)}
-.dbtn2.util{border-width:3px;box-shadow:3px 3px 0 var(--ink);background:#FFFDF7}
 .dbtn2.act{transform:translate(5px,5px);box-shadow:0 0 0 var(--ink);filter:brightness(.94)}
-.utilcol{display:flex;flex-direction:column;align-items:center;gap:1px}
-.utillab{font-size:11px;color:var(--ink-soft);white-space:nowrap}
+.dpad2{display:grid;grid-template-columns:repeat(3,auto);justify-content:center;align-items:center;background:rgba(42,37,35,.06);flex:0 0 auto}
+.dropside{display:flex;flex-direction:column;align-items:center;justify-content:space-between;flex:0 0 auto}
 .droptop{display:flex;align-items:center;justify-content:center;gap:14px;width:100%}
 .boardrow{display:flex;align-items:flex-start;justify-content:center}
 .nextbox{display:flex;flex-direction:column;align-items:center;gap:6px;border:3px solid var(--ink);
@@ -2229,14 +2226,19 @@ function gFit(board, lv) {
     const history = [];
     const takeBag = () => { if (!bag.length) bag = shuffle(TETRO.map((_, i) => i)); return TETRO[bag.pop()]; };
 
-    /* 控件布局按儿童触屏习惯重排：
-       ─ 4~6 岁的点击精度明显低于成人，落点还普遍偏目标左下，所以按钮取 ~20mm
-         （约 80~105 CSS px），并给每个按钮加一圈不可见的外扩热区
-       ─ 高频键（移动 / 旋转 / 下落）放底部两角，双手横握时正好落在拇指下；
-         误触代价高的键（撤销 / 调速）做小、做淡，单独放中间，和高频键拉开距离
+    /* 控件布局（第二版，按孩子的实际反馈重排）：
+       上一版七个键排成一整行，左右两端顶到行宽两侧，设想是双手横握平板时拇指正好够到。
+       可孩子多半把平板放在桌上、一只手点，反馈是「按钮太分散」：挪一下、转一下要横跨大半个屏幕。
+       现在按用途分两区：
+       ─ 玩的四个键收成一个倒 T 形手柄，贴在棋盘右侧下半截：◀ ▼ ▶ 的位置就是方块要去的方向，
+         上面那格是 🔄 转一下（跟键盘的 ↑ 一致）。一只手不挪窝就够得着，眼睛也不用离开棋盘太远
+       ─ 退回 / 调速 / 暂停不常按、按错了代价高，挪进右侧伙伴栏，跟「再读一遍 / 回家」排在一起，
+         和手柄隔开一整段，不会误触；拼满关的「退回一步」也在同一个位置
+       ─ 4~6 岁的点击精度明显低于成人、落点偏目标左下，所以按钮取 ~20mm，每个键外扩一圈不可见热区，
+         键与键之间留出 ~20px 的空隙
+       ─ 底下不再压一整排按钮，省下的高度全还给棋盘；窄屏（竖着拿）时手柄挪到棋盘正下方居中
        ─ 移动与下落支持按住连发，免得孩子反复戳 */
-    const colWrap = el('div', 'col2'); colWrap.style.cssText = 'width:100%;height:100%;justify-content:space-between;gap:8px';
-    const gridHold = el('div'); gridHold.style.cssText = 'flex:1 1 auto;min-height:0;width:100%;display:flex;align-items:center;justify-content:center';
+    const colWrap = el('div', 'col2'); colWrap.style.cssText = 'width:100%;height:100%;justify-content:center;align-items:center;gap:0';
     const boardRow = el('div', 'boardrow');
     const grid = el('div'); grid.className = 'fit-board';
     grid.style.cssText = 'display:grid;background:#FFFDF7;border:4px solid var(--ink);border-radius:10px;padding:4px;position:relative';
@@ -2244,13 +2246,12 @@ function gFit(board, lv) {
     const nextLab = el('div', 'nextlab', '下一个');
     const nextIn = el('div');
     nextBox.appendChild(nextLab); nextBox.appendChild(nextIn);
-    boardRow.appendChild(grid); boardRow.appendChild(nextBox);   // 紧挨棋盘右侧，视线不用来回横跳
-    gridHold.appendChild(boardRow);
+    const sideCol = el('div', 'dropside');                         // 棋盘右侧一列：上面「下一个」，下面手柄
+    const pad = el('div', 'dpad2');
     const pauseMask = el('div', 'pausemask', '⏸ 暂停中'); pauseMask.style.display = 'none';
     grid.appendChild(pauseMask);
-    const consoleBar = el('div', 'console');
 
-    let btnPx = 66, holdTimer = null, paused = false, pauseAt = 0;
+    let btnPx = 66, holdTimer = null, paused = false, pauseAt = 0, sideMode = null;
     function mkBtn(face, kind, fn, repeat) {
       const wrapEl = el('div', 'btnwrap');
       const b2 = el('div', 'dbtn2' + (kind ? ' ' + kind : ''), face);
@@ -2270,30 +2271,48 @@ function gFit(board, lv) {
     function togglePause() {
       if (over) return;
       paused = !paused;
-      bPause._face.textContent = paused ? '▶️' : '⏸';
-      pauseLab.textContent = paused ? '继续' : '暂停';
+      xPause.textContent = paused ? '▶️ 继续' : '⏸ 暂停';
       pauseMask.style.display = paused ? 'flex' : 'none';
       grid.classList.toggle('grid-paused', paused);
       if (paused) { pauseAt = Date.now(); Voice.say('暂停了'); }
       else if (pauseAt) { T.t0 += Date.now() - pauseAt; pauseAt = 0; }   // 暂停不计进本关用时
     }
-    const bL = mkBtn('◀', '', () => move(0, -1), true);
-    const bUndo = mkBtn('↩︎', 'util', () => undo());
-    const bSpd = mkBtn(SPEED_ICON[spdIdx], 'util', () => cycleSpeed());
-    const bPause = mkBtn('⏸', 'util', () => togglePause());
-    const bD = mkBtn('▼', '', softDrop, true);
+    // 手柄：倒 T 形，上面一格是转一下，下面一排是方块要去的方向
     const bRot = mkBtn('🔄', 'prim', () => rotate());
+    const bL = mkBtn('◀', '', () => move(0, -1), true);
+    const bD = mkBtn('▼', '', softDrop, true);
     const bR = mkBtn('▶', '', () => move(0, 1), true);
-    const cell2 = (btn, lab) => { const c = el('div', 'utilcol'); c.appendChild(btn); c.appendChild(el('div', 'utillab', lab)); return c; };
-    const undoLab = el('div', 'utillab', '退回'), spdLab = el('div', 'utillab', SPEED_NAME[spdIdx]), pauseLab = el('div', 'utillab', '暂停');
-    const cU = el('div', 'utilcol'); cU.appendChild(bUndo); cU.appendChild(undoLab);
-    const cS = el('div', 'utilcol'); cS.appendChild(bSpd); cS.appendChild(spdLab);
-    const cP = el('div', 'utilcol'); cP.appendChild(bPause); cP.appendChild(pauseLab);
-    [bL, cU, cS, cP, bD, bRot, bR].forEach(x => consoleBar.appendChild(x));
+    [el('div'), bRot, el('div'), bL, bD, bR].forEach(x => pad.appendChild(x));
+    // 不常按的三个键放进右侧伙伴栏（跟「再读一遍 / 回家」一列），带字，离手柄远
+    const sideBtn = (txt, fn) => { const b2 = el('button', 'sw', txt); b2.addEventListener('click', () => { Audio2.init(); fn(); }); return b2; };
+    const xUndo = sideBtn('↩︎ 退回一步', () => undo());
+    const xSpd = sideBtn('', () => cycleSpeed());
+    const xPause = sideBtn('⏸ 暂停', () => togglePause());
+    const paintSpd = () => { xSpd.textContent = SPEED_ICON[spdIdx] + ' 速度：' + SPEED_NAME[spdIdx]; };
+    const paintUndo = () => { xUndo.style.opacity = history.length ? '' : '.5'; };
+    paintSpd(); paintUndo();
+    [xUndo, xSpd, xPause].forEach(x => addExtra(x, holder));
 
-    colWrap.appendChild(gridHold); colWrap.appendChild(consoleBar);
     holder.style.cssText = 'width:100%;height:100%';
+    colWrap.appendChild(boardRow);
     holder.appendChild(colWrap); board.appendChild(holder);
+    // 横排：棋盘 |「下一个」+ 手柄（手柄落在下半截）；竖排：棋盘 +「下一个」在上，手柄在下居中
+    function arrange(side) {
+      if (sideMode === side) return;
+      sideMode = side;
+      boardRow.innerHTML = ''; sideCol.innerHTML = '';
+      if (pad.parentNode) pad.parentNode.removeChild(pad);
+      boardRow.appendChild(grid);
+      if (side) {
+        sideCol.appendChild(nextBox); sideCol.appendChild(pad);
+        boardRow.appendChild(sideCol);
+        boardRow.style.alignItems = 'stretch';
+      } else {
+        boardRow.appendChild(nextBox);
+        boardRow.style.alignItems = 'flex-start';
+        colWrap.appendChild(pad);
+      }
+    }
 
     const cellsD = [];
     function buildCells() {
@@ -2339,8 +2358,7 @@ function gFit(board, lv) {
     function cycleSpeed() {
       spdIdx = (spdIdx + 1) % SPEEDS.length;
       S.dropStep = spdIdx; save();
-      bSpd._face.textContent = SPEED_ICON[spdIdx];
-      spdLab.textContent = SPEED_NAME[spdIdx];
+      paintSpd();
       toast('速度：' + SPEED_NAME[spdIdx] + ' ' + SPEED_ICON[spdIdx]);
       restartTick();
     }
@@ -2353,7 +2371,7 @@ function gFit(board, lv) {
       if (!fits(cur.cs, cur.y, cur.x)) cur.y = 0, cur.x = 0;
       Audio2.step(); toast('退回一步 ↩︎');
       setPrompt('已经消掉 <span class="num">' + cleared + '</span> / ' + cfg.goal + ' 行');
-      paint();
+      paint(); paintUndo();
     }
     function spawn() {
       const p = nextP || takeBag(); nextP = takeBag();
@@ -2366,6 +2384,7 @@ function gFit(board, lv) {
       if (!cur || over || busy) return;
       history.push({ occ: Object.assign({}, occ), cleared: cleared, piece: { cs: cur.cs.slice(), c: cur.c, x: cur.x } });
       if (history.length > 15) history.shift();
+      paintUndo();
       cur.cs.forEach(c => occ[(c[0] + cur.y) + ',' + (c[1] + cur.x)] = cur.c);
       cur = null; lockAt = Date.now(); Audio2.pop(); paint();
       const full = [];
@@ -2415,7 +2434,7 @@ function gFit(board, lv) {
       const again = el('button', 'bigbtn', '🔁 再来一局');
       again.addEventListener('click', () => { Audio2.tap(); g.remove(); reset(); });
       const slower = el('button', 'bigbtn ghost', '🐢 调慢再来');
-      slower.addEventListener('click', () => { Audio2.tap(); spdIdx = 0; S.dropStep = 0; save(); bSpd._face.textContent = SPEED_ICON[0]; spdLab.textContent = '慢'; g.remove(); reset(); });
+      slower.addEventListener('click', () => { Audio2.tap(); spdIdx = 0; S.dropStep = 0; save(); paintSpd(); g.remove(); reset(); });
       const back = el('button', 'bigbtn ghost', '🏠 回家');
       back.addEventListener('click', () => { Audio2.tap(); home(); });
       row.appendChild(again); row.appendChild(slower); row.appendChild(back);
@@ -2425,7 +2444,7 @@ function gFit(board, lv) {
     }
     function reset() {
       occ = {}; cur = null; nextP = null; cleared = 0; over = false; busy = false;
-      history.length = 0; bag = [];
+      history.length = 0; bag = []; paintUndo();
       cellsD.forEach(c => c.classList.remove('lineboom'));
       setPrompt('已经消掉 <span class="num">0</span> / ' + cfg.goal + ' 行');
       nextP = takeBag(); spawn(); restartTick();
@@ -2448,37 +2467,46 @@ function gFit(board, lv) {
     later(450, () => {
       if (built) return;
       const vh = (window.visualViewport ? window.visualViewport.height : window.innerHeight) || 800;
-      BH = clamp(Math.floor((vh * .62) / (MIN_CELL + 2)), 10, cfg.h);
+      BH = clamp(Math.floor((vh * .78) / (MIN_CELL + 2)), 10, cfg.h);
       buildCells(); built = true;
       nextP = takeBag(); spawn(); restartTick(); Fit.run();
     });
     Fit.cb = () => {
       const b = boardBox();
       if (!b.h || !b.w) return;                 // 还没量到真实尺寸，等下一帧
-      // 按钮统一到原来「退回／速度」那一档：把省下的高度全部还给棋盘。
-      // 格子太小比按钮小一点更伤——孩子是贴近了看的
-      btnPx = Math.round(clamp(Math.min(b.w * .058, b.h * .105), 46, 78));
-      const slop = Math.round(clamp(btnPx * .14, 6, 13));
-      [bL, bUndo, bSpd, bPause, bD, bRot, bR].forEach(x => {
+      const M = 12, GAP = 2, CHROME = 4 * 2 + 4 * 2;
+      // 手柄的键取 ~20mm 见方；窄屏时按宽度收，保证一排三个放得下
+      btnPx = Math.round(clamp(Math.min(b.h * .12, b.w * .13, (b.w - M * 2 - 20) / 3.4), 44, 100));
+      const slop = Math.round(clamp(btnPx * .1, 5, 10));          // 每个键外扩的不可见热区
+      const padGap = Math.round(clamp(btnPx * .08, 4, 8));         // 键与键可见的空隙 = 2×热区 + 这个，20px 以上
+      [bRot, bL, bD, bR].forEach(x => {
         x.style.padding = px(slop);
         x._face.style.width = px(btnPx); x._face.style.height = px(btnPx);
         x._face.style.fontSize = px(btnPx * .46);
       });
-      [undoLab, spdLab, pauseLab].forEach(l => l.style.fontSize = px(clamp(btnPx * .2, 10, 15)));
-      // 一排七个：左右两端顶到行宽两侧，正好落在双手拇指处；行宽收窄避免大屏上拉太开
-      const rowW = Math.round(clamp(b.w * .82, 460, 1040));
-      consoleBar.style.width = px(rowW);
-      consoleBar.style.margin = '0 auto';
-      const labH = Math.round(clamp(btnPx * .24, 12, 18));
-      const consoleH = btnPx + slop * 2 + labH;
-      nextLab.style.fontSize = px(clamp(btnPx * .24, 10, 15));
-      const nextW = Math.round(clamp(btnPx * 2.1, 84, 150));      // 预览框宽度
-      const nextGap = Math.round(clamp(btnPx * .42, 16, 42));     // 与棋盘的间距：贴近但不挨着
+      const plate = Math.round(clamp(btnPx * .12, 6, 12));         // 手柄底下那块浅色托盘：一眼看出四个键是一组
+      pad.style.gap = px(padGap); pad.style.padding = px(plate); pad.style.borderRadius = px(btnPx * .34);
+      const unit = btnPx + slop * 2;
+      const padW = unit * 3 + padGap * 2 + plate * 2, padH = unit * 2 + padGap + plate * 2;
+      nextLab.style.fontSize = px(clamp(btnPx * .22, 11, 16));
+      const nextW = Math.round(clamp(btnPx * 1.8, 90, 170));      // 「下一个」预览框
       nextBox.style.width = px(nextW);
-      boardRow.style.gap = px(nextGap);
-      const GAP = 2, CHROME = 4 * 2 + 4 * 2;
-      const boxH = b.h - consoleH - 14 - CHROME;         // 棋盘真正能用的高度
-      const availW = b.w - 24 - nextW - nextGap - CHROME - GAP * (BW - 1);
+      const nextH = Math.round(nextW * .9);
+      const sideGap = Math.round(clamp(btnPx * .45, 20, 48));      // 棋盘和右边那一列之间：贴近但不挨着
+      // 两种排法各算一遍格子能有多大，哪种棋盘大用哪种；差不多时用横排（手柄贴棋盘右侧，棋盘吃满高度）。
+      // 横屏几乎总是横排；竖着拿的平板宽度紧，手柄放到棋盘下面，格子反而更大
+      const colW = Math.max(padW, nextW);
+      const sW = b.w - M * 2 - sideGap - colW - CHROME - GAP * (BW - 1), sH = b.h - M * 2 - CHROME;
+      const tW = b.w - M * 2 - sideGap - nextW - CHROME - GAP * (BW - 1), tH = b.h - M * 2 - padH - sideGap - CHROME;
+      const rowsFor = h => built ? BH : clamp(Math.floor((h + GAP) / (MIN_CELL + GAP)), 10, cfg.h);
+      const cellFor = (w, h) => Math.min(w / BW, (h - GAP * (rowsFor(h) - 1)) / rowsFor(h));
+      const side = sW / BW >= MIN_CELL && sH >= padH + nextH + sideGap && cellFor(sW, sH) >= cellFor(tW, tH) * .95;
+      arrange(side);
+      boardRow.style.gap = px(sideGap);
+      sideCol.style.width = px(colW);
+      pad.style.marginTop = side ? '' : px(sideGap);
+      pad.style.marginRight = side ? '' : px(nextW + sideGap);      // 竖排时手柄对准棋盘正下方，而不是棋盘加预览框的中间
+      const boxH = side ? sH : tH, availW = side ? sW : tW;    // 棋盘真正能用的高、宽
       // 首帧的测量往往还没稳定（ResizeObserver 会在布局落定前先响一次），
       // 拿那个偏小的高度定行数，就会掉到下限 10。所以：棋盘还空着的时候，
       // 只要测量值变了就按新值重建——一旦落下第一块就锁死，不再改动
@@ -2493,7 +2521,7 @@ function gFit(board, lv) {
         paint();
       }
       const availH = boxH - GAP * (BH - 1);
-      cellPx2 = clamp(Math.floor(Math.min(availW / BW, availH / BH)), 12, 52);
+      cellPx2 = clamp(Math.floor(Math.min(availW / BW, availH / BH)), 12, 60);
       grid.style.gap = '2px';
       grid.style.gridTemplateColumns = 'repeat(' + BW + ',' + px(cellPx2) + ')';
       grid.style.gridAutoRows = px(cellPx2);
@@ -2509,8 +2537,13 @@ function gFit(board, lv) {
   const occ = {};                      // 已占格
   const region = {};                   // 拼满模式下的目标区域
   let pieces = [];                     // 待放置的块
-  let sel = -1, cleared = 0;
+  let sel = -1, cleared = 0, ending = false;
   const cells = [];
+  // 走错一步不用整关重来：每次落子前存一份，「退回一步」放在右侧伙伴栏（跟落体关同一个位置）
+  const history = [];
+  const undoBtn = el('button', 'sw', '↩︎ 退回一步');
+  undoBtn.addEventListener('click', () => { Audio2.init(); undo(); });
+  const paintUndo = () => { undoBtn.style.opacity = history.length ? '' : '.5'; };
 
   function buildRegion() {             // 用 n 块随机拼出一块连通区域，保证有解
     for (let attempt = 0; attempt < 60; attempt++) {
@@ -2594,16 +2627,44 @@ function gFit(board, lv) {
     let best = null;
     for (const c of p) { const oy = y - c[0], ox = x - c[1]; if (canPlace(p, oy, ox)) { best = [oy, ox]; break; } }
     if (!best) { miss(); const cell = cells[y * BW + x]; cell.classList.remove('shake'); void cell.offsetWidth; cell.classList.add('shake'); Voice.say('这里放不下，换个地方试试'); return; }
+    history.push({ occ: Object.assign({}, occ), pieces: pieces.slice(), cleared: cleared });
+    if (history.length > 15) history.shift();
+    undoBtn.classList.remove('pulse');
     const color = FIT_COLORS[sel % FIT_COLORS.length];
     p.forEach(c => occ[(c[0] + best[0]) + ',' + (c[1] + best[1])] = color);
-    pieces[sel] = null; sel = -1; Audio2.pop(); paintBoard(); paintTray();
+    pieces[sel] = null; sel = -1; Audio2.pop(); paintBoard(); paintTray(); paintUndo();
     if (isClear) checkLines(); else checkFull();
+  }
+  function undo() {
+    if (ending) return;
+    if (!history.length) { Voice.say('还没有可以退回的一步'); toast('还没有可以退回的'); return; }
+    const h = history.pop();
+    Object.keys(occ).forEach(k => delete occ[k]); Object.assign(occ, h.occ);
+    pieces = h.pieces.slice(); cleared = h.cleared; sel = -1;
+    undoBtn.classList.remove('pulse');
+    Audio2.step(); toast('退回一步 ↩︎');
+    paintBoard(); paintTray(); paintUndo();
+    if (isClear) setPrompt('已经消掉 <span class="num">' + cleared + '</span> / ' + cfg.goal + ' 行');
+    else setPrompt('还剩 <span class="num">' + (Object.keys(region).length - Object.keys(occ).length) + '</span> 格');
+  }
+  // 剩下的块（能转的话转哪个方向都算）一块都放不进去了：这一步已经走死，提示退回
+  function deadEnd() {
+    const left = pieces.filter(p => p);
+    return left.length > 0 && left.every(p => (cfg.rot ? pAllRot(p) : [p]).every(r => {
+      for (let y = 0; y < BH; y++) for (let x = 0; x < BW; x++) if (canPlace(r, y, x)) return false;
+      return true;
+    }));
   }
   function checkFull() {
     const need = Object.keys(region).length, have = Object.keys(occ).length;
     setPrompt('还剩 <span class="num">' + (need - have) + '</span> 格');
-    if (have >= need) { setPrompt('拼满啦！'); Voice.say('拼满啦'); later(500, () => roundWin(boardWrap)); }
-    else if (pieces.every(p => !p)) { Voice.say('方块用完了，再来一次'); later(900, () => nextRound()); }
+    if (have >= need) { ending = true; setPrompt('拼满啦！'); Voice.say('拼满啦'); later(500, () => roundWin(boardWrap)); }
+    else if (pieces.every(p => !p)) { ending = true; Voice.say('方块用完了，再来一次'); later(900, () => nextRound()); }
+    else if (deadEnd()) {
+      setPrompt('放不进去了<br>点 <b>↩︎ 退回一步</b>');
+      Voice.say('剩下的方块放不进去了，点退回一步，再试试');
+      undoBtn.classList.add('pulse');
+    }
   }
   function checkLines() {
     let got = 0;
@@ -2611,7 +2672,7 @@ function gFit(board, lv) {
     for (let x = 0; x < BW; x++) { let full = true; for (let y = 0; y < BH; y++) if (!occ[y + ',' + x]) full = false; if (full) { for (let y = 0; y < BH; y++) delete occ[y + ',' + x]; got++; } }
     if (got) { cleared += got; Audio2.star(); toast('消掉 ' + got + ' 行！'); paintBoard(); }
     setPrompt('已经消掉 <span class="num">' + cleared + '</span> / ' + cfg.goal + ' 行');
-    if (cleared >= cfg.goal) { setPrompt('消够啦 🎉'); Voice.say('消够啦'); return later(500, () => roundWin(boardWrap)); }
+    if (cleared >= cfg.goal) { ending = true; setPrompt('消够啦 🎉'); Voice.say('消够啦'); return later(500, () => roundWin(boardWrap)); }
     if (pieces.every(p => !p)) pieces = [0, 1, 2].map(() => pNorm(pick(pAllRot(pick(POLY.filter(p => p.length >= 2 && p.length <= 4))))));
     // 一块都放不下就换一批，不让孩子卡死
     const stuck = pieces.every(p => { if (!p) return true; for (let y = 0; y < BH; y++) for (let x = 0; x < BW; x++) if (canPlace(p, y, x)) return false; return true; });
@@ -2619,6 +2680,13 @@ function gFit(board, lv) {
     paintTray();
   }
   holder.appendChild(boardWrap); holder.appendChild(tray); board.appendChild(holder);
+  addExtra(undoBtn, holder); paintUndo();
+  const rid = ROUND_ID;
+  const onKey = ev => {
+    if (rid !== ROUND_ID) { removeEventListener('keydown', onKey); return; }
+    if (ev.key === 'z' || ev.key === 'Backspace') { undo(); ev.preventDefault(); }
+  };
+  addEventListener('keydown', onKey);
   setPrompt(isClear ? '填满一整行或一整列就会消掉' : '用下面的方块把虚线区域拼满');
   Voice.say(isClear ? '把方块放到棋盘上，填满一整行或者一整列就会消掉。不会掉下来，可以慢慢想'
     : '先点一块方块，再点要放的位置，把虚线的地方拼满');
