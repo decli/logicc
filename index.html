@@ -154,15 +154,6 @@ body{
 .ll.gone{visibility:hidden}
 #llSvg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
 #llSvg polyline{fill:none;stroke:var(--teal);stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
-/* 迷宫 */
-#mzWrap{display:grid;background:#fff;border-right:4px solid var(--ink);border-bottom:4px solid var(--ink);
-  border-radius:4px;touch-action:none;position:relative}
-.mz{position:relative;display:flex;align-items:center;justify-content:center;line-height:1}
-.mz.wn{border-top:4px solid var(--ink)}
-.mz.ww{border-left:4px solid var(--ink)}
-.mz.trail{background:#FCEBB0}
-.mz.sol{background:#CFE6FF}
-.mz.won{background:#BFE8C4}
 /* 找规律 */
 .seqrow{display:flex;align-items:center;justify-content:center}
 .seq{border:3px solid var(--ink);border-radius:12px;background:#fff;display:flex;align-items:center;
@@ -679,15 +670,10 @@ const GAMES = [
     ]
   },
   {
-    id: 'maze', name: '走迷宫', emoji: '🐰', color: 'var(--yellow)', tip: '用手指带小兔子走出去',
-    levels: [
-      { t: '5×5 认认路', d: '只有一条通路', cfg: { w: 5, h: 5, algo: 'dfs' } },
-      { t: '6×6 起点会变', d: '出入口每局不一样，不能靠记位置', cfg: { w: 6, h: 6, algo: 'prim', rndEnds: true } },
-      { t: '7×7 有岔路圈', d: '路会绕回来，得真的看路而不是瞎撞', cfg: { w: 7, h: 7, algo: 'dfs', braid: .25, rndEnds: true } },
-      { t: '8×6 捡一根胡萝卜', d: '先去拿胡萝卜再出门，要先想好顺序', cfg: { w: 8, h: 6, algo: 'prim', braid: .15, rndEnds: true, items: 1 } },
-      { t: '8×8 捡两根', d: '两根都要捡到，怎么走最省事', cfg: { w: 8, h: 8, algo: 'dfs', braid: .2, rndEnds: true, items: 2 } },
-      { t: '9×9 钥匙和门', d: '先找钥匙再开门，路上还有岔路圈', cfg: { w: 9, h: 9, algo: 'prim', braid: .2, rndEnds: true, key: true } }
-    ]
+    // 彩虹钢琴：一架可以弹的 3D 三角钢琴（piano/），没有关卡，点卡片直接进去
+    id: 'piano', name: '彩虹钢琴', emoji: '🎹', color: 'var(--yellow)', tip: '七个音七种颜色，弹出一道彩虹', href: 'piano/',
+    meta: ['🎵 弹一弹', '跟着亮灯学儿歌'],
+    levels: []
   },
   {
     id: 'pattern', name: '找规律', emoji: '🧩', color: 'var(--purple)', tip: '看看规律，把空格补上',
@@ -838,8 +824,9 @@ function home() {
     tx.appendChild(el('div', 'cardTip', g.tip));
     var m = el('div', 'cardMeta');
     if (g.href) {
-      m.appendChild(el('span', 's', '✨ 随便玩'));
-      m.appendChild(el('span', 'b', '中文 / English · 有声'));
+      var meta = g.meta || ['✨ 随便玩', '中文 / English · 有声'];
+      m.appendChild(el('span', 's', meta[0]));
+      m.appendChild(el('span', 'b', meta[1]));
       tx.appendChild(m); c.appendChild(tx);
       c.addEventListener('click', function () { Audio2.page(); save(); setTimeout(function () { location.href = g.href; }, 120); });
       cards.appendChild(c);
@@ -870,7 +857,6 @@ function home() {
 function previewShape(g, i) {
   var c = g.levels[i].cfg, cols = 3, rows = 3;
   if (g.id === 'schulte') { cols = c.n; rows = c.n; }
-  else if (g.id === 'maze') { cols = c.w || c.n; rows = c.h || c.n; }
   else if (g.id === 'mirror') { cols = c.w * 2; rows = c.h; }
   else if (g.id === 'link') { cols = c.w; rows = c.h; }
   else if (g.id === 'match') { cols = 2; rows = Math.min(5, c.n); }
@@ -1934,204 +1920,6 @@ function gLink(board, lv) {
   };
 }
 
-/* ===================== 8 走迷宫 =====================
-   原来固定：递归回溯生成、永远左上到右下、永远只有唯一通路。
-   走几局就摸到套路了。现在每局随机：生成算法（DFS 长廊 / Prim 多岔）、
-   起终点、是否打通死胡同形成环路、要不要顺路捡东西。
-   ================================================================ */
-function mazeCarve(W, H, algo) {
-  const g = [];
-  for (let y = 0; y < H; y++) { g[y] = []; for (let x = 0; x < W; x++) g[y][x] = { n: 1, e: 1, s: 1, w: 1, v: false }; }
-  const nbs = (y, x) => {
-    const r = [];
-    if (y > 0) r.push([y - 1, x, 'n', 's']);
-    if (y < H - 1) r.push([y + 1, x, 's', 'n']);
-    if (x > 0) r.push([y, x - 1, 'w', 'e']);
-    if (x < W - 1) r.push([y, x + 1, 'e', 'w']);
-    return r;
-  };
-  const open = (y, x, ny, nx, a2, b2) => { g[y][x][a2] = 0; g[ny][nx][b2] = 0; };
-  const sy = rnd(H), sx = rnd(W);
-  g[sy][sx].v = true;
-  if (algo === 'prim') {                       // 岔路多、走廊短
-    let front = nbs(sy, sx).map(n => [sy, sx].concat(n));
-    while (front.length) {
-      const k = rnd(front.length), f = front.splice(k, 1)[0];
-      const [y, x, ny, nx, a2, b2] = f;
-      if (g[ny][nx].v) continue;
-      open(y, x, ny, nx, a2, b2); g[ny][nx].v = true;
-      nbs(ny, nx).forEach(n => { if (!g[n[0]][n[1]].v) front.push([ny, nx].concat(n)); });
-    }
-  } else {                                     // DFS：长走廊、转折少
-    const st = [[sy, sx]];
-    while (st.length) {
-      const [y, x] = st[st.length - 1];
-      const cand = nbs(y, x).filter(n => !g[n[0]][n[1]].v);
-      if (!cand.length) { st.pop(); continue; }
-      const [ny, nx, a2, b2] = pick(cand);
-      open(y, x, ny, nx, a2, b2); g[ny][nx].v = true; st.push([ny, nx]);
-    }
-  }
-  return g;
-}
-function mazeBraid(g, W, H, ratio) {           // 打通部分死胡同 → 出现环路，唯一解不再成立
-  if (!ratio) return;
-  const dead = [];
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-    let open = 0;
-    ['n', 'e', 's', 'w'].forEach(k => { if (!g[y][x][k]) open++; });
-    if (open === 1) dead.push([y, x]);
-  }
-  shuffle(dead).slice(0, Math.floor(dead.length * ratio)).forEach(([y, x]) => {
-    const walls = [];
-    if (y > 0 && g[y][x].n) walls.push(['n', y - 1, x, 's']);
-    if (y < H - 1 && g[y][x].s) walls.push(['s', y + 1, x, 'n']);
-    if (x > 0 && g[y][x].w) walls.push(['w', y, x - 1, 'e']);
-    if (x < W - 1 && g[y][x].e) walls.push(['e', y, x + 1, 'w']);
-    if (!walls.length) return;
-    const [k, ny, nx, ok] = pick(walls);
-    g[y][x][k] = 0; g[ny][nx][ok] = 0;
-  });
-}
-function mazeBFS(g, W, H, from) {
-  const dist = {}, prev = {}, q = [from];
-  dist[from.join(',')] = 0; prev[from.join(',')] = null;
-  while (q.length) {
-    const [y, x] = q.shift(), k = y + ',' + x;
-    [['n', -1, 0], ['s', 1, 0], ['w', 0, -1], ['e', 0, 1]].forEach(([w, dy, dx]) => {
-      if (g[y][x][w]) return;
-      const ny = y + dy, nx = x + dx, nk = ny + ',' + nx;
-      if (ny < 0 || nx < 0 || ny >= H || nx >= W || nk in dist) return;
-      dist[nk] = dist[k] + 1; prev[nk] = k; q.push([ny, nx]);
-    });
-  }
-  return { dist: dist, prev: prev };
-}
-function gMaze(board, lv) {
-  const cfg = G.maze.levels[lv - 1].cfg, W = cfg.w, H = cfg.h;
-  const g = mazeCarve(W, H, cfg.algo);
-  mazeBraid(g, W, H, cfg.braid);
-  // 起终点：默认对角，rndEnds 时取「离起点最远」的格子当出口
-  let start = [0, 0], goal = [H - 1, W - 1];
-  if (cfg.rndEnds) {
-    start = [rnd(H), rnd(W)];
-    const r = mazeBFS(g, W, H, start);
-    let bestK = null, bestD = -1;
-    Object.keys(r.dist).forEach(k => { if (r.dist[k] > bestD) { bestD = r.dist[k]; bestK = k; } });
-    goal = bestK.split(',').map(Number);
-  }
-  // 收集物：放在离起点和终点都不太近的地方
-  const items = [];
-  const need = cfg.key ? 1 : (cfg.items || 0);
-  if (need) {
-    const ds = mazeBFS(g, W, H, start).dist, dg = mazeBFS(g, W, H, goal).dist;
-    const cand = Object.keys(ds).filter(k => {
-      const p = k.split(',').map(Number);
-      return ds[k] > 2 && (dg[k] || 0) > 2 && !(p[0] === start[0] && p[1] === start[1]) && !(p[0] === goal[0] && p[1] === goal[1]);
-    });
-    shuffle(cand).slice(0, need).forEach(k => items.push(k.split(',').map(Number)));
-  }
-  const ICON = cfg.key ? '🔑' : '🥕';
-  const GOAL_ICON = cfg.key ? '🚪' : (need ? '🏠' : '🥕');
-
-  const holder = el('div', 'col2');
-  const wrap = el('div'); wrap.id = 'mzWrap';
-  const nodes = [];
-  for (let y = 0; y < H; y++) {
-    nodes[y] = [];
-    for (let x = 0; x < W; x++) {
-      const c = el('div', 'mz' + (g[y][x].n ? ' wn' : '') + (g[y][x].w ? ' ww' : ''));
-      if (y === H - 1) c.style.borderBottom = '4px solid var(--ink)';
-      if (x === W - 1) c.style.borderRight = '4px solid var(--ink)';
-      nodes[y][x] = c; wrap.appendChild(c);
-    }
-  }
-  items.forEach(p => nodes[p[0]][p[1]].textContent = ICON);
-  nodes[goal[0]][goal[1]].textContent = GOAL_ICON;
-  let left = items.length, cur = start.slice(), trail = [start.slice()], won = false;
-  nodes[start[0]][start[1]].classList.add('trail');
-  const runner = el('span', null, '🐰'); nodes[start[0]][start[1]].appendChild(runner);
-
-  function step(y, x) {
-    if (won) return false;
-    const [cy, cx] = cur, dy = y - cy, dx = x - cx;
-    if (Math.abs(dy) + Math.abs(dx) !== 1) return false;
-    const w = dy === -1 ? 'n' : dy === 1 ? 's' : dx === -1 ? 'w' : 'e';
-    if (g[cy][cx][w]) return false;
-    if (trail.length > 1 && trail[trail.length - 2][0] === y && trail[trail.length - 2][1] === x) { nodes[cy][cx].classList.remove('trail'); trail.pop(); }
-    else { trail.push([y, x]); nodes[y][x].classList.add('trail'); }
-    cur = [y, x]; nodes[y][x].appendChild(runner); Audio2.step();
-    const hit = items.findIndex(p => p[0] === y && p[1] === x && !p[2]);
-    if (hit >= 0) {
-      items[hit][2] = true; left--;
-      nodes[y][x].textContent = ''; nodes[y][x].appendChild(runner);
-      Audio2.pop();
-      if (cfg.key) { toast('拿到钥匙 🔑'); Voice.say('拿到钥匙了，去开门'); setPrompt('钥匙拿到了，去开门 🚪'); }
-      else { toast('捡到一根 🥕'); setPrompt(left ? ('还差 <span class="num">' + left + '</span> 根胡萝卜') : '都捡到啦，回家 🏠'); Voice.say(left ? '还差 ' + left + ' 根' : '都捡到啦，回家吧'); }
-    }
-    if (y === goal[0] && x === goal[1]) {
-      if (left > 0) {
-        Voice.say(cfg.key ? '先去拿钥匙' : '还有胡萝卜没捡到');
-        toast(cfg.key ? '要先拿钥匙 🔑' : '还有 ' + left + ' 根没捡 🥕');
-        return true;
-      }
-      won = true; clearHint();
-      trail.forEach(t => nodes[t[0]][t[1]].classList.add('won'));
-      setPrompt(cfg.key ? '门开啦 🎉' : '到家啦 🎉');
-      later(400, () => roundWin(wrap));
-    }
-    return true;
-  }
-  function toward(y, x) {
-    for (let i = 0; i < 10; i++) {
-      const [cy, cx] = cur; if (cy === y && cx === x) return;
-      const dy = Math.sign(y - cy), dx = Math.sign(x - cx);
-      let moved = false;
-      if (Math.abs(y - cy) >= Math.abs(x - cx)) moved = !!dy && step(cy + dy, cx);
-      if (!moved && dx) moved = step(cy, cx + dx);
-      if (!moved && dy) moved = step(cy + dy, cx);
-      if (!moved) return;
-    }
-  }
-  let dragging = false;
-  function at(ev) {
-    const r = wrap.getBoundingClientRect();
-    const x = Math.floor((ev.clientX - r.left) / (r.width / W)), y = Math.floor((ev.clientY - r.top) / (r.height / H));
-    if (y < 0 || x < 0 || y >= H || x >= W) return;
-    toward(y, x);
-  }
-  wrap.addEventListener('pointerdown', ev => { Audio2.init(); dragging = true; try { wrap.setPointerCapture(ev.pointerId); } catch (e) { } at(ev); ev.preventDefault(); });
-  wrap.addEventListener('pointermove', ev => { if (dragging) at(ev); });
-  wrap.addEventListener('pointerup', () => dragging = false);
-  wrap.addEventListener('pointercancel', () => dragging = false);
-  function flash() {
-    const tgt = left > 0 ? (items.find(p => !p[2]) || goal) : goal;
-    const r = mazeBFS(g, W, H, cur);
-    const path = []; let k = tgt[0] + ',' + tgt[1];
-    while (k != null && k in r.prev) { path.push(k.split(',').map(Number)); k = r.prev[k]; }
-    path.forEach(p => nodes[p[0]][p[1]].classList.add('sol'));
-    later(1400, () => path.forEach(p => nodes[p[0]][p[1]].classList.remove('sol')));
-  }
-  const help = el('button', 'sw', '💡 看一眼路（少一颗星）');
-  help.addEventListener('click', () => { if (won) return; miss(); flash(); });
-  holder.appendChild(wrap); holder.appendChild(help); board.appendChild(holder);
-  const tip = cfg.key ? '先拿钥匙 🔑 再去开门 🚪'
-    : need ? ('捡齐 <span class="num">' + need + '</span> 根胡萝卜 🥕 再回家 🏠')
-      : '带小兔子走到胡萝卜那里 🥕';
-  setPrompt(tip);
-  Voice.say(cfg.key ? '先用手指带小兔子拿到钥匙，再去开门'
-    : need ? '先把 ' + need + ' 根胡萝卜都捡到，再回家' : '用手指按住小兔子，带它走到胡萝卜那里');
-  hintIn(25000, () => { if (!won) flash(); });
-  Fit.cb = () => {
-    const b = boardBox();
-    const c = cellFit(b.w, b.h - 48, W, H, 0, 110);
-    wrap.style.gridTemplateColumns = 'repeat(' + W + ',' + px(c) + ')';
-    wrap.style.gridAutoRows = px(c);
-    wrap.querySelectorAll('.mz').forEach(n => n.style.fontSize = px(c * .6));
-    holder.style.gap = '8px';
-  };
-}
-
 /* ===================== 9 找规律 =====================
    任务层级参考 Rittle-Johnson 等人对 4 岁儿童规律任务难度的实测排序：
    补空 < 延伸 < 复杂单元 < 双属性 < 换材料重现(translate) < 指认循环单元(identify unit)。
@@ -2903,7 +2691,7 @@ function gSpan(board, lv) {
   };
 }
 
-const GAME_IMPL = { fit: gFit, span: gSpan, schulte: gSchulte, dots: gDots, bond: gBond, match: gMatch, mirror: gMirror, connect: gConnect, link: gLink, maze: gMaze, pattern: gPattern };
+const GAME_IMPL = { fit: gFit, span: gSpan, schulte: gSchulte, dots: gDots, bond: gBond, match: gMatch, mirror: gMirror, connect: gConnect, link: gLink, pattern: gPattern };
 
 
 /* ===================== 家长设置 / 贴纸册 ===================== */

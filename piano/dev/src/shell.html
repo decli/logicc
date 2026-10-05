@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no, maximum-scale=1">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="彩虹钢琴">
+<meta name="theme-color" content="#F7EDE6">
+<meta name="description" content="彩虹钢琴：七个音七种颜色。一架会发光的 3D 三角钢琴，自己弹、跟着亮灯学儿歌、听钢琴自己演奏、和小鸟学唱。">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" href="../icon-192.png">
+<title>彩虹钢琴</title>
+<style>
+/*__CSS__*/
+</style>
+</head>
+<body>
+<canvas id="gl" aria-label="一架可以弹的三角钢琴"></canvas>
+
+<div id="loader" role="status" aria-live="polite">
+  <div class="ld-keys" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <h1>彩虹钢琴</h1>
+  <p class="ld-sub">七个音，七种颜色</p>
+  <div class="ld-bar"><b id="ldBar"></b></div>
+  <p class="ld-msg" id="ldMsg">正在搬钢琴…</p>
+  <noscript><p class="ld-msg">需要打开 JavaScript 才能弹钢琴</p></noscript>
+</div>
+
+<div id="hud" class="hidden">
+  <header id="top">
+    <a class="btn round" id="homeBtn" href="../" aria-label="回到小画本首页"><span class="ic">🏠</span></a>
+    <nav id="modes" role="tablist" aria-label="玩法">
+      <i class="thumb" aria-hidden="true"></i>
+      <button role="tab" data-mode="free"><span class="ic">🎹</span><span class="lb">自己弹</span></button>
+      <button role="tab" data-mode="learn"><span class="ic">⭐</span><span class="lb">跟我弹</span></button>
+      <button role="tab" data-mode="listen"><span class="ic">🎧</span><span class="lb">听我弹</span></button>
+      <button role="tab" data-mode="echo"><span class="ic">🐦</span><span class="lb">学小鸟</span></button>
+    </nav>
+    <div class="grow"></div>
+    <button class="btn round" id="nightBtn" aria-label="白天 / 夜晚"><span class="ic">🌙</span></button>
+    <button class="btn round" id="paintBtn" aria-label="给钢琴换颜色"><span class="ic">🎨</span></button>
+    <button class="btn round" id="gearBtn" aria-label="家长设置"><span class="ic">⚙️</span></button>
+  </header>
+
+  <div id="bubble" aria-live="polite"></div>
+
+  <aside id="rail" aria-label="乐器">
+    <button class="btn inst" data-inst="piano"><span class="ic">🎹</span><span class="lb">钢琴</span></button>
+    <button class="btn inst" data-inst="musicbox"><span class="ic">🎁</span><span class="lb">八音盒</span></button>
+    <button class="btn inst" data-inst="marimba"><span class="ic">🪵</span><span class="lb">木琴</span></button>
+    <button class="btn inst" data-inst="chip"><span class="ic">👾</span><span class="lb">游戏机</span></button>
+  </aside>
+
+  <aside id="rail2">
+    <button class="btn side" id="viewBtn"><span class="ic">👀</span><span class="lb">看钢琴</span></button>
+    <button class="btn side" id="pedalBtn" aria-pressed="false"><span class="ic">🦶</span><span class="lb">踏板</span></button>
+    <button class="btn side" id="recBtn"><span class="ic"><i class="dot"></i></span><span class="lb">录下来</span></button>
+    <button class="btn side" id="playRecBtn" hidden><span class="ic">▶️</span><span class="lb">听我的</span></button>
+  </aside>
+
+  <div id="nav" aria-label="在琴键上移动">
+    <button class="btn arrow" id="navL" aria-label="往低音走"><span>◀</span></button>
+    <div id="mini"><div id="miniKeys"></div><div id="miniWin"></div><div id="miniAnimals"></div></div>
+    <button class="btn arrow" id="navR" aria-label="往高音走"><span>▶</span></button>
+  </div>
+
+  <!-- 跟我弹 / 听我弹: pick a song -->
+  <section id="shelf" class="sheet" hidden aria-label="选一首歌">
+    <div class="sheet-hd"><h2 id="shelfTitle">选一首歌</h2><button class="btn round close" data-close aria-label="关上"><span class="ic">✕</span></button></div>
+    <div id="shelfList" class="cards"></div>
+  </section>
+
+  <!-- during a lesson -->
+  <div id="lesson" hidden>
+    <div class="ls-card">
+      <span class="ls-emoji" id="lsEmoji">⭐</span>
+      <div class="ls-tx"><b id="lsTitle">小星星</b><div class="ls-bar"><i id="lsProg"></i></div></div>
+    </div>
+    <button class="btn pill" id="lsListen"><span class="ic">👂</span><span class="lb">听一听</span></button>
+    <button class="btn pill" id="lsRestart"><span class="ic">🔁</span><span class="lb">从头来</span></button>
+    <button class="btn pill" id="lsPick"><span class="ic">🎵</span><span class="lb">换一首</span></button>
+  </div>
+  <div id="score" hidden aria-label="这一句的音符"></div>
+
+  <!-- during a concert -->
+  <div id="concert" hidden>
+    <div class="ls-card">
+      <span class="ls-emoji" id="ccEmoji">🎵</span>
+      <div class="ls-tx"><b id="ccTitle">致爱丽丝</b><div class="ls-bar"><i id="ccProg"></i></div></div>
+    </div>
+    <button class="btn pill" id="ccPause"><span class="ic">⏸</span><span class="lb">停一下</span></button>
+    <button class="btn pill" id="ccNext"><span class="ic">⏭</span><span class="lb">下一首</span></button>
+    <button class="btn pill" id="ccPick"><span class="ic">🎵</span><span class="lb">选歌</span></button>
+  </div>
+
+  <!-- 学小鸟 -->
+  <div id="echo" hidden>
+    <div class="ls-card"><span class="ls-emoji bird" id="ecBird">🐦</span><div class="ls-tx"><b id="ecTitle">学小鸟唱歌</b><div id="ecDots"></div></div></div>
+    <button class="btn pill" id="ecAgain"><span class="ic">👂</span><span class="lb">再听一遍</span></button>
+  </div>
+
+  <div id="paint" class="pop" hidden aria-label="钢琴的颜色"></div>
+
+  <section id="panel" class="sheet" hidden aria-label="家长设置">
+    <div class="sheet-hd"><h2>家长设置</h2><button class="btn round close" data-close aria-label="关上"><span class="ic">✕</span></button></div>
+    <div class="rows" id="panelRows"></div>
+    <p class="credit">钢琴音色：Salamander Grand Piano（Alexander Holm，CC BY 3.0）。曲目均为公有领域的旋律。画面与其它乐器由代码实时生成。</p>
+  </section>
+
+  <div id="toast" aria-live="polite"></div>
+</div>
+<div id="hint" hidden><span class="hand">👆</span><span id="hintTx">点一下，打开钢琴</span></div>
+<script type="module" src="__APP__"></script>
+</body>
+</html>

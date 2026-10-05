@@ -2,6 +2,7 @@
 
   python3 dev/voice/build.py root          home-page logic games  -> voice-zh.bin|json at the site root
   python3 dev/voice/build.py zaowu         造物 (both languages)  -> zaowu/voice-zh|en.bin|json (+ rebuilds zaowu/index.html)
+  python3 dev/voice/build.py piano         彩虹钢琴               -> piano/voice-zh.bin|json
   python3 dev/voice/build.py check root    listen back with speech recognition and list lines that do not read as written
   python3 dev/voice/build.py check zaowu
 
@@ -17,12 +18,17 @@ def collect(which):
     if which == 'root':
         subprocess.run(['node', os.path.join(HERE, 'collect_root.js')], check=True)
         return {'voice-zh': json.load(open(os.path.join(HERE, 'lines-root.json')))}
+    if which == 'piano':
+        pd = os.path.join(ROOT, 'piano', 'dev', 'voice')
+        subprocess.run(['node', os.path.join(pd, 'collect.mjs')], check=True)
+        return {'voice-zh': json.load(open(os.path.join(pd, 'lines.json')))}
     zd = os.path.join(ROOT, 'zaowu', 'dev', 'voice')
     subprocess.run(['node', os.path.join(zd, 'collect.js')], check=True)
     lines = json.load(open(os.path.join(zd, 'lines.json')))
     return {f'voice-{b}': [l for l in lines if l['bank'] == b] for b in ('zh', 'en')}
 
 def out_dir(which):
+    if which == 'piano': return os.path.join(ROOT, 'piano')
     return ROOT if which == 'root' else os.path.join(ROOT, 'zaowu', 'dev', 'voice', 'out')
 
 async def build(which):
@@ -96,6 +102,6 @@ def check(which):
 
 if __name__ == '__main__':
     args = sys.argv[1:]
-    if not args or args[-1] not in ('root', 'zaowu'): sys.exit(__doc__)
+    if not args or args[-1] not in ('root', 'zaowu', 'piano'): sys.exit(__doc__)
     if args[0] == 'check': check(args[-1])
     else: asyncio.run(build(args[-1]))

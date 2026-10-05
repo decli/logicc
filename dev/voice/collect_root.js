@@ -43,7 +43,7 @@ function add(t, cn) { if (!t) return; const key = cnText(t); if (!lines.has(key)
 const KNOWN = [   // calls built at run time, expanded below; matched on a piece of their argument
   "g.name + '，' + L.t", "'红色的 '", "'这次倒着找，先找 '", "'一共要 '", "' 分成 ' + a + '、'", "' 和 ' + b + ' 合起来是几？'",
   "' 分成几和 '", "' 分成 ' + a + ' 和几？'", 'c.why', "'画的都对，还差 '", "'画好啦，是一个'", "'这一笔画完了，跳到 '",
-  "'这次倒着数，从 '", "'还差 ' + left", "'先把 ' + need", "'一次消掉 '",
+  "'这次倒着数，从 '", "'一次消掉 '",
 ];
 const calls = [...src.matchAll(/Voice\.(say|short)\(/g)];
 const unknown = [];
@@ -73,7 +73,6 @@ for (const r of range(1, 12)) add('画的都对，还差 ' + r + ' 个');
 for (const n of SHAPES) add('画好啦，是一个' + n);                                                       // 连点成画
 for (const k of range(1, 60)) { add('这一笔画完了，跳到 ' + k); add('下一个是 ' + k); add('这次倒着数，从 ' + k + ' 开始往回连'); }
 add('按双数连，2、4、6 这样往下'); add('从 1 开始，按数字顺序连起来'); add('从 1 开始，按数字顺序连起来，中间要抬笔跳一次');
-for (const k of range(1, 5)) { add('还差 ' + k + ' 根'); add('先把 ' + k + ' 根胡萝卜都捡到，再回家'); }       // 走迷宫
 for (const k of range(2, 6)) add('一次消掉 ' + k + ' 行，太厉害了');                                        // 方块拼拼
 for (const p of PRAISE) add(p);
 

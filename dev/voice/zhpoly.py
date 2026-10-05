@@ -34,6 +34,10 @@ POLY = {
     '发现': 'fa1 xian4', '头发': 'tou2 fa4', '发光': 'fa1 guang1', '发生': 'fa1 sheng1', '乃发生': 'nai3 fa1 sheng1',
     '一会儿': 'yi1 hui4 er5', '一点': 'yi1 dian3',
     '弹回': 'tan2 hui2', '弹回来': 'tan2 hui2 lai2', '弹起': 'tan2 qi3',
+    # 彩虹钢琴: every 弹 on this site means playing an instrument or bouncing — tán, never dàn (子弹)
+    '弹': 'tan2', '弹完': 'tan2 wan2', '弹得': 'tan2 de5', '弹琴': 'tan2 qin2', '跟着': 'gen1 zhe5', '舞曲': 'wu3 qu3', '卡农': 'ka3 nong2',
+    '转一转': 'zhuan4 yi1 zhuan4', '生日快乐': 'sheng1 ri4 kuai4 le4', '圣诞快乐': 'sheng4 dan4 kuai4 le4', '新年好': 'xin1 nian2 hao3',
+    '长长的': 'chang2 chang2 de5', '变得': 'bian4 de5', '学得': 'xue2 de5', '好听': 'hao3 ting1', '一遍': 'yi1 bian4',
     '转圈': 'zhuan4 quan1', '转晕': 'zhuan4 yun1', '在转': 'zai4 zhuan4', '转圈圈': 'zhuan4 quan1 quan1', '转半圈': 'zhuan4 ban4 quan1', '转一下': 'zhuan4 yi1 xia4', '转过来': 'zhuan4 guo4 lai2', '转转': 'zhuan4 zhuan4',
     '晕': 'yun1', '好晕': 'hao3 yun1',
     '没有': 'mei2 you3', '没事': 'mei2 shi4',
