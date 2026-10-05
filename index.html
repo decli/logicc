@@ -193,7 +193,7 @@ body{
   60%{filter:brightness(2.4);background:#FFF3B0;transform:scale(1.1)}
   100%{opacity:0;transform:scaleY(.05) scaleX(1.3)}}
 .lineboom{animation:lineBoom .46s forwards;z-index:3;position:relative}
-.bdim{opacity:.28;transition:opacity .18s}
+.bdim{opacity:.6;transition:opacity .18s}
 #gameover{position:absolute;inset:0;background:rgba(255,252,242,.94);display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:14px;z-index:25;text-align:center;padding:16px}
 #gameover .gtitle{font-size:26px;font-weight:700}
@@ -206,6 +206,28 @@ body{
 .dbtn2.act{transform:translate(5px,5px);box-shadow:0 0 0 var(--ink);filter:brightness(.94)}
 .dpad2{display:grid;grid-template-columns:repeat(3,auto);justify-content:center;align-items:center;background:rgba(42,37,35,.06);flex:0 0 auto}
 .dropside{display:flex;flex-direction:column;align-items:center;justify-content:space-between;flex:0 0 auto}
+.infocol{display:flex;flex-direction:column;align-items:center;flex:0 0 auto}
+.scorebox{gap:2px}
+.scorebox.rec{background:var(--yellow)}
+.scorenum{font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.winmask{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3em;z-index:5;
+  background:rgba(255,252,242,.78);border-radius:10px;text-align:center;font-weight:700}
+.winmask .w1{font-size:1.5em}.winmask .w3{color:var(--orange)}
+#spdpick{position:absolute;inset:0;z-index:30;background:rgba(42,37,35,.28);display:flex;align-items:center;justify-content:center}
+.spdcard{background:#fff;border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(28px * var(--k));box-shadow:calc(7px * var(--k)) calc(7px * var(--k)) 0 var(--ink);
+  padding:calc(26px * var(--k)) calc(30px * var(--k));display:flex;flex-direction:column;align-items:center;gap:calc(8px * var(--k));max-width:94vw}
+.spdtitle{font-size:max(22px,calc(34px * var(--k)));font-weight:700}
+.spdsub{font-size:max(14px,calc(20px * var(--k)));color:var(--ink-soft)}
+.spdrow{display:flex;flex-wrap:wrap;justify-content:center;gap:max(10px,calc(14px * var(--k)));margin-top:calc(10px * var(--k))}
+.spdopt{width:max(64px,calc(96px * var(--k)));height:max(72px,calc(104px * var(--k)));border:calc(4px * var(--k)) solid var(--ink);border-radius:calc(20px * var(--k));background:#fff;
+  box-shadow:calc(4px * var(--k)) calc(4px * var(--k)) 0 var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(4px * var(--k));font-family:inherit;color:var(--ink);cursor:pointer;padding:0}
+.spdopt .i{font-size:max(20px,calc(30px * var(--k)));line-height:1}
+.spdopt .n{font-size:max(19px,calc(28px * var(--k)));font-weight:700}
+.spdopt.on{background:var(--yellow)}
+.spdopt:active{transform:translate(calc(4px * var(--k)),calc(4px * var(--k)));box-shadow:0 0 0 var(--ink)}
+.floatpts{position:fixed;z-index:40;transform:translate(-50%,-50%);font-weight:700;font-size:max(28px,calc(48px * var(--k)));color:var(--yellow);
+  -webkit-text-stroke:max(1.5px,calc(2px * var(--k))) var(--ink);pointer-events:none;animation:floatUp 1.1s ease-out forwards}
+@keyframes floatUp{0%{opacity:0;transform:translate(-50%,-30%) scale(.7)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-170%) scale(1)}}
 .droptop{display:flex;align-items:center;justify-content:center;gap:14px;width:100%}
 .boardrow{display:flex;align-items:flex-start;justify-content:center}
 .nextbox{display:flex;flex-direction:column;align-items:center;gap:6px;border:3px solid var(--ink);
@@ -576,6 +598,18 @@ const Voice = {
     } catch (e) { nextTry(); }
   },
   short(t) { this.say(t, false); },
+  // 等手上这句念完再做下一件事（最多等 maxMs）：消行那句「一次消掉三行」别被紧跟着的过关表扬顶掉。
+  // 开头至少等 450ms：say() 是先排进微任务、再解码才出声的，刚调用完那一下还看不出「在念」
+  whenIdle(fn, maxMs) {
+    const t0 = Date.now(), ss = 'speechSynthesis' in window ? window.speechSynthesis : null;
+    const busy = () => !!this.clip || !!(ss && (ss.speaking || ss.pending));
+    const check = () => {
+      const waited = Date.now() - t0;
+      if (waited >= (maxMs || 4000) || (waited >= 450 && !busy())) return fn();
+      setTimeout(check, 120);
+    };
+    setTimeout(check, 120);
+  },
   praise() { this.short(pick(PRAISE)); },
   repeat() { this.unlock(); if (this.last) { this.on = true; this.failed = false; this.say(this.last); } }
 };
@@ -690,7 +724,7 @@ const GAMES = [
       { t: '转一下才合适', d: '要先在脑子里把它转过来再选', cfg: { kind: 'hole', rot: true } },
       { t: '两块拼满', d: '自己选块、自己放位置', cfg: { kind: 'tile', pieces: 2, rot: false } },
       { t: '三块拼满', d: '可以按 🔄 把方块转个方向', cfg: { kind: 'tile', pieces: 3, rot: true } },
-      { t: '会掉下来了', d: '方块开始往下掉。默认中速，底下 🐢 随时能调快慢；消掉 2 行过关', cfg: { kind: 'drop', w: 6, h: 16, goal: 2 } },
+      { t: '会掉下来了', d: '方块开始往下掉，消掉 2 行过关。右边「速度」随时能调快慢，消得越多分越高', cfg: { kind: 'drop', w: 6, h: 16, goal: 2 } },
       { t: '棋盘更高', d: '7×18，消掉 3 行', cfg: { kind: 'drop', w: 7, h: 18, goal: 3 } },
       { t: '又高又宽', d: '8×20，消掉 4 行', cfg: { kind: 'drop', w: 8, h: 20, goal: 4 } }
     ]
@@ -733,10 +767,10 @@ function toast(t) {
 
 
 /* ===================== 新外壳：首页 / 阶梯 / 游戏中 / 奖励 ===================== */
-Object.assign(S, { hints: false, hideTarget: false, easeIn: true, dropStep: null, showTimer: true, persist: true, best: {}, days: {} });
+Object.assign(S, { hints: false, hideTarget: false, easeIn: true, dropSpeed: 1, dropBest: {}, showTimer: true, persist: true, best: {}, days: {} });
 var SKEY = 'logicc.design.v2';
 function todayKey() { var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
-function save() { if (!S.persist) return; try { localStorage.setItem(SKEY, JSON.stringify({ level: S.level, stars: S.stars, stickers: S.stickers, best: S.best, days: S.days, hints: S.hints, hideTarget: S.hideTarget, easeIn: S.easeIn, dropStep: S.dropStep, showTimer: S.showTimer, autoLevel: S.autoLevel, snd: Audio2.on, voi: Voice.on, mus: Music.on })); } catch (e) { } }
+function save() { if (!S.persist) return; try { localStorage.setItem(SKEY, JSON.stringify({ level: S.level, stars: S.stars, stickers: S.stickers, best: S.best, days: S.days, hints: S.hints, hideTarget: S.hideTarget, easeIn: S.easeIn, dropSpeed: S.dropSpeed, dropBest: S.dropBest, showTimer: S.showTimer, autoLevel: S.autoLevel, snd: Audio2.on, voi: Voice.on, mus: Music.on })); } catch (e) { } }
 function load() {
   try {
     var raw = localStorage.getItem(SKEY); if (!raw) return;
@@ -746,7 +780,8 @@ function load() {
     if (typeof r.hints === 'boolean') S.hints = r.hints;
     if (typeof r.hideTarget === 'boolean') S.hideTarget = r.hideTarget;
     if (typeof r.easeIn === 'boolean') S.easeIn = r.easeIn;
-    if (typeof r.dropStep === 'number') S.dropStep = r.dropStep;
+    if (typeof r.dropSpeed === 'number' && r.dropSpeed >= .7 && r.dropSpeed <= 1.3) S.dropSpeed = r.dropSpeed;
+    if (r.dropBest && typeof r.dropBest === 'object') S.dropBest = r.dropBest;
     if (typeof r.showTimer === 'boolean') S.showTimer = r.showTimer;
     if (typeof r.autoLevel === 'boolean') S.autoLevel = r.autoLevel;
     if (typeof r.snd === 'boolean') Audio2.on = r.snd;
@@ -2209,8 +2244,10 @@ function gFit(board, lv) {
     // 现在改成同一个实测值决定：棋盘区量出来能放几行就放几行，每格不低于 MIN_CELL
     const MIN_CELL = 26;
     let BH = 0, built = false;
-    const SPEEDS = [2400, 1500, 950];
-    const SPEED_ICON = ['🐢', '🐇', '🚀'], SPEED_NAME = ['慢', '中', '快'];
+    // 速度按倍率给：1.0 = 原来「快」那一档（每 950ms 落一格）。棋盘拉高以后，原来的中速落一块要等太久，
+    // 所以默认就从这一档开始；0.7~1.3 七档，点伙伴栏的「速度」弹出来选
+    const BASE_MS = 950, SPEED_OPTS = [0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3];
+    const spdIcon = v => v <= .8 ? '🐢' : v >= 1.2 ? '🚀' : '🐇';
     const TETRO = [
       { cs: [[0, 0], [0, 1], [0, 2], [0, 3]], c: '#12A5A0' },
       { cs: [[0, 0], [0, 1], [1, 0], [1, 1]], c: '#F5B921' },
@@ -2222,8 +2259,13 @@ function gFit(board, lv) {
     ];
     let occ = {}, cur = null, nextP = null, cleared = 0, over = false, busy = false;
     let tick = null, cellPx2 = 24, lockAt = 0, bag = [];
-    let spdIdx = (S.dropStep == null ? 1 : S.dropStep);   // 默认中档
+    let speed = SPEED_OPTS.indexOf(S.dropSpeed) >= 0 ? S.dropSpeed : 1;
     const history = [];
+    /* 得分：让每一块都有回报，消行越多、连着消、速度越快，分越高。
+       每关记一个最高分，打破了当场告诉孩子；退回一步会把那一步的分也退回去 */
+    const LINE_PTS = [0, 100, 300, 600, 1000];
+    const bestKey = 'fit.' + lv, best0 = (S.dropBest && S.dropBest[bestKey]) || 0;
+    let score = 0, combo = 0, beat = false;
     const takeBag = () => { if (!bag.length) bag = shuffle(TETRO.map((_, i) => i)); return TETRO[bag.pop()]; };
 
     /* 控件布局（第二版，按孩子的实际反馈重排）：
@@ -2246,7 +2288,11 @@ function gFit(board, lv) {
     const nextLab = el('div', 'nextlab', '下一个');
     const nextIn = el('div');
     nextBox.appendChild(nextLab); nextBox.appendChild(nextIn);
-    const sideCol = el('div', 'dropside');                         // 棋盘右侧一列：上面「下一个」，下面手柄
+    const scoreBox = el('div', 'nextbox scorebox');
+    const scoreLab = el('div', 'nextlab', '得分'), scoreNum = el('div', 'scorenum', '0'), scoreBest = el('div', 'nextlab');
+    scoreBox.appendChild(scoreLab); scoreBox.appendChild(scoreNum); scoreBox.appendChild(scoreBest);
+    const infoCol = el('div', 'infocol'); infoCol.appendChild(nextBox); infoCol.appendChild(scoreBox);
+    const sideCol = el('div', 'dropside');                         // 棋盘右侧一列：上面「下一个」和得分，下面手柄
     const pad = el('div', 'dpad2');
     const pauseMask = el('div', 'pausemask', '⏸ 暂停中'); pauseMask.style.display = 'none';
     grid.appendChild(pauseMask);
@@ -2268,13 +2314,13 @@ function gFit(board, lv) {
       return wrapEl;
     }
     const softDrop = () => { if (paused || busy || Date.now() - lockAt < 260) return; if (!move(1, 0)) lock(); };
-    function togglePause() {
+    function togglePause(quiet) {
       if (over) return;
       paused = !paused;
       xPause.textContent = paused ? '▶️ 继续' : '⏸ 暂停';
       pauseMask.style.display = paused ? 'flex' : 'none';
       grid.classList.toggle('grid-paused', paused);
-      if (paused) { pauseAt = Date.now(); Voice.say('暂停了'); }
+      if (paused) { pauseAt = Date.now(); if (!quiet) Voice.say('暂停了'); }
       else if (pauseAt) { T.t0 += Date.now() - pauseAt; pauseAt = 0; }   // 暂停不计进本关用时
     }
     // 手柄：倒 T 形，上面一格是转一下，下面一排是方块要去的方向
@@ -2286,17 +2332,23 @@ function gFit(board, lv) {
     // 不常按的三个键放进右侧伙伴栏（跟「再读一遍 / 回家」一列），带字，离手柄远
     const sideBtn = (txt, fn) => { const b2 = el('button', 'sw', txt); b2.addEventListener('click', () => { Audio2.init(); fn(); }); return b2; };
     const xUndo = sideBtn('↩︎ 退回一步', () => undo());
-    const xSpd = sideBtn('', () => cycleSpeed());
+    const xSpd = sideBtn('', () => openSpeedPicker());
     const xPause = sideBtn('⏸ 暂停', () => togglePause());
-    const paintSpd = () => { xSpd.textContent = SPEED_ICON[spdIdx] + ' 速度：' + SPEED_NAME[spdIdx]; };
+    const paintSpd = () => { xSpd.textContent = spdIcon(speed) + ' 速度 ' + speed.toFixed(1); };
     const paintUndo = () => { xUndo.style.opacity = history.length ? '' : '.5'; };
-    paintSpd(); paintUndo();
+    function paintScore(bump) {
+      scoreNum.textContent = score.toLocaleString('en-US');
+      scoreBest.textContent = beat ? '🏆 新纪录！' : best0 ? '最高 ' + best0.toLocaleString('en-US') : '第一次玩';
+      scoreBox.classList.toggle('rec', beat);
+      if (bump) { scoreNum.classList.remove('pop'); void scoreNum.offsetWidth; scoreNum.classList.add('pop'); }
+    }
+    paintSpd(); paintUndo(); paintScore();
     [xUndo, xSpd, xPause].forEach(x => addExtra(x, holder));
 
     holder.style.cssText = 'width:100%;height:100%';
     colWrap.appendChild(boardRow);
     holder.appendChild(colWrap); board.appendChild(holder);
-    // 横排：棋盘 |「下一个」+ 手柄（手柄落在下半截）；竖排：棋盘 +「下一个」在上，手柄在下居中
+    // 横排：棋盘 |「下一个」+ 得分 + 手柄（手柄落在下半截）；竖排：棋盘 +「下一个」+ 得分在上，手柄在下居中
     function arrange(side) {
       if (sideMode === side) return;
       sideMode = side;
@@ -2304,11 +2356,11 @@ function gFit(board, lv) {
       if (pad.parentNode) pad.parentNode.removeChild(pad);
       boardRow.appendChild(grid);
       if (side) {
-        sideCol.appendChild(nextBox); sideCol.appendChild(pad);
+        sideCol.appendChild(infoCol); sideCol.appendChild(pad);
         boardRow.appendChild(sideCol);
         boardRow.style.alignItems = 'stretch';
       } else {
-        boardRow.appendChild(nextBox);
+        boardRow.appendChild(infoCol);
         boardRow.style.alignItems = 'flex-start';
         colWrap.appendChild(pad);
       }
@@ -2353,20 +2405,54 @@ function gFit(board, lv) {
     }
     function restartTick() {
       if (tick) clearInterval(tick);
-      tick = every(SPEEDS[spdIdx], () => { if (over || busy || paused) return; if (!move(1, 0)) lock(); });
+      tick = every(Math.round(BASE_MS / speed), () => { if (over || busy || paused) return; if (!move(1, 0)) lock(); });
     }
-    function cycleSpeed() {
-      spdIdx = (spdIdx + 1) % SPEEDS.length;
-      S.dropStep = spdIdx; save();
+    function setSpeed(v) {
+      speed = v; S.dropSpeed = v; save();
       paintSpd();
-      toast('速度：' + SPEED_NAME[spdIdx] + ' ' + SPEED_ICON[spdIdx]);
+      toast('速度 ' + v.toFixed(1) + ' ' + spdIcon(v));
       restartTick();
+    }
+    // 速度面板：七个大按钮一排，当前那档标黄；打开时先停住，免得方块趁机落下去
+    function openSpeedPicker() {
+      if (over || $('#spdpick')) return;
+      const wasPaused = paused;
+      if (!paused) togglePause(true);
+      const m = el('div'); m.id = 'spdpick';
+      const card = el('div', 'spdcard');
+      card.appendChild(el('div', 'spdtitle', '选一个速度'));
+      card.appendChild(el('div', 'spdsub', '数字越大，方块落得越快'));
+      const row = el('div', 'spdrow');
+      const close = () => { m.remove(); if (!wasPaused && paused) togglePause(true); };
+      SPEED_OPTS.forEach(v => {
+        const b2 = el('button', 'spdopt' + (v === speed ? ' on' : ''));
+        b2.appendChild(el('span', 'i', spdIcon(v))); b2.appendChild(el('span', 'n', v.toFixed(1)));
+        b2.addEventListener('click', ev => { ev.stopPropagation(); Audio2.tap(); close(); if (v !== speed) setSpeed(v); });
+        row.appendChild(b2);
+      });
+      card.appendChild(row);
+      m.appendChild(card);
+      m.addEventListener('click', ev => { if (ev.target === m) { Audio2.tap(); close(); } });
+      $('#screen').appendChild(m);
+    }
+    // 分数飘字：在消掉的那几行中间冒出来，往上飘走
+    function floatPts(txt, x, y) {
+      const f = el('div', 'floatpts', txt);
+      f.style.left = px(x); f.style.top = px(y);
+      document.body.appendChild(f); setTimeout(() => f.remove(), 1200);
+    }
+    function addScore(pts, at) {
+      const got = Math.round(pts * speed / 10) * 10;          // 速度越快，分越高
+      score += got;
+      if (at) floatPts('+' + got, at[0], at[1]);
+      if (!beat && best0 && score > best0) { beat = true; toast('破纪录啦 🏆'); Audio2.fanfare(); }
+      paintScore(true);
     }
     function undo() {
       if (over || busy || paused) return;
       if (!history.length) { Voice.say('还没有可以退回的一步'); toast('还没有可以退回的'); return; }
       const h = history.pop();
-      occ = h.occ; cleared = h.cleared;
+      occ = h.occ; cleared = h.cleared; score = h.score; combo = h.combo; beat = h.beat; paintScore();
       cur = { cs: h.piece.cs.slice(), c: h.piece.c, y: 0, x: h.piece.x };
       if (!fits(cur.cs, cur.y, cur.x)) cur.y = 0, cur.x = 0;
       Audio2.step(); toast('退回一步 ↩︎');
@@ -2382,15 +2468,20 @@ function gFit(board, lv) {
     }
     function lock() {
       if (!cur || over || busy) return;
-      history.push({ occ: Object.assign({}, occ), cleared: cleared, piece: { cs: cur.cs.slice(), c: cur.c, x: cur.x } });
+      history.push({ occ: Object.assign({}, occ), cleared: cleared, score: score, combo: combo, beat: beat, piece: { cs: cur.cs.slice(), c: cur.c, x: cur.x } });
       if (history.length > 15) history.shift();
       paintUndo();
       cur.cs.forEach(c => occ[(c[0] + cur.y) + ',' + (c[1] + cur.x)] = cur.c);
       cur = null; lockAt = Date.now(); Audio2.pop(); paint();
       const full = [];
       for (let y = 0; y < BH; y++) { let f = true; for (let x = 0; x < BW; x++) if (!occ[y + ',' + x]) f = false; if (f) full.push(y); }
-      if (!full.length) return spawn();
+      if (!full.length) { combo = 0; addScore(10); return spawn(); }        // 落一块 10 分
       busy = true;
+      combo++;
+      {                                                                  // 消行：1/2/3/4 行 100/300/600/1000，连着消再加
+        const a = cellsD[full[0] * BW].getBoundingClientRect(), z = cellsD[full[full.length - 1] * BW + BW - 1].getBoundingClientRect();
+        addScore(10 + LINE_PTS[Math.min(full.length, 4)] + (combo > 1 ? 50 * (combo - 1) : 0), [(a.left + z.right) / 2, (a.top + z.bottom) / 2]);
+      }
       Audio2.star(); Audio2.fanfare();
       // 把没被消的格子压暗，让「消掉的是哪一行」一目了然——
       // 否则上面那行整体下移填补，看起来像是它也被删了
@@ -2404,7 +2495,7 @@ function gFit(board, lv) {
         const mid = cellsD[y * BW + ((BW / 2) | 0)].getBoundingClientRect();
         later(120, () => sparkle(mid.left + mid.width / 2, mid.top + mid.height / 2, ['✨', '⭐', '💥', '🌟']));
       });
-      toast(full.length > 1 ? ('一次消掉 ' + full.length + ' 行！太厉害了 🎆') : '消掉一行！✨');
+      toast((full.length > 1 ? ('一次消掉 ' + full.length + ' 行！太厉害了 🎆') : '消掉一行！✨') + (combo > 1 ? ' 连消 ×' + combo + ' 🔥' : ''));
       Voice.short(full.length > 1 ? '一次消掉 ' + full.length + ' 行，太厉害了' : '消掉一行');
       later(Math.min(940, 500 + BW * 30), () => {
         cellsD.forEach(c => c.classList.remove('bdim'));
@@ -2417,9 +2508,20 @@ function gFit(board, lv) {
         setPrompt('已经消掉 <span class="num">' + cleared + '</span> / ' + cfg.goal + ' 行');
         paint();
         if (cleared >= cfg.goal) {
+          // 过关：棋盘上盖一层半透明的「过关」，剩下的方块留在底下看得见，再进下一局——
+          // 不然看起来像是「消了三行，整个棋盘都被清空了」。
+          // 也不再紧接着念「消够啦」：先让「一次消掉 N 行」念完，过关的表扬接在后面
           over = true; if (tick) clearInterval(tick);
-          setPrompt('消够啦 🎉'); Voice.say('消够啦，真棒');
-          return later(600, () => roundWin(grid));
+          const rec = score > best0;
+          if (rec) { S.dropBest[bestKey] = score; save(); }
+          setPrompt('消够啦 🎉');
+          const w = el('div', 'winmask');
+          w.appendChild(el('div', 'w1', '🎉 过关！'));
+          w.appendChild(el('div', 'w2', '这一局 ' + score.toLocaleString('en-US') + ' 分'));
+          if (rec && best0) w.appendChild(el('div', 'w3', '🏆 新纪录'));
+          w.style.fontSize = px(clamp(cellPx2 * .8, 18, 40));
+          grid.appendChild(w);
+          return Voice.whenIdle(() => roundWin(grid), 3500);
         }
         spawn();
       });
@@ -2429,12 +2531,14 @@ function gFit(board, lv) {
       Audio2.soft();
       const g = el('div'); g.id = 'gameover';
       g.appendChild(el('div', 'gtitle', '堆满啦！'));
-      g.appendChild(el('div', 'gsub', '这一局消掉了 ' + cleared + ' 行'));
+      const rec = score > best0;
+      if (rec) { S.dropBest[bestKey] = score; save(); }
+      g.appendChild(el('div', 'gsub', '这一局消掉了 ' + cleared + ' 行，得了 ' + score.toLocaleString('en-US') + ' 分' + (rec && best0 ? ' 🏆 新纪录' : '')));
       const row = el('div', 'btnrow');
       const again = el('button', 'bigbtn', '🔁 再来一局');
       again.addEventListener('click', () => { Audio2.tap(); g.remove(); reset(); });
-      const slower = el('button', 'bigbtn ghost', '🐢 调慢再来');
-      slower.addEventListener('click', () => { Audio2.tap(); spdIdx = 0; S.dropStep = 0; save(); paintSpd(); g.remove(); reset(); });
+      const slower = el('button', 'bigbtn ghost', '🐢 调慢一点再来');
+      slower.addEventListener('click', () => { Audio2.tap(); setSpeed(Math.max(.7, Math.round((speed - .2) * 10) / 10)); g.remove(); reset(); });
       const back = el('button', 'bigbtn ghost', '🏠 回家');
       back.addEventListener('click', () => { Audio2.tap(); home(); });
       row.appendChild(again); row.appendChild(slower); row.appendChild(back);
@@ -2444,6 +2548,7 @@ function gFit(board, lv) {
     }
     function reset() {
       occ = {}; cur = null; nextP = null; cleared = 0; over = false; busy = false;
+      score = 0; combo = 0; beat = false; paintScore();
       history.length = 0; bag = []; paintUndo();
       cellsD.forEach(c => c.classList.remove('lineboom'));
       setPrompt('已经消掉 <span class="num">0</span> / ' + cfg.goal + ' 行');
@@ -2490,8 +2595,10 @@ function gFit(board, lv) {
       const padW = unit * 3 + padGap * 2 + plate * 2, padH = unit * 2 + padGap + plate * 2;
       nextLab.style.fontSize = px(clamp(btnPx * .22, 11, 16));
       const nextW = Math.round(clamp(btnPx * 1.8, 90, 170));      // 「下一个」预览框
-      nextBox.style.width = px(nextW);
-      const nextH = Math.round(nextW * .9);
+      nextBox.style.width = px(nextW); scoreBox.style.width = px(nextW);
+      scoreNum.style.fontSize = px(clamp(btnPx * .4, 20, 40));
+      infoCol.style.gap = px(clamp(btnPx * .18, 10, 18));
+      const nextH = Math.round(nextW * .9 + nextW * .62 + 14);     // 「下一个」+ 得分框
       const sideGap = Math.round(clamp(btnPx * .45, 20, 48));      // 棋盘和右边那一列之间：贴近但不挨着
       // 两种排法各算一遍格子能有多大，哪种棋盘大用哪种；差不多时用横排（手柄贴棋盘右侧，棋盘吃满高度）。
       // 横屏几乎总是横排；竖着拿的平板宽度紧，手柄放到棋盘下面，格子反而更大
