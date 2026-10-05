@@ -433,6 +433,47 @@ const PRAISE = ['对啦', '真棒', '好厉害', '答对啦', '你真行'];
 const Voice = {
   on: true, last: '', unlocked: false, voice: null, forced: null, scanned: false, failed: false, lastErr: '', tried: 0,
   gen: 0, ok: false, // gen：每说一句换一代，被顶掉的旧句子的回调/超时一律作废；ok：已有音色真正出过声
+  // 首选预录语音包 voice-zh.bin|json：每一句都提前用微软神经网络语音（晓晓）录好，放慢到适合小朋友的语速，
+  // 多音字逐个核对过（见 dev/voice）。包里没有的句子、或者包没加载出来，才用设备自带的语音合成。
+  bank: null, bankState: 'idle', bankP: null, clip: null, bufs: new Map(),
+  loadBank() {
+    if (this.bankState !== 'idle') return this.bankP;
+    if (!window.fetch || location.protocol === 'file:') { this.bankState = 'failed'; return (this.bankP = Promise.resolve()); }
+    this.bankState = 'loading';
+    this.bankP = Promise.all([
+      fetch('voice-zh.json').then(r => (r.ok ? r.json() : Promise.reject(r.status))),
+      fetch('voice-zh.bin').then(r => (r.ok ? r.arrayBuffer() : Promise.reject(r.status)))
+    ]).then(([ix, bin]) => { this.bank = { map: ix.u, bin }; this.bankState = 'ready'; }).catch(() => { this.bankState = 'failed'; });
+    return this.bankP;
+  },
+  fnv(s) { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); } return (h >>> 0).toString(36); },
+  entry(t) { return this.bank ? this.bank.map[this.fnv('n|' + cnText(t))] : null; },
+  stopClip() { const c = this.clip; this.clip = null; if (c) { try { c.onended = null; c.stop(); } catch (e) { } } },
+  stop() {
+    this.gen++; this.stopClip();
+    if ('speechSynthesis' in window) { try { speechSynthesis.cancel(); } catch (e) { } }
+    Music.duck(false); const b = document.getElementById('sayBtn'); if (b) b.classList.remove('talking');
+  },
+  playClip(t, e, g) {
+    Audio2.init(); const ac = Audio2.ctx;
+    if (!ac) { this.sysSay(t, g); return; }
+    const bin = this.bank.bin;
+    const got = this.bufs.get(e[0]);
+    const decoded = got ? Promise.resolve(got) : new Promise((res, rej) => {
+      try { const p = ac.decodeAudioData(bin.slice(e[0], e[0] + e[1]), res, rej); if (p && p.catch) p.catch(rej); } catch (err) { rej(err); }
+    });
+    decoded.then(buf => {
+      if (!got) { this.bufs.set(e[0], buf); if (this.bufs.size > 40) this.bufs.delete(this.bufs.keys().next().value); }
+      if (g !== this.gen) return;
+      this.stopClip();
+      if ('speechSynthesis' in window) { try { speechSynthesis.cancel(); } catch (err) { } }
+      const src = ac.createBufferSource(), btn = document.getElementById('sayBtn');
+      src.buffer = buf; src.connect(ac.destination);
+      src.onended = () => { if (this.clip !== src) return; this.clip = null; Music.duck(false); if (btn) btn.classList.remove('talking'); };
+      this.clip = src; src.start(); this.ok = true;
+      Music.duck(true); if (btn) btn.classList.add('talking');
+    }).catch(() => { if (g === this.gen) this.sysSay(t, g); });
+  },
   list() { try { return window.speechSynthesis.getVoices() || []; } catch (e) { return []; } },
   isZh(v) { return /^(zh|cmn|yue)/i.test(v.lang || '') || /chinese|mandarin|中文|普通话|国语/i.test(v.name || ''); },
   candidates() {
@@ -474,20 +515,32 @@ const Voice = {
   say(t, keep) {
     if (!t) return;
     if (keep !== false) this.last = t;
-    if (!this.on || !('speechSynthesis' in window)) return;
+    if (!this.on) return;
     const g = ++this.gen;
     // 推到微任务里再念：同一次点击里连着说的几句（点关卡时先报关卡名，游戏紧接着说玩法）只念最后一句，
     // 不再出现"刚 speak 就 cancel 再 speak"——有的引擎拦不住还在加载的那句，就会叠在一起
     Promise.resolve().then(() => {
       if (g !== this.gen) return;
-      if (!this.list().length && !this.scanned) {
-        let done = false;
-        const go = () => { if (done) return; done = true; this.scanned = true; this.fire(t, 0, g); };
-        try { speechSynthesis.addEventListener('voiceschanged', go, { once: true }); } catch (e) { }
-        setTimeout(go, 700); return;
+      // 语音包还在下载：最多等 4 秒，免得同一局里一会儿真人声一会儿机器声
+      if (this.bankState === 'loading') {
+        let went = false;
+        const go = () => { if (went) return; went = true; if (g === this.gen) this.route(t, g); };
+        this.bankP.then(go); setTimeout(go, 4000); return;
       }
-      this.scanned = true; this.fire(t, 0, g);
+      this.route(t, g);
     });
+  },
+  route(t, g) { const e = this.entry(t); if (e) this.playClip(t, e, g); else this.sysSay(t, g); },
+  sysSay(t, g) {
+    if (!('speechSynthesis' in window)) return;
+    this.stopClip();
+    if (!this.list().length && !this.scanned) {
+      let done = false;
+      const go = () => { if (done) return; done = true; this.scanned = true; this.fire(t, 0, g); };
+      try { speechSynthesis.addEventListener('voiceschanged', go, { once: true }); } catch (e) { }
+      setTimeout(go, 700); return;
+    }
+    this.scanned = true; this.fire(t, 0, g);
   },
   fire(t, idx, g) {
     if (g !== this.gen) return; // 已经被更新的一句顶掉了
@@ -541,6 +594,7 @@ const Voice = {
 if ('speechSynthesis' in window) {
   try { speechSynthesis.cancel(); speechSynthesis.getVoices(); speechSynthesis.addEventListener('voiceschanged', () => { Voice.scanned = true; }); } catch (e) { }
 }
+Voice.loadBank();
 
 /* ===================== 状态 ===================== */
 const STICKERS = ['🐣', '🦄', '🐙', '🍓', '🚀', '🌈', '🐢', '🦋', '🍭', '🐧', '🦖', '🌻', '🐬', '🎠', '🐨', '🍉'];
@@ -2880,7 +2934,7 @@ function openPanel() {
   var cols = el('div', 'pcols');
   var c1 = el('div', 'pcard'); c1.appendChild(el('h3', null, '声音'));
   c1.appendChild(toggleRow('音效', '点对、消除、通关的提示音', function () { return Audio2.on; }, function (v) { Audio2.on = v; }));
-  c1.appendChild(toggleRow('语音读题', '每道题自动朗读一遍，不识字也能玩', function () { return Voice.on; }, function (v) { Voice.on = v; if (!v && 'speechSynthesis' in window) speechSynthesis.cancel(); }));
+  c1.appendChild(toggleRow('语音读题', '每道题自动朗读一遍，不识字也能玩', function () { return Voice.on; }, function (v) { Voice.on = v; if (!v) Voice.stop(); }));
   c1.appendChild(toggleRow('背景音乐', '朗读时自动压低', function () { return Music.on; }, function (v) { Music.on = v; if (v) Music.start(); else Music.stop(); }));
   var c2 = el('div', 'pcard'); c2.appendChild(el('h3', null, '玩法'));
   c2.appendChild(toggleRow('玩得顺时自动升关', '连续三关零失误升一级，一关错五次降一级', function () { return S.autoLevel; }, function (v) { S.autoLevel = v; }));
@@ -2939,7 +2993,7 @@ function boot() {
   Fit.boot();
   home();
   document.addEventListener('pointerdown', function () { Audio2.init(); Voice.unlock(); Music.start(); }, { once: true });
-  document.addEventListener('visibilitychange', function () { if (document.hidden) { Music.stop(); if ('speechSynthesis' in window) speechSynthesis.cancel(); } else Music.start(); });
+  document.addEventListener('visibilitychange', function () { if (document.hidden) { Music.stop(); Voice.stop(); } else Music.start(); });
 }
 
 boot();

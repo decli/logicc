@@ -728,11 +728,11 @@ const STR = {
   x_wind_p: ['天上的箭头是风。平时是一阵若有若无的微风，你在天上划一下，就加进一股阵风，它会慢慢衰减。树枝、花瓣、云和小生灵都在同一阵风里。',
     'The arrows in the sky are the wind. Normally there is a faint breeze; a swipe adds a gust that slowly fades. Branches, petals, clouds and creatures all feel the same wind.'],
   x_voice_h: ['它们怎么说话', 'How they talk'],
-  x_voice_p: ['每一句话都是提前用开源语音模型录好的：中文用 ZipVoice（流匹配），英文用 Kokoro。多音字的读音由程序先查好拼音再交给模型，录完还会让语音识别模型“听”一遍，读错了就重录。万一语音包没加载，就改用你设备自带的语音。',
-    'Every line was recorded in advance with open-source voice models: ZipVoice for Chinese and Kokoro for English. For Chinese, the pinyin of tricky characters is worked out first, and a speech recogniser listens to each take; if a word comes out wrong, it is recorded again. If the voice pack cannot load, your device\'s own voice takes over.'],
+  x_voice_p: ['每一句话都是提前用微软的神经网络语音录好的：中文是晓晓、晓伊和云夏，英文是 Ava、Ana 和 Emma，语速放慢到小朋友听得清。多音字逐个核对：把这个字换成各个读音的同音字再录几遍，听原句和哪一遍最像，读错了就改用同音字重录。一个词、它的翻译和例句录成一整段，中英文之间的停顿像真人说话一样自然。万一语音包没加载，就改用你设备自带的语音。',
+    'Every line was recorded in advance with Microsoft neural voices: Xiaoxiao, Xiaoyi and Yunxia in Chinese, Ava, Ana and Emma in English, slowed down so young children can follow. Each Chinese character with more than one reading is checked: the line is recorded again with the character swapped for words that sound like each reading, and if the original matches the wrong one it is re-recorded with a sound-alike. A word, its translation and its sentence are recorded as one clip, so the switch between languages pauses naturally, like a person talking. If the voice pack cannot load, your device\'s own voice takes over.'],
   x_none_h: ['没有一张图片', 'Not a single picture'],
-  x_none_p: ['这一页里没有图片、没有录音，也没有引用任何外部代码库。山、云、花、生灵和歌声，全由 4965 行代码在你眼前实时算出来。',
-    'This page has no pictures, no recordings and no outside code libraries. The mountains, clouds, flowers, creatures and songs all come from 4965 lines of code running in front of you.'],
+  x_none_p: ['这一页里没有图片、没有录音，也没有引用任何外部代码库。山、云、花、生灵和歌声，全由 4987 行代码在你眼前实时算出来。',
+    'This page has no pictures, no recordings and no outside code libraries. The mountains, clouds, flowers, creatures and songs all come from 4987 lines of code running in front of you.'],
   x_scope: ['拨弦合成 Karplus–Strong', 'Karplus–Strong synthesis'],
   x_ground: ['ground(x) = simplex(x) · 地面', 'ground(x) = simplex(x)'],
   x_time: ['{t} · {b}高度 {a}°', '{t} · {b} altitude {a}°'],
@@ -1631,8 +1631,11 @@ const Clock = (() => {
 
 /* =====================================================================
    造物 · voice — who says what, and when.
-   1st choice: the voice bank, lines pre-recorded with the Kokoro neural
-   TTS at build time (narrator + two creature voices per language).
+   1st choice: the voice bank, every line pre-recorded at build time with
+   Microsoft neural voices (narrator + two creature voices per language,
+   slowed down for young children, polyphones checked one by one; see
+   ../../dev/voice). A word, its translation and its sentence are stored
+   as one clip, so a bilingual run plays as one breath instead of three.
    Fallback: the device's own speech synthesis, picking its most natural
    voice and moving on to the next one if a voice stays silent.
    Priorities: a child's touch (3) > narrator (2) > reactions (1) > chatter (0).
@@ -1655,6 +1658,25 @@ const Voice = (() => {
       fetch(BASE + 'voice-' + lang + '.' + ((typeof BUILD !== 'undefined' && BUILD.ext) || 'bin')).then(r => (r.ok ? r.arrayBuffer() : Promise.reject(r.status))),
     ]).then(([ix, bin]) => { b.map = ix.u; b.buf = bin; b.state = 'ready'; }).catch(() => { b.state = 'failed'; });
     return b.p;
+  }
+  // lines said in a row by the narrator that the bank also holds as one clip (word, translation, sentence):
+  // play the longest such run as a single item
+  function mergeRuns(L) {
+    const b = banks[I18N.lang];
+    if (!b || b.state !== 'ready') return L;
+    const plain = l => (l.role || 'n') === 'n' && !l.onstart && l.x === undefined;
+    const out = [];
+    for (let i = 0; i < L.length;) {
+      let j = L.length;
+      for (; j > i + 1; j--) {
+        const run = L.slice(i, j);
+        if (run.every(plain) && b.map[fnv('n|' + run.map(l => l.text).join('\n'))]) break;
+      }
+      if (j > i + 1) { const run = L.slice(i, j); out.push({ text: run.map(l => l.text).join('\n'), role: 'n', onend: run[run.length - 1].onend }); }
+      else out.push(L[i]);
+      i = Math.max(j, i + 1);
+    }
+    return out;
   }
   function has(text, role, lang) { const b = banks[lang || I18N.lang]; return !!(b && b.state === 'ready' && b.map[fnv(role + '|' + text)]); }
   function decode(bytes) {
@@ -1794,7 +1816,7 @@ const Voice = (() => {
     // several lines in a row: the first one cuts in, the rest wait their turn; onend after the last
     seq(lines, tag, onend) {
       queue = queue.filter(q => q.tag !== tag);
-      const L = lines.filter(Boolean).map(l => (typeof l === 'string' ? { text: l } : l));
+      const L = mergeRuns(lines.filter(Boolean).map(l => (typeof l === 'string' ? { text: l } : l)));
       if (!L.length || !on) { if (onend) setTimeout(onend, L.length ? 700 : 0); return; }
       L.forEach((l, i) => say(l.text, { role: l.role || 'n', prio: i ? 2 : 3, tag, x: l.x, onstart: l.onstart, onend: i === L.length - 1 ? onend : l.onend }));
     },
@@ -4936,7 +4958,7 @@ const XRay = (() => {
     { h: 'x_tree_h', p: 'x_tree_p', tag: 'recursion · fractal growth' },
     { h: 'x_bird_h', p: 'x_bird_p', tag: 'boids · Craig Reynolds, 1986' },
     { h: 'x_sound_h', p: 'x_sound_p', tag: 'Karplus–Strong, 1983 · 宫商角徵羽' },
-    { h: 'x_voice_h', p: 'x_voice_p', tag: 'Kokoro-82M neural TTS · Web Speech fallback' },
+    { h: 'x_voice_h', p: 'x_voice_p', tag: 'Microsoft neural voices · polyphones checked · Web Speech fallback' },
     { h: 'x_sky_h', p: 'x_sky_p', tag: 'aerial perspective · colour interpolation' },
     { h: 'x_wind_h', p: 'x_wind_p', tag: 'vector field · exponential decay' },
     { h: 'x_none_h', p: 'x_none_p', tag: '0 images · 0 libraries' },

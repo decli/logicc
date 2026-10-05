@@ -1,12 +1,16 @@
 // Enumerate every line the page can speak, per language and voice role,
 // exactly as the runtime builds the strings (so the hashes match).
+// Bilingual runs (a word, its translation, a sentence) are also listed as one item each: the bank
+// carries them as a single clip, so Voice.seq plays them back to back with natural pauses.
 const fs = require('fs'), vm = require('vm');
 const ctx = { pick: a => a[0], localStorage: { getItem: () => null, setItem() { } }, document: { documentElement: {} }, console };
 vm.createContext(ctx);
 vm.runInContext(fs.readFileSync(__dirname + '/../src/i18n.js', 'utf8') + '\n;this.STR=STR;this.NAME_PAIRS=NAME_PAIRS;this.PAINTS=PAINTS;this.CHAT_PAIRS=CHAT_PAIRS;this.STICKERS=STICKERS;this.cnum=cnum;this.WORDS=WORDS;this.SAYS=SAYS;this.DRAW_THEMES=DRAW_THEMES;this.ADJ=ADJ;this.CRAYONS=CRAYONS;this.adjLine=adjLine;this.colorLine=colorLine;this.SONGS=SONGS;', ctx);
 const { STR, NAME_PAIRS, PAINTS, CHAT_PAIRS, STICKERS, cnum, WORDS, SAYS, DRAW_THEMES, ADJ, CRAYONS, adjLine, colorLine, SONGS } = ctx;
 const out = [], seen = new Set();
-function add(lang, role, text) { const k = lang + '|' + role + '|' + text; if (!text || seen.has(k)) return; seen.add(k); out.push({ lang, role, text }); }
+function add(lang, role, text) { const k = lang + '|' + role + '|' + text; if (!text || seen.has(k)) return; seen.add(k); out.push({ bank: lang, role, key: text, segs: [text] }); }
+// lines Voice.seq says in a row (see voice.js mergeRuns): key = the lines joined by \n
+function run(lang, texts) { texts = texts.filter(Boolean); const key = texts.join('\n'), k = lang + '|n|' + key; if (texts.length < 2 || seen.has(k)) return; seen.add(k); out.push({ bank: lang, role: 'n', key, segs: texts }); }
 const raw = (key, li) => { const v = STR[key][li]; return v === undefined ? STR[key][0] : v; };
 const items = (key, li) => { const v = raw(key, li); return Array.isArray(v) ? v : [v]; };
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : ''));
@@ -30,6 +34,13 @@ for (const [li, lang] of [[0, 'zh'], [1, 'en']]) {
   for (const t of DRAW_THEMES) { add(lang, 'n', t.p[li]); add(lang, 'n', t.done[li]); for (const a of ADJ) add(lang, 'n', adjLine(a.id, t.id, li)); }
   for (const c of CRAYONS) { add(lang, 'n', c.zh); add(lang, 'n', c.en); add(lang, 'n', colorLine(c.id, li)); }
   add(lang, 'n', colorLine('many', li));
+  // bilingual runs, page language first (learn.js WordCard / spy / say, draw.js crayons & themes, game.js word book)
+  const own = w => (li ? w.en : w.zh), other = w => (li ? w.zh : w.en);
+  for (const w of WORDS) { run(lang, [own(w), other(w), w.s[li]]); run(lang, [own(w), other(w)]); run(lang, [w.q[li], other(w)]); }
+  for (const p of PAINTS) run(lang, [fill(raw('spy_friend', li), { c: p[lang] }), other(WORDS.find(w => w.id === 'friend'))]);
+  for (const f of SAYS) for (const it of f.items) { run(lang, [it.s[li], it.s[1 - li], items('say_your', li)[0]]); run(lang, [it.s[li], it.s[1 - li]]); }
+  for (const c of CRAYONS) run(lang, [li ? c.en : c.zh, li ? c.zh : c.en]);
+  for (const t of DRAW_THEMES) run(lang, [t.p[li], other(WORDS.find(w => w.id === t.w))]);
   // creatures: both voices say everything
   for (const role of ['c0', 'c1']) {
     for (const k of Object.keys(STR).filter(k => k.startsWith('c_'))) {
@@ -46,6 +57,5 @@ for (const [li, lang] of [[0, 'zh'], [1, 'en']]) {
   }
 }
 fs.writeFileSync(__dirname + '/lines.json', JSON.stringify(out, null, 0));
-const by = {}; for (const o of out) { const k = o.lang + ':' + o.role; by[k] = (by[k] || 0) + 1; }
+const by = {}; for (const o of out) { const k = o.bank + ':' + o.role + (o.segs.length > 1 ? ':run' : ''); by[k] = (by[k] || 0) + 1; }
 console.log('total', out.length, by);
-const chars = {}; for (const o of out) { const k = o.lang; chars[k] = (chars[k] || 0) + o.text.length; } console.log('chars', chars);

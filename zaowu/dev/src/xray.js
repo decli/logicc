@@ -8,7 +8,7 @@ const XRay = (() => {
     { h: 'x_tree_h', p: 'x_tree_p', tag: 'recursion · fractal growth' },
     { h: 'x_bird_h', p: 'x_bird_p', tag: 'boids · Craig Reynolds, 1986' },
     { h: 'x_sound_h', p: 'x_sound_p', tag: 'Karplus–Strong, 1983 · 宫商角徵羽' },
-    { h: 'x_voice_h', p: 'x_voice_p', tag: 'Kokoro-82M neural TTS · Web Speech fallback' },
+    { h: 'x_voice_h', p: 'x_voice_p', tag: 'Microsoft neural voices · polyphones checked · Web Speech fallback' },
     { h: 'x_sky_h', p: 'x_sky_p', tag: 'aerial perspective · colour interpolation' },
     { h: 'x_wind_h', p: 'x_wind_p', tag: 'vector field · exponential decay' },
     { h: 'x_none_h', p: 'x_none_p', tag: '0 images · 0 libraries' },

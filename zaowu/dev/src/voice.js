@@ -1,7 +1,10 @@
 /* =====================================================================
    造物 · voice — who says what, and when.
-   1st choice: the voice bank, lines pre-recorded with the Kokoro neural
-   TTS at build time (narrator + two creature voices per language).
+   1st choice: the voice bank, every line pre-recorded at build time with
+   Microsoft neural voices (narrator + two creature voices per language,
+   slowed down for young children, polyphones checked one by one; see
+   ../../dev/voice). A word, its translation and its sentence are stored
+   as one clip, so a bilingual run plays as one breath instead of three.
    Fallback: the device's own speech synthesis, picking its most natural
    voice and moving on to the next one if a voice stays silent.
    Priorities: a child's touch (3) > narrator (2) > reactions (1) > chatter (0).
@@ -24,6 +27,25 @@ const Voice = (() => {
       fetch(BASE + 'voice-' + lang + '.' + ((typeof BUILD !== 'undefined' && BUILD.ext) || 'bin')).then(r => (r.ok ? r.arrayBuffer() : Promise.reject(r.status))),
     ]).then(([ix, bin]) => { b.map = ix.u; b.buf = bin; b.state = 'ready'; }).catch(() => { b.state = 'failed'; });
     return b.p;
+  }
+  // lines said in a row by the narrator that the bank also holds as one clip (word, translation, sentence):
+  // play the longest such run as a single item
+  function mergeRuns(L) {
+    const b = banks[I18N.lang];
+    if (!b || b.state !== 'ready') return L;
+    const plain = l => (l.role || 'n') === 'n' && !l.onstart && l.x === undefined;
+    const out = [];
+    for (let i = 0; i < L.length;) {
+      let j = L.length;
+      for (; j > i + 1; j--) {
+        const run = L.slice(i, j);
+        if (run.every(plain) && b.map[fnv('n|' + run.map(l => l.text).join('\n'))]) break;
+      }
+      if (j > i + 1) { const run = L.slice(i, j); out.push({ text: run.map(l => l.text).join('\n'), role: 'n', onend: run[run.length - 1].onend }); }
+      else out.push(L[i]);
+      i = Math.max(j, i + 1);
+    }
+    return out;
   }
   function has(text, role, lang) { const b = banks[lang || I18N.lang]; return !!(b && b.state === 'ready' && b.map[fnv(role + '|' + text)]); }
   function decode(bytes) {
@@ -163,7 +185,7 @@ const Voice = (() => {
     // several lines in a row: the first one cuts in, the rest wait their turn; onend after the last
     seq(lines, tag, onend) {
       queue = queue.filter(q => q.tag !== tag);
-      const L = lines.filter(Boolean).map(l => (typeof l === 'string' ? { text: l } : l));
+      const L = mergeRuns(lines.filter(Boolean).map(l => (typeof l === 'string' ? { text: l } : l)));
       if (!L.length || !on) { if (onend) setTimeout(onend, L.length ? 700 : 0); return; }
       L.forEach((l, i) => say(l.text, { role: l.role || 'n', prio: i ? 2 : 3, tag, x: l.x, onstart: l.onstart, onend: i === L.length - 1 ? onend : l.onend }));
     },

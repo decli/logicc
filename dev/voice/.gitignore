@@ -1,0 +1,6 @@
+cache/
+poly-cache.json
+lines-root.json
+poly-report-*.json
+check-*.json
+__pycache__/
