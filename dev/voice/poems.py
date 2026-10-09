@@ -337,12 +337,15 @@ async def recite(it, checker):
                 sc = final_score(y, w, py); tried.append(round(sc, 1))
                 if sc > best[1]: best = (sc, sc, y, w, uf)
                 if sc >= 0.5: break
-        if best[1] < -0.5:   # no take has it: redraw the pitch of that one syllable on the best take
-            y = reshape(best[2], best[3], py)
+        if best[1] < -0.5:
+            # nothing has it: redraw the pitch of that one syllable, on the best take of the whole poem (real
+            # characters, the poem's own melody) rather than on a line said alone or with a stand-in
+            base = opts[0]
+            y = reshape(base[2], base[3], py)
             if y is not None:
-                v = syllables(y, line_onsets(y, best[3]))[-1]
-                sc = final_score(y, best[3], py); tried.append(round(sc, 1))
-                if v is not None and sc > best[1]: best = (sc, sc, y, best[3], best[4], ' (pitch redrawn)')
+                v = syllables(y, line_onsets(y, base[3]))[-1]
+                sc = final_score(y, base[3], py); tried.append(round(sc, 1))
+                if v is not None and sc > best[1]: best = (sc, sc, y, base[3], base[4], ' (pitch redrawn)')
         report.append((l, best[3] + (' (stand-ins)' if best[4] else '') + (best[5] if len(best) > 5 else ''), round(best[1], 1), tried))
         segs.append(best[2]); said.append(best[3])
     # a line with its own spelling for the voice (鹅？鹅？鹅？) is said on its own and put in place of the cut
