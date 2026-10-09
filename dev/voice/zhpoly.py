@@ -72,6 +72,18 @@ POLY = {
     '数点点': 'shu3 dian3 dian3', '中间的空': 'zhong1 jian1 de5 kong4', '肚子': 'du4 zi5',
     '睡得': 'shui4 de5', '走得': 'zou3 de5', '跑得': 'pao3 de5', '画得': 'hua4 de5',
     '快快地': 'kuai4 kuai4 de5', '轻轻地': 'qing1 qing1 de5', '慢慢地': 'man4 man4 de5', '悄悄地': 'qiao1 qiao1 de5', '大声地': 'da4 sheng1 de5', '高高地': 'gao1 gao1 de5', '静静地': 'jing4 jing4 de5',
+    # 古诗花园: the poems, as the 统编 textbook marks them
+    '曲项': 'qu1 xiang4', '莲叶间': 'lian2 ye4 jian1', '汉乐府': 'han4 yue4 fu3', '乐府': 'yue4 fu3', '远看': 'yuan3 kan4', '有色': 'you3 se4',
+    '花还在': 'hua1 hai2 zai4', '日当午': 'ri4 dang1 wu3', '谁知': 'shui2 zhi1', '古朗月行': 'gu3 lang3 yue4 xing2', '不识': 'bu4 shi2', '呼作': 'hu1 zuo4',
+    '解落': 'jie3 luo4', '万竿斜': 'wan4 gan1 xie2', '李峤': 'li3 qiao2', '不觉晓': 'bu4 jue2 xiao3', '处处': 'chu4 chu4', '花落': 'hua1 luo4', '知多少': 'zhi1 duo1 shao3',
+    '乘舟': 'cheng2 zhou1', '将欲行': 'jiang1 yu4 xing2', '踏歌': 'ta4 ge1', '童子': 'tong2 zi3', '只在': 'zhi3 zai4', '不知处': 'bu4 zhi1 chu4',
+    '不解': 'bu4 jie3', '藏踪迹': 'cang2 zong1 ji4', '树阴': 'shu4 yin1', '小荷': 'xiao3 he2', '才露': 'cai2 lu4', '尖尖角': 'jian1 jian1 jiao3', '立上头': 'li4 shang4 tou2',
+    '红冠': 'hong2 guan1', '走将来': 'zou3 jiang1 lai2', '唐寅': 'tang2 yin2',
+    # ... and what the narrator says about them
+    '高兴地': 'gao1 xing4 de5', '完整地': 'wan2 zheng3 de5', '大摇大摆地': 'da4 yao2 da4 bai3 de5', '弯着': 'wan1 zhe5', '踏着': 'ta4 zhe5', '挨着': 'ai1 zhe5',
+    '斜着': 'xie2 zhe5', '撑着': 'cheng1 zhe5', '望着': 'wang4 zhe5', '划着': 'hua2 zhe5', '打落': 'da3 luo4', '露出': 'lu4 chu1', '干了': 'gan4 le5', '种田': 'zhong4 tian2',
+    '鸡冠': 'ji1 guan1', '衣裳': 'yi1 shang5', '叫作': 'jiao4 zuo4', '浇浇水': 'jiao1 jiao1 shui3', '背诗': 'bei4 shi1', '会背': 'hui4 bei4', '背一首': 'bei4 yi4 shou3',
+    '背完': 'bei4 wan2', '划回来': 'hua2 hui2 lai2', '划开': 'hua2 kai1', '低下头': 'di1 xia4 tou2', '舍不得': 'she3 bu4 de5', '玩得': 'wan2 de5', '开得': 'kai1 de5', '演出来': 'yan3 chu1 lai2', '更好看': 'geng4 hao3 kan4',
 }
 # readings that depend on what is around a Chinese run (digits, enumeration commas): (pattern, reading of the matched char)
 CONTEXT = [(re.compile(r'(?<=\d )行'), 'hang2'),                    # 消掉 2 行
@@ -116,7 +128,7 @@ _TABLES = None
 # hand-picked stand-ins where the automatic pick has nothing common enough
 EXTRA = {'hao3': '郝', 'hao4': '耗', 'shu3': '鼠', 'zhong3': '肿', 'chong2': '虫', 'bei1': '杯', 'diao4': '钓', 'zhuo2': '啄',
          'zhuan4': '赚', 'zang4': '葬', 'le4': '勒', 'chao2': '潮', 'he2': '河', 'shan1': '山', 'shan4': '善', 'tan2': '谈',
-         'dan4': '蛋', 'zhe2': '哲', 'she2': '蛇', 'mu2': '膜', 'kong4': '控', 'jiao3': '脚', 'jue2': '决', 'kan4': '瞰', 'hun4': '诨'}
+         'dan4': '蛋', 'zhe2': '哲', 'she2': '蛇', 'mu2': '膜', 'kong4': '控', 'jiao3': '脚', 'jue2': '决', 'kan4': '瞰', 'hun4': '诨', 'chu4': '触'}
 
 # common characters that are themselves read more than one way: never use them as stand-ins
 # (地 is mostly dì in phrase lists, but 红色地 is read de — exactly what we are trying to tell apart)

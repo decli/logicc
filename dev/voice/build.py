@@ -3,6 +3,7 @@
   python3 dev/voice/build.py root          home-page logic games  -> voice-zh.bin|json at the site root
   python3 dev/voice/build.py zaowu         造物 (both languages)  -> zaowu/voice-zh|en.bin|json (+ rebuilds zaowu/index.html)
   python3 dev/voice/build.py piano         彩虹钢琴               -> piano/voice-zh.bin|json
+  python3 dev/voice/build.py shi           古诗花园               -> voice-shi.bin|json at the site root (see poems.py)
   python3 dev/voice/build.py check root    listen back with speech recognition and list lines that do not read as written
   python3 dev/voice/build.py check zaowu
 
@@ -15,6 +16,9 @@ import voicekit as vk
 import zhpoly
 
 def collect(which):
+    if which == 'shi':
+        subprocess.run(['node', os.path.join(HERE, 'collect_shi.js')], check=True)
+        return {'voice-shi': json.load(open(os.path.join(HERE, 'lines-shi.json')))}
     if which == 'root':
         subprocess.run(['node', os.path.join(HERE, 'collect_root.js')], check=True)
         return {'voice-zh': json.load(open(os.path.join(HERE, 'lines-root.json')))}
@@ -29,12 +33,16 @@ def collect(which):
 
 def out_dir(which):
     if which == 'piano': return os.path.join(ROOT, 'piano')
-    return ROOT if which == 'root' else os.path.join(ROOT, 'zaowu', 'dev', 'voice', 'out')
+    return ROOT if which in ('root', 'shi') else os.path.join(ROOT, 'zaowu', 'dev', 'voice', 'out')
 
 async def build(which):
     banks, notes = collect(which), []
     for name, items in banks.items():
-        notes += await vk.build_bank(items, out_dir(which), name, f'{which}/{name}')
+        if which == 'shi':
+            import poems
+            notes += await poems.build_shi(items, out_dir(which), name)
+        else:
+            notes += await vk.build_bank(items, out_dir(which), name, f'{which}/{name}')
     vk.report_notes(notes, os.path.join(HERE, f'poly-report-{which}.json'))
     if which == 'zaowu':
         subprocess.run([sys.executable, os.path.join(ROOT, 'zaowu', 'dev', 'build.py')], check=True)
@@ -84,7 +92,7 @@ def check(which):
         ix = json.load(open(os.path.join(out_dir(which), name + '.json')))['u']
         blob = open(os.path.join(out_dir(which), name + '.bin'), 'rb').read()
         for it in items:
-            if len(it['segs']) != 1: continue   # runs are made of the same takes as the single lines
+            if it.get('kind') or len(it['segs']) != 1: continue   # runs are made of the same takes as the single lines
             off, ln = ix[vk.fnv(it['role'] + '|' + it['key'])]
             x = vk.decode(blob[off:off + ln], 16000)
             text = it['segs'][0]; lang = vk.lang_of(text)
@@ -102,6 +110,6 @@ def check(which):
 
 if __name__ == '__main__':
     args = sys.argv[1:]
-    if not args or args[-1] not in ('root', 'zaowu', 'piano'): sys.exit(__doc__)
+    if not args or args[-1] not in ('root', 'zaowu', 'piano', 'shi'): sys.exit(__doc__)
     if args[0] == 'check': check(args[-1])
     else: asyncio.run(build(args[-1]))

@@ -21,6 +21,11 @@ VOICES = {
     ('n', 'en'):  ('en-US-AvaMultilingualNeural', '-25%', '+0Hz'),
     ('c0', 'en'): ('en-US-AnaNeural', '-20%', '+0Hz'),
     ('c1', 'en'): ('en-US-EmmaMultilingualNeural', '-20%', '+15Hz'),
+    # 古诗花园: poems are recited slower than the narrator talks (≈3 syllables/s inside a line, pauses between lines
+    # are cut and set by hand in poems.py), the little monkey is 云夏 a touch higher
+    ('r', 'zh'):  ('zh-CN-XiaoxiaoNeural', '-30%', '+0Hz'),
+    ('R', 'zh'):  ('zh-CN-YunxiNeural', '-30%', '+0Hz'),
+    ('m', 'zh'):  ('zh-CN-YunxiaNeural', '-8%', '+12Hz'),
 }
 POLY_VOICE = VOICES[('n', 'zh')][:2]   # all zh-CN voices share one text front end, so one voice is enough to test readings
 SR, KBPS = 24000, 40
@@ -180,8 +185,8 @@ def report_notes(notes, path):
         if k in seen: continue
         seen.add(k); rows.append(n)
     json.dump(rows, open(path, 'w'), ensure_ascii=False, indent=0)
-    fixed = [r for r in rows if r['verdict'] == 'wrong']
-    print(f'polyphones: {len(fixed)} misread by the voice and fixed with a homophone; '
+    fixed = [r for r in rows if r['verdict'] in ('wrong', 'unsure-fixed')]
+    print(f'polyphones: {len(fixed)} misread (or possibly misread, in a poem) and fixed with a homophone; '
           f'{sum(r["verdict"] == "unsure" for r in rows)} unsure; {sum(r["verdict"] == "wrong-nofix" for r in rows)} wrong with no fix  -> {os.path.relpath(path, os.getcwd())}')
     for r in fixed: print(f'   fixed  {r["text"]}  [{r["char"]}] → {r["want"]} (sent {r["fix"]})')
     for r in rows:

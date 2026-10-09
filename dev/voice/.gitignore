@@ -4,3 +4,4 @@ lines-root.json
 poly-report-*.json
 check-*.json
 __pycache__/
+lines-shi.json

@@ -44,6 +44,7 @@ const KNOWN = [   // calls built at run time, expanded below; matched on a piece
   "g.name + '，' + L.t", "'红色的 '", "'这次倒着找，先找 '", "'一共要 '", "' 分成 ' + a + '、'", "' 和 ' + b + ' 合起来是几？'",
   "' 分成几和 '", "' 分成 ' + a + ' 和几？'", 'c.why', "'画的都对，还差 '", "'画好啦，是一个'", "'这一笔画完了，跳到 '",
   "'这次倒着数，从 '", "'一次消掉 '",
+  'SHI_SAY',   // 古诗花园的旁白在它自己的语音包里（collect_shi.js）
 ];
 const calls = [...src.matchAll(/Voice\.(say|short)\(/g)];
 const unknown = [];
