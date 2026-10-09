@@ -4,6 +4,7 @@
   python3 dev/voice/build.py zaowu         造物 (both languages)  -> zaowu/voice-zh|en.bin|json (+ rebuilds zaowu/index.html)
   python3 dev/voice/build.py piano         彩虹钢琴               -> piano/voice-zh.bin|json
   python3 dev/voice/build.py shi           古诗太鼓               -> voice-shi.bin|json (the game's lines) and voice-shi1…4 (each grade's poems) at the site root (see poems.py)
+  python3 dev/voice/build.py shi 3 4       古诗太鼓, only those grades
   python3 dev/voice/build.py check root    listen back with speech recognition and list lines that do not read as written
   python3 dev/voice/build.py check zaowu
 
@@ -37,8 +38,9 @@ def out_dir(which):
     if which == 'piano': return os.path.join(ROOT, 'piano')
     return ROOT if which in ('root', 'shi') else os.path.join(ROOT, 'zaowu', 'dev', 'voice', 'out')
 
-async def build(which):
+async def build(which, only=()):
     banks, notes = collect(which), []
+    if only: banks = {k: v for k, v in banks.items() if k[len('voice-shi'):] in only}
     for name, items in banks.items():
         if which == 'shi':
             import poems
@@ -112,6 +114,8 @@ def check(which):
 
 if __name__ == '__main__':
     args = sys.argv[1:]
+    only = [a for a in args if a.isdigit()]   # shi 2 4: only those grades' banks
+    args = [a for a in args if not a.isdigit()]
     if not args or args[-1] not in ('root', 'zaowu', 'piano', 'shi'): sys.exit(__doc__)
     if args[0] == 'check': check(args[-1])
-    else: asyncio.run(build(args[-1]))
+    else: asyncio.run(build(args[-1], only))
