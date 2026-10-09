@@ -351,7 +351,7 @@ body{
 
 /* ===== 古诗太鼓 ===== */
 .shKai,.shStrip,.shTitle b,.tkNote b,.tkSong .nm,.tkLvBtn b{font-family:"Kaiti SC","STKaiti","KaiTi","BiauKai","Songti SC","STSong",serif}
-.shStrip{flex:none;display:flex;flex-direction:column;align-items:center;gap:.12em;line-height:1}
+.shStrip{flex:none;display:flex;flex-direction:column;align-items:center;gap:.12em;line-height:1;font-size:32px}
 .shRow{display:flex;justify-content:center;gap:1.2em}
 .shLn{display:flex;align-items:flex-end;padding:.08em .22em;border-radius:.3em;transition:background .3s}
 .shLn.cur{background:#FFF1B8;box-shadow:0 0 0 .06em #F5B921}
@@ -359,7 +359,8 @@ body{
 .shCh i{font-style:normal;font-family:"Avenir Next","Helvetica Neue","PingFang SC",sans-serif;font-size:.34em;line-height:1.3;color:var(--ink-soft);height:1.3em;white-space:nowrap}
 .shCh b{font-weight:700;transition:color .15s,transform .15s;display:block}
 .shCh.lit b{color:var(--red);transform:scale(1.1)}
-.shCh.miss b{color:#B9B0A2}
+.shCh.bump b{animation:shBump .32s}
+@keyframes shBump{0%{scale:1}40%{scale:1.28}100%{scale:1}}
 .shCh.hid i{visibility:hidden}
 .shCh.hid b{color:transparent;background:#F3EDE0;border-radius:.16em;box-shadow:inset 0 0 0 .05em #D9D0BE}
 .shPu{font-weight:700;padding-bottom:.04em}
@@ -369,6 +370,10 @@ body{
 .shTitle .lit{color:var(--red)}
 .shSvg{display:block;width:100%;height:100%;touch-action:manipulation}
 .shModal{position:absolute;inset:0;background:rgba(42,37,35,.35);display:flex;align-items:center;justify-content:center;z-index:45;padding:calc(20px * var(--k))}
+.shCardBox.wide{flex-direction:row;gap:calc(40px * var(--k));padding:calc(28px * var(--k)) calc(64px * var(--k)) calc(28px * var(--k)) calc(40px * var(--k))}
+.shSide{display:flex;flex-direction:column;align-items:center;gap:calc(22px * var(--k))}
+.shCardBox.wide .tkLvs{flex-direction:column;flex-wrap:nowrap}
+.shCardBox.wide .shX{right:auto;left:calc(12px * var(--k))}
 .shCardBox{position:relative;background:#FFFCF2;border:calc(6px * var(--k)) solid var(--ink);border-radius:calc(30px * var(--k));box-shadow:calc(8px * var(--k)) calc(8px * var(--k)) 0 var(--ink);padding:calc(28px * var(--k)) calc(40px * var(--k));display:flex;flex-direction:column;align-items:center;gap:calc(22px * var(--k));max-width:100%;max-height:100%;overflow:auto}
 .shX{position:absolute;top:calc(12px * var(--k));right:calc(12px * var(--k))}
 /* 选诗 */
@@ -392,8 +397,8 @@ body{
 .tkLvBtn em{font-style:normal;font-size:calc(30px * var(--k));color:var(--orange);letter-spacing:.08em}
 .tkLvBtn small{font-size:calc(16px * var(--k));color:var(--ink-soft)}
 /* 打鼓 */
-.tkPane{background:#BFE6FF;touch-action:manipulation;-webkit-user-select:none;user-select:none}
-.tkScene{position:absolute;inset:0;width:100%;height:100%}
+.tkPane{touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.tkPic{position:absolute;border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(26px * var(--k));overflow:hidden;background:#BFE6FF;box-shadow:calc(6px * var(--k)) calc(6px * var(--k)) 0 var(--ink);z-index:1}
 .tkBar{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:calc(14px * var(--k));padding:calc(12px * var(--k)) calc(20px * var(--k));z-index:5;pointer-events:none}
 .tkBar>*{pointer-events:auto}
 .tkName{gap:calc(12px * var(--k))}
@@ -402,7 +407,7 @@ body{
 .tkScoreP{gap:calc(10px * var(--k))}
 .tkScoreP span{font-size:calc(20px * var(--k));color:var(--ink-soft)}
 .tkScoreP b{font-size:calc(36px * var(--k));min-width:2.6em;text-align:right}
-.tkStripBox{position:absolute;left:50%;top:calc(104px * var(--k));transform:translateX(-50%);background:rgba(255,252,242,.9);border:calc(4px * var(--k)) solid var(--ink);border-radius:calc(22px * var(--k));padding:calc(8px * var(--k)) calc(20px * var(--k));z-index:4;pointer-events:none}
+.tkStripBox{position:absolute;display:flex;align-items:center;justify-content:center;background:#FFFCF2;border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(26px * var(--k));box-shadow:calc(6px * var(--k)) calc(6px * var(--k)) 0 var(--ink);z-index:1;pointer-events:none;overflow:hidden}
 .tkLane{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(#7A4A2A,#4A2A16);border-top:calc(6px * var(--k)) solid var(--ink);z-index:4}
 .tkTrack{position:absolute;left:1.5%;right:1.5%;top:50%;height:66%;transform:translateY(-50%);border-radius:999px;background:rgba(0,0,0,.18);border:calc(3px * var(--k)) dashed rgba(255,236,190,.35)}
 .tkDrum{position:absolute;top:50%;transform:translateY(-50%);border-radius:50%;background:radial-gradient(circle at 45% 40%,#FFF8E6,#F2D7A0 70%,#D9B26A);border:calc(9px * var(--k)) solid #C8341E;box-shadow:0 0 0 calc(5px * var(--k)) #2A2523,0 0 0 calc(14px * var(--k)) rgba(255,224,102,.35);display:flex;align-items:center;justify-content:center;line-height:1;z-index:1}
@@ -418,11 +423,11 @@ body{
 .tkNote.hit{animation:tkPop .4s forwards}
 .tkNote.miss{opacity:.35;filter:grayscale(1)}
 @keyframes tkPop{0%{scale:1;opacity:1}40%{scale:1.35;opacity:1}100%{scale:1.7;opacity:0}}
-.tkJudge{position:absolute;bottom:calc(100% + 14px * var(--k));transform:translateX(-50%);font-weight:700;font-size:calc(46px * var(--k));white-space:nowrap;z-index:3;pointer-events:none;animation:tkJudge .75s forwards;-webkit-text-stroke:calc(1.5px * var(--k)) var(--ink)}
+.tkJudge{position:absolute;top:2%;transform:translateX(-50%);font-weight:700;font-size:calc(46px * var(--k));white-space:nowrap;z-index:3;pointer-events:none;animation:tkJudge .75s forwards;-webkit-text-stroke:calc(1.5px * var(--k)) var(--ink)}
 .tkJudge.p{color:#FFD54A}
 .tkJudge.g{color:#8EE08A}
 .tkJudge.m{color:#D9D0BE;font-size:calc(28px * var(--k))}
-.tkJudge.say{color:#fff;bottom:calc(100% + 76px * var(--k));font-size:calc(34px * var(--k));animation-duration:1.4s}
+.tkJudge.say{color:#fff;font-size:calc(34px * var(--k));animation-duration:1.4s}
 @keyframes tkJudge{0%{opacity:0;translate:0 10px;scale:.7}20%{opacity:1;translate:0 0;scale:1.1}100%{opacity:0;translate:0 -30px;scale:1}}
 .tkCombo{position:absolute;top:4%;left:50%;transform:translateX(-50%);color:#FFE38A;font-weight:700;font-size:calc(36px * var(--k));z-index:3;pointer-events:none;text-shadow:0 calc(3px * var(--k)) 0 rgba(0,0,0,.5)}
 .tkCombo.bump{animation:pp .25s}
@@ -1637,7 +1642,7 @@ const POEMS = [
     sc: {
       sky: 'day',
       bg: [['hills', 200, '#B9DDB0', 2], ['water', 225, '#86C5E3', 'water']],
-      sp: [['l1', '@leaf', 360, 320, 100], ['l2', '@leaf', 640, 350, 110], ['l3', '@leaf', 280, 480, 105], ['l4', '@leaf', 730, 505, 100], ['l5', '@leaf', 490, 290, 85, 'h'], ['l6', '@leaf', 850, 330, 90, 'h'], ['l7', '@leaf', 170, 350, 85, 'h'], ['l8', '@leaf', 560, 470, 115, 'h'], ['l9', '@leaf', 430, 570, 90, 'h'], ['l10', '@leaf', 880, 560, 95, 'h'], ['l11', '@leaf', 120, 560, 80, 'h'], ['f1', '@lotus', 650, 325, 70], ['f2', '@lotus', 290, 455, 62], ['boat', '🛶', -90, 290, 120], ['girl', '👧', 0, -48, 62, '', 'boat'], ['fish', '🐟', 500, 410, 72, 'h'], ['lE', 'T:东', 955, 420, 52, 'h'], ['lW', 'T:西', 45, 420, 52, 'h'], ['lS', 'T:南', 500, 598, 52, 'h'], ['lN', 'T:北', 500, 258, 52, 'h']]
+      sp: [['l1', '@leaf', 360, 320, 100], ['l2', '@leaf', 640, 350, 110], ['l3', '@leaf', 280, 480, 105], ['l4', '@leaf', 730, 505, 100], ['l5', '@leaf', 490, 290, 85, 'h'], ['l6', '@leaf', 850, 330, 90, 'h'], ['l7', '@leaf', 170, 350, 85, 'h'], ['l8', '@leaf', 560, 470, 115, 'h'], ['l9', '@leaf', 430, 570, 90, 'h'], ['l10', '@leaf', 880, 560, 95, 'h'], ['l11', '@leaf', 120, 560, 80, 'h'], ['f1', '@lotus', 650, 325, 70], ['f2', '@lotus', 290, 455, 62], ['boat', '🛶', -90, 290, 120], ['girl', '👧', 0, -48, 62, '', 'boat'], ['fish', '🐟', 500, 410, 72, 'h'], ['lE', 'T:东', 955, 420, 52, 'h'], ['lW', 'T:西', 45, 420, 52, 'h'], ['lS', 'T:南', 500, 572, 52, 'h'], ['lN', 'T:北', 500, 258, 52, 'h']]
     }
   },
   {
@@ -2251,48 +2256,63 @@ function shScene(P) {
   sc.run = function (i) { return shRunActs(sc, P.L[i].act); };
   return sc;
 }
-/* ===================== 诗句条：拼音 + 楷体，读到哪个字亮哪个字 ===================== */
+/* ===================== 诗句条：拼音 + 楷体，读到哪个字哪个字变红 ===================== */
+// 一行放一句还是两句，fit 时按哪种字更大来定（江南七句、静夜思四句都能撑满）
 function shStrip(P, o) {
   o = o || {};
-  var root = el('div', 'shStrip' + (o.big ? ' big' : '')), rows = [], lines = [];
+  var root = el('div', 'shStrip'), rows = [], lines = [], per = 0, tt = null;
   if (o.title) {
-    var tt = el('div', 'shTitle');
+    tt = el('div', 'shTitle');
     tt.appendChild(el('b', null, P.t + (P.tsub || '')));
     tt.appendChild(el('span', null, shBy(P)));
     root.appendChild(tt);
   }
-  var per = o.per || 2, row = null;
-  P.L.forEach(function (L, i) {
-    if (i % per === 0) { row = el('div', 'shRow'); root.appendChild(row); rows.push(row); }
-    var ln = el('div', 'shLn'), py = L.py.split(' '), k = 0, chs = [];
+  P.L.forEach(function (L) {
+    var ln = el('div', 'shLn'), py = L.py.split(' '), k = 0, chs = [], n = 0;
     Array.from(L.x).forEach(function (c) {
+      n++;
       if (SH_PUNCT.test(c)) { ln.appendChild(el('span', 'shPu', c)); return; }
-      var ch = el('span', 'shCh'); ch.appendChild(el('i', null, o.py === false ? '' : (py[k] || ''))); ch.appendChild(el('b', null, c));
+      var ch = el('span', 'shCh'); ch.appendChild(el('i', null, py[k] || '')); ch.appendChild(el('b', null, c));
       ln.appendChild(ch); chs.push(ch); k++;
     });
-    row.appendChild(ln); lines.push({ el: ln, chs: chs });
+    lines.push({ el: ln, chs: chs, n: n });
   });
+  function layout(pp) {
+    per = pp; rows.forEach(function (r) { r.remove(); }); rows = [];
+    lines.forEach(function (l, i) {
+      if (i % pp === 0) { rows.push(el('div', 'shRow')); root.appendChild(rows[rows.length - 1]); }
+      rows[rows.length - 1].appendChild(l.el);
+    });
+  }
+  layout(o.per || 1);
+  function size(pp, w, h) {   // 一行放 pp 句时，宽高都放得下的最大字号
+    var nr = Math.ceil(lines.length / pp), maxCh = 0;
+    for (var r = 0; r < nr; r++) {
+      var ls = lines.slice(r * pp, r * pp + pp), n = 0;
+      ls.forEach(function (l) { n += l.n; });
+      maxCh = Math.max(maxCh, n + (ls.length - 1) * 1.6);
+    }
+    return Math.min(w / (maxCh * 1.22 + 1), h / ((nr + (tt ? 0.9 : 0)) * 1.75));
+  }
   var api = {
-    el: root, lines: lines,
-    cur: function (i) { lines.forEach(function (l, j) { l.el.classList.toggle('cur', j === i); if (j !== i) l.chs.forEach(function (c) { c.classList.remove('lit'); }); }); },
+    el: root, lines: lines, title: tt,
+    // 换到第 i 句：这句亮底色，别的句子的红字退回黑字（和「先听一遍」一样）
+    cur: function (i) {
+      lines.forEach(function (l, j) { l.el.classList.toggle('cur', j === i); if (j !== i) l.chs.forEach(function (c) { c.classList.remove('lit'); }); });
+      if (tt && i >= 0) tt.querySelectorAll('.lit').forEach(function (e) { e.classList.remove('lit'); });
+    },
     clear: function () { lines.forEach(function (l) { l.chs.forEach(function (c) { c.classList.remove('lit'); }); }); },
-    hide: function (i, keepFirst) { lines[i].chs.forEach(function (c, k) { c.classList.toggle('hid', !(keepFirst && k === 0)); }); },
-    hideAll: function () { lines.forEach(function (l, i) { api.hide(i); }); },
-    reveal: function (i) { lines[i].chs.forEach(function (c) { if (c.classList.contains('hid')) { c.classList.remove('hid'); c.classList.add('pop'); } }); },
-    blank: function (i, k) { lines[i].chs[k].classList.add('blank'); },
-    fill: function (i, k) { var c = lines[i].chs[k]; c.classList.remove('blank'); c.classList.add('fill'); },
-    lit: function (i, k) { var c = lines[i] && lines[i].chs[k]; if (c) c.classList.add('lit'); },
     // 跟着朗诵亮字。times：每个字开始的秒数；没有（用的是设备语音）就按时长平均分
     karaoke: function (i, info, times) {
       var chs = lines[i].chs; chs.forEach(function (c) { c.classList.remove('lit'); });
       var t = times || (info && info.m && info.m.t) || null, dur = info && info.dur || chs.length * 0.33;
       chs.forEach(function (c, k) { later(((t ? t[k] : dur * k / chs.length) || 0) * 1000, function () { c.classList.add('lit'); }); });
     },
-    fit: function (w, h) {   // 按可用宽高定字号
-      var maxCh = 0; rows.forEach(function (r) { var n = 0; r.querySelectorAll('.shCh,.shPu,.shNo').forEach(function () { n++; }); maxCh = Math.max(maxCh, n + (r.children.length - 1) * 1.6); });
-      var nrows = rows.length + (o.title ? 0.9 : 0);
-      var fs = Math.floor(Math.min(w / (maxCh * 1.22 + 1), h / (nrows * 1.75)));
-      root.style.fontSize = clamp(fs, 14, o.big ? 130 : 64) + 'px';
+    fit: function (w, h) {   // 按可用宽高定字号，顺便定一行放几句
+      var cands = o.per ? [o.per] : lines.length > 2 ? [1, 2] : [1], best = 0, bp = cands[0];
+      cands.forEach(function (pp) { var fs = size(pp, w, h); if (fs > best * 1.04) { best = fs; bp = pp; } });
+      if (bp !== per) layout(bp);
+      root.style.fontSize = clamp(Math.floor(best), 14, o.max || 64) + 'px';
     }
   };
   return api;
@@ -2438,7 +2458,7 @@ function tkHome() {
 }
 // 点一首诗：看诗、听一遍、选关
 function tkDetail(P) {
-  var m = el('div', 'shModal'), box = el('div', 'shCardBox'), strip = shStrip(P, { per: 1, title: true, big: true });
+  var m = el('div', 'shModal'), box = el('div', 'shCardBox'), strip = shStrip(P, { title: true, max: 110 }), side = el('div', 'shSide');
   var rec = tkRec(P.id), next = 0;
   while (next < 2 && rec[next].s > 0) next++;
   var lvs = el('div', 'tkLvs');
@@ -2453,11 +2473,18 @@ function tkDetail(P) {
     lvs.appendChild(b);
   });
   var listen = el('button', 'bigbtn ghost', '🔊 先听一遍'), close = el('button', 'iconbtn shX', '✕');
-  box.appendChild(close); box.appendChild(strip.el); box.appendChild(lvs); box.appendChild(listen); m.appendChild(box);
+  side.appendChild(lvs); side.appendChild(listen);
+  box.appendChild(close); box.appendChild(strip.el); box.appendChild(side); m.appendChild(box);
   $('#screen').appendChild(m);
   var prevFit = Fit.cb, gen = ROUND_ID;
   function shut() { Voice.stop(); m.remove(); Fit.cb = prevFit; Fit.run(); }
-  Fit.cb = function () { var r = $('#screen').getBoundingClientRect(); strip.fit(r.width * 0.78, r.height * 0.42); if (prevFit) prevFit(); };
+  Fit.cb = function () {   // 宽屏：诗在左、按钮在右；其余：诗在上、按钮在下
+    var r = $('#screen').getBoundingClientRect(), wide = r.width > r.height * 1.5;
+    box.classList.toggle('wide', wide);
+    if (wide) strip.fit(r.width - side.offsetWidth - 200 * K, r.height - 150 * K);
+    else strip.fit(r.width * 0.82, r.height - side.offsetHeight - 190 * K);
+    if (prevFit) prevFit();
+  };
   Fit.run();
   close.addEventListener('click', function () { Audio2.tap(); shut(); });
   m.addEventListener('click', function (e) { if (e.target === m) shut(); });
@@ -2470,8 +2497,8 @@ async function tkPlay(P, lv) {
   Session = null; Fit.cb = null; ROUND_ID++; stopTimer(); TK.stop(); Voice.stop(); Music.stop(); Voice.lastFn = null;
   var id = ROUND_ID, alive = function () { return id === ROUND_ID; }, L = TK_LV[lv];
   Audio2.init();
-  var pane = el('div', 'pane tkPane'), sc = shScene(P);
-  sc.svg.setAttribute('preserveAspectRatio', 'xMidYMid slice'); sc.svg.classList.add('tkScene'); pane.appendChild(sc.svg);
+  var pane = el('div', 'pane tkPane'), sc = shScene(P), pic = el('div', 'tkPic');
+  sc.svg.setAttribute('preserveAspectRatio', 'xMidYMid slice'); pic.appendChild(sc.svg); pane.appendChild(pic);
   var bar = el('div', 'tkBar');
   bar.appendChild(ibtn('⬅', '#fff', function () { Audio2.page(); TK.stop(); tkHome(); }));
   var name = el('div', 'pill tkName'); name.appendChild(el('b', null, '《' + P.t + '》')); name.appendChild(el('span', null, '第' + '一二三'[lv] + '关 · ' + L.n)); bar.appendChild(name);
@@ -2483,16 +2510,30 @@ async function tkPlay(P, lv) {
   drum.appendChild(el('span', null, '🥁')); lane.appendChild(track); lane.appendChild(drum); lane.appendChild(notesL); lane.appendChild(combo); lane.appendChild(hint);
   pane.appendChild(lane);
   $('#screen').innerHTML = ''; $('#screen').appendChild(pane);
-  var tall = pane.clientHeight > pane.clientWidth, strip = shStrip(P, { per: tall ? 1 : 2, title: true });
+  var strip = shStrip(P, { title: true, max: 96 });
   sbox.appendChild(strip.el);
   var G = { dx: 100, sp: 300, h: 80 };
+  // 鼓道在最下面；上面分成诗和画两块，谁也不盖住谁：宽屏诗在左、画在右，竖屏诗在上、画在下。
+  // 画框和画一样宽高比（1000×620），整幅画都看得见
+  function box(e, x, y, w, h) { e.style.left = px(x); e.style.top = px(y); e.style.width = px(w); e.style.height = px(h); }
   Fit.cb = function () {
-    var w = pane.clientWidth, h = pane.clientHeight;
-    lane.style.height = px(clamp(h * 0.3, 150, 330));
-    var lh = lane.clientHeight; G.h = lh * 0.5; G.dx = Math.max(G.h * 0.95, w * 0.12); G.sp = (w * 1.04 - G.dx) / TK_LEAD;
-    var ds = lh * 0.8; drum.style.width = drum.style.height = px(ds); drum.style.left = px(G.dx - ds / 2); drum.style.fontSize = px(ds * 0.55);
+    var w = pane.clientWidth, h = pane.clientHeight, pad = 18 * K, R = 1000 / 620;
+    var lh = clamp(h * 0.27, 110, Math.min(300, w * 0.28)); lane.style.height = px(lh);
+    var top = bar.offsetHeight, cw = w - 2 * pad, ch = h - lh - top - pad, pw, ph;
+    if (cw > ch * 1.25) {
+      ph = Math.min(ch, cw * 0.6 / R); pw = ph * R;
+      box(pic, pad + cw - pw, top + (ch - ph) / 2, pw, ph);
+      box(sbox, pad, top, cw - pw - pad, ch);
+    } else {
+      pw = Math.min(cw, ch * 0.58 * R); ph = pw / R;
+      box(pic, pad + (cw - pw) / 2, top + ch - ph, pw, ph);
+      box(sbox, pad, top, cw, ch - ph - pad);
+    }
+    strip.fit(sbox.clientWidth - 60 * K, sbox.clientHeight - 40 * K);
+    // 灯笼：鼓道越高越大，但屏幕窄（灯笼走得慢）时要缩小，免得挨得近的两拍叠在一起
+    var lh2 = lane.clientHeight; G.dx = Math.max(lh2 * 0.48, w * 0.12); G.sp = (w * 1.04 - G.dx) / TK_LEAD; G.h = Math.min(lh2 * 0.5, G.sp * 0.33);
+    var ds = lh2 * 0.8; drum.style.width = drum.style.height = px(ds); drum.style.left = px(G.dx - ds / 2); drum.style.fontSize = px(ds * 0.55);
     notesL.style.fontSize = px(G.h * 0.42);
-    strip.fit(w * (tall ? 0.9 : 0.66), h * (tall ? 0.3 : 0.24));
   };
   Fit.run();
   var clip = await tkClip(P); if (!alive()) return;
@@ -2538,20 +2579,26 @@ function tkRun(P, lv, clip, notes, ui) {
     ui.combo.textContent = st.combo >= 2 ? '连击 ×' + st.combo + (st.combo >= 10 ? ' 🔥' : '') : '';
     ui.combo.classList.remove('bump'); void ui.combo.offsetWidth; if (st.combo >= 2) ui.combo.classList.add('bump');
   }
-  function stripMark(n, cls) {
-    if (n.kind === 'l') n.chars.forEach(function (k) { var c = ui.strip.lines[n.line].chs[k]; c.classList.remove('hid'); c.classList.add(cls); });
-    else { var t = ui.strip.el.querySelector('.shTitle ' + (n.kind === 't' ? 'b' : 'span')); if (t) t.classList.add(cls === 'lit' ? 'lit' : 'miss'); }
+  // 诗句条跟着朗诵变红（和「先听一遍」一样）：每个字到了它的时刻就变红，藏起来的字也在这一刻翻出来；
+  // 打中了那几个字再跳一下
+  var kar = [], kq = 0;
+  if (clip.m.H && ui.strip.title) { kar.push({ t: t0 + clip.m.H[0][0], e: ui.strip.title.querySelector('b') }); kar.push({ t: t0 + clip.m.H[1][0], e: ui.strip.title.querySelector('span') }); }
+  P.L.forEach(function (_, i) { ui.strip.lines[i].chs.forEach(function (c, k) { kar.push({ t: t0 + clip.m.T[i][k] - 0.03, e: c }); }); });
+  kar.sort(function (a, b) { return a.t - b.t; });
+  function bump(n) {
+    if (n.kind !== 'l') return;
+    n.chars.forEach(function (k) { var c = ui.strip.lines[n.line].chs[k]; c.classList.remove('bump'); void c.offsetWidth; c.classList.add('bump'); });
   }
   function judge(n, perfect) {
     n.done = true; n.res = perfect ? 'p' : 'g';
-    if (n.kind !== 'p') { st.hits++; st.combo++; st.best = Math.max(st.best, st.combo); st.score += (perfect ? 100 : 60) + Math.min(st.combo, 20) * 5; ui.scoreN.textContent = st.score; stripMark(n, 'lit'); paintCombo(); }
+    if (n.kind !== 'p') { st.hits++; st.combo++; st.best = Math.max(st.best, st.combo); st.score += (perfect ? 100 : 60) + Math.min(st.combo, 20) * 5; ui.scoreN.textContent = st.score; bump(n); paintCombo(); }
     pop(perfect ? 'p' : 'g', perfect ? '完美！' : '好！');
     if (perfect) Audio2.pop();
     if (n.el) { if (n.hid) n.el.querySelector('b').textContent = n.txt; n.el.classList.add('hit'); n.hitX = G.dx; setTimeout(function () { if (n.el) n.el.remove(); }, 420); }
   }
   function miss(n) {
     n.done = true; n.res = 'm';
-    if (n.kind !== 'p') { if (st.combo >= 3) pop('m', '哎呀'); st.combo = 0; paintCombo(); stripMark(n, 'miss'); }
+    if (n.kind !== 'p') { if (st.combo >= 3) pop('m', '哎呀'); st.combo = 0; paintCombo(); }
     if (n.el) n.el.classList.add('miss');
   }
   function hit() {
@@ -2589,6 +2636,7 @@ function tkRun(P, lv, clip, notes, ui) {
       if (n.hid && !saidMic[n.line] && dt < 0.9 && dt > 0) { saidMic[n.line] = 1; pop('say', '你来念！'); }
     }
     for (var li = 0; li < lineAt.length; li++) if (!lineDone[li] && t >= lineAt[li] - 0.05) { lineDone[li] = 1; ui.strip.cur(li); ui.sc.run(li); }
+    for (; kq < kar.length && kar[kq].t <= t; kq++) { var ke = kar[kq].e; if (ke.classList.contains('hid')) ke.classList.remove('hid'); ke.classList.add('lit'); }
     if (t > endT) return finish();
     r.raf = requestAnimationFrame(frame);
   }
