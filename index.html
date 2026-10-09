@@ -1628,7 +1628,7 @@ function gBond(board, lv) {
    多音字按教材注音逐字核对（见 dev/voice/poems.py）。
    ------------------------------------------------------------------------------------------------
    数据格式
-     L[i].x    这一句（带标点）；py 拼音（按教材注音，一、不标变调）；ex 大白话
+     L[i].x    这一句（带标点）；say 送去合成时的写法（只在读音不对时才写）；py 拼音（按教材注音，一、不标变调）；ex 大白话
      L[i].tap  诗画里这一句要点的地方（画布 1000×620）；act 点了以后画面怎么演；pic 这一句的卡片画
      sc        画面：sky 天色，bg 背景（按顺序画），sp 角色 [id, 字符或@形状, x, y, 大小, 标记, 挂在谁身上]
                标记：h 先藏着，f 左右翻，v 上下翻，r-16 转 -16 度，o.4 透明度
@@ -1640,7 +1640,8 @@ const POEMS = [
     id: 'ye', t: '咏鹅', tp: 'yǒng é', d: '唐', a: '骆宾王', g: '一年级上', hero: '🦢',
     intro: '这首诗叫《咏鹅》。传说骆宾王写它的时候才七岁，和你差不多大呢！',
     L: [
-      { x: '鹅，鹅，鹅，', py: 'é é é', ex: '小朋友看见大白鹅，高兴地叫：鹅！鹅！鹅！', tap: [500, 420],
+      // say：送去合成的写法。「鹅，」单独成句时句末降调会把二声压成 è，写成问号三个鹅才是上扬的（实测音高）
+      { x: '鹅，鹅，鹅，', say: '鹅？鹅？鹅？', py: 'é é é', ex: '小朋友看见了大白鹅，高兴得一声一声叫它。', tap: [500, 420],
         pic: { bg: '#CDEBFA', w: '#8CC8E8', e: [['🦢', 120, 118, 100], ['💬', 222, 62, 74], ['T:鹅', 222, 56, 28]] },
         act: [['show', 'goose'], ['hop', 'goose', 3, 34, { at: 400 }], ['fx', 'ripple', 500, 480]] },
       { x: '曲项向天歌。', py: 'qū xiàng xiàng tiān gē', ex: '大白鹅弯着长长的脖子，对着天空唱歌。', tap: [455, 345],
@@ -2073,7 +2074,7 @@ function shDay() { var d = new Date(); return Math.floor((d.getTime() - d.getTim
 const SH_REV = [1, 2, 4, 7, 15, 30, 60];   // 开花以后隔几天回来复习
 const SH_STAGE = ['🌰', '🌱', '🌿', '🌷', '🌸'];
 const SH_STAGE_NAME = ['种子', '发芽', '长叶', '花苞', '开花'];
-function shOpen(i) { if (S.shi.all || i === 0) return true; return shP(POEMS[i].id).s > 0 || shP(POEMS[i - 1].id).s >= 2; }
+function shOpen(i) { return true; }   // 不再锁：13 首都能直接玩
 function shDue(P) { var p = shP(P.id); return p.s >= 4 && p.due > 0 && p.due <= shDay(); }
 function shBloomed() { return POEMS.filter(function (P) { return shP(P.id).s >= 4; }).length; }
 function shToday() {
@@ -3143,7 +3144,7 @@ function shGarden() {
   ban.appendChild(el('span', 'owlF', '🦉'));
   var tx = el('div', 'tx');
   tx.appendChild(el('b', null, t.why === 'water' ? '《' + t.P.t + '》想你了 💧' : t.why === 'seed' ? '新种子：《' + t.P.t + '》' : '今天玩《' + t.P.t + '》'));
-  tx.appendChild(el('span', null, '开了 ' + shBloomed() + ' / ' + POEMS.length + ' 朵花 · 下一步：' + SH_STAGE_NAME[Math.min(4, shP(t.P.id).s)] + (shP(t.P.id).s >= 4 ? '（复习）' : '')));
+  tx.appendChild(el('span', null, '这一组玩：' + shPlan(t.P).map(function (k) { return SH_GAME_NAME[k]; }).join(' · ')));
   ban.appendChild(tx);
   var go = el('button', 'bigbtn', '▶ 开始'); go.addEventListener('click', function () { Audio2.tap(); shStart(t.P); });
   var recs = el('button', 'bigbtn ghost', '📼 我的诗集'); recs.addEventListener('click', function () { Audio2.tap(); shRecs(); });
@@ -4757,7 +4758,6 @@ function openPanel() {
   c2.appendChild(toggleRow('玩得顺时自动升关', '连续三关零失误升一级，一关错五次降一级', function () { return S.autoLevel; }, function (v) { S.autoLevel = v; }));
   c2.appendChild(toggleRow('慢慢来模式', '默认打开。题目分批出现而不是一次铺满；找数字这类关卡会拆成「先找 5 个」的小目标。孩子一看到满屏内容就发怵时开着。', function () { return S.easeIn; }, function (v) { S.easeIn = v; }));
   c2.appendChild(toggleRow('找数字：藏起要找的数', '默认关闭。打开后题目牌只显示「?」，数字只念一遍，孩子得自己记着数到几了——这部分工作记忆的负荷会回到她身上。点一下牌子能偷看 1.5 秒。', function () { return S.hideTarget; }, function (v) { S.hideTarget = v; }));
-  c2.appendChild(toggleRow('古诗：所有的诗都能玩', '默认关闭。关着时一次只醒一颗新种子：前一首冒出叶子（玩过两组）后一首才醒——一下子学好几首反而都记不牢。', function () { return S.shi.all; }, function (v) { S.shi.all = v; }));
   c2.appendChild(toggleRow('古诗：保存背诗录音', '默认打开。「我来背」录下的声音只存在这台平板上，不上传；在古诗花园的「我的诗集」里能听、能删。', function () { return S.shi.rec; }, function (v) { S.shi.rec = v; }));
   c2.appendChild(toggleRow('卡住时发光提示', '默认关闭。打开后没动作时会点亮正确答案——等于替孩子做完了搜索，训练效果会打折。', function () { return S.hints; }, function (v) { S.hints = v; }, true));
   var c3 = el('div', 'pcard'); c3.appendChild(el('h3', null, '计时与记录'));

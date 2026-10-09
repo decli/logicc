@@ -68,6 +68,18 @@ def quietest(x, t0, t1):
 
 def silence(s): return np.zeros(int(vk.SR * s), np.float32)
 
+def regap(x, gap=0.4):
+    """syllables said one by one (鹅？鹅？鹅？) come back with long question pauses between them:
+    keep each sound as it is and close the silences up to `gap` seconds. The cuts fall in silence"""
+    e = env_of(x); isl = islands(e, e.max() * 0.05, gap=12)
+    if len(isl) < 2: return x
+    pad = int(vk.SR * 0.04); parts = []
+    for k, (a, b) in enumerate(isl):
+        seg = x[max(0, int(a * HOP * vk.SR) - pad): min(len(x), int(b * HOP * vk.SR) + pad)].copy()
+        if k: parts.append(silence(gap))
+        parts.append(vk.fade(seg, 6))
+    return np.concatenate(parts)
+
 async def fixed(text, checker):
     """text to send with polyphones fixed. Unlike the rest of the site, a reading the checker is unsure about is
     fixed too: the stand-in has only the reading we want, so sending it can never make things worse, and a poem
@@ -112,6 +124,12 @@ async def recite(it, checker):
     cuts = [0.0] + [quietest(x, span[i][1], span[i + 1][0]) for i in range(len(lines) - 1)] + [len(x) / vk.SR]
     x = vk.level(x)
     segs = [vk.fade(vk.trim(x[int(cuts[i] * vk.SR):int(cuts[i + 1] * vk.SR)].copy())) for i in range(len(lines))]
+    # a line with its own spelling for the voice (鹅？鹅？鹅？) is said on its own and put in place of the cut;
+    # it is followed by a pause anyway, so the join cannot be heard, and the other lines keep the one-take melody
+    for i, alt in enumerate(it.get('say') or []):
+        if alt:
+            y, _, _, n0 = await say(role, alt, checker); notes += n0
+            segs[i] = vk.fade(vk.level(vk.trim(regap(y))))
     title, _, _, n1 = await say(role, it['title'] + '。', checker)
     by, _, _, n2 = await say(role, it['by'] + '。', checker)
     notes += n1 + n2
@@ -155,8 +173,11 @@ async def build_shi(items, out_dir, name):
         else:
             parts, nt = await vk.prepare(it['role'], it['segs'], checker)
         ck = hashlib.sha1(json.dumps([[p[:4] for p in parts], [vk.gap_before(p[4]) for p in parts], vk.KBPS, vk.SR], ensure_ascii=False).encode()).hexdigest()[:24]
-        f = os.path.join(clips, ck + '.mp3')
-        if not os.path.exists(f) or os.path.getsize(f) == 0: vk.write_atomic(f, vk.mp3(await vk.assemble(parts)))
+        spaced = it['role'] in POEM_ROLES and '？' in it['segs'][0].rstrip('？')   # 鹅？鹅？鹅？: close up the pauses
+        f = os.path.join(clips, ck + ('g' if spaced else '') + '.mp3')
+        if not os.path.exists(f) or os.path.getsize(f) == 0:
+            pcm = await vk.assemble(parts)
+            vk.write_atomic(f, vk.mp3(regap(pcm) if spaced else pcm))
         return open(f, 'rb').read(), nt
 
     plain = [it for it in items if not it.get('kind')]
