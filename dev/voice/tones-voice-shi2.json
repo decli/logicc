@@ -61,7 +61,7 @@
 "lines": [
 {
 "text": "蓬头稚子学垂纶，",
-"sent": "蓬头稚子，学垂仑！",
+"sent": "蓬头稚子，学垂纶！ (last character sent as 仑)",
 "score": 0.7,
 "tried": [
 -0.0,
@@ -102,7 +102,7 @@
 -6.9,
 -6.2,
 -3.3,
--8.2
+-4.7
 ]
 }
 ]
@@ -131,7 +131,7 @@
 },
 {
 "text": "欲穷千里目，",
-"sent": "欲穷，千里墓！",
+"sent": "欲穷，千里目！ (last character sent as 墓)",
 "score": 1.5,
 "tried": [
 -4.7,
@@ -163,7 +163,7 @@
 "lines": [
 {
 "text": "日照香炉生紫烟，",
-"sent": "日照香炉，生紫焉！",
+"sent": "日照香炉，生紫烟！ (last character sent as 焉)",
 "score": -0.1,
 "tried": [
 -2.0,
@@ -364,7 +364,7 @@
 },
 {
 "text": "天苍苍，",
-"sent": "天苍沧！",
+"sent": "天苍苍！ (last character sent as 沧)",
 "score": -0.2,
 "tried": [
 -0.3,
@@ -392,7 +392,7 @@
 },
 {
 "text": "风吹草低见牛羊。",
-"sent": "风吹草低，见牛阳！ (stand-ins)",
+"sent": "风吹草低，见牛羊！ (stand-ins) (last character sent as 阳)",
 "score": 0.1,
 "tried": [
 -0.8,
@@ -521,7 +521,7 @@
 "lines": [
 {
 "text": "毕竟西湖六月中，",
-"sent": "毕竟西湖，六月钟！",
+"sent": "毕竟西湖，六月中！ (last character sent as 钟)",
 "score": 0.5,
 "tried": [
 -6.2,

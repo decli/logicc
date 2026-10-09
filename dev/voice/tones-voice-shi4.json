@@ -5,7 +5,7 @@
 "lines": [
 {
 "text": "八月涛声吼地来，",
-"sent": "八月涛声，吼地莱！",
+"sent": "八月涛声，吼地来！ (last character sent as 莱)",
 "score": 0.1,
 "tried": [
 -1.7,
@@ -109,8 +109,8 @@
 "lines": [
 {
 "text": "一道残阳铺水中，",
-"sent": "一道残阳，铺水终！ (stand-ins)",
-"score": 0.5,
+"sent": "一道残阳，铺水中！ (stand-ins) (last character sent as 钟)",
+"score": 1.5,
 "tried": [
 -2.7,
 -2.4,
@@ -118,12 +118,13 @@
 -2.7,
 -2.6,
 -2.6,
-0.5
+-2.7,
+1.5
 ]
 },
 {
 "text": "半江瑟瑟半江红。",
-"sent": "半江瑟瑟，半江洪！ (stand-ins)",
+"sent": "半江瑟瑟，半江红！ (stand-ins) (last character sent as 洪)",
 "score": 0.5,
 "tried": [
 -0.2,
@@ -156,9 +157,9 @@
 -7.6,
 -7.7,
 -7.8,
--0.7,
--0.7,
--0.7,
+-7.6,
+-7.6,
+-7.6,
 1.7
 ]
 }
@@ -207,7 +208,7 @@
 },
 {
 "text": "只缘身在此山中。",
-"sent": "只缘身在，此山钟！",
+"sent": "只缘身在，此山中！ (last character sent as 钟)",
 "score": 2.4,
 "tried": [
 -0.8,
@@ -420,7 +421,7 @@
 "lines": [
 {
 "text": "生当作人杰，",
-"sent": "生当，作人截！",
+"sent": "生当，作人杰！ (last character sent as 截)",
 "score": 1.1,
 "tried": [
 -1.9,
@@ -965,7 +966,7 @@
 },
 {
 "text": "单于夜遁逃。",
-"sent": "单于，夜遁桃！",
+"sent": "单于，夜遁逃！ (last character sent as 桃)",
 "score": 2.1,
 "tried": [
 -1.9,
