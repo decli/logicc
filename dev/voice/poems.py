@@ -155,10 +155,15 @@ async def fixed(text, checker, unsure=True):
         if f['verdict'] == 'unsure': f['verdict'] = 'unsure-fixed'
     return ''.join(send), [dict(f, text=text) for f in found if f['verdict'] != 'ok']
 
-async def say(role, text, checker, unsure=True):
-    """one take of `text` by `role` with polyphones fixed -> (pcm, word bounds, text sent, notes)"""
+async def say(role, text, checker, unsure=True, last=None):
+    """one take of `text` by `role` with polyphones fixed -> (pcm, word bounds, text sent, notes).
+    last: send this character in place of the last one — swapped only after the readings are settled, so the
+    words around it keep their readings (铺水终 alone would make 铺 pù)"""
     voice, rate, pitch = vk.VOICES[(role, 'zh')]
     send, notes = await fixed(text, checker, unsure)
+    if last:
+        k = max(i for i, c in enumerate(send) if '\u4e00' <= c <= '\u9fff')
+        send = send[:k] + last + send[k + 1:]
     mp3, words = await vk.tts(send, voice, rate, pitch)
     return vk.decode(mp3), words, send, notes
 
@@ -329,13 +334,13 @@ async def recite(it, checker):
             # last syllable still off: the line on its own, ending in other ways; then with the last character
             # swapped for a common one with the same reading (the screen still shows the real one)
             body, t, uf = brk(l)[:-1], tone_of(py[-1]), best[4]
-            ws = [body + e for e in ('！', '。', '，')]
-            ws += [body[:-1] + c + '！' for c in standins(body[-1], py[-1])]
-            for w in dict.fromkeys(ws):
-                y, _, _, n1 = await say(role, w, checker, uf); notes += n1
+            ws = [(body + e, None) for e in ('！', '。', '，')]
+            ws += [(body + '！', c) for c in standins(body[-1], py[-1])]
+            for w, c in ws:
+                y, _, _, n1 = await say(role, w, checker, uf, c); notes += n1
                 y = vk.fade(vk.level(vk.trim(y))); y = close_gaps(y) if '，' in w[:-1] else y
                 sc = final_score(y, w, py); tried.append(round(sc, 1))
-                if sc > best[1]: best = (sc, sc, y, w, uf)
+                if sc > best[1]: best = (sc, sc, y, w, uf, ' (last character sent as ' + c + ')' if c else '')
                 if sc >= 0.5: break
         if best[1] < -0.5:
             # nothing has it: redraw the pitch of that one syllable, on the best take of the whole poem (real
@@ -346,7 +351,8 @@ async def recite(it, checker):
                 v = syllables(y, line_onsets(y, base[3]))[-1]
                 sc = final_score(y, base[3], py); tried.append(round(sc, 1))
                 if v is not None and sc > best[1]: best = (sc, sc, y, base[3], base[4], ' (pitch redrawn)')
-        report.append((l, best[3] + (' (stand-ins)' if best[4] else '') + (best[5] if len(best) > 5 else ''), round(best[1], 1), tried))
+        if len(best) < 6: best = best + ('',)
+        report.append((l, best[3] + (' (stand-ins)' if best[4] else '') + best[5], round(best[1], 1), tried))
         segs.append(best[2]); said.append(best[3])
     # a line with its own spelling for the voice (鹅？鹅？鹅？) is said on its own and put in place of the cut
     for i, alt in enumerate(it.get('say') or []):
