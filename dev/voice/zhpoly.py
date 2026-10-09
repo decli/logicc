@@ -78,6 +78,10 @@ POLY = {
     '解落': 'jie3 luo4', '万竿斜': 'wan4 gan1 xie2', '李峤': 'li3 qiao2', '不觉晓': 'bu4 jue2 xiao3', '处处': 'chu4 chu4', '花落': 'hua1 luo4', '知多少': 'zhi1 duo1 shao3',
     '乘舟': 'cheng2 zhou1', '将欲行': 'jiang1 yu4 xing2', '踏歌': 'ta4 ge1', '童子': 'tong2 zi3', '只在': 'zhi3 zai4', '不知处': 'bu4 zhi1 chu4',
     '不解': 'bu4 jie3', '藏踪迹': 'cang2 zong1 ji4', '树阴': 'shu4 yin1', '小荷': 'xiao3 he2', '才露': 'cai2 lu4', '尖尖角': 'jian1 jian1 jiao3', '立上头': 'li4 shang4 tou2',
+    # 二到四年级
+    '荷尽': 'he2 jin4', '泛尽': 'fan4 jin4', '芳菲尽': 'fang1 fei1 jin4', '挑促织': 'tiao3 cu4 zhi1', '比西子': 'bi3 xi1 zi3', '朝辞': 'zhao1 ci2', '一日还': 'yi1 ri4 huan2', '万重山': 'wan4 chong2 shan1', '采莲曲': 'cai3 lian2 qu3', '为异客': 'wei2 yi4 ke4', '长恨': 'chang2 hen4',
+    '似剪刀': 'si4 jian3 dao1', '林子方': 'lin2 zi3 fang1', '门泊': 'men2 bo2', '万颗子': 'wan4 ke1 zi3', '查慎行': 'zha1 shen4 xing2',
+    '稚子': 'zhi4 zi3', '不应人': 'bu4 ying4 ren2', '依山尽': 'yi1 shan1 jin4', '敕勒': 'chi4 le4', '天似': 'tian1 si4', '笼盖': 'long3 gai4', '见牛羊': 'xian4 niu2 yang2',
     '红冠': 'hong2 guan1', '走将来': 'zou3 jiang1 lai2', '唐寅': 'tang2 yin2',
     # ... and what the narrator says about them
     '高兴地': 'gao1 xing4 de5', '完整地': 'wan2 zheng3 de5', '大摇大摆地': 'da4 yao2 da4 bai3 de5', '弯着': 'wan1 zhe5', '踏着': 'ta4 zhe5', '挨着': 'ai1 zhe5',
