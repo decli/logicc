@@ -3,7 +3,7 @@
   python3 dev/voice/build.py root          home-page logic games  -> voice-zh.bin|json at the site root
   python3 dev/voice/build.py zaowu         造物 (both languages)  -> zaowu/voice-zh|en.bin|json (+ rebuilds zaowu/index.html)
   python3 dev/voice/build.py piano         彩虹钢琴               -> piano/voice-zh.bin|json
-  python3 dev/voice/build.py shi           古诗花园               -> voice-shi.bin|json at the site root (see poems.py)
+  python3 dev/voice/build.py shi           古诗太鼓               -> voice-shi.bin|json at the site root (see poems.py)
   python3 dev/voice/build.py check root    listen back with speech recognition and list lines that do not read as written
   python3 dev/voice/build.py check zaowu
 

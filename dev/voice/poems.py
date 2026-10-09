@@ -1,17 +1,18 @@
-"""古诗花园's voice bank (voice-shi.bin|json at the site root).
+"""古诗太鼓's voice bank (voice-shi.bin|json at the site root).
 
 A poem is recited in ONE take, so the voice carries the melody across lines the way a person reading it aloud
 does (a comma line stays up, a full stop comes down). The take is then cut at the pauses between lines, and
 the lines are put back together with pauses set by hand: a breath after a comma, a longer one after a full stop,
 so the rhythm is the same every time and never rushed. Each line is also kept as its own clip, cut from that
-same take, which is what the games play one by one.
+same take.
 
-For every line the page also gets the moment each character starts (for lighting the characters as they are
-read, and for the drum game). The service only reports where whole phrases start, so inside a phrase the
+For every line, and for the title and the author, the page also gets the moment each character starts: those
+moments are the drum game's beats, and light the characters as they are read. The service only reports where whole phrases start, so inside a phrase the
 syllables are found from the loudness: Mandarin syllables are separated by small dips.
 
-The other clips (narrator, the monkey, the half lines said before a blank) go through voicekit like every
-other line on the site. Index format: {"v": 2, "u": {hash: [offset, length]}, "m": {hash: meta}}"""
+The narrator's lines go through voicekit like every other line on the site.
+Index format: {"v": 2, "u": {hash: [offset, length]}, "m": {hash: meta}}; meta of <poem>#full is
+{"L": line starts, "T": [[syllable starts] per line], "H": [[title syllables], [author syllables]]} in seconds."""
 import asyncio, hashlib, json, os, time
 import numpy as np
 import voicekit as vk
@@ -20,7 +21,7 @@ import zhpoly
 GAP_TITLE, GAP_BY = 0.5, 0.9                       # seconds after the title and after the author
 GAP = {'，': 0.55, '、': 0.4, '。': 0.9, '？': 0.9, '！': 0.9, '；': 0.7}
 PUNCT = set('，。！？、；：')
-POEM_ROLES = ('r', 'R', 'm')
+POEM_ROLES = ('r', 'R')
 HOP = 0.01
 
 def env_of(x):
@@ -59,6 +60,18 @@ def onsets(x, n):
         seg = e[lo:hi]
         out.append(lo + int(np.argmin(seg)) if len(seg) else int(c))
     return [round(f * HOP, 3) for f in out]
+
+def onsets_parts(x, parts):
+    """like onsets(), for a clip made of comma-separated parts (唐，骆宾王): when the parts stand apart as islands
+    of sound, find the syllables inside each island; otherwise treat it as one run"""
+    e = env_of(x); isl = islands(e, e.max() * 0.06)
+    if len(isl) == len(parts) and len(parts) > 1:
+        out = []
+        for (a, b), n in zip(isl, parts):
+            lo, hi = max(0, a - 2), min(len(x) // int(vk.SR * HOP), b + 2)
+            out += [round(lo * HOP + o, 3) for o in onsets(x[int(lo * HOP * vk.SR):int(hi * HOP * vk.SR)], n)]
+        return out
+    return onsets(x, sum(parts))
 
 def quietest(x, t0, t1):
     """the quietest moment between t0 and t1 (s): where to cut between two lines"""
@@ -146,7 +159,12 @@ async def recite(it, checker):
         if i < len(lines) - 1:
             g = GAP.get(l[-1], 0.6); full.append(silence(g)); t += g
     full.append(silence(tail))
-    out[f'{pid}#full'] = (np.concatenate(full), {'L': L, 'T': T})
+    # the title and the author get their syllable times too: in the drum game they are notes like the lines
+    tparts = [sum(1 for c in s if c not in PUNCT) for s in it['title'].split('，')]
+    bparts = [sum(1 for c in s if c not in PUNCT) for s in it['by'].split('，')]
+    tb = head + len(title) / vk.SR + GAP_TITLE
+    H = [[round(head + o, 3) for o in onsets_parts(title, tparts)], [round(tb + o, 3) for o in onsets_parts(by, bparts)]]
+    out[f'{pid}#full'] = (np.concatenate(full), {'L': L, 'T': T, 'H': H})
     out[f'{pid}#t'] = (np.concatenate([silence(head), title, silence(tail)]), None)
     out[f'{pid}#a'] = (np.concatenate([silence(head), by, silence(tail)]), None)
     dur = [round(len(s) / vk.SR, 2) for s in segs]

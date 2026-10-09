@@ -349,10 +349,8 @@ body{
 .extras .sw:active{transform:translate(calc(4px * var(--k)),calc(4px * var(--k)));box-shadow:0 0 0 var(--ink)}
 .extras .sw[disabled]{opacity:.5}
 
-/* ===== 古诗花园 ===== */
-.shKai,.shStrip,.shCard .cap,.shOpt .c,.shLantern b,.shPlot .nm,.shTitle b,.shBanner b{font-family:"Kaiti SC","STKaiti","KaiTi","BiauKai","Songti SC","STSong",serif}
-#board.shBoard{align-items:stretch}
-.shWrap{width:100%;height:100%;display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:calc(16px * var(--k));min-height:0}
+/* ===== 古诗太鼓 ===== */
+.shKai,.shStrip,.shTitle b,.tkNote b,.tkSong .nm,.tkLvBtn b{font-family:"Kaiti SC","STKaiti","KaiTi","BiauKai","Songti SC","STSong",serif}
 .shStrip{flex:none;display:flex;flex-direction:column;align-items:center;gap:.12em;line-height:1}
 .shRow{display:flex;justify-content:center;gap:1.2em}
 .shLn{display:flex;align-items:flex-end;padding:.08em .22em;border-radius:.3em;transition:background .3s}
@@ -361,113 +359,84 @@ body{
 .shCh i{font-style:normal;font-family:"Avenir Next","Helvetica Neue","PingFang SC",sans-serif;font-size:.34em;line-height:1.3;color:var(--ink-soft);height:1.3em;white-space:nowrap}
 .shCh b{font-weight:700;transition:color .15s,transform .15s;display:block}
 .shCh.lit b{color:var(--red);transform:scale(1.1)}
+.shCh.miss b{color:#B9B0A2}
 .shCh.hid i{visibility:hidden}
 .shCh.hid b{color:transparent;background:#F3EDE0;border-radius:.16em;box-shadow:inset 0 0 0 .05em #D9D0BE}
-.shCh.blank b{color:transparent;background:#FFF6D8;border-radius:.16em;box-shadow:inset 0 0 0 .07em var(--orange);animation:pl 1.2s infinite}
-.shCh.blank i{visibility:hidden}
-.shCh.fill b{color:var(--green);animation:pp .4s}
-.shCh.pop b{animation:pp .4s}
 .shPu{font-weight:700;padding-bottom:.04em}
-.shNo{font-size:.42em;width:1.6em;height:1.6em;border-radius:50%;background:var(--yellow);border:.12em solid var(--ink);display:flex;align-items:center;justify-content:center;margin-right:.6em;align-self:center;flex:none}
-.shStrip.slots .shLn{background:#fff;border:.05em dashed #C9C2B4;padding:.1em .4em;min-width:7em}
 .shTitle{display:flex;align-items:baseline;gap:.6em;margin-bottom:.2em}
-.shTitle b{font-size:1.15em}
-.shTitle span{font-size:.5em;color:var(--ink-soft)}
-.shScene{flex:none;align-self:center;min-height:0;position:relative;border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(26px * var(--k));overflow:hidden;background:#fff;box-shadow:calc(6px * var(--k)) calc(6px * var(--k)) 0 var(--ink)}
+.shTitle b{font-size:1.15em;transition:color .15s}
+.shTitle span{font-size:.5em;color:var(--ink-soft);transition:color .15s}
+.shTitle .lit{color:var(--red)}
 .shSvg{display:block;width:100%;height:100%;touch-action:manipulation}
-.shCards{display:flex;justify-content:center;align-items:center;flex-wrap:wrap}
-.shCard{border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(22px * var(--k));background:#fff;box-shadow:calc(5px * var(--k)) calc(5px * var(--k)) 0 var(--ink);overflow:hidden;cursor:pointer;display:flex;flex-direction:column;position:relative;flex:none}
-.shCard svg{display:block;width:100%;flex:1 1 auto;min-height:0}
-.shCard:active{transform:translate(calc(4px * var(--k)),calc(4px * var(--k)));box-shadow:0 0 0 var(--ink)}
-.shCard.ok{box-shadow:0 0 0 calc(8px * var(--k)) var(--green)}
-.shCard.done{opacity:.25;transform:scale(.9);transition:opacity .4s,transform .4s;pointer-events:none}
-.shCard.txt{align-items:center;justify-content:center;background:#FFFBEF}
-.shCard .cap{font-weight:700;text-align:center;padding:.15em .3em;font-size:1em;line-height:1.2}
-.shCard .spk{position:absolute;top:.15em;right:.25em;font-size:.8em}
-.shOpts{display:flex;justify-content:center;align-items:center}
-.shOpt{border-radius:50%;border:calc(5px * var(--k)) solid var(--ink);background:#fff;box-shadow:calc(5px * var(--k)) calc(5px * var(--k)) 0 var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.03em;cursor:pointer;padding:0;font-family:inherit;color:var(--ink);flex:none}
-.shOpt .e{font-size:.4em;line-height:1;width:1em;height:1em;display:flex;align-items:center;justify-content:center}
-.shOpt svg.e{width:.42em;height:.42em}
-.shOpt .c{font-size:.28em;font-weight:700;line-height:1}
-.shOpt:active{transform:translate(calc(4px * var(--k)),calc(4px * var(--k)));box-shadow:0 0 0 var(--ink)}
-.shOpt.ok{background:#DFF3E2;box-shadow:0 0 0 calc(8px * var(--k)) var(--green)}
-.shLanes{flex:1 1 auto;display:flex;align-items:center;justify-content:center;gap:.5em;min-height:0}
-.shGroup{display:flex;gap:.16em}
-.shLantern{width:1.12em;height:1.3em;border-radius:46% 46% 40% 40%;background:#FFE3DA;border:.05em solid #C8341E;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:background .12s,transform .12s;position:relative}
-.shLantern i{font-style:normal;font-family:"Avenir Next","PingFang SC",sans-serif;font-size:.24em;color:var(--ink-soft);line-height:1.1}
-.shLantern b{font-size:.62em;line-height:1}
-.shLantern.on{background:#E8452C;color:#fff;transform:scale(1.06)}
-.shLantern.on i{color:#FFE3DA}
-.shLantern.boom{animation:boom .5s}
-@keyframes boom{0%{box-shadow:0 0 0 0 rgba(245,185,33,.9)}100%{box-shadow:0 0 0 .5em rgba(245,185,33,0)}}
-.shBeatFoot{flex:none;display:flex;align-items:center;justify-content:center;gap:calc(30px * var(--k));padding-bottom:calc(10px * var(--k))}
-.shDrum{border-radius:50%;border:calc(7px * var(--k)) solid var(--ink);background:radial-gradient(circle at 40% 35%,#FFF1C2,#F5B921 60%,#D99A0B);box-shadow:calc(6px * var(--k)) calc(6px * var(--k)) 0 var(--ink);cursor:pointer;padding:0;line-height:1;touch-action:manipulation}
-.shDrum.hit{animation:drumHit .18s}
-@keyframes drumHit{0%{transform:scale(.9) translate(calc(4px * var(--k)),calc(4px * var(--k)))}100%{transform:none}}
-.shScore{font-weight:700;color:var(--ink-soft)}
-.shScore b{color:var(--red);font-size:1.4em}
-.shStage{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;gap:calc(60px * var(--k))}
-.shMBox{display:flex;flex-direction:column;align-items:center;gap:calc(6px * var(--k))}
-.shMonk{line-height:1}
-.shMonk.talk{animation:monk .3s infinite alternate}
-@keyframes monk{0%{transform:rotate(-4deg) translateY(0)}100%{transform:rotate(4deg) translateY(-6%)}}
-.shTalk{background:#fff;border:calc(4px * var(--k)) solid var(--ink);border-radius:999px;padding:.1em .7em;font-weight:700;opacity:0;transition:opacity .2s}
-.shTalk.on{opacity:1}
-.shTally{font-weight:700;min-height:1.2em}
-.shBell{border-radius:50%;border:calc(7px * var(--k)) solid var(--ink);background:var(--red);color:#fff;box-shadow:calc(6px * var(--k)) calc(6px * var(--k)) 0 var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;padding:0}
-.shBell span{font-size:2.6em;line-height:1.1}
-.shBell b{font-size:1.2em}
-.shBell:active{transform:translate(calc(5px * var(--k)),calc(5px * var(--k)));box-shadow:0 0 0 var(--ink)}
-.shRelayMid{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;gap:calc(30px * var(--k))}
-.shHintPic{border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(22px * var(--k));overflow:hidden;background:#fff;flex:none;box-shadow:calc(5px * var(--k)) calc(5px * var(--k)) 0 var(--ink)}
-.shHintPic:empty{display:none}
-.shHintPic svg{display:block;width:100%;height:100%}
-.shCtl{flex:none;display:flex;flex-direction:column;align-items:stretch;gap:calc(14px * var(--k))}
-.shWrap.recite .shCtl{flex-direction:row;justify-content:center;align-items:center}
-.shMic{display:flex;align-items:center;gap:calc(12px * var(--k));border:calc(4px * var(--k)) solid var(--ink);border-radius:999px;background:#fff;padding:calc(8px * var(--k)) calc(18px * var(--k));font-size:calc(40px * var(--k))}
-.shMic.live{background:#FFE3DA;border-color:var(--red)}
-.shMeter{width:calc(150px * var(--k));height:calc(18px * var(--k));border-radius:999px;background:#F0EADB;overflow:hidden;border:calc(3px * var(--k)) solid var(--ink)}
-.shMeter i{display:block;height:100%;width:0;background:var(--green);transition:width .08s}
-.shWrap .bigbtn{font-size:calc(28px * var(--k));padding:calc(14px * var(--k)) calc(26px * var(--k))}
-/* 花园 */
-.shGarden{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:calc(18px * var(--k));padding:calc(4px * var(--k)) calc(24px * var(--k)) calc(24px * var(--k))}
-.shBanner{flex:none;display:flex;align-items:center;gap:calc(18px * var(--k));border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(26px * var(--k));background:#FFF4D6;box-shadow:calc(6px * var(--k)) calc(6px * var(--k)) 0 var(--ink);padding:calc(12px * var(--k)) calc(20px * var(--k))}
-.shBanner .owlF{font-size:calc(60px * var(--k));line-height:1}
-.shBanner .tx{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:calc(4px * var(--k))}
-.shBanner .tx b{font-size:calc(36px * var(--k))}
-.shBanner .tx span{font-size:calc(20px * var(--k));color:var(--ink-soft)}
-.shPlots{flex:1 1 auto;min-height:0;display:grid;gap:calc(16px * var(--k))}
-.shPlot{border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(24px * var(--k));background:#fff;box-shadow:calc(5px * var(--k)) calc(5px * var(--k)) 0 var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25em;position:relative;cursor:pointer;min-height:0;min-width:0;overflow:hidden}
-.shPlot:active{transform:translate(calc(4px * var(--k)),calc(4px * var(--k)));box-shadow:0 0 0 var(--ink)}
-.shPlot .fl{font-size:3em;line-height:1}
-.shPlot .bloom{position:absolute;top:.3em;left:.4em;font-size:1.3em}
-.shPlot .nm{font-size:1.5em;font-weight:700;white-space:nowrap}
-.shPlot .pg{display:flex;gap:.25em}
-.shPlot .pg i{width:.6em;height:.6em;border-radius:50%;border:.12em solid var(--ink);background:#fff}
-.shPlot .pg i.on{background:var(--green)}
-.shPlot .gr{font-size:.75em;color:var(--ink-soft)}
-.shPlot .due{position:absolute;top:.25em;right:.35em;font-size:1.4em;animation:bob2 1.6s infinite}
-.shPlot .rc{position:absolute;bottom:.3em;right:.4em;font-size:.8em;color:var(--ink-soft)}
-.shPlot.today{background:#FFF8DC;box-shadow:0 0 0 calc(6px * var(--k)) var(--yellow),calc(5px * var(--k)) calc(5px * var(--k)) 0 var(--ink)}
-.shPlot.lock{border-style:dashed;border-color:#C9C2B4;box-shadow:none;background:#FBF8F0;color:#B7AE9E}
-.shPlot.lock .fl{opacity:.35;filter:grayscale(.6)}
-.shPlot .zz{position:absolute;top:.4em;right:.5em;font-size:1.1em;opacity:.7}
 .shModal{position:absolute;inset:0;background:rgba(42,37,35,.35);display:flex;align-items:center;justify-content:center;z-index:45;padding:calc(20px * var(--k))}
 .shCardBox{position:relative;background:#FFFCF2;border:calc(6px * var(--k)) solid var(--ink);border-radius:calc(30px * var(--k));box-shadow:calc(8px * var(--k)) calc(8px * var(--k)) 0 var(--ink);padding:calc(28px * var(--k)) calc(40px * var(--k));display:flex;flex-direction:column;align-items:center;gap:calc(22px * var(--k));max-width:100%;max-height:100%;overflow:auto}
 .shX{position:absolute;top:calc(12px * var(--k));right:calc(12px * var(--k))}
-.shGrow{display:flex;align-items:center;gap:calc(26px * var(--k));font-size:calc(110px * var(--k));line-height:1;position:relative}
-.shGrow .from{opacity:.45;font-size:.7em}
-.shGrow .arr{font-size:.4em;color:var(--ink-soft)}
-.shGrow .to{animation:pp .7s}
-.shGrow .bl{position:absolute;right:-.35em;top:-.2em;font-size:.45em}
-.shRecList{gap:calc(12px * var(--k))}
-.shRecRow{display:flex;align-items:center;gap:calc(16px * var(--k));border:calc(4px * var(--k)) solid var(--ink);border-radius:calc(20px * var(--k));background:#fff;padding:calc(10px * var(--k)) calc(18px * var(--k))}
-.shRecRow .hero{font-size:calc(48px * var(--k))}
-.shRecRow .tx{flex:1 1 auto;display:flex;flex-direction:column;gap:calc(4px * var(--k))}
-.shRecRow .tx b{font-size:calc(28px * var(--k))}
-.shRecRow .tx span{font-size:calc(19px * var(--k));color:var(--ink-soft)}
-.shEmpty{font-size:calc(24px * var(--k));color:var(--ink-soft);padding:calc(30px * var(--k));text-align:center}
-
+/* 选诗 */
+.tkList{flex:1 1 auto;min-height:0;display:grid;gap:calc(16px * var(--k));padding:calc(4px * var(--k)) calc(24px * var(--k)) calc(24px * var(--k))}
+.tkSong{border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(24px * var(--k));background:#fff;box-shadow:calc(5px * var(--k)) calc(5px * var(--k)) 0 var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25em;cursor:pointer;min-height:0;min-width:0;overflow:hidden;position:relative}
+.tkSong:active{transform:translate(calc(4px * var(--k)),calc(4px * var(--k)));box-shadow:0 0 0 var(--ink)}
+.tkSong .hero{font-size:3em;line-height:1}
+.tkSong .nm{font-size:1.5em;font-weight:700;white-space:nowrap}
+.tkSong .au{font-size:.75em;color:var(--ink-soft)}
+.tkSong .st{display:flex;align-items:center;gap:.2em;font-size:.95em;color:#C9C2B4;font-weight:700}
+.tkSong .st span{filter:grayscale(1);opacity:.45}
+.tkSong .st.on{color:var(--orange)}
+.tkSong .st.on span{filter:none;opacity:1}
+.tkLvs{display:flex;gap:calc(18px * var(--k));flex-wrap:wrap;justify-content:center}
+.tkLvBtn{display:flex;flex-direction:column;align-items:center;gap:calc(4px * var(--k));min-width:calc(210px * var(--k));border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(24px * var(--k));background:#fff;box-shadow:calc(6px * var(--k)) calc(6px * var(--k)) 0 var(--ink);padding:calc(14px * var(--k)) calc(20px * var(--k));font-family:inherit;color:var(--ink);cursor:pointer}
+.tkLvBtn.y{background:var(--yellow)}
+.tkLvBtn:active{transform:translate(calc(5px * var(--k)),calc(5px * var(--k)));box-shadow:0 0 0 var(--ink)}
+.tkLvBtn .no{font-size:calc(18px * var(--k));color:var(--ink-soft);font-weight:700}
+.tkLvBtn b{font-size:calc(36px * var(--k))}
+.tkLvBtn i{font-style:normal;font-size:calc(18px * var(--k));color:var(--ink-soft)}
+.tkLvBtn em{font-style:normal;font-size:calc(30px * var(--k));color:var(--orange);letter-spacing:.08em}
+.tkLvBtn small{font-size:calc(16px * var(--k));color:var(--ink-soft)}
+/* 打鼓 */
+.tkPane{background:#BFE6FF;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.tkScene{position:absolute;inset:0;width:100%;height:100%}
+.tkBar{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:calc(14px * var(--k));padding:calc(12px * var(--k)) calc(20px * var(--k));z-index:5;pointer-events:none}
+.tkBar>*{pointer-events:auto}
+.tkName{gap:calc(12px * var(--k))}
+.tkName b{font-size:calc(30px * var(--k))}
+.tkName span{font-size:calc(22px * var(--k));color:var(--ink-soft)}
+.tkScoreP{gap:calc(10px * var(--k))}
+.tkScoreP span{font-size:calc(20px * var(--k));color:var(--ink-soft)}
+.tkScoreP b{font-size:calc(36px * var(--k));min-width:2.6em;text-align:right}
+.tkStripBox{position:absolute;left:50%;top:calc(104px * var(--k));transform:translateX(-50%);background:rgba(255,252,242,.9);border:calc(4px * var(--k)) solid var(--ink);border-radius:calc(22px * var(--k));padding:calc(8px * var(--k)) calc(20px * var(--k));z-index:4;pointer-events:none}
+.tkLane{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(#7A4A2A,#4A2A16);border-top:calc(6px * var(--k)) solid var(--ink);z-index:4}
+.tkTrack{position:absolute;left:1.5%;right:1.5%;top:50%;height:66%;transform:translateY(-50%);border-radius:999px;background:rgba(0,0,0,.18);border:calc(3px * var(--k)) dashed rgba(255,236,190,.35)}
+.tkDrum{position:absolute;top:50%;transform:translateY(-50%);border-radius:50%;background:radial-gradient(circle at 45% 40%,#FFF8E6,#F2D7A0 70%,#D9B26A);border:calc(9px * var(--k)) solid #C8341E;box-shadow:0 0 0 calc(5px * var(--k)) #2A2523,0 0 0 calc(14px * var(--k)) rgba(255,224,102,.35);display:flex;align-items:center;justify-content:center;line-height:1;z-index:1}
+.tkDrum.hit{animation:tkThump .16s}
+@keyframes tkThump{0%{transform:translateY(-50%) scale(.88)}100%{transform:translateY(-50%) scale(1)}}
+.tkNotes{position:absolute;inset:0;z-index:2;pointer-events:none}
+.tkNote{position:absolute;top:50%;left:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#E8452C;border:.09em solid #FFD54A;color:#fff;box-shadow:0 .08em 0 rgba(0,0,0,.35);will-change:transform}
+.tkNote b{font-weight:700;line-height:1;font-size:1em;white-space:nowrap}
+.tkNote i{font-style:normal;font-family:"Avenir Next","PingFang SC",sans-serif;font-size:.36em;line-height:1.2;color:#FFE3DA;white-space:nowrap}
+.tkNote.meta{background:#7B4BC9}
+.tkNote.ask{background:#F5B921;color:#2A2523;border-color:#fff}
+.tkNote.star{background:#fff;border-color:#F5B921}
+.tkNote.hit{animation:tkPop .4s forwards}
+.tkNote.miss{opacity:.35;filter:grayscale(1)}
+@keyframes tkPop{0%{scale:1;opacity:1}40%{scale:1.35;opacity:1}100%{scale:1.7;opacity:0}}
+.tkJudge{position:absolute;bottom:calc(100% + 14px * var(--k));transform:translateX(-50%);font-weight:700;font-size:calc(46px * var(--k));white-space:nowrap;z-index:3;pointer-events:none;animation:tkJudge .75s forwards;-webkit-text-stroke:calc(1.5px * var(--k)) var(--ink)}
+.tkJudge.p{color:#FFD54A}
+.tkJudge.g{color:#8EE08A}
+.tkJudge.m{color:#D9D0BE;font-size:calc(28px * var(--k))}
+.tkJudge.say{color:#fff;bottom:calc(100% + 76px * var(--k));font-size:calc(34px * var(--k));animation-duration:1.4s}
+@keyframes tkJudge{0%{opacity:0;translate:0 10px;scale:.7}20%{opacity:1;translate:0 0;scale:1.1}100%{opacity:0;translate:0 -30px;scale:1}}
+.tkCombo{position:absolute;top:4%;left:50%;transform:translateX(-50%);color:#FFE38A;font-weight:700;font-size:calc(36px * var(--k));z-index:3;pointer-events:none;text-shadow:0 calc(3px * var(--k)) 0 rgba(0,0,0,.5)}
+.tkCombo.bump{animation:pp .25s}
+.tkHint{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);color:#FFF1C8;font-size:calc(24px * var(--k));font-weight:700;z-index:3;pointer-events:none;transition:opacity .5s}
+.tkHint.off{opacity:0}
+.tkResult{position:absolute;inset:0;background:rgba(255,252,242,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(20px * var(--k));z-index:20;text-align:center;padding:calc(20px * var(--k))}
+.tkRT{font-size:calc(34px * var(--k));font-weight:700}
+.tkStars{display:flex;gap:calc(24px * var(--k));font-size:calc(110px * var(--k));line-height:1}
+.tkStars span{filter:grayscale(1);opacity:.25}
+.tkStars span.on{filter:none;opacity:1;animation:pp .45s}
+.tkRS{display:flex;align-items:baseline;gap:calc(14px * var(--k));font-size:calc(28px * var(--k));color:var(--ink-soft)}
+.tkRS b{font-size:calc(64px * var(--k));color:var(--ink)}
+.tkRS em{font-style:normal;color:var(--orange);font-weight:700}
+.tkStat{font-size:calc(24px * var(--k));color:var(--ink-soft)}
 </style>
 </head>
 <body>
@@ -576,7 +545,7 @@ const Voice = {
   // 首选预录语音包 voice-zh.bin|json：每一句都提前用微软神经网络语音（晓晓）录好，放慢到适合小朋友的语速，
   // 多音字逐个核对过（见 dev/voice）。包里没有的句子、或者包没加载出来，才用设备自带的语音合成。
   bank: null, bankState: 'idle', bankP: null, clip: null, bufs: new Map(),
-  // 古诗花园另有一个语音包 voice-shi（首页的包加载完再加载）；clipDone：play() 在等的那段念完/被顶掉时的回调
+  // 古诗太鼓另有一个语音包 voice-shi（首页的包加载完再加载）；clipDone：play() 在等的那段念完/被顶掉时的回调
   more: [], moreState: 'idle', moreP: null, clipDone: null, lastFn: null,
   loadBank() {
     if (this.bankState !== 'idle') return this.bankP;
@@ -646,7 +615,7 @@ const Voice = {
     ]).then(([ix, bin]) => { this.more.push({ name: name, map: ix.u, meta: ix.m || {}, bin: bin }); this.moreState = 'ready'; }).catch(() => { this.moreState = 'failed'; });
     return this.moreP;
   },
-  // 播一段预录的声音（古诗花园：朗诵、小猴子、旁白）。key 是录音脚本里的键，text 是语音包里没有时让设备念的字。
+  // 播一段预录的声音（古诗太鼓的旁白、朗诵）。key 是录音脚本里的键，text 是语音包里没有时让设备念的字。
   // 返回 Promise：念完是 true，被别的声音顶掉是 false。o.onstart({dur, m}) 在真正出声时调用，m 是每个字从第几秒开始
   play(role, key, text, o) {
     o = o || {};
@@ -674,11 +643,7 @@ const Voice = {
       });
     });
   },
-  // 放一段录好的 AudioBuffer（孩子自己背的录音）
-  playBuffer(buf, o) {
-    o = o || {}; Audio2.init(); const g = ++this.gen;
-    return new Promise(res => { if (!Audio2.ctx) return res(false); this.startBuf(buf, g, { done: res, onstart: o.onstart }); });
-  },
+
   list() { try { return window.speechSynthesis.getVoices() || []; } catch (e) { return []; } },
   isZh(v) { return /^(zh|cmn|yue)/i.test(v.lang || '') || /chinese|mandarin|中文|普通话|国语/i.test(v.name || ''); },
   candidates() {
@@ -737,7 +702,7 @@ const Voice = {
   },
   route(t, g) {
     const e = this.entry(t); if (e) return this.playClip(t, e, g);
-    if (this.moreState === 'loading') {   // 古诗花园的语音包还在下载：等它一下
+    if (this.moreState === 'loading') {   // 古诗太鼓的语音包还在下载：等它一下
       let went = false;
       const go = () => { if (went) return; went = true; if (g !== this.gen) return; const e2 = this.entry(t); if (e2) this.playClip(t, e2, g); else this.sysSay(t, g); };
       this.moreP.then(go); setTimeout(go, 4000); return;
@@ -814,7 +779,7 @@ const Voice = {
     setTimeout(check, 120);
   },
   praise() { this.short(pick(PRAISE)); },
-  // 古诗花园里「再读一遍」重放的是当前这一句（lastFn），正在念的时候不打断
+  // lastFn：有的游戏「再读一遍」要重放的不是最后一句旁白；正在念的时候不打断
   repeat() { this.unlock(); if (this.lastFn) { if (!this.clip) this.lastFn(); return; } if (this.last) { this.on = true; this.failed = false; this.say(this.last); } }
 };
 if ('speechSynthesis' in window) {
@@ -860,8 +825,8 @@ const GAMES = [
     ]
   },
   {
-    // 古诗花园：一年级上下册 13 首古诗，一首诗一朵花（见下面「4 古诗花园」）。不走台阶选关，点卡片进花园
-    id: 'shi', name: '古诗花园', emoji: '🌸', color: 'var(--purple)', tip: '听一听、点一点，把古诗种成花',
+    // 古诗太鼓：一年级上下册 13 首古诗做成鼓曲（见下面「4 古诗太鼓」）。不走台阶选关，点卡片进选诗
+    id: 'shi', name: '古诗太鼓', emoji: '🥁', color: 'var(--purple)', tip: '跟着念诗打小鼓，打着打着就会背了',
     levels: []
   },
   {
@@ -988,7 +953,7 @@ function load() {
     if (typeof r.snd === 'boolean') Audio2.on = r.snd;
     if (typeof r.voi === 'boolean') Voice.on = r.voi;
     if (typeof r.mus === 'boolean') Music.on = r.mus;
-    if (r.shi && typeof r.shi === 'object') { Object.assign(S.shi, r.shi); S.shi.p = S.shi.p || {}; S.shi.recN = S.shi.recN || {}; }
+    if (r.shi && typeof r.shi === 'object') { if (r.shi.voice === 'R') S.shi.voice = 'R'; if (r.shi.tk && typeof r.shi.tk === 'object') S.shi.tk = r.shi.tk; }
   } catch (e) { }
 }
 var HEXOF = {
@@ -1046,7 +1011,7 @@ function topbar(o) {
 }
 
 function home() {
-  Session = null; Fit.cb = null; ROUND_ID++; stopTimer(); Voice.lastFn = null; ShMic.stop(true);
+  Session = null; Fit.cb = null; ROUND_ID++; stopTimer(); Voice.lastFn = null; TK.stop();
   var p = el('div', 'pane');
   p.appendChild(topbar({ title: '思维小画本', day: true, book: true, gear: true }));
   var cards = el('div'); cards.id = 'cards';
@@ -1058,11 +1023,10 @@ function home() {
     tx.appendChild(el('div', 'cardTip', g.tip));
     var m = el('div', 'cardMeta');
     if (g.id === 'shi') {
-      var td = shToday();
-      m.appendChild(el('span', 's', '🌸 开了 ' + shBloomed() + '/' + POEMS.length + ' 朵'));
-      m.appendChild(el('span', 'b', (td.why === 'water' ? '💧 ' : '今天 ') + '《' + td.P.t + '》'));
+      m.appendChild(el('span', 's', '⭐ ' + tkAllStars() + '/' + POEMS.length * 9));
+      m.appendChild(el('span', 'b', '一年级 13 首古诗'));
       tx.appendChild(m); c.appendChild(tx);
-      c.addEventListener('click', function () { Audio2.page(); shGarden(); });
+      c.addEventListener('click', function () { Audio2.page(); tkHome(); });
       cards.appendChild(c);
       return;
     }
@@ -1237,7 +1201,7 @@ function startSession(g, lv) {
   var dots = el('div'); dots.id = 'dots';
   for (var i = 0; i < ROUNDS; i++) dots.appendChild(el('i'));
   side.appendChild(dots);
-  if (S.showTimer && g.id !== 'shi') {
+  if (S.showTimer) {
     var tm = el('div', 'timer');
     var t1 = el('div', 't'); t1.appendChild(el('span', null, '⏱'));
     var tn = el('span', 'num', '0:00'); tn.id = 'timeNow'; t1.appendChild(tn); tm.appendChild(t1);
@@ -1250,7 +1214,7 @@ function startSession(g, lv) {
   var say = el('button', 'sidebtn y', '🔊 再读一遍'); say.id = 'sayBtn';
   say.addEventListener('click', function () { Audio2.init(); Voice.unlock(); Voice.repeat(); });
   var hm = el('button', 'sidebtn', '🏠 回家');
-  hm.addEventListener('click', function () { Audio2.page(); clearHint(); stopTimer(); if (g.id === 'shi') shGarden(); else levelPicker(g); });
+  hm.addEventListener('click', function () { Audio2.page(); clearHint(); stopTimer(); levelPicker(g); });
   sp.appendChild(say); sp.appendChild(hm); side.appendChild(sp);
   p.appendChild(bw); p.appendChild(side);
   $('#screen').innerHTML = ''; $('#screen').appendChild(p);
@@ -1269,7 +1233,7 @@ function clearHint() { if (Session && Session.hintTimer) { clearTimeout(Session.
 function hintIn(ms, fn) { clearHint(); if (!Session || !S.hints) return; Session.hintTimer = setTimeout(function () { if (Session) fn(); }, ms); }
 function nextRound() {
   if (!Session) return;
-  clearHint(); Fit.cb = null; ROUND_ID++; Voice.lastFn = null; ShMic.stop(true);
+  clearHint(); Fit.cb = null; ROUND_ID++; Voice.lastFn = null;
   if (Session.doneRounds >= ROUNDS) return rewardScreen();
   Session.round++; Session.miss = 0;
   updateDots();
@@ -1294,7 +1258,6 @@ function roundWin(node) {
   later(1300, function () { if (Session) nextRound(); });
 }
 function rewardScreen() {
-  if (Session && Session.g.id === 'shi') return shReward();
   stopTimer();
   var g = Session.g, lv = Session.startLv || Session.lv, total = elapsed();
   var key = g.id + '.' + lv, prev = S.best[key];
@@ -1616,24 +1579,20 @@ function gBond(board, lv) {
   };
 }
 
-/* ===================== 4 古诗花园 =====================
-   把一年级上下册的 13 首古诗做成「一首诗一朵花」：每首诗按 种子 → 发芽 → 长叶 → 花苞 → 开花 五步走，
-   每一步是三个小游戏（顶上三个圆点，一组给一张贴纸）：
-     种子：诗画动起来（每句点一下，画面就把这句演出来，再用大白话讲一遍）→ 听句找画 → 排排队
-     发芽：拍拍诗（跟着朗诵拍小鼓，看清二三、四三的节奏）→ 补尾字（押韵字是天然提示）→ 小猴念错了
-     长叶：排排队（没有图）→ 补字（换成句子中间的字）→ 接龙（我说上一句，你接下一句）
-     花苞：小猴念错了（错得更隐蔽）→ 接龙（没有提示）→ 我来背（她背一句，画面演一句，录音存在平板上）
-     开花以后隔 1、2、4、7、15、30 天回来复习一次：接龙 + 补字/小猴/排排队 + 我来背
-   诗的朗诵、每一句、补字时念的半句、小猴念的（对的和故意念错的）都预先用 edge-tts 录在 voice-shi.bin，
-   多音字按教材注音逐字核对（见 dev/voice/poems.py）。
+/* ===================== 4 古诗太鼓 =====================
+   一首诗就是一首鼓曲：朗诵响起来，诗句按拍子变成灯笼从右边滑过来，灯笼碰到小鼓时拍一下。
+   五言按「二二一」、七言按「二二二一」分拍（曲项·向天·歌），一拍一个灯笼，拍与拍之间大约 0.6 秒，五岁的孩子跟得上；
+   拍子的时刻取自朗诵里每个字开始的那一刻，所以打的就是诗本身的节奏。
+   每首诗三关：跟着念（全部念出来）→ 藏尾巴（每句最后一拍静音，灯笼变成「？」，你来念）→ 我来念（只念每句开头）。
+   打中多少拍给 1~3 颗星，每关记最高分；背诗不是任务——想拿满星，就得会背。
+   背景是这首诗的诗画（代码画的 SVG + emoji），念到哪句演哪句。
+   朗诵在 voice-shi.bin：整首一口气录完再按句接上手定的停顿，每个字的起始时刻在索引里（见 dev/voice/poems.py）。
    ------------------------------------------------------------------------------------------------
    数据格式
-     L[i].x    这一句（带标点）；say 送去合成时的写法（只在读音不对时才写）；py 拼音（按教材注音，一、不标变调）；ex 大白话
-     L[i].tap  诗画里这一句要点的地方（画布 1000×620）；act 点了以后画面怎么演；pic 这一句的卡片画
+     L[i].x    这一句（带标点）；say 送去合成时的写法（只在读音不对时才写）；py 拼音（按教材注音，一、不标变调）
+     L[i].act  念到这一句时画面怎么演
      sc        画面：sky 天色，bg 背景（按顺序画），sp 角色 [id, 字符或@形状, x, y, 大小, 标记, 挂在谁身上]
                标记：h 先藏着，f 左右翻，v 上下翻，r-16 转 -16 度，o.4 透明度
-     blank     补字 [第几句, 第几个字, [[对的字, 图], [干扰字, 图]...], 难?]
-     oops      小猴念错的 [第几句, 念成什么, 难?]
    ================================================================================================ */
 const POEMS = [
   {
@@ -1641,466 +1600,278 @@ const POEMS = [
     intro: '这首诗叫《咏鹅》。传说骆宾王写它的时候才七岁，和你差不多大呢！',
     L: [
       // say：送去合成的写法。「鹅，」单独成句时句末降调会把二声压成 è，写成问号三个鹅才是上扬的（实测音高）
-      { x: '鹅，鹅，鹅，', say: '鹅？鹅？鹅？', py: 'é é é', ex: '小朋友看见了大白鹅，高兴得一声一声叫它。', tap: [500, 420],
-        pic: { bg: '#CDEBFA', w: '#8CC8E8', e: [['🦢', 120, 118, 100], ['💬', 222, 62, 74], ['T:鹅', 222, 56, 28]] },
+      { x: '鹅，鹅，鹅，', say: '鹅？鹅？鹅？', py: 'é é é',
         act: [['show', 'goose'], ['hop', 'goose', 3, 34, { at: 400 }], ['fx', 'ripple', 500, 480]] },
-      { x: '曲项向天歌。', py: 'qū xiàng xiàng tiān gē', ex: '大白鹅弯着长长的脖子，对着天空唱歌。', tap: [455, 345],
-        pic: { bg: '#CDEBFA', w: '#8CC8E8', e: [['🦢', 120, 120, 100, 'r-16'], ['🎵', 205, 60, 48], ['🎶', 255, 100, 40]] },
+      { x: '曲项向天歌。', py: 'qū xiàng xiàng tiān gē',
         act: [['tilt', 'goose', -16], ['fx', 'notes', 430, 300]] },
-      { x: '白毛浮绿水，', py: 'bái máo fú lǜ shuǐ', ex: '白白的羽毛，浮在绿绿的水上。', tap: [270, 545],
-        pic: { bg: '#CDEBFA', w: '#7CCB98', e: [['🦢', 150, 112, 110], ['✨', 238, 55, 40]] },
+      { x: '白毛浮绿水，', py: 'bái máo fú lǜ shuǐ',
         act: [['tint', 'water', '#7CCB98', 1400], ['bob', 'goose'], ['fx', 'sparkle', 500, 400]] },
-      { x: '红掌拨清波。', py: 'hóng zhǎng bō qīng bō', ex: '红红的脚掌，划开清清的水波。', tap: [520, 500],
-        pic: { bg: '#CDEBFA', w: '#8CC8E8', e: [['@ripple', 150, 150, 170], ['@feet', 150, 115, 120]] },
+      { x: '红掌拨清波。', py: 'hóng zhǎng bō qīng bō',
         act: [['show', 'feet'], ['sway', 'feet', 22], ['fx', 'ripple', 520, 505, 4], ['move', 'goose', 90, 0, 2600]] }
     ],
     sc: {
       sky: 'day',
       bg: [['sun', 860, 95, 46], ['hills', 300, '#A9D6A0', 1], ['water', 330, '#8CC8E8', 'water']],
-      sp: [['cloud', '☁️', 260, 105, 96], ['reedL', '🌾', 80, 390, 130], ['reedR', '🌾', 935, 400, 120, 'f'], ['grass', '🌿', 175, 450, 80],
-        ['goose', '🦢', 500, 410, 180, 'h'], ['feet', '@feet', 20, 82, 70, 'h', 'goose']]
-    },
-    blank: [[1, 4, [['歌', '🎵'], ['飞', '🕊️'], ['跑', '🏃']]], [2, 4, [['水', '💧'], ['草', '🌿'], ['山', '⛰️']]], [3, 4, [['波', '🌊'], ['风', '🍃'], ['花', '🌸']]],
-      [2, 3, [['绿', '💚'], ['红', '❤️'], ['黑', '🖤']], 1], [1, 3, [['天', '☁️'], ['地', '🟫'], ['树', '🌳']], 1]],
-    oops: [[2, '白毛浮绿草'], [3, '红掌拨清风'], [1, '曲项向地歌', 1], [2, '白毛浮清水', 1]]
+      sp: [['cloud', '☁️', 260, 105, 96], ['reedL', '🌾', 80, 390, 130], ['reedR', '🌾', 935, 400, 120, 'f'], ['grass', '🌿', 175, 450, 80], ['goose', '🦢', 500, 410, 180, 'h'], ['feet', '@feet', 20, 82, 70, 'h', 'goose']]
+    }
   },
   {
     id: 'jn', t: '江南', tp: 'jiāng nán', d: '汉', a: '乐府', by: '汉乐府', byp: 'hàn yuè fǔ', g: '一年级上', hero: '🐟',
     intro: '这首诗叫《江南》，是很久很久以前，人们一边采莲一边唱的歌。',
     L: [
-      { x: '江南可采莲，', py: 'jiāng nán kě cǎi lián', ex: '江南的池塘里，可以划着小船采莲蓬。', tap: [110, 300],
-        pic: { bg: '#CFEAF8', w: '#86C5E3', e: [['🛶', 120, 140, 96], ['👧', 120, 92, 52], ['@lotus', 228, 128, 66]] },
+      { x: '江南可采莲，', py: 'jiāng nán kě cǎi lián',
         act: [['move', 'boat', 420, 30, 2600], ['move', 'f1', -280, -35, 1200, null, { at: 2400 }]] },
-      { x: '莲叶何田田。', py: 'lián yè hé tián tián', ex: '莲叶长得好密呀，一片挨着一片。', tap: [560, 450],
-        pic: { bg: '#86C5E3', e: [['@leaf', 80, 70, 84], ['@leaf', 170, 58, 92], ['@leaf', 248, 110, 82], ['@leaf', 110, 152, 92], ['@leaf', 208, 166, 82]] },
+      { x: '莲叶何田田。', py: 'lián yè hé tián tián',
         act: [['show', 'l5'], ['show', 'l6', { at: 120 }], ['show', 'l7', { at: 240 }], ['show', 'l8', { at: 360 }], ['show', 'l9', { at: 480 }], ['show', 'l10', { at: 600 }], ['show', 'l11', { at: 720 }]] },
-      { x: '鱼戏莲叶间。', py: 'yú xì lián yè jiān', ex: '小鱼在莲叶中间游来游去，做游戏。', tap: [500, 410],
-        pic: { bg: '#86C5E3', e: [['@leaf', 80, 140, 92], ['🐟', 165, 100, 72], ['@leaf', 248, 70, 82]] },
+      { x: '鱼戏莲叶间。', py: 'yú xì lián yè jiān',
         act: [['show', 'fish'], ['hop', 'fish', 2, 14, { at: 300 }], ['fx', 'ripple', 500, 440]] },
-      { x: '鱼戏莲叶东，', py: 'yú xì lián yè dōng', ex: '一会儿游到东边，', tap: [930, 420],
-        pic: { bg: '#86C5E3', e: [['🐟', 105, 100, 74, 'f'], ['➡️', 215, 100, 62], ['T:东', 215, 170, 36]] },
+      { x: '鱼戏莲叶东，', py: 'yú xì lián yè dōng',
         act: [['show', 'lE'], ['move', 'fish', 330, 0, 1600, 1]] },
-      { x: '鱼戏莲叶西，', py: 'yú xì lián yè xī', ex: '一会儿游到西边，', tap: [70, 420],
-        pic: { bg: '#86C5E3', e: [['⬅️', 85, 100, 62], ['🐟', 195, 100, 74], ['T:西', 85, 170, 36]] },
+      { x: '鱼戏莲叶西，', py: 'yú xì lián yè xī',
         act: [['show', 'lW'], ['move', 'fish', -680, 0, 2200, 0]] },
-      { x: '鱼戏莲叶南，', py: 'yú xì lián yè nán', ex: '一会儿游到南边，', tap: [500, 585],
-        pic: { bg: '#86C5E3', e: [['🐟', 110, 66, 64], ['⬇️', 110, 145, 54], ['T:南', 222, 108, 44]] },
+      { x: '鱼戏莲叶南，', py: 'yú xì lián yè nán',
         act: [['show', 'lS'], ['move', 'fish', 350, 150, 1600, 1]] },
-      { x: '鱼戏莲叶北。', py: 'yú xì lián yè běi', ex: '一会儿又游到北边。小鱼玩得真开心！', tap: [500, 272],
-        pic: { bg: '#86C5E3', e: [['⬆️', 110, 58, 54], ['🐟', 110, 140, 64], ['T:北', 222, 108, 44]] },
+      { x: '鱼戏莲叶北。', py: 'yú xì lián yè běi',
         act: [['show', 'lN'], ['move', 'fish', 0, -290, 1600]] }
     ],
     sc: {
       sky: 'day',
       bg: [['hills', 200, '#B9DDB0', 2], ['water', 225, '#86C5E3', 'water']],
-      sp: [['l1', '@leaf', 360, 320, 100], ['l2', '@leaf', 640, 350, 110], ['l3', '@leaf', 280, 480, 105], ['l4', '@leaf', 730, 505, 100],
-        ['l5', '@leaf', 490, 290, 85, 'h'], ['l6', '@leaf', 850, 330, 90, 'h'], ['l7', '@leaf', 170, 350, 85, 'h'], ['l8', '@leaf', 560, 470, 115, 'h'],
-        ['l9', '@leaf', 430, 570, 90, 'h'], ['l10', '@leaf', 880, 560, 95, 'h'], ['l11', '@leaf', 120, 560, 80, 'h'],
-        ['f1', '@lotus', 650, 325, 70], ['f2', '@lotus', 290, 455, 62],
-        ['boat', '🛶', -90, 290, 120], ['girl', '👧', 0, -48, 62, '', 'boat'],
-        ['fish', '🐟', 500, 410, 72, 'h'],
-        ['lE', 'T:东', 955, 420, 52, 'h'], ['lW', 'T:西', 45, 420, 52, 'h'], ['lS', 'T:南', 500, 598, 52, 'h'], ['lN', 'T:北', 500, 258, 52, 'h']]
-    },
-    blank: [[3, 4, [['东', '➡️'], ['西', '⬅️'], ['北', '⬆️']]], [4, 4, [['西', '⬅️'], ['东', '➡️'], ['南', '⬇️']]], [5, 4, [['南', '⬇️'], ['北', '⬆️'], ['西', '⬅️']]],
-      [6, 4, [['北', '⬆️'], ['南', '⬇️'], ['东', '➡️']]], [0, 4, [['莲', '@lotus'], ['鱼', '🐟'], ['米', '🍚']]], [1, 1, [['叶', '@leaf'], ['花', '🌸'], ['果', '🍎']], 1]],
-    oops: [[0, '江南可采花'], [2, '鸟戏莲叶间'], [4, '鱼戏莲叶东', 1], [1, '莲叶何青青', 1]]
+      sp: [['l1', '@leaf', 360, 320, 100], ['l2', '@leaf', 640, 350, 110], ['l3', '@leaf', 280, 480, 105], ['l4', '@leaf', 730, 505, 100], ['l5', '@leaf', 490, 290, 85, 'h'], ['l6', '@leaf', 850, 330, 90, 'h'], ['l7', '@leaf', 170, 350, 85, 'h'], ['l8', '@leaf', 560, 470, 115, 'h'], ['l9', '@leaf', 430, 570, 90, 'h'], ['l10', '@leaf', 880, 560, 95, 'h'], ['l11', '@leaf', 120, 560, 80, 'h'], ['f1', '@lotus', 650, 325, 70], ['f2', '@lotus', 290, 455, 62], ['boat', '🛶', -90, 290, 120], ['girl', '👧', 0, -48, 62, '', 'boat'], ['fish', '🐟', 500, 410, 72, 'h'], ['lE', 'T:东', 955, 420, 52, 'h'], ['lW', 'T:西', 45, 420, 52, 'h'], ['lS', 'T:南', 500, 598, 52, 'h'], ['lN', 'T:北', 500, 258, 52, 'h']]
+    }
   },
   {
     id: 'hua', t: '画', tp: 'huà', d: '唐', a: '王维', g: '一年级上', hero: '🖼️',
     intro: '这首诗叫《画》，它像一个谜语。猜一猜，诗里说的是什么？',
     L: [
-      { x: '远看山有色，', py: 'yuǎn kàn shān yǒu sè', ex: '远远看去，山的颜色好漂亮。', tap: [480, 240],
-        pic: { bg: '#F4E7CB', e: [['⛰️', 115, 105, 110], ['🎨', 232, 132, 64]] },
+      { x: '远看山有色，', py: 'yuǎn kàn shān yǒu sè',
         act: [['tint', 'm1', '#58A66B', 1500], ['tint', 'm2', '#7FC08A', 1500], ['fx', 'sparkle', 480, 230]] },
-      { x: '近听水无声。', py: 'jìn tīng shuǐ wú shēng', ex: '走近了听，水在流，却一点声音也没有。', tap: [760, 470],
-        pic: { bg: '#CFEAFB', w: '#8CC9E6', e: [['👂', 100, 90, 66], ['🔇', 212, 90, 66]] },
+      { x: '近听水无声。', py: 'jìn tīng shuǐ wú shēng',
         act: [['fx', 'flow', 'stream'], ['show', 'ear', { at: 300 }], ['bubble', 640, 400, '🔇', { at: 900 }]] },
-      { x: '春去花还在，', py: 'chūn qù huā hái zài', ex: '春天过去了，花还开着。', tap: [250, 490],
-        pic: { bg: '#C9E6B1', e: [['🌸', 100, 120, 76], ['❄️', 200, 60, 46], ['🍂', 252, 125, 42]] },
-        act: [['fx', 'fall', 120, 880, 40, 560, '🍂', 10], ['fx', 'fall', 120, 880, 40, 560, '❄️', 10, { at: 1300 }],
-          ['hop', 'fl1', 1, 12, { at: 2500 }], ['hop', 'fl2', 1, 12, { at: 2650 }], ['hop', 'fl3', 1, 12, { at: 2800 }]] },
-      { x: '人来鸟不惊。', py: 'rén lái niǎo bù jīng', ex: '人走过来，小鸟也不害怕。原来呀，这是一幅画！', tap: [760, 268],
-        pic: { bg: '#CFEAFB', e: [['🚶', 90, 120, 92], ['🐦', 215, 90, 66, 'f']] },
+      { x: '春去花还在，', py: 'chūn qù huā hái zài',
+        act: [['fx', 'fall', 120, 880, 40, 560, '🍂', 10], ['fx', 'fall', 120, 880, 40, 560, '❄️', 10, { at: 1300 }], ['hop', 'fl1', 1, 12, { at: 2500 }], ['hop', 'fl2', 1, 12, { at: 2650 }], ['hop', 'fl3', 1, 12, { at: 2800 }]] },
+      { x: '人来鸟不惊。', py: 'rén lái niǎo bù jīng',
         act: [['move', 'person', -300, 0, 2200], ['hop', 'bird', 2, 10, { at: 2200 }], ['bubble', 640, 210, '😊', { at: 2300 }]] }
     ],
     sc: {
       sky: 'wall',
-      bg: [['rect', 110, 50, 780, 500, '#CFEAFB'], ['mtn', 360, 380, 420, 250, '#A3ACA8', 'm1'], ['mtn', 610, 380, 460, 290, '#B5BDB9', 'm2'],
-        ['rect', 110, 380, 780, 170, '#C9E6B1'], ['poly', '600,380 660,380 890,520 890,550 780,550', '#8CC9E6', 'stream']],
-      sp: [['tree', '🌳', 790, 330, 140], ['bird', '🐦', 760, 268, 58, 'f'], ['fl1', '🌸', 230, 470, 62], ['fl2', '🌼', 310, 505, 52], ['fl3', '🌷', 180, 515, 52],
-        ['ear', '👂', 720, 470, 60, 'h']],
+      bg: [['rect', 110, 50, 780, 500, '#CFEAFB'], ['mtn', 360, 380, 420, 250, '#A3ACA8', 'm1'], ['mtn', 610, 380, 460, 290, '#B5BDB9', 'm2'], ['rect', 110, 380, 780, 170, '#C9E6B1'], ['poly', '600,380 660,380 890,520 890,550 780,550', '#8CC9E6', 'stream']],
+      sp: [['tree', '🌳', 790, 330, 140], ['bird', '🐦', 760, 268, 58, 'f'], ['fl1', '🌸', 230, 470, 62], ['fl2', '🌼', 310, 505, 52], ['fl3', '🌷', 180, 515, 52], ['ear', '👂', 720, 470, 60, 'h']],
       top: [['frame', 110, 50, 780, 500]],
       sp2: [['person', '🚶', 1090, 520, 150]]
-    },
-    blank: [[0, 4, [['色', '🎨'], ['花', '🌸'], ['云', '☁️']]], [1, 4, [['声', '🔊'], ['鱼', '🐟'], ['光', '✨']]], [2, 2, [['花', '🌸'], ['草', '🌿'], ['雪', '❄️']]],
-      [3, 2, [['鸟', '🐦'], ['狗', '🐶'], ['鱼', '🐟']], 1], [1, 1, [['听', '👂'], ['看', '👀'], ['走', '🚶']], 1]],
-    oops: [[0, '远看山有鸟'], [3, '人来鸟就飞'], [1, '近看水无声', 1], [2, '春去花不在', 1]]
+    }
   },
   {
     id: 'mn', t: '悯农', tsub: '（其二）', tp: 'mǐn nóng', d: '唐', a: '李绅', g: '一年级上', hero: '🌾',
     intro: '这首诗叫《悯农》，是李绅写的。悯，就是心疼。他心疼种田的农民伯伯。',
     L: [
-      { x: '锄禾日当午，', py: 'chú hé rì dāng wǔ', ex: '中午太阳最晒的时候，农民伯伯还在地里锄草。', tap: [870, 200],
-        pic: { bg: '#CDEBFA', w: '#D8B47A', e: [['☀️', 235, 55, 62], ['👨‍🌾', 120, 118, 104]] },
+      { x: '锄禾日当午，', py: 'chú hé rì dāng wǔ',
         act: [['move', 'sun', -370, -120, 2000], ['glow', 'sun', { at: 2000 }], ['sway', 'farmer', 10]] },
-      { x: '汗滴禾下土。', py: 'hàn dī hé xià tǔ', ex: '汗水一滴一滴，落到禾苗下面的土里。', tap: [450, 350],
-        pic: { bg: '#CDEBFA', w: '#D8B47A', e: [['💦', 150, 70, 58], ['🌱', 150, 145, 66]] },
+      { x: '汗滴禾下土。', py: 'hàn dī hé xià tǔ',
         act: [['fx', 'drops', 470, 350, 150, 7]] },
-      { x: '谁知盘中餐，', py: 'shuí zhī pán zhōng cān', ex: '你知道吗？我们盘子里的饭，', tap: [500, 520],
-        pic: { bg: '#FFF4D6', e: [['🍚', 130, 115, 112], ['❓', 240, 65, 58]] },
+      { x: '谁知盘中餐，', py: 'shuí zhī pán zhōng cān',
         act: [['fade', 'dim', 0.45, 800], ['show', 'bowl', { at: 300 }], ['bubble', 720, 270, '❓', { at: 900 }]] },
-      { x: '粒粒皆辛苦。', py: 'lì lì jiē xīn kǔ', ex: '每一粒，都是农民伯伯辛辛苦苦种出来的。', tap: [500, 440],
-        pic: { bg: '#FFF4D6', e: [['🍚', 130, 115, 104], ['✨', 232, 70, 48], ['❤️', 245, 148, 42]] },
+      { x: '粒粒皆辛苦。', py: 'lì lì jiē xīn kǔ',
         act: [['fx', 'sparkle', 500, 420], ['hop', 'bowl', 1, 12], ['bubble', 720, 270, '❤️', { at: 600 }]] }
     ],
     sc: {
       sky: 'day',
       bg: [['hills', 290, '#BFDDA9', 5], ['ground', 300, '#D8B47A', 'field'], ['furrows', 300]],
-      sp: [['sun', '☀️', 870, 200, 100], ['s1', '🌱', 140, 360, 52], ['s2', '🌱', 300, 390, 52], ['s3', '🌱', 650, 375, 52], ['s4', '🌱', 820, 395, 52],
-        ['s5', '🌱', 190, 500, 58], ['s6', '🌱', 760, 510, 58], ['s7', '🌱', 600, 565, 58], ['farmer', '👨‍🌾', 450, 420, 150]],
+      sp: [['sun', '☀️', 870, 200, 100], ['s1', '🌱', 140, 360, 52], ['s2', '🌱', 300, 390, 52], ['s3', '🌱', 650, 375, 52], ['s4', '🌱', 820, 395, 52], ['s5', '🌱', 190, 500, 58], ['s6', '🌱', 760, 510, 58], ['s7', '🌱', 600, 565, 58], ['farmer', '👨‍🌾', 450, 420, 150]],
       top: [['shade', 'dim']],
       sp2: [['bowl', '🍚', 500, 440, 230, 'h']]
-    },
-    blank: [[0, 4, [['午', '☀️'], ['夜', '🌙'], ['雨', '🌧️']]], [1, 4, [['土', '🟫'], ['水', '💧'], ['石', '🪨']]], [3, 4, [['苦', '😓'], ['甜', '🍬'], ['饱', '😋']]],
-      [2, 2, [['盘', '🍽️'], ['碗', '🥣'], ['锅', '🍳']], 1], [0, 2, [['日', '☀️'], ['月', '🌙'], ['雨', '🌧️']], 1]],
-    oops: [[1, '汗滴禾下水'], [3, '粒粒皆好吃'], [2, '谁知碗中餐', 1], [0, '锄禾日当中', 1]]
+    }
   },
   {
     id: 'gl', t: '古朗月行', tsub: '（节选）', tp: 'gǔ lǎng yuè xíng', d: '唐', a: '李白', g: '一年级上', hero: '🌕',
     intro: '这首诗叫《古朗月行》，是李白写的。小时候，他把月亮当成了什么呢？',
     L: [
-      { x: '小时不识月，', py: 'xiǎo shí bù shí yuè', ex: '李白小时候，还不认识月亮。', tap: [230, 500],
-        pic: { bg: ['#1D2B53', '#3E4E86'], e: [['👧', 100, 130, 92], ['❓', 175, 60, 52], ['🌕', 252, 60, 54]] },
+      { x: '小时不识月，', py: 'xiǎo shí bù shí yuè',
         act: [['hop', 'kid', 2, 14], ['bubble', 340, 380, '❓', { at: 300 }]] },
-      { x: '呼作白玉盘。', py: 'hū zuò bái yù pán', ex: '就把它叫作白玉做的盘子。', tap: [680, 190],
-        pic: { bg: ['#1D2B53', '#3E4E86'], e: [['@plate', 150, 105, 150]] },
+      { x: '呼作白玉盘。', py: 'hū zuò bái yù pán',
         act: [['fade', 'moon', 0, 900], ['show', 'plate', { at: 300 }], ['bubble', 340, 380, '🍽️', { at: 600 }]] },
-      { x: '又疑瑶台镜，', py: 'yòu yí yáo tái jìng', ex: '又以为它是神仙住的瑶台上的镜子，', tap: [680, 190],
-        pic: { bg: ['#1D2B53', '#3E4E86'], e: [['@mirror', 140, 105, 140], ['✨', 238, 60, 46]] },
+      { x: '又疑瑶台镜，', py: 'yòu yí yáo tái jìng',
         act: [['fade', 'plate', 0, 900], ['show', 'mirror', { at: 300 }], ['show', 'palace', { at: 900 }], ['fx', 'sparkle', 680, 190]] },
-      { x: '飞在青云端。', py: 'fēi zài qīng yún duān', ex: '飞在高高的青云上面。', tap: [680, 360],
-        pic: { bg: ['#1D2B53', '#3E4E86'], e: [['🌕', 150, 75, 82], ['☁️', 95, 145, 82], ['☁️', 210, 152, 86]] },
+      { x: '飞在青云端。', py: 'fēi zài qīng yún duān',
         act: [['show', 'c1'], ['show', 'c2', { at: 200 }], ['show', 'c3', { at: 400 }], ['move', 'mirror', 0, -40, 2400], ['move', 'palace', 0, -40, 2400], ['bob', 'mirror', { at: 2400 }]] }
     ],
     sc: {
       sky: 'night',
       bg: [['stars', 36], ['hills', 470, '#2E3A66', 3]],
-      sp: [['moon', '🌕', 680, 190, 170], ['plate', '@plate', 680, 190, 190, 'h'], ['palace', '🏯', 680, 330, 90, 'h'], ['mirror', '@mirror', 680, 190, 190, 'h'],
-        ['c1', '☁️', 560, 330, 120, 'h'], ['c2', '☁️', 800, 345, 130, 'h'], ['c3', '☁️', 680, 372, 110, 'h'], ['kid', '👧', 230, 500, 120]]
-    },
-    blank: [[1, 4, [['盘', '🍽️'], ['饼', '🥞'], ['球', '⚽']]], [2, 4, [['镜', '🪞'], ['灯', '💡'], ['花', '🌸']]], [0, 4, [['月', '🌙'], ['星', '⭐'], ['字', '🔤']]],
-      [3, 3, [['云', '☁️'], ['山', '⛰️'], ['海', '🌊']], 1], [1, 3, [['玉', '💎'], ['铁', '🔩'], ['木', '🪵']], 1]],
-    oops: [[1, '呼作大月饼'], [3, '飞在大海边'], [2, '又疑瑶台灯', 1], [0, '小时不识星', 1]]
+      sp: [['moon', '🌕', 680, 190, 170], ['plate', '@plate', 680, 190, 190, 'h'], ['palace', '🏯', 680, 330, 90, 'h'], ['mirror', '@mirror', 680, 190, 190, 'h'], ['c1', '☁️', 560, 330, 120, 'h'], ['c2', '☁️', 800, 345, 130, 'h'], ['c3', '☁️', 680, 372, 110, 'h'], ['kid', '👧', 230, 500, 120]]
+    }
   },
   {
     id: 'feng', t: '风', tp: 'fēng', d: '唐', a: '李峤', g: '一年级上', hero: '🌬️',
     intro: '这首诗叫《风》。诗里一个风字也没有，可是到处都是风。我们一起找一找！',
     L: [
-      { x: '解落三秋叶，', py: 'jiě luò sān qiū yè', ex: '风一吹，秋天的叶子落下来了。', tap: [220, 330],
-        pic: { bg: '#CDEBFA', e: [['🌬️', 80, 80, 72], ['🍂', 185, 110, 54], ['🍂', 242, 160, 44]] },
+      { x: '解落三秋叶，', py: 'jiě luò sān qiū yè',
         act: [['hop', 'wind', 1, 12], ['fx', 'fall', 150, 320, 280, 560, '🍂', 10]] },
-      { x: '能开二月花。', py: 'néng kāi èr yuè huā', ex: '风一吹，二月的花儿开了。', tap: [515, 480],
-        pic: { bg: '#CDEBFA', e: [['🌬️', 80, 80, 72], ['🌸', 200, 115, 84]] },
+      { x: '能开二月花。', py: 'néng kāi èr yuè huā',
         act: [['hop', 'wind', 1, 12], ['show', 'b1', { at: 200 }], ['show', 'b2', { at: 400 }], ['show', 'b3', { at: 600 }], ['show', 'b4', { at: 800 }], ['show', 'b5', { at: 1000 }]] },
-      { x: '过江千尺浪，', py: 'guò jiāng qiān chǐ làng', ex: '风吹过江面，掀起好高好高的浪。', tap: [600, 370],
-        pic: { bg: '#CDEBFA', w: '#7FBCE0', e: [['🌬️', 80, 70, 72], ['🌊', 205, 118, 94]] },
-        act: [['hop', 'wind', 1, 12], ['show', 'w1'], ['show', 'w2', { at: 200 }], ['show', 'w3', { at: 400 }],
-          ['hop', 'w1', 2, 46, { at: 500 }], ['hop', 'w2', 2, 60, { at: 600 }], ['hop', 'w3', 2, 46, { at: 700 }]] },
-      { x: '入竹万竿斜。', py: 'rù zhú wàn gān xié', ex: '风吹进竹林，好多好多竹子都斜着弯了腰。', tap: [860, 440],
-        pic: { bg: '#CDEBFA', e: [['🌬️', 70, 70, 72], ['@bamboo', 200, 195, 150, 'r14']] },
+      { x: '过江千尺浪，', py: 'guò jiāng qiān chǐ làng',
+        act: [['hop', 'wind', 1, 12], ['show', 'w1'], ['show', 'w2', { at: 200 }], ['show', 'w3', { at: 400 }], ['hop', 'w1', 2, 46, { at: 500 }], ['hop', 'w2', 2, 60, { at: 600 }], ['hop', 'w3', 2, 46, { at: 700 }]] },
+      { x: '入竹万竿斜。', py: 'rù zhú wàn gān xié',
         act: [['hop', 'wind', 1, 12], ['tilt', 'bam', 14]] }
     ],
     sc: {
       sky: 'day',
       bg: [['hills', 250, '#B7D9A8', 4], ['river', 330, 430, '#7FBCE0', 'river'], ['ground', 430, '#A9D18E'], ['bamboo', 860, 600, 6, 'bam']],
-      sp: [['wind', '🌬️', 95, 150, 100], ['tree', '🌳', 220, 360, 170], ['peach', '🌳', 515, 520, 130],
-        ['b1', '🌸', 490, 470, 46, 'h'], ['b2', '🌸', 545, 462, 46, 'h'], ['b3', '🌸', 515, 500, 46, 'h'], ['b4', '🌸', 468, 505, 40, 'h'], ['b5', '🌸', 562, 500, 40, 'h'],
-        ['w1', '🌊', 380, 365, 90, 'h'], ['w2', '🌊', 600, 360, 100, 'h'], ['w3', '🌊', 760, 368, 86, 'h']]
-    },
-    blank: [[0, 4, [['叶', '🍂'], ['果', '🍎'], ['雪', '❄️']]], [1, 4, [['花', '🌸'], ['草', '🌿'], ['树', '🌳']]], [2, 4, [['浪', '🌊'], ['船', '⛵'], ['鱼', '🐟']]],
-      [3, 1, [['竹', '🎋'], ['树', '🌳'], ['草', '🌿']], 1], [1, 2, [['二', '2️⃣'], ['三', '3️⃣'], ['五', '5️⃣']], 1]],
-    oops: [[2, '过江千尺鱼'], [3, '入竹万竿直'], [1, '能开三月花', 1], [0, '解落三春叶', 1]]
+      sp: [['wind', '🌬️', 95, 150, 100], ['tree', '🌳', 220, 360, 170], ['peach', '🌳', 515, 520, 130], ['b1', '🌸', 490, 470, 46, 'h'], ['b2', '🌸', 545, 462, 46, 'h'], ['b3', '🌸', 515, 500, 46, 'h'], ['b4', '🌸', 468, 505, 40, 'h'], ['b5', '🌸', 562, 500, 40, 'h'], ['w1', '🌊', 380, 365, 90, 'h'], ['w2', '🌊', 600, 360, 100, 'h'], ['w3', '🌊', 760, 368, 86, 'h']]
+    }
   },
   {
     id: 'cx', t: '春晓', tp: 'chūn xiǎo', d: '唐', a: '孟浩然', g: '一年级下', hero: '🐦',
     intro: '这首诗叫《春晓》，是孟浩然写的。春天的早上，他睡得好香好香。',
     L: [
-      { x: '春眠不觉晓，', py: 'chūn mián bù jué xiǎo', ex: '春天睡得真香，天亮了都不知道。', tap: [280, 390],
-        pic: { bg: '#FBE9CF', e: [['😴', 110, 120, 86], ['🌅', 225, 85, 72]] },
+      { x: '春眠不觉晓，', py: 'chūn mián bù jué xiǎo',
         act: [['fade', 'winDay', 1, 2200], ['show', 'sun'], ['move', 'sun', 0, -150, 2400], ['fx', 'zzz', 320, 330]] },
-      { x: '处处闻啼鸟。', py: 'chù chù wén tí niǎo', ex: '到处都能听到小鸟在唱歌。', tap: [730, 180],
-        pic: { bg: '#CDEBFA', e: [['🐦', 95, 95, 66], ['🎶', 190, 65, 52], ['🐦', 242, 140, 58, 'f']] },
+      { x: '处处闻啼鸟。', py: 'chù chù wén tí niǎo',
         act: [['show', 'b1'], ['show', 'b2', { at: 250 }], ['show', 'b3', { at: 500 }], ['fx', 'notes', 730, 150], ['swap', 'kid', '😊', { at: 1400 }]] },
-      { x: '夜来风雨声，', py: 'yè lái fēng yǔ shēng', ex: '想起昨天夜里，又刮风又下雨，', tap: [730, 210],
-        pic: { bg: '#9DB0C8', e: [['🌧️', 140, 90, 92], ['💨', 235, 145, 56]] },
+      { x: '夜来风雨声，', py: 'yè lái fēng yǔ shēng',
         act: [['bubble', 430, 250, '🌧️'], ['fx', 'rain', 575, 900, 90, 340]] },
-      { x: '花落知多少。', py: 'huā luò zhī duō shǎo', ex: '不知道打落了多少花儿呢？', tap: [740, 320],
-        pic: { bg: '#CDEBFA', w: '#BFE3A5', e: [['🌸', 90, 150, 48], ['🌸', 160, 168, 42], ['❓', 232, 75, 66]] },
+      { x: '花落知多少。', py: 'huā luò zhī duō shǎo',
         act: [['fx', 'fall', 580, 890, 120, 330, '🌸', 9], ['bubble', 430, 250, '❓', { at: 600 }]] }
     ],
     sc: {
       sky: 'room',
       bg: [['room', '#FBE9CF', 470, '#D9B58C'], ['win', 560, 80, 350, 260, 'night', 'win']],
-      sp: [['tree', '🌳', 830, 300, 110, '', 'winIn'], ['sun', '☀️', 650, 330, 72, 'h', 'winIn'],
-        ['b1', '🐦', 640, 150, 50, 'h,f', 'winIn'], ['b2', '🐦', 780, 120, 46, 'h', 'winIn'], ['b3', '🐦', 870, 205, 44, 'h', 'winIn'],
-        ['bed', '🛏️', 330, 440, 250], ['kid', '😴', 270, 385, 84]]
-    },
-    blank: [[1, 4, [['鸟', '🐦'], ['狗', '🐶'], ['猫', '🐱']]], [2, 3, [['雨', '🌧️'], ['雪', '❄️'], ['沙', '🏖️']]], [3, 1, [['落', '🍂'], ['开', '🌼'], ['长', '🌱']]],
-      [2, 2, [['风', '💨'], ['雷', '⚡'], ['云', '☁️']], 1]],
-    oops: [[1, '处处闻啼狗'], [0, '春眠不起床'], [2, '夜来风雪声', 1], [3, '花开知多少', 1]]
+      sp: [['tree', '🌳', 830, 300, 110, '', 'winIn'], ['sun', '☀️', 650, 330, 72, 'h', 'winIn'], ['b1', '🐦', 640, 150, 50, 'h,f', 'winIn'], ['b2', '🐦', 780, 120, 46, 'h', 'winIn'], ['b3', '🐦', 870, 205, 44, 'h', 'winIn'], ['bed', '🛏️', 330, 440, 250], ['kid', '😴', 270, 385, 84]]
+    }
   },
   {
     id: 'zw', t: '赠汪伦', tp: 'zèng wāng lún', d: '唐', a: '李白', g: '一年级下', hero: '⛵',
     intro: '这首诗叫《赠汪伦》。李白要坐船走了，好朋友汪伦来送他。',
     L: [
-      { x: '李白乘舟将欲行，', py: 'lǐ bái chéng zhōu jiāng yù xíng', ex: '李白坐上小船，正要出发。', tap: [640, 370],
-        pic: { bg: '#CDEBFA', w: '#6FB8C9', e: [['🛶', 150, 140, 124], ['🧔', 150, 82, 62]] },
+      { x: '李白乘舟将欲行，', py: 'lǐ bái chéng zhōu jiāng yù xíng',
         act: [['hop', 'boat', 1, 10], ['move', 'boat', 90, 0, 2200]] },
-      { x: '忽闻岸上踏歌声。', py: 'hū wén àn shàng tà gē shēng', ex: '忽然听见岸上，有人一边踏着脚打拍子，一边唱歌。', tap: [190, 430],
-        pic: { bg: '#CDEBFA', w: '#B5D98C', e: [['🧑', 90, 125, 82], ['🎵', 180, 65, 52], ['👣', 235, 150, 46]] },
+      { x: '忽闻岸上踏歌声。', py: 'hū wén àn shàng tà gē shēng',
         act: [['show', 'wang'], ['show', 'f2', { at: 200 }], ['hop', 'wang', 3, 22, { at: 500 }], ['hop', 'f2', 3, 22, { at: 600 }], ['fx', 'notes', 190, 340], ['bubble', 640, 250, '👂', { at: 900 }]] },
-      { x: '桃花潭水深千尺，', py: 'táo huā tán shuǐ shēn qiān chǐ', ex: '桃花潭的水，有一千尺那么深，', tap: [820, 520],
-        pic: { bg: '#3D8DA6', e: [['🌸', 80, 60, 58], ['⬇️', 190, 108, 78], ['T:千尺', 190, 178, 28]] },
+      { x: '桃花潭水深千尺，', py: 'táo huā tán shuǐ shēn qiān chǐ',
         act: [['fx', 'fall', 30, 320, 180, 520, '🌸', 10], ['tint', 'water', '#3D8DA6', 1500], ['show', 'arrow', { at: 400 }], ['show', 'deep', { at: 700 }]] },
-      { x: '不及汪伦送我情。', py: 'bù jí wāng lún sòng wǒ qíng', ex: '也比不上汪伦送我的情谊深。', tap: [470, 300],
-        pic: { bg: '#FFE4EC', e: [['❤️', 150, 105, 124]] },
+      { x: '不及汪伦送我情。', py: 'bù jí wāng lún sòng wǒ qíng',
         act: [['show', 'heart'], ['hop', 'heart', 2, 24, { at: 400 }], ['fx', 'sparkle', 470, 300, { at: 300 }], ['bubble', 640, 250, '😊', { at: 800 }]] }
     ],
     sc: {
       sky: 'day',
       bg: [['water', 250, '#6FB8C9', 'water'], ['poly', '0,240 300,240 360,300 330,380 380,470 320,560 360,620 0,620', '#B5D98C', 'shore']],
-      sp: [['t1', '🌳', 70, 230, 100], ['t2', '🌳', 190, 215, 90], ['p1', '🌸', 60, 205, 40], ['p2', '🌸', 95, 235, 36], ['p3', '🌸', 180, 195, 36], ['p4', '🌸', 205, 225, 34],
-        ['boat', '🛶', 640, 380, 170], ['libai', '🧔', -10, -62, 72, '', 'boat'],
-        ['wang', '🧑', 230, 420, 96, 'h'], ['f2', '👨', 120, 450, 86, 'h'],
-        ['arrow', '⬇️', 820, 500, 64, 'h'], ['deep', 'T:千尺', 910, 500, 40, 'h'], ['heart', '❤️', 470, 300, 130, 'h']]
-    },
-    blank: [[0, 3, [['舟', '🛶'], ['车', '🚗'], ['马', '🐎']]], [1, 5, [['歌', '🎵'], ['鼓', '🥁'], ['笑', '😄']]], [3, 6, [['情', '❤️'], ['糖', '🍬'], ['书', '📖']]],
-      [2, 4, [['深', '⬇️'], ['浅', '⬆️'], ['冷', '🥶']], 1], [1, 4, [['踏', '👣'], ['唱', '🎤'], ['跳', '🦘']], 1]],
-    oops: [[0, '李白乘车将欲行'], [3, '不及汪伦送我糖'], [1, '忽闻岸上唱歌声', 1], [2, '桃花潭水深百尺', 1]]
+      sp: [['t1', '🌳', 70, 230, 100], ['t2', '🌳', 190, 215, 90], ['p1', '🌸', 60, 205, 40], ['p2', '🌸', 95, 235, 36], ['p3', '🌸', 180, 195, 36], ['p4', '🌸', 205, 225, 34], ['boat', '🛶', 640, 380, 170], ['libai', '🧔', -10, -62, 72, '', 'boat'], ['wang', '🧑', 230, 420, 96, 'h'], ['f2', '👨', 120, 450, 86, 'h'], ['arrow', '⬇️', 820, 500, 64, 'h'], ['deep', 'T:千尺', 910, 500, 40, 'h'], ['heart', '❤️', 470, 300, 130, 'h']]
+    }
   },
   {
     id: 'jys', t: '静夜思', tp: 'jìng yè sī', d: '唐', a: '李白', g: '一年级下', hero: '🌙',
     intro: '这首诗叫《静夜思》，是李白写的。一个安静的晚上，他睡不着……',
     L: [
-      { x: '床前明月光，', py: 'chuáng qián míng yuè guāng', ex: '床前洒满了明亮的月光。', tap: [640, 500],
-        pic: { bg: '#3B4570', w: '#2A3152', e: [['🛏️', 95, 130, 100], ['🌙', 235, 55, 52], ['✨', 215, 152, 42]] },
+      { x: '床前明月光，', py: 'chuáng qián míng yuè guāng',
         act: [['fade', 'beam', 0.45, 1600], ['glow', 'moon']] },
-      { x: '疑是地上霜。', py: 'yí shì dì shàng shuāng', ex: '李白以为，是地上下了一层白白的霜。', tap: [600, 550],
-        pic: { bg: '#2A3152', e: [['✨', 90, 130, 52], ['✨', 150, 155, 42], ['🤔', 230, 75, 66]] },
+      { x: '疑是地上霜。', py: 'yí shì dì shàng shuāng',
         act: [['show', 'fr1'], ['show', 'fr2', { at: 200 }], ['show', 'fr3', { at: 400 }], ['show', 'fr4', { at: 600 }], ['bubble', 370, 270, '🤔', { at: 700 }]] },
-      { x: '举头望明月，', py: 'jǔ tóu wàng míng yuè', ex: '他抬起头，望着天上的月亮。', tap: [230, 370],
-        pic: { bg: '#3B4570', e: [['🧔', 100, 130, 86, 'r-18'], ['🌕', 230, 60, 66]] },
+      { x: '举头望明月，', py: 'jǔ tóu wàng míng yuè',
         act: [['tilt', 'libai', -18], ['glow', 'moon', { at: 500 }], ['bubble', 370, 270, '🌕', { at: 600 }]] },
-      { x: '低头思故乡。', py: 'dī tóu sī gù xiāng', ex: '又低下头，想起了远方的家乡。', tap: [230, 390],
-        pic: { bg: '#3B4570', e: [['🧔', 100, 135, 86, 'r16'], ['💭', 205, 72, 104], ['🏡', 205, 66, 44]] },
+      { x: '低头思故乡。', py: 'dī tóu sī gù xiāng',
         act: [['tilt', 'libai', 16], ['bubble', 370, 270, '🏡', { at: 400 }]] }
     ],
     sc: {
       sky: 'roomN',
       bg: [['room', '#3B4570', 470, '#2A3152'], ['win', 600, 70, 300, 230, 'night', 'win'], ['poly', '600,300 900,300 820,615 380,615', '#FFF6C8', 'beam', 0]],
-      sp: [['moon', '🌕', 760, 170, 90, '', 'winIn'], ['bed', '🛏️', 240, 450, 240], ['libai', '🧔', 230, 388, 96],
-        ['fr1', '✨', 560, 520, 40, 'h'], ['fr2', '✨', 660, 560, 46, 'h'], ['fr3', '✨', 500, 585, 36, 'h'], ['fr4', '✨', 730, 520, 36, 'h']]
-    },
-    blank: [[1, 4, [['霜', '❄️'], ['糖', '🍬'], ['水', '💧']]], [0, 3, [['月', '🌙'], ['日', '☀️'], ['灯', '💡']]], [3, 4, [['乡', '🏡'], ['猫', '🐱'], ['花', '🌸']]],
-      [2, 2, [['望', '👀'], ['吃', '🍽️'], ['睡', '😴']], 1], [1, 2, [['地', '🟫'], ['天', '☁️'], ['床', '🛏️']], 1]],
-    oops: [[1, '疑是地上糖'], [3, '低头思妈妈'], [0, '床前明日光', 1], [1, '疑是天上霜', 1]]
+      sp: [['moon', '🌕', 760, 170, 90, '', 'winIn'], ['bed', '🛏️', 240, 450, 240], ['libai', '🧔', 230, 388, 96], ['fr1', '✨', 560, 520, 40, 'h'], ['fr2', '✨', 660, 560, 46, 'h'], ['fr3', '✨', 500, 585, 36, 'h'], ['fr4', '✨', 730, 520, 36, 'h']]
+    }
   },
   {
     id: 'xy', t: '寻隐者不遇', tp: 'xún yǐn zhě bú yù', d: '唐', a: '贾岛', g: '一年级下', hero: '🌲',
     intro: '这首诗叫《寻隐者不遇》，是贾岛写的。他去大山里找一位老爷爷，找到了吗？',
     L: [
-      { x: '松下问童子，', py: 'sōng xià wèn tóng zǐ', ex: '诗人在松树下面，问一个小童子。', tap: [265, 470],
-        pic: { bg: '#CDEBFA', w: '#A7D08C', e: [['🌲', 75, 105, 112], ['👦', 145, 150, 52], ['🧔', 235, 140, 68]] },
+      { x: '松下问童子，', py: 'sōng xià wèn tóng zǐ',
         act: [['move', 'poet', -450, 0, 2200], ['bubble', 470, 350, '❓', { at: 2100 }]] },
-      { x: '言师采药去。', py: 'yán shī cǎi yào qù', ex: '童子说：我的师父采药去了。', tap: [265, 470],
-        pic: { bg: '#CDEBFA', e: [['👴', 130, 110, 92], ['🌿', 225, 140, 58]] },
+      { x: '言师采药去。', py: 'yán shī cǎi yào qù',
         act: [['hop', 'boy', 1, 16], ['bubble', 300, 360, '👴', { at: 200 }], ['show', 'master', { at: 700 }], ['show', 'herb', { at: 900 }]] },
-      { x: '只在此山中，', py: 'zhǐ zài cǐ shān zhōng', ex: '他就在这座大山里，', tap: [650, 250],
-        pic: { bg: '#CDEBFA', e: [['⛰️', 150, 110, 132], ['👴', 175, 84, 32]] },
+      { x: '只在此山中，', py: 'zhǐ zài cǐ shān zhōng',
         act: [['glow', 'mtn'], ['hop', 'master', 2, 10, { at: 500 }]] },
-      { x: '云深不知处。', py: 'yún shēn bù zhī chù', ex: '可是山里的云雾太浓了，不知道他在哪儿。', tap: [700, 260],
-        pic: { bg: '#CDEBFA', e: [['☁️', 110, 90, 92], ['☁️', 200, 125, 92], ['❓', 247, 60, 48]] },
-        act: [['show', 'c1'], ['show', 'c2', { at: 200 }], ['show', 'c3', { at: 400 }], ['show', 'c4', { at: 600 }], ['show', 'c5', { at: 800 }],
-          ['fade', 'master', 0, 800, { at: 600 }], ['fade', 'herb', 0, 800, { at: 600 }], ['bubble', 470, 350, '❓', { at: 1200 }]] }
+      { x: '云深不知处。', py: 'yún shēn bù zhī chù',
+        act: [['show', 'c1'], ['show', 'c2', { at: 200 }], ['show', 'c3', { at: 400 }], ['show', 'c4', { at: 600 }], ['show', 'c5', { at: 800 }], ['fade', 'master', 0, 800, { at: 600 }], ['fade', 'herb', 0, 800, { at: 600 }], ['bubble', 470, 350, '❓', { at: 1200 }]] }
     ],
     sc: {
       sky: 'day',
       bg: [['mtn', 650, 470, 760, 400, '#7FAF8A', 'mtn'], ['mtn', 300, 470, 520, 260, '#96C49F'], ['ground', 470, '#A7D08C']],
-      sp: [['pine', '🌲', 170, 360, 230], ['boy', '👦', 265, 470, 84], ['poet', '🧔', 820, 470, 96], ['master', '👴', 700, 240, 52, 'h'], ['herb', '🌿', 740, 252, 40, 'h'],
-        ['c1', '☁️', 560, 230, 160, 'h'], ['c2', '☁️', 710, 190, 170, 'h'], ['c3', '☁️', 830, 260, 150, 'h'], ['c4', '☁️', 640, 310, 150, 'h'], ['c5', '☁️', 790, 330, 140, 'h']]
-    },
-    blank: [[0, 3, [['童', '👦'], ['老', '👴'], ['猫', '🐱']]], [1, 3, [['药', '🌿'], ['花', '🌸'], ['果', '🍎']]], [2, 3, [['山', '⛰️'], ['海', '🌊'], ['城', '🏙️']]],
-      [1, 2, [['采', '🧺'], ['吃', '😋'], ['卖', '💰']], 1]],
-    oops: [[0, '松下问猴子'], [1, '言师采花去'], [3, '云深不知路', 1], [2, '只在此山上', 1]]
+      sp: [['pine', '🌲', 170, 360, 230], ['boy', '👦', 265, 470, 84], ['poet', '🧔', 820, 470, 96], ['master', '👴', 700, 240, 52, 'h'], ['herb', '🌿', 740, 252, 40, 'h'], ['c1', '☁️', 560, 230, 160, 'h'], ['c2', '☁️', 710, 190, 170, 'h'], ['c3', '☁️', 830, 260, 150, 'h'], ['c4', '☁️', 640, 310, 150, 'h'], ['c5', '☁️', 790, 330, 140, 'h']]
+    }
   },
   {
     id: 'cs', t: '池上', tp: 'chí shàng', d: '唐', a: '白居易', g: '一年级下', hero: '🛶',
     intro: '这首诗叫《池上》，是白居易写的。一个小娃娃，偷偷干了一件事……',
     L: [
-      { x: '小娃撑小艇，', py: 'xiǎo wá chēng xiǎo tǐng', ex: '一个小娃娃，撑着一条小船。', tap: [80, 440],
-        pic: { bg: '#6DBFAE', e: [['🛶', 150, 140, 124], ['👦', 150, 85, 62]] },
+      { x: '小娃撑小艇，', py: 'xiǎo wá chēng xiǎo tǐng',
         act: [['move', 'boat', 540, -110, 2800]] },
-      { x: '偷采白莲回。', py: 'tōu cǎi bái lián huí', ex: '偷偷采了一朵白莲花，划回来了。', tap: [640, 320],
-        pic: { bg: '#6DBFAE', e: [['@lotusW', 120, 110, 104], ['🤭', 230, 75, 58]] },
+      { x: '偷采白莲回。', py: 'tōu cǎi bái lián huí',
         act: [['move', 'wl1', -150, -10, 1200], ['swap', 'kid', '🤭', { at: 900 }], ['move', 'wl1', -330, 90, 2400, null, { at: 1400 }], ['move', 'boat', -330, 90, 2400, null, { at: 1400 }]] },
-      { x: '不解藏踪迹，', py: 'bù jiě cáng zōng jì', ex: '他还不知道，要把自己的踪迹藏好，', tap: [140, 420],
-        pic: { bg: '#6DBFAE', e: [['👦', 120, 110, 92], ['😄', 225, 75, 58]] },
+      { x: '不解藏踪迹，', py: 'bù jiě cáng zōng jì',
         act: [['bubble', 300, 250, '😄'], ['hop', 'kid', 2, 12]] },
-      { x: '浮萍一道开。', py: 'fú píng yí dào kāi', ex: '水面上的浮萍，被小船分开了一条路，大家一看就知道啦！', tap: [300, 420],
-        pic: { bg: '#6DBFAE', e: [['@path', 150, 100, 280]] },
+      { x: '浮萍一道开。', py: 'fú píng yí dào kāi',
         act: [['part', 'weed', '-80,470 460,360 130,450']] }
     ],
     sc: {
       sky: 'day',
       bg: [['water', 215, '#6DBFAE', 'water'], ['weed', 20, 235, 990, 612, 230, 'weed']],
-      sp: [['wl1', '@lotusW', 640, 320, 74], ['wl2', '@lotusW', 800, 430, 64], ['wl3', '@lotusW', 380, 525, 60],
-        ['boat', '🛶', -80, 470, 130], ['kid', '👦', 0, -50, 64, '', 'boat']]
-    },
-    blank: [[0, 4, [['艇', '🛶'], ['车', '🚗'], ['马', '🐎']]], [1, 3, [['莲', '@lotusW'], ['菜', '🥬'], ['云', '☁️']]], [3, 1, [['萍', '🍀'], ['鱼', '🐟'], ['船', '⛵']]],
-      [0, 1, [['娃', '👦'], ['猫', '🐱'], ['鸭', '🦆']], 1]],
-    oops: [[0, '小娃撑小伞'], [1, '偷采白菜回'], [3, '浮萍两道开', 1], [2, '不解藏踪影', 1]]
+      sp: [['wl1', '@lotusW', 640, 320, 74], ['wl2', '@lotusW', 800, 430, 64], ['wl3', '@lotusW', 380, 525, 60], ['boat', '🛶', -80, 470, 130], ['kid', '👦', 0, -50, 64, '', 'boat']]
+    }
   },
   {
     id: 'xc', t: '小池', tp: 'xiǎo chí', d: '宋', a: '杨万里', g: '一年级下', hero: '🍃',
     intro: '这首诗叫《小池》，是杨万里写的。我们去看看，夏天的小池塘里有什么。',
     L: [
-      { x: '泉眼无声惜细流，', py: 'quán yǎn wú shēng xī xì liú', ex: '泉眼悄悄地流出细细的水，好像舍不得流多。', tap: [110, 330],
-        pic: { bg: '#CDEBFA', w: '#B9DE9F', e: [['🪨', 90, 110, 72], ['💧', 160, 142, 42], ['🤫', 240, 70, 52]] },
+      { x: '泉眼无声惜细流，', py: 'quán yǎn wú shēng xī xì liú',
         act: [['fx', 'flow', 'flow'], ['bubble', 230, 200, '🤫', { at: 600 }]] },
-      { x: '树阴照水爱晴柔。', py: 'shù yīn zhào shuǐ ài qíng róu', ex: '大树的影子映在水里，它喜欢晴天柔和的风光。', tap: [830, 450],
-        pic: { bg: '#CDEBFA', w: '#86C9E6', e: [['🌳', 150, 65, 82], ['🌳', 150, 152, 72, 'v,o.4'], ['☀️', 255, 45, 42]] },
+      { x: '树阴照水爱晴柔。', py: 'shù yīn zhào shuǐ ài qíng róu',
         act: [['fade', 'refl', 0.35, 1600], ['glow', 'sun', { at: 500 }]] },
-      { x: '小荷才露尖尖角，', py: 'xiǎo hé cái lù jiān jiān jiǎo', ex: '嫩嫩的小荷叶，刚刚露出尖尖的角，', tap: [540, 445],
-        pic: { bg: '#86C9E6', e: [['@leaf', 90, 150, 82], ['@bud', 170, 110, 104]] },
+      { x: '小荷才露尖尖角，', py: 'xiǎo hé cái lù jiān jiān jiǎo',
         act: [['grow', 'bud', 1600]] },
-      { x: '早有蜻蜓立上头。', py: 'zǎo yǒu qīng tíng lì shàng tóu', ex: '早就有一只小蜻蜓，站在上面了。', tap: [540, 390],
-        pic: { bg: '#86C9E6', e: [['@bud', 150, 140, 92], ['@dragonfly', 150, 60, 104]] },
+      { x: '早有蜻蜓立上头。', py: 'zǎo yǒu qīng tíng lì shàng tóu',
         act: [['show', 'dfly'], ['move', 'dfly', -390, 268, 2200], ['hop', 'dfly', 1, 6, { at: 2300 }]] }
     ],
     sc: {
       sky: 'day',
       bg: [['ground', 250, '#B9DE9F'], ['ell', 520, 450, 380, 140, '#86C9E6', 'pond'], ['stream', 'M88,300 C112,338 138,372 178,420', '#86C9E6', 'flow']],
-      sp: [['rock', '🪨', 72, 282, 70], ['tree', '🌳', 830, 240, 180], ['refl', '🌳', 830, 470, 150, 'h,v'], ['sun', '☀️', 130, 90, 80],
-        ['leaf1', '@leaf', 420, 470, 90], ['leaf2', '@leaf', 650, 520, 80], ['bud', '@bud', 540, 445, 110, 'h'], ['dfly', '@dragonfly', 930, 115, 80, 'h']]
-    },
-    blank: [[2, 1, [['荷', '@leaf'], ['花', '🌸'], ['草', '🌿']]], [2, 6, [['角', '🔺'], ['花', '🌸'], ['叶', '🍃']]], [0, 6, [['流', '💧'], ['花', '🌸'], ['云', '☁️']]],
-      [1, 3, [['水', '💧'], ['山', '⛰️'], ['天', '☁️']], 1], [0, 2, [['无', '🤫'], ['有', '🔊'], ['大', '📢']], 1]],
-    oops: [[3, '早有青蛙立上头'], [2, '小荷才露大大角'], [0, '泉眼有声惜细流', 1], [2, '小荷才露尖尖头', 1]]
+      sp: [['rock', '🪨', 72, 282, 70], ['tree', '🌳', 830, 240, 180], ['refl', '🌳', 830, 470, 150, 'h,v'], ['sun', '☀️', 130, 90, 80], ['leaf1', '@leaf', 420, 470, 90], ['leaf2', '@leaf', 650, 520, 80], ['bud', '@bud', 540, 445, 110, 'h'], ['dfly', '@dragonfly', 930, 115, 80, 'h']]
+    }
   },
   {
     id: 'hj', t: '画鸡', tp: 'huà jī', d: '明', a: '唐寅', g: '一年级下', hero: '🐓',
     intro: '这首诗叫《画鸡》，是唐寅写的。他画了一只大公鸡，又给它写了一首诗。',
     L: [
-      { x: '头上红冠不用裁，', py: 'tóu shàng hóng guān bú yòng cái', ex: '头上的红鸡冠，不用剪裁，天生就这么好看。', tap: [740, 455],
-        pic: { bg: '#FBE3C0', e: [['🐓', 120, 120, 112], ['✂️', 236, 60, 46], ['🚫', 236, 60, 66, 'o.8']] },
+      { x: '头上红冠不用裁，', py: 'tóu shàng hóng guān bú yòng cái',
         act: [['glow', 'rooster'], ['bubble', 880, 330, '✂️🚫', { at: 500 }]] },
-      { x: '满身雪白走将来。', py: 'mǎn shēn xuě bái zǒu jiāng lái', ex: '穿着雪白的衣裳，大摇大摆地走过来。', tap: [760, 520],
-        pic: { bg: '#FBE3C0', w: '#C9B48A', e: [['🐓', 150, 105, 112], ['👣', 246, 165, 42]] },
+      { x: '满身雪白走将来。', py: 'mǎn shēn xuě bái zǒu jiāng lái',
         act: [['move', 'rooster', -240, 10, 2400], ['hop', 'rooster', 4, 10]] },
-      { x: '平生不敢轻言语，', py: 'píng shēng bù gǎn qīng yán yǔ', ex: '它平时不随便乱叫，', tap: [520, 520],
-        pic: { bg: '#FBE3C0', e: [['🐓', 120, 120, 112], ['🤫', 236, 65, 58]] },
+      { x: '平生不敢轻言语，', py: 'píng shēng bù gǎn qīng yán yǔ',
         act: [['bubble', 650, 360, '🤫']] },
-      { x: '一叫千门万户开。', py: 'yí jiào qiān mén wàn hù kāi', ex: '可是它一叫，千家万户的门都打开了，天亮啦！', tap: [520, 470],
-        pic: { bg: '#FBE3C0', e: [['🐓', 95, 125, 92, 'r-14'], ['🚪', 200, 120, 66], ['🌅', 262, 55, 46]] },
-        act: [['tilt', 'rooster', -14], ['bubble', 650, 360, 'T:喔喔喔！'], ['fade', 'dark', 0, 1800, { at: 400 }],
-          ['open', 'h1', { at: 600 }], ['open', 'h2', { at: 800 }], ['open', 'h3', { at: 1000 }], ['open', 'h4', { at: 1200 }],
-          ['show', 'sun', { at: 500 }], ['move', 'sun', 0, -170, 2200, null, { at: 500 }]] }
+      { x: '一叫千门万户开。', py: 'yí jiào qiān mén wàn hù kāi',
+        act: [['tilt', 'rooster', -14], ['bubble', 650, 360, 'T:喔喔喔！'], ['fade', 'dark', 0, 1800, { at: 400 }], ['open', 'h1', { at: 600 }], ['open', 'h2', { at: 800 }], ['open', 'h3', { at: 1000 }], ['open', 'h4', { at: 1200 }], ['show', 'sun', { at: 500 }], ['move', 'sun', 0, -170, 2200, null, { at: 500 }]] }
     ],
     sc: {
       sky: 'dawn',
       bg: [['ground', 430, '#C9B48A'], ['house', 140, 440, 1, 'h1'], ['house', 330, 440, 0.85, 'h2'], ['house', 720, 440, 0.9, 'h3'], ['house', 890, 440, 1, 'h4']],
       sp: [['sun', '☀️', 520, 330, 110, 'h'], ['rooster', '🐓', 760, 520, 160]],
       top: [['shade', 'dark', 0.42]]
-    },
-    blank: [[0, 2, [['红', '❤️'], ['蓝', '💙'], ['黑', '🖤']]], [1, 3, [['白', '🤍'], ['黑', '🖤'], ['黄', '💛']]], [3, 6, [['开', '🚪'], ['关', '🔒'], ['倒', '⬇️']]],
-      [3, 1, [['叫', '📣'], ['跳', '🦘'], ['睡', '😴']], 1], [0, 3, [['冠', '👑'], ['帽', '🧢'], ['花', '🌸']], 1]],
-    oops: [[1, '满身乌黑走将来'], [3, '一叫千门万户关'], [0, '头上红帽不用裁', 1], [2, '平生不敢轻说话', 1]]
+    }
   }
 ];
-
-// 古诗花园里旁白（晓晓）说的每一句；{t} 换成诗名。录音脚本 dev/voice/collect_shi.js 从这里读
+// 旁白（晓晓）说的每一句；录音脚本 dev/voice/collect_shi.js 从这里读
 const SHI_SAY = {
-  hello: '这是古诗花园。每一首诗都是一颗种子，玩一玩，它就会开花。',
-  today: '今天我们玩《{t}》。',
-  water: '《{t}》想你了，去给它浇浇水吧。',
-  seed: '来种一颗新种子：《{t}》。',
-  locked: '这颗种子还在睡觉。等前面那朵花冒出叶子，它就醒了。',
-  tap: '点一点发光的地方。',
-  tapAgain: '找一找，哪里在发光？点一下。',
-  whole: '我们连起来，完整地听一遍。',
-  pickQ: '听一听，是哪一幅画？',
-  again: '再听一遍。',
-  orderQ: '这首诗先说哪一句？按顺序把卡片排好。',
-  orderQH: '这次没有图了。点卡片听一听，按顺序排好。',
-  later: '这一句在后面哦。',
-  beatQ: '听我念诗，跟着拍小鼓！',
-  beatAll: '这次整首诗，一起拍！',
-  tailQ: '少了一个字，是哪一个？',
-  tailNo: '再想想，再听一遍。',
-  monkeyQ: '小猴子也来背诗了。它要是念错了，就快按铃铛！',
-  caught: '抓到啦！应该这样念：',
-  missed: '咦，小猴好像念错了。听，应该是：',
-  relayQ: '我说上一句，你来接下一句！',
-  relayFirst: '第一句是什么？',
-  yourTurn: '轮到你啦！',
-  check: '听，对上了吗？',
-  hint: '给你一点提示。',
-  sayDone: '说完了，就点一下“我说好了”。',
-  reciteQ: '按一下话筒，从第一句开始背。我帮你演出来！',
-  reciteDone: '背完啦！听听你背的。',
-  together: '我们一起念一遍吧！',
-  saved: '录音存好了，在“我的诗集”里能听到。',
-  grow1: '《{t}》发芽了！',
-  grow2: '《{t}》冒出新叶子了！',
-  grow3: '《{t}》有花苞了！',
-  grow4: '《{t}》开花啦！你会背这首诗了！',
-  grow5: '《{t}》开得更好看了！'
+  pick: '选一首诗，跟着念诗打小鼓！',
+  lv0: '灯笼碰到小鼓的时候，拍一下！先跟着木鱼练三下。',
+  lv1: '每句最后一拍藏起来了。问号灯笼来的时候，你来念，再拍一下！',
+  lv2: '这次我只念每句的开头，剩下的你来念，你来拍！',
+  s0: '没关系，再来一次！',
+  s1: '一颗星！',
+  s2: '两颗星，真不错！',
+  s3: '三颗星！太厉害了！',
+  best: '新纪录！'
 };
-// 小猴子（云夏）说的
-const SHI_MONKEY = { hi: '我来背一首，你听听对不对！', ok: '我这句没念错哦！', oops: '哎呀，我念错啦！', bye: '谢谢你，我学会了！' };
-
 const SH_PUNCT = /[，。！？、；：]/;
 const PO = {}; POEMS.forEach(function (P, i) { PO[P.id] = P; P.i = i; });
 function shHan(x) { return Array.from(x).filter(function (c) { return !SH_PUNCT.test(c); }); }
 function shBy(P) { return P.by || (P.d + ' · ' + P.a); }
 function shT(tpl, P) { return tpl.replace(/\{t\}/g, P.t); }
-// 一句里第 n 个字之前的部分（保留句中的标点）：补字时先念这半句
-function shHead(x, n) { var k = 0, out = ''; for (var c of x) { if (!SH_PUNCT.test(c)) { if (k === n) break; k++; } out += c; } return out.replace(/[，。！？、；：]+$/, ''); }
-
-/* ---------- 进度：一首诗一朵花 ---------- */
-S.shi = { p: {}, rec: true, all: false, voice: 'r', recN: {}, hello: false };
-function shP(id) { return S.shi.p[id] || (S.shi.p[id] = { s: 0, due: 0, n: 0, last: 0 }); }
-function shDay() { var d = new Date(); return Math.floor((d.getTime() - d.getTimezoneOffset() * 60000) / 86400000); }
-const SH_REV = [1, 2, 4, 7, 15, 30, 60];   // 开花以后隔几天回来复习
-const SH_STAGE = ['🌰', '🌱', '🌿', '🌷', '🌸'];
-const SH_STAGE_NAME = ['种子', '发芽', '长叶', '花苞', '开花'];
-function shOpen(i) { return true; }   // 不再锁：13 首都能直接玩
-function shDue(P) { var p = shP(P.id); return p.s >= 4 && p.due > 0 && p.due <= shDay(); }
-function shBloomed() { return POEMS.filter(function (P) { return shP(P.id).s >= 4; }).length; }
-function shToday() {
-  var i, P, p;
-  for (i = 0; i < POEMS.length; i++) if (shDue(POEMS[i])) return { P: POEMS[i], why: 'water' };
-  for (i = 0; i < POEMS.length; i++) { P = POEMS[i]; p = shP(P.id); if (p.s > 0 && p.s < 4 && shOpen(i)) return { P: P, why: 'today' }; }
-  for (i = 0; i < POEMS.length; i++) { P = POEMS[i]; if (shP(P.id).s === 0 && shOpen(i)) return { P: P, why: 'seed' }; }
-  var best = POEMS[0];
-  POEMS.forEach(function (Q) { if (shP(Q.id).due < shP(best.id).due) best = Q; });
-  return { P: best, why: 'today' };
-}
-const SH_PLAN = [['scene', 'pick', 'order'], ['beat', 'tail', 'monkey'], ['orderH', 'tailH', 'relay'], ['monkeyH', 'relayH', 'recite']];
-function shPlan(P) { var s = shP(P.id).s; return s < 4 ? SH_PLAN[s] : [pick(['tailH', 'monkeyH', 'orderH', 'beat']), 'relayH', 'recite']; }
-
-/* ---------- 声音：朗诵用晓晓（家长可换云希），小猴子是云夏，旁白和别的游戏一样 ---------- */
-const SV = {
-  role: function () { return S.shi.voice === 'R' ? 'R' : 'r'; },
-  n: function (t) { return Voice.play('n', t, t); },
-  line: function (P, i, o) { return Voice.play(SV.role(), P.id + '#' + i, P.L[i].x, o); },
-  full: function (P, o) { return Voice.play(SV.role(), P.id + '#full', P.t + '。' + shBy(P).replace(' · ', '，') + '。' + P.L.map(function (l) { return l.x; }).join(''), o); },
-  title: function (P) { return Voice.play(SV.role(), P.id + '#t', P.t); },
-  head: function (P, i, k, o) { return Voice.play(SV.role(), P.id + '#' + i + '<' + k, shHead(P.L[i].x, k), o); },
-  mk: function (t) { return Voice.play('m', t, t); },
-  mline: function (P, i, k) { return Voice.play('m', P.id + '#' + i + (k == null ? '' : 'x' + k), k == null ? P.L[i].x : P.oops[k][1]); }
-};
-function shAlive() { var id = ROUND_ID; return function () { return id === ROUND_ID && !!Session; }; }
 function shWait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
 /* ===================== 诗画：SVG 画布 1000×620，背景 + 角色 + 动画 ===================== */
@@ -2478,47 +2249,8 @@ function shScene(P) {
   build();
   sc.reset = function () { sc.gen++; build(); };
   sc.run = function (i) { return shRunActs(sc, P.L[i].act); };
-  // 发光的圈：点到圈附近就算点中；点到别处，圈闪一下提醒
-  sc.hot = function (i) {
-    var xy = P.L[i].tap, g = sv('g', { transform: 'translate(' + xy[0] + ',' + xy[1] + ')' }, sc.hotL), gen = sc.gen;
-    var ring = sv('circle', { r: 62, fill: 'rgba(255,224,102,.22)', stroke: '#F5B921', 'stroke-width': 9, 'stroke-dasharray': '22 14' }, g);
-    var hand = sv('g', { transform: 'translate(36,70)' }, g); shGlyph(hand, '👆', 70);
-    shLoop(sc, function (t) { ring.setAttribute('r', (62 + Math.sin(t * 5) * 8).toFixed(1)); ring.setAttribute('transform', 'rotate(' + (t * 40 % 360).toFixed(0) + ')'); hand.setAttribute('transform', 'translate(36,' + (70 + Math.sin(t * 6) * 8).toFixed(1) + ')'); });
-    var done, h = { tapped: new Promise(function (r) { done = r; }) };
-    function onDown(e) {
-      if (sc.gen !== gen) return;
-      var pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
-      var m = svg.getScreenCTM(); if (!m) return;
-      var p = pt.matrixTransform(m.inverse());
-      if (Math.hypot(p.x - xy[0], p.y - xy[1]) < 170) { cleanup(); done(true); }
-      else { Audio2.soft(); h.miss && h.miss(); var r0 = 90; shTween(sc, 500, function (k) { ring.setAttribute('stroke-width', (9 + Math.sin(k * Math.PI) * 10).toFixed(1)); }); }
-    }
-    function cleanup() { svg.removeEventListener('pointerdown', onDown); g.remove(); }
-    svg.addEventListener('pointerdown', onDown);
-    h.cancel = cleanup;
-    return h;
-  };
   return sc;
 }
-// 卡片上的小画（300×200）
-function shPic(pic) {
-  var svg = sv('svg', { viewBox: '0 0 300 200', preserveAspectRatio: 'xMidYMid meet', class: 'shPicSvg' }), defs = sv('defs', null, svg);
-  sv('rect', { x: 0, y: 0, width: 300, height: 200, fill: Array.isArray(pic.bg) ? shGrad(defs, pic.bg[0], pic.bg[1]) : pic.bg }, svg);
-  if (pic.w) sv('rect', { x: 0, y: 132, width: 300, height: 68, fill: pic.w }, svg);
-  (pic.e || []).forEach(function (e) {
-    var fl = shFlags(e[4]), g = sv('g', { transform: 'translate(' + e[1] + ',' + e[2] + ')' }, svg), b = sv('g', null, g);
-    if (fl.f || fl.v || fl.r) b.setAttribute('transform', (fl.r ? 'rotate(' + fl.r + ') ' : '') + 'scale(' + (fl.f ? -1 : 1) + ',' + (fl.v ? -1 : 1) + ')');
-    if (fl.o != null) g.setAttribute('opacity', fl.o);
-    shGlyph(b, e[0], e[3]);
-  });
-  return svg;
-}
-// 选项上的图：emoji 直接用字，自己画的形状用小 SVG
-function shIcon(glyph) {
-  if (glyph[0] !== '@') return el('span', 'e', glyph);
-  var s = sv('svg', { viewBox: '-60 -60 120 120', class: 'e' }); shGlyph(s, glyph, 100); return s;
-}
-
 /* ===================== 诗句条：拼音 + 楷体，读到哪个字亮哪个字 ===================== */
 function shStrip(P, o) {
   o = o || {};
@@ -2585,715 +2317,326 @@ function shPlayFull(P, strip, sc) {
   });
 }
 
-/* ===================== 麦克风：只听孩子有没有在说、说了几段，不做语音识别 ===================== */
-const ShMic = {
-  st: 'idle', denied: false, o: null,
-  ok: function () { return !this.denied && !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && (window.AudioContext || window.webkitAudioContext)); },
-  start: function (o) {
-    var self = this;
-    if (this.st !== 'idle') this.stop(true);
-    this.o = o || {}; this.st = 'opening';
+/* ===================== 古诗太鼓：选诗、三关、打鼓 ===================== */
+// 每首诗三关：全部念出来 → 每句最后一拍静音（灯笼变成「？」，你来念）→ 只念每句开头
+const TK_LV = [
+  { n: '跟着念', d: '我念诗，你打鼓', say: 'lv0', hide: null },
+  { n: '藏尾巴', d: '每句最后一拍，你来念', say: 'lv1', hide: 'tail' },
+  { n: '我来念', d: '我只念每句的开头', say: 'lv2', hide: 'rest' }
+];
+const TK_LEAD = 2.3;                 // 灯笼从右边滑到鼓上要几秒
+const TK_PERFECT = 0.1, TK_GOOD = 0.24;   // 判定窗口（秒）：给五岁的手留足余量
+S.shi = { voice: 'r', tk: {} };
+function tkRec(id) { var r = S.shi.tk[id]; if (!r || r.length !== 3) r = S.shi.tk[id] = [{ s: 0, b: 0 }, { s: 0, b: 0 }, { s: 0, b: 0 }]; return r; }
+function tkStars(id) { return tkRec(id).reduce(function (a, r) { return a + r.s; }, 0); }
+function tkAllStars() { return POEMS.reduce(function (a, P) { return a + tkStars(P.id); }, 0); }
+function tkStarStr(n) { return '★★★'.slice(0, n) + '☆☆☆'.slice(0, 3 - n); }
+const SV = {
+  role: function () { return S.shi.voice === 'R' ? 'R' : 'r'; },
+  n: function (t) { return Voice.play('n', t, t); },
+  full: function (P, o) { return Voice.play(SV.role(), P.id + '#full', P.t + '。' + shBy(P).replace(' · ', '，') + '。' + P.L.map(function (l) { return l.x; }).join(''), o); }
+};
+
+// 一句诗分拍：逗号隔开的每一段按「二二…一」分（曲项·向天·歌、李白·乘舟·将欲·行），一拍一个灯笼
+function tkGroups(x) {
+  var out = [], k = 0;
+  x.replace(/[，。！？、；：]+$/, '').split(/[，、]/).forEach(function (seg) {
+    var n = shHan(seg).length, pat = n <= 3 ? [n] : n === 4 ? [2, 2] : n === 5 ? [2, 2, 1] : n === 6 ? [2, 2, 2] : [2, 2, 2, 1];
+    pat.forEach(function (c) { var g = []; for (var q = 0; q < c; q++) g.push(k++); out.push(g); });
+  });
+  return out;
+}
+// 鼓谱：标题、作者、每句的每一拍；时间取自朗诵里每个字开始的时刻（voice-shi.json 的 m）
+function tkNotes(P, m, lv) {
+  var notes = [], hide = TK_LV[lv].hide;
+  if (m.H) {
+    notes.push({ t: m.H[0][0], txt: P.t, kind: 't' });
+    var k = 0;
+    (P.by || (P.d + '，' + P.a)).split('，').forEach(function (part) { notes.push({ t: m.H[1][k], txt: part, kind: 'a' }); k += shHan(part).length; });
+  }
+  P.L.forEach(function (L, i) {
+    var han = shHan(L.x), py = L.py.split(' '), gs = tkGroups(L.x);
+    gs.forEach(function (g, gi) {
+      notes.push({
+        t: m.T[i][g[0]], txt: g.map(function (c) { return han[c]; }).join(''), py: g.map(function (c) { return py[c]; }).join(' '),
+        line: i, chars: g, kind: 'l', first: gi === 0, hid: hide === 'tail' ? gi === gs.length - 1 : hide === 'rest' ? gi > 0 : false
+      });
+    });
+  });
+  return notes;
+}
+function tkClip(P) {
+  var role = SV.role(), go = function () {
+    var hit = Voice.find(Voice.fnv(role + '|' + P.id + '#full'));
     Audio2.init(); var ac = Audio2.ctx;
-    if (!ac) { this.st = 'idle'; return Promise.resolve(false); }
-    return (ac.state === 'suspended' ? ac.resume() : Promise.resolve()).then(function () {
-      return navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
-    }).then(function (stream) {
-      if (self.st !== 'opening') { stream.getTracks().forEach(function (t) { t.stop(); }); return false; }
-      var src = ac.createMediaStreamSource(stream), proc = ac.createScriptProcessor(2048, 1, 1), sink = ac.createGain();
-      sink.gain.value = 0; src.connect(proc); proc.connect(sink); sink.connect(ac.destination);
-      var o = self.o, t0 = ac.currentTime, floor = 0.004, inSeg = false, segStart = 0, lastLoud = 0, idleFired = false;
-      self.r = { stream: stream, src: src, proc: proc, sink: sink, chunks: [], segs: [], sr: ac.sampleRate };
-      proc.onaudioprocess = function (e) {
-        if (self.st !== 'rec') return;
-        var d = e.inputBuffer.getChannelData(0); if (o.keep) self.r.chunks.push(new Float32Array(d));
-        var s = 0; for (var i = 0; i < d.length; i++) s += d[i] * d[i];
-        var rms = Math.sqrt(s / d.length), t = ac.currentTime - t0;
-        if (t < 0.35) floor = Math.max(floor, rms * 1.2);
-        var loud = rms > Math.max(0.018, floor * 2.5);
-        if (o.onLevel) o.onLevel(clamp(rms * 9, 0, 1));
-        if (loud) { if (!inSeg) { inSeg = true; segStart = t; if (o.onSpeech) o.onSpeech(t); } lastLoud = t; idleFired = false; }
-        if (inSeg && (t - lastLoud > (o.gap || 0.6) || t - segStart > (o.maxSeg || 10))) {
-          // 一段说完了（停顿够长）；一直响个不停（吵闹的屋子）也当说完一段，免得一直等下去
-          var long = t - segStart > (o.maxSeg || 10);
-          inSeg = false;
-          if (lastLoud - segStart > 0.25 || long) { self.r.segs.push([segStart, lastLoud]); if (o.onSeg) o.onSeg(segStart, lastLoud, self.r.segs.length); }
-          if (long) lastLoud = t - 10;
-        }
-        var said = self.r.segs.length > 0;
-        if (o.single && said && !inSeg && t - lastLoud > (o.quietEnd || 0.8)) return self.finish();
-        if (!said && !inSeg && t > (o.noSpeech || 8)) return self.finish();
-        if (t > (o.maxSec || 60)) return self.finish();
-        if (o.idle && said && !inSeg && !idleFired && t - lastLoud > o.idle) { idleFired = true; if (o.onIdle) o.onIdle(); }
-      };
-      self.st = 'rec'; self.t0 = t0; Music.stop();
-      return true;
-    }).catch(function (err) {
-      self.st = 'idle'; self.release();
-      if (err && /NotAllowed|Security|NotFound|NotReadable/.test(err.name || '')) self.denied = true;
-      return false;
+    if (!hit || !hit.m || !hit.m.T || !ac) return Promise.resolve(null);
+    return new Promise(function (res) {
+      try {
+        var p = ac.decodeAudioData(hit.b.bin.slice(hit.e[0], hit.e[0] + hit.e[1]), function (b) { res({ buf: b, m: hit.m }); }, function () { res(null); });
+        if (p && p.catch) p.catch(function () { res(null); });
+      } catch (e) { res(null); }
     });
-  },
-  now: function () { return this.st === 'rec' && Audio2.ctx ? Audio2.ctx.currentTime - this.t0 : 0; },
-  finish: function () {
-    if (this.st !== 'rec') return;
-    this.st = 'idle';
-    var r = this.r, o = this.o || {}, pcm = null;
-    if (o.keep && r.chunks.length) { var n = 0; r.chunks.forEach(function (c) { n += c.length; }); pcm = new Float32Array(n); var at = 0; r.chunks.forEach(function (c) { pcm.set(c, at); at += c.length; }); }
-    this.release();
-    if (o.done) o.done({ heard: r.segs.length > 0, segs: r.segs, pcm: pcm, sr: r.sr });
-  },
-  stop: function (silent) { if (this.st === 'rec') { if (silent) this.o = {}; this.finish(); } else if (this.st === 'opening') this.st = 'idle'; },
-  release: function () {
-    var r = this.r; if (!r) return;
-    try { r.proc.onaudioprocess = null; r.proc.disconnect(); r.src.disconnect(); r.sink.disconnect(); } catch (e) { }
-    r.stream.getTracks().forEach(function (t) { t.stop(); });
-    this.r = null; if (Music.on) Music.start();
+  };
+  if (Voice.moreState === 'loading') return Promise.race([Voice.moreP, shWait(8000)]).then(go);
+  return go();
+}
+// 木鱼：练习的星星、静音的那几拍都敲一下，节奏一直听得见
+function tkTick(at, soft) {
+  var c = Audio2.ctx; if (!c || !Audio2.on) return;
+  var o = c.createOscillator(), g = c.createGain(); o.type = 'triangle'; o.frequency.setValueAtTime(soft ? 900 : 1250, at); o.frequency.exponentialRampToValueAtTime(soft ? 600 : 800, at + 0.08);
+  g.gain.setValueAtTime(0.0001, at); g.gain.linearRampToValueAtTime(soft ? 0.12 : 0.22, at + 0.004); g.gain.exponentialRampToValueAtTime(0.0001, at + 0.12);
+  o.connect(g); g.connect(c.destination); o.start(at); o.stop(at + 0.14);
+}
+// 很轻的底色和声，不带节拍，免得和念诗的节奏打架
+function tkPad() {
+  var c = Audio2.ctx; if (!c || !Music.on) return null;
+  var g = c.createGain(); g.gain.value = 0.0001; g.connect(c.destination);
+  var os = [130.81, 196.0, 261.63, 329.63].map(function (f, i) { var o = c.createOscillator(); o.type = 'sine'; o.frequency.value = f; o.detune.value = (i - 1.5) * 4; o.connect(g); o.start(); return o; });
+  g.gain.linearRampToValueAtTime(0.022, c.currentTime + 2.5);
+  return { stop: function () { try { g.gain.cancelScheduledValues(c.currentTime); g.gain.setTargetAtTime(0.0001, c.currentTime, 0.25); } catch (e) { } setTimeout(function () { os.forEach(function (o) { try { o.stop(); } catch (e) { } }); }, 1500); } };
+}
+var TK = {
+  r: null,
+  stop: function () {
+    var r = this.r; this.r = null; if (!r) return;
+    r.dead = true; cancelAnimationFrame(r.raf);
+    try { if (r.src) r.src.stop(); } catch (e) { }
+    if (r.pad) r.pad.stop();
+    document.removeEventListener('keydown', r.key);
   }
 };
-// 录音存在这台平板的 IndexedDB 里，不上传
-const ShRec = {
-  p: null,
-  open: function () {
-    if (this.p) return this.p;
-    this.p = new Promise(function (res, rej) {
-      if (!window.indexedDB) return rej(new Error('no idb'));
-      var r = indexedDB.open('logicc-shi', 1);
-      r.onupgradeneeded = function () { if (!r.result.objectStoreNames.contains('rec')) r.result.createObjectStore('rec', { keyPath: 'id', autoIncrement: true }); };
-      r.onsuccess = function () { res(r.result); }; r.onerror = function () { rej(r.error); };
-    });
-    this.p.catch(function () { });
-    return this.p;
-  },
-  run: function (mode, fn) {
-    return this.open().then(function (db) {
-      return new Promise(function (res, rej) {
-        var t = db.transaction('rec', mode), out = fn(t.objectStore('rec'));
-        t.oncomplete = function () { res(out && 'result' in out ? out.result : null); }; t.onerror = function () { rej(t.error); };
-      });
-    });
-  },
-  add: function (r) { return this.run('readwrite', function (st) { return st.add(r); }); },
-  del: function (id) { return this.run('readwrite', function (st) { return st.delete(id); }); },
-  all: function () {
-    return this.open().then(function (db) {
-      return new Promise(function (res, rej) {
-        var out = [], q = db.transaction('rec', 'readonly').objectStore('rec').openCursor();
-        q.onsuccess = function () { var c = q.result; if (c) { out.push(c.value); c.continue(); } else res(out); };
-        q.onerror = function () { rej(q.error); };
-      });
-    });
-  },
-  clear: function () { return this.run('readwrite', function (st) { return st.clear(); }); }
-};
-// 16kHz 单声道 WAV
-function shWav(pcm, sr) {
-  var ratio = sr / 16000, n = Math.floor(pcm.length / ratio), buf = new ArrayBuffer(44 + n * 2), v = new DataView(buf);
-  function str(o, s) { for (var i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); }
-  str(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); str(8, 'WAVE'); str(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
-  v.setUint32(24, 16000, true); v.setUint32(28, 32000, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); str(36, 'data'); v.setUint32(40, n * 2, true);
-  for (var i = 0; i < n; i++) {
-    var a = Math.floor(i * ratio), b = Math.max(a + 1, Math.floor((i + 1) * ratio)), s = 0;
-    for (var j = a; j < b && j < pcm.length; j++) s += pcm[j];
-    v.setInt16(44 + i * 2, clamp(s / (b - a), -1, 1) * 32767, true);
-  }
-  return buf;
-}
-function shLoud(pcm) { var peak = 0; for (var i = 0; i < pcm.length; i++) peak = Math.max(peak, Math.abs(pcm[i])); var g = peak > 0 ? Math.min(6, 0.85 / peak) : 1; for (var j = 0; j < pcm.length; j++) pcm[j] *= g; return pcm; }
-function shBuf(pcm, sr) { Audio2.init(); var ac = Audio2.ctx; if (!ac) return null; var b = ac.createBuffer(1, pcm.length, sr); b.getChannelData(0).set(pcm); return b; }
 
-/* ===================== 八个小游戏 ===================== */
-function shBox(cls) { return el('div', 'shWrap' + (cls ? ' ' + cls : '')); }
-// 竖着拿平板时一行只放一句，字大一些
-function shPer() { var b = boardBox(); return b.w && b.w < b.h * 1.15 ? 1 : 2; }
-// 画框按画面 1000:620 的比例，在剩下的地方里尽量大
-function shFitScene(box, w, h) { var bw = Math.max(80, Math.min(w, h * 1000 / 620)); box.style.width = px(bw); box.style.height = px(bw * 620 / 1000); }
-function shShake(n) { n.classList.remove('shake'); void n.offsetWidth; n.classList.add('shake'); }
-function shCard(P, i, o) {
-  o = o || {};
-  var c = el('div', 'shCard');
-  if (!o.noPic) c.appendChild(shPic(P.L[i].pic));
-  if (o.text) { var cap = el('div', 'cap', P.L[i].x.replace(/[，。！？]$/, '')); c.appendChild(cap); }
-  if (o.text && o.noPic) c.classList.add('txt');
-  return c;
-}
-
-// 1 诗画动起来：每句点一下，画面把这句演出来，再用大白话讲一遍；最后连起来听一遍
-async function shGScene(board, P) {
-  var alive = shAlive(), w = shBox(), strip = shStrip(P, { per: shPer() }), box = el('div', 'shScene'), sc = shScene(P);
-  box.appendChild(sc.svg); w.appendChild(strip.el); w.appendChild(box); board.appendChild(w);
-  Fit.cb = function () { var b = boardBox(); strip.fit(b.w, b.h * 0.27); shFitScene(box, b.w, b.h - strip.el.offsetHeight - 24 * K); };
-  setPrompt('《' + P.t + '》');
-  await SV.n(P.intro); if (!alive()) return;
-  for (var i = 0; i < P.L.length; i++) {
-    strip.cur(i);
-    setPrompt('点一点发光的地方 ✨');
-    var h = sc.hot(i), misses = 0;
-    h.miss = function () { if (++misses % 3 === 0) Voice.say(SHI_SAY.tapAgain); };
-    if (i === 0) SV.n(SHI_SAY.tap);
-    Voice.lastFn = function () { Voice.say(SHI_SAY.tap); };
-    var nag = every(10000, function () { if (!Voice.clip) Voice.say(SHI_SAY.tapAgain); });
-    await h.tapped; clearInterval(nag); if (!alive()) return;
-    Audio2.pop();
-    var run = sc.run(i), ii = i;
-    setPrompt(P.L[i].x);
-    await SV.line(P, i, { onstart: function (info) { strip.karaoke(ii, info); } }); if (!alive()) return;
-    Voice.lastFn = (function (k) { return function () { SV.line(P, k, { onstart: function (info) { strip.karaoke(k, info); } }); }; })(i);
-    await shWait(250);
-    await SV.n(P.L[i].ex); if (!alive()) return;
-    await Promise.race([run, shWait(1500)]);
-  }
-  strip.cur(-1); setPrompt('完整地听一遍 🎧'); Voice.lastFn = null;
-  await SV.n(SHI_SAY.whole); if (!alive()) return;
-  sc.reset(); strip.clear();
-  await shPlayFull(P, strip, sc); if (!alive()) return;
-  await shWait(600); if (!alive()) return;
-  roundWin(box);
-}
-
-// 2 听句找画：听一句，点对应的画
-async function shGPick(board, P) {
-  var alive = shAlive(), w = shBox(), strip = shStrip(P, { per: shPer() }), cards = el('div', 'shCards');
-  w.appendChild(strip.el); w.appendChild(cards); board.appendChild(w);
-  strip.hideAll();
-  Fit.cb = function () {
-    var b = boardBox(); strip.fit(b.w, b.h * 0.3);
-    var n = cards.children.length || 4, gap = 18 * K, cw = Math.min((b.w - gap * (n - 1)) / n, (b.h * 0.56) * 1.4);
-    cards.style.gap = px(gap);
-    Array.from(cards.children).forEach(function (c) { c.style.width = px(cw); c.style.height = px(cw / 1.42); });
-  };
-  setPrompt('听一听，是哪一幅画？');
-  await SV.n(SHI_SAY.pickQ); if (!alive()) return;
-  for (var i = 0; i < P.L.length; i++) {
-    var others = shuffle(P.L.map(function (_, j) { return j; }).filter(function (j) { return j !== i; })).slice(0, 3);
-    var opts = shuffle([i].concat(others)), ii = i;
-    cards.innerHTML = '';
-    var got, chosen = new Promise(function (r) { got = r; });
-    var play = (function (k) { return function () { return SV.line(P, k); }; })(i);
-    opts.forEach(function (j) {
-      var c = shCard(P, j); cards.appendChild(c);
-      c.addEventListener('click', function () {
-        if (j === ii) { c.classList.add('ok'); Audio2.good(); got(c); }
-        else { miss(); shShake(c); play(); }
-      });
-    });
-    staggerIn(cards); Fit.run();
-    strip.cur(i); Voice.lastFn = play;
-    play();
-    var c = await chosen; if (!alive()) return;
-    Voice.stop(); strip.reveal(i); sparkleAt(c);
-    await shWait(700); if (!alive()) return;
-  }
-  Voice.lastFn = null; strip.cur(-1);
-  roundWin(cards);
-}
-
-// 3 排排队：把这首诗的几句按顺序排好（难一档没有图，只能靠听）
-async function shGOrder(board, P, hard) {
-  var alive = shAlive(), w = shBox(), strip = shStrip(P, { per: 1 }), pool = el('div', 'shCards'), n = P.L.length, pre = Math.max(0, n - 4), next = pre;
-  strip.el.classList.add('slots');
-  w.appendChild(strip.el); w.appendChild(pool); board.appendChild(w);
-  for (var i = pre; i < n; i++) strip.hide(i);
-  strip.lines.forEach(function (l, i) { var no = el('span', 'shNo num', String(i + 1)); l.el.insertBefore(no, l.el.firstChild); });
-  Fit.cb = function () {
-    var b = boardBox(); strip.fit(b.w * 0.9, b.h * (hard ? 0.5 : 0.46));
-    var m = pool.children.length || 1, gap = 16 * K, cw = Math.min((b.w - gap * 3) / 4, b.h * 0.42 * 1.42);
-    pool.style.gap = px(gap);
-    Array.from(pool.children).forEach(function (c) { c.style.width = px(cw); c.style.height = px(hard ? cw / 2.6 : cw / 1.42); c.style.fontSize = px(cw / 7.5); });
-  };
-  var idx = shuffle(P.L.map(function (_, j) { return j; }).slice(pre));
-  var done, fin = new Promise(function (r) { done = r; });
-  idx.forEach(function (j) {
-    var c = shCard(P, j, hard ? { noPic: true, text: true } : {});
-    if (hard) c.insertBefore(el('span', 'spk', '🔊'), c.firstChild);
-    pool.appendChild(c);
-    c.addEventListener('click', function () {
-      if (c.classList.contains('done')) return;
-      if (j === next) {
-        c.classList.add('done'); Audio2.good(); strip.reveal(j); sparkleAt(strip.lines[j].el); next++;
-        SV.line(P, j, { onstart: function (info) { strip.karaoke(j, info); } });
-        later(450, function () { c.remove(); Fit.run(); });
-        if (next >= n) later(400, done);
-      } else {
-        miss(); shShake(c);
-        SV.line(P, j).then(function (ok) { if (ok && alive()) Voice.say(SHI_SAY.later); });
-      }
-    });
-  });
-  staggerIn(pool); Fit.run();
-  setPrompt(hard ? '点卡片听一听，按顺序排好' : '先说哪一句？按顺序排好');
-  Voice.lastFn = function () { Voice.say(hard ? SHI_SAY.orderQH : SHI_SAY.orderQ); };
-  if (pre) strip.cur(pre - 1);
-  SV.n(hard ? SHI_SAY.orderQH : SHI_SAY.orderQ);
-  await fin; if (!alive()) return;
-  await shWait(1500); if (!alive()) return;
-  Voice.lastFn = null;
-  await shPlayFull(P, strip, null); if (!alive()) return;
-  roundWin(strip.el);
-}
-
-// 4 拍拍诗：字变成灯笼，念到哪个亮哪个，跟着拍小鼓；看清楚二三、二二三的节奏
-async function shGBeat(board, P) {
-  var alive = shAlive(), w = shBox('beat'), lane = el('div', 'shLanes'), foot = el('div', 'shBeatFoot');
-  var drum = el('button', 'shDrum', '🥁'), score = el('div', 'shScore'), hits = 0, beats = [];
-  foot.appendChild(drum); foot.appendChild(score); w.appendChild(lane); w.appendChild(foot); board.appendChild(w);
-  function paintScore() { score.innerHTML = '拍中 <b class="num">' + hits + '</b> 下'; }
-  paintScore();
-  var lanterns = [];
-  function showLine(i) {
-    lane.innerHTML = ''; lanterns = []; beats = [];
-    var x = P.L[i].x, py = P.L[i].py.split(' '), n = shHan(x).length, groups = [];
-    if (/[，、]/.test(x.slice(0, -1))) x.slice(0, -1).split(/[，、]/).forEach(function (s) { groups.push(shHan(s).length); });
-    else groups = n === 7 ? [2, 2, 3] : n === 5 ? [2, 3] : n === 4 ? [2, 2] : [n];
-    var chs = shHan(x), k = 0;
-    groups.forEach(function (gN) {
-      var grp = el('div', 'shGroup');
-      for (var q = 0; q < gN; q++, k++) { var L = el('div', 'shLantern'); L.appendChild(el('i', null, py[k] || '')); L.appendChild(el('b', null, chs[k])); grp.appendChild(L); lanterns.push(L); }
-      lane.appendChild(grp);
-    });
-    Fit.run();
-  }
-  function arm(times) {   // times：每个字开始的时刻（毫秒，performance.now）
-    beats = times.map(function (t) { return { t: t, hit: false }; });
-    times.forEach(function (t, k) { later(Math.max(0, t - performance.now()), function () { if (lanterns[k]) lanterns[k].classList.add('on'); }); });
-  }
-  drum.addEventListener('pointerdown', function (e) {
-    e.preventDefault(); Audio2.drum(); drum.classList.remove('hit'); void drum.offsetWidth; drum.classList.add('hit');
-    var now = performance.now(), best = null;
-    beats.forEach(function (b, k) { if (!b.hit && Math.abs(now - b.t) < 280 && (!best || Math.abs(now - b.t) < Math.abs(now - best.b.t))) best = { b: b, k: k }; });
-    if (best) { best.b.hit = true; hits++; paintScore(); var L = lanterns[best.k]; if (L) { L.classList.add('boom'); } }
-  });
-  Fit.cb = function () {
-    var b = boardBox(), n = Math.max(5, lanterns.length), ls = Math.min(b.w / (n * 1.32 + 1.2), b.h * 0.3);
-    lane.style.fontSize = px(ls);
-    var d = Math.min(b.h * 0.34, b.w * 0.3); drum.style.width = drum.style.height = px(d); drum.style.fontSize = px(d * 0.55);
-    score.style.fontSize = px(Math.max(18, d * 0.16));
-  };
-  setPrompt('跟着念诗拍小鼓 🥁');
-  showLine(0);
-  await SV.n(SHI_SAY.beatQ); if (!alive()) return;
-  for (var i = 0; i < P.L.length; i++) {
-    showLine(i);
-    await shWait(350); if (!alive()) return;
-    var ii = i;
-    await SV.line(P, i, { onstart: function (info) { var now = performance.now(), t = info.m && info.m.t; arm(lanterns.map(function (_, k) { return now + (t ? t[k] : info.dur * k / lanterns.length) * 1000; })); } });
-    if (!alive()) return;
-    await shWait(450); if (!alive()) return;
-  }
-  await SV.n(SHI_SAY.beatAll); if (!alive()) return;
-  await SV.full(P, {
-    onstart: function (info) {
-      var now = performance.now(), m = info.m;
-      if (!m || !m.L) return;
-      m.L.forEach(function (t0, i) { later(Math.max(0, t0 - 0.25) * 1000, function () { showLine(i); arm(m.T[i].map(function (t) { return now + t * 1000; })); }); });
-    }
-  });
-  if (!alive()) return;
-  roundWin(drum);
-}
-
-// 5 补字：先念半句，空着的那个字从三个带图的字里挑（押韵字是天然的提示）
-async function shGTail(board, P, hard) {
-  var alive = shAlive(), w = shBox(), strip = shStrip(P, { per: shPer() }), opts = el('div', 'shOpts');
-  w.appendChild(strip.el); w.appendChild(opts); board.appendChild(w);
-  var easy = P.blank.filter(function (b) { return !b[3]; }), hardB = P.blank.filter(function (b) { return b[3]; }), list;
-  if (hard) list = shuffle(hardB).slice(0, 2).concat(shuffle(easy)).slice(0, 3);
-  else list = shuffle(easy).slice(0, 3);
-  list.sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; });
-  Fit.cb = function () {
-    var b = boardBox(); strip.fit(b.w, b.h * 0.5);
-    var d = Math.min(b.h * 0.34, (b.w - 60 * K) / 3.6); opts.style.gap = px(d * 0.22);
-    Array.from(opts.children).forEach(function (o) { o.style.width = o.style.height = px(d); o.style.fontSize = px(d); });
-  };
-  setPrompt('少了一个字，是哪一个？');
-  await SV.n(SHI_SAY.tailQ); if (!alive()) return;
-  for (var q = 0; q < list.length; q++) {
-    var B = list[q], i = B[0], k = B[1];
-    strip.cur(i); strip.blank(i, k);
-    var say = (function (i, k) { return function () { return SV.head(P, i, k); }; })(i, k);
-    Voice.lastFn = say;
-    opts.innerHTML = '';
-    var got, chosen = new Promise(function (r) { got = r; });
-    shuffle(B[2]).forEach(function (op) {
-      var b = el('button', 'shOpt'); b.appendChild(shIcon(op[1])); b.appendChild(el('span', 'c', op[0]));
-      b.addEventListener('click', function () {
-        if (op[0] === B[2][0][0]) { b.classList.add('ok'); Audio2.good(); got(b); }
-        else { miss(); shShake(b); Voice.say(SHI_SAY.tailNo); Voice.whenIdle(function () { if (alive()) say(); }, 3000); }
-      });
-      opts.appendChild(b);
-    });
-    staggerIn(opts); Fit.run();
-    say();
-    var b = await chosen; if (!alive()) return;
-    Voice.stop(); strip.fill(i, k); sparkleAt(b);
-    await shWait(300);
-    var ii = i;
-    await SV.line(P, i, { onstart: function (info) { strip.karaoke(ii, info); } }); if (!alive()) return;
-    await shWait(400); if (!alive()) return;
-  }
-  Voice.lastFn = null;
-  roundWin(strip.el);
-}
-
-// 6 小猴念错了：小猴背诗，故意念错一两句，听出来就按铃
-async function shGMonkey(board, P, hard) {
-  var alive = shAlive(), w = shBox('monk'), strip = shStrip(P, { per: shPer() }), stage = el('div', 'shStage');
-  var monk = el('div', 'shMonk', '🐵'), talk = el('div', 'shTalk', '～ ～ ～'), bell = el('button', 'shBell'), tally = el('div', 'shTally');
-  bell.innerHTML = '<span>🔔</span><b>念错啦！</b>';
-  var mbox = el('div', 'shMBox'); mbox.appendChild(talk); mbox.appendChild(monk); mbox.appendChild(tally);
-  stage.appendChild(mbox); stage.appendChild(bell); w.appendChild(strip.el); w.appendChild(stage); board.appendChild(w);
-  strip.hideAll();
-  var pool = P.oops.map(function (o, k) { return { line: o[0], k: k, hard: !!o[2] }; }).filter(function (o) { return o.hard === !!hard; });
-  if (pool.length < 2) pool = pool.concat(P.oops.map(function (o, k) { return { line: o[0], k: k }; }));
-  var wrong = {};
-  shuffle(pool).forEach(function (o) { if (Object.keys(wrong).length < 2 && wrong[o.line] == null) wrong[o.line] = o.k; });
-  Fit.cb = function () {
-    var b = boardBox(); strip.fit(b.w, b.h * 0.42);
-    var m = Math.min(b.h * 0.3, b.w * 0.2); monk.style.fontSize = px(m); talk.style.fontSize = px(m * 0.3); tally.style.fontSize = px(m * 0.28);
-    var bs = Math.min(b.h * 0.36, b.w * 0.26); bell.style.width = bell.style.height = px(bs); bell.style.fontSize = px(bs * 0.16);
-  };
-  var armed = false, rung = false, ring = null, caught = 0;
-  bell.addEventListener('click', function () {
-    Audio2.tap(); shShake(bell);
-    if (!armed || rung) return;
-    rung = true; if (ring) ring();
-  });
-  setPrompt('小猴念错了，就按铃 🔔');
-  await SV.n(SHI_SAY.monkeyQ); if (!alive()) return;
-  monk.classList.add('talk');
-  await SV.mk(SHI_MONKEY.hi); if (!alive()) return;
-  monk.classList.remove('talk');
-  for (var i = 0; i < P.L.length; i++) {
-    var bad = wrong[i] != null;
-    strip.cur(i); rung = false; armed = true;
-    var rang = new Promise(function (r) { ring = r; });
-    monk.classList.add('talk'); talk.classList.add('on');
-    await Promise.race([SV.mline(P, i, bad ? wrong[i] : null), rang]); if (!alive()) return;
-    monk.classList.remove('talk'); talk.classList.remove('on');
-    if (!rung) await Promise.race([rang, shWait(2600)]);
-    armed = false; if (!alive()) return;
-    Voice.stop();
-    var ii = i;
-    if (bad && rung) {
-      caught++; tally.textContent = '🙈 × ' + caught;
-      monk.textContent = '🙈'; Audio2.good(); sparkleAt(bell);
-      await SV.mk(SHI_MONKEY.oops); if (!alive()) return;
-      await SV.n(SHI_SAY.caught); if (!alive()) return;
-      strip.reveal(i);
-      await SV.line(P, i, { onstart: function (info) { strip.karaoke(ii, info); } }); if (!alive()) return;
-      monk.textContent = '🐵';
-    } else if (bad) {
-      miss();
-      await SV.n(SHI_SAY.missed); if (!alive()) return;
-      strip.reveal(i);
-      await SV.line(P, i, { onstart: function (info) { strip.karaoke(ii, info); } }); if (!alive()) return;
-    } else if (rung) {
-      miss(); monk.classList.add('talk');
-      await SV.mk(SHI_MONKEY.ok); if (!alive()) return;
-      monk.classList.remove('talk'); strip.reveal(i);
-    } else { strip.reveal(i); await shWait(250); }
-    if (!alive()) return;
-  }
-  strip.cur(-1); monk.classList.add('talk');
-  await SV.mk(SHI_MONKEY.bye); if (!alive()) return;
-  monk.classList.remove('talk');
-  roundWin(monk);
-}
-
-// 听孩子说话：有麦克风就自动听（只判断说没说、说完没有），没有就等她点「我说好了」
-function shMicUI(row) {
-  var mic = el('div', 'shMic'), meter = el('div', 'shMeter'), bar = el('i');
-  meter.appendChild(bar); mic.appendChild(el('span', null, '🎙')); mic.appendChild(meter); row.appendChild(mic);
-  return { el: mic, level: function (v) { bar.style.width = Math.round(v * 100) + '%'; }, live: function (on) { mic.classList.toggle('live', on); if (!on) bar.style.width = '0%'; } };
-}
-function shListen(ui, extra) {
-  return new Promise(function (res) {
-    var fin = false;
-    function end(how) { if (fin) return; fin = true; ShMic.stop(true); ui.live(false); res(how); }
-    extra.end = end;
-    if (!ShMic.ok()) return;   // 没有麦克风：只等按钮
-    ShMic.start({ single: true, quietEnd: 0.8, noSpeech: 9, maxSec: 14, maxSeg: 8, onLevel: function (v) { ui.level(v); }, done: function (r) { end(r.heard ? 'said' : 'quiet'); } }).then(function (ok) { if (fin) { ShMic.stop(true); return; } if (ok) ui.live(true); });
-  });
-}
-
-// 7 接龙：我说上一句，你接下一句
-async function shGRelay(board, P, hard) {
-  var alive = shAlive(), w = shBox('relay'), strip = shStrip(P, { per: shPer() }), mid = el('div', 'shRelayMid'), hintPic = el('div', 'shHintPic'), ctl = el('div', 'shCtl');
-  var ui = shMicUI(ctl), bDone = el('button', 'bigbtn', '✅ 我说好了'), bHint = el('button', 'bigbtn ghost', '💡 提示'), bAns = el('button', 'bigbtn ghost', '👂 听答案');
-  ctl.appendChild(bDone); ctl.appendChild(bHint); ctl.appendChild(bAns);
-  mid.appendChild(hintPic); mid.appendChild(ctl); w.appendChild(strip.el); w.appendChild(mid); board.appendChild(w);
-  strip.hideAll();
-  Fit.cb = function () {
-    var b = boardBox(); strip.fit(b.w, b.h * 0.42);
-    var ph = Math.min(b.h * 0.4, b.w * 0.3); hintPic.style.width = px(ph * 1.42); hintPic.style.height = px(ph);
-    if (hard) hintPic.style.display = 'none';
-  };
-  var cur = { end: null }, i = 0;
-  bDone.addEventListener('click', function () { Audio2.tap(); if (cur.end) cur.end('done'); });
-  bAns.addEventListener('click', function () { Audio2.tap(); if (cur.end) cur.end('answer'); });
-  bHint.addEventListener('click', function () { Audio2.tap(); ShMic.stop(true); ui.live(false); SV.n(SHI_SAY.hint).then(function (ok) { if (ok && alive()) SV.head(P, i, Math.min(2, shHan(P.L[i].x).length - 1)); }); });
-  setPrompt('我说上一句，你接下一句');
-  await SV.n(SHI_SAY.relayQ); if (!alive()) return;
-  if (!ShMic.ok()) { await SV.n(SHI_SAY.sayDone); if (!alive()) return; }
-  for (i = 0; i < P.L.length; i++) {
-    strip.cur(i); hintPic.innerHTML = ''; if (!hard) { hintPic.appendChild(shPic(P.L[i].pic)); strip.hide(i, true); }
-    if (i === 0) { await SV.title(P); if (!alive()) return; await SV.n(SHI_SAY.relayFirst); }
-    else { var pi = i - 1; await SV.line(P, pi, { onstart: function (info) { strip.karaoke(pi, info); } }); if (!alive()) return; if (i < 2) await SV.n(SHI_SAY.yourTurn); }
-    if (!alive()) return;
-    var ii = i;
-    Voice.lastFn = function () { if (ii === 0) SV.title(P); else SV.line(P, ii - 1); };
-    var how = await shListen(ui, cur); if (!alive()) return;
-    if (how === 'quiet') {   // 一直没出声：给半句提示，再听一次
-      await SV.n(SHI_SAY.hint); if (!alive()) return;
-      await SV.head(P, i, Math.min(2, shHan(P.L[i].x).length - 1)); if (!alive()) return;
-      how = await shListen(ui, cur); if (!alive()) return;
-    }
-    cur.end = null;
-    strip.reveal(i);
-    if (i === 0) { await SV.n(SHI_SAY.check); if (!alive()) return; }
-    await SV.line(P, i, { onstart: function (info) { strip.karaoke(ii, info); } }); if (!alive()) return;
-    if (how === 'said' || how === 'done') { Audio2.good(); sparkleAt(strip.lines[i].el); }
-    await shWait(350); if (!alive()) return;
-  }
-  Voice.lastFn = null; strip.cur(-1);
-  roundWin(strip.el);
-}
-
-// 8 我来背：她背一句，画面演一句；背完放给她听，录音存进「我的诗集」
-async function shGRecite(board, P) {
-  var alive = shAlive(), w = shBox('recite'), strip = shStrip(P, { per: shPer() }), box = el('div', 'shScene'), sc = shScene(P), ctl = el('div', 'shCtl');
-  var ui = shMicUI(ctl), bGo = el('button', 'bigbtn', '🎙 开始背'), bNext = el('button', 'bigbtn ghost', '▶ 下一句'), bEnd = el('button', 'bigbtn ghost', '✅ 背完了');
-  ctl.appendChild(bGo); ctl.appendChild(bNext); ctl.appendChild(bEnd);
-  box.appendChild(sc.svg); w.appendChild(strip.el); w.appendChild(box); w.appendChild(ctl); board.appendChild(w);
-  bNext.style.display = bEnd.style.display = 'none';
-  strip.hideAll();
-  Fit.cb = function () { var b = boardBox(); strip.fit(b.w, b.h * 0.24); shFitScene(box, b.w, b.h - strip.el.offsetHeight - ctl.offsetHeight - 40 * K); };
-  setPrompt('按话筒，从第一句开始背 🎙');
-  async function together() {
-    bGo.style.display = bNext.style.display = bEnd.style.display = 'none';
-    await SV.n(SHI_SAY.together); if (!alive()) return;
-    P.L.forEach(function (_, i) { strip.reveal(i); });
-    sc.reset(); await shPlayFull(P, strip, sc); if (!alive()) return;
-    roundWin(box);
-  }
-  if (!ShMic.ok()) return together();
-  await SV.n(SHI_SAY.reciteQ); if (!alive()) return;
-  bGo.classList.add('pulse');
-  Voice.lastFn = function () { Voice.say(SHI_SAY.reciteQ); };
-  await new Promise(function (r) { bGo.addEventListener('click', function () { Audio2.tap(); r(); }, { once: true }); }); if (!alive()) return;
-  Voice.stop(); Voice.lastFn = null;
-  bGo.style.display = 'none'; bNext.style.display = bEnd.style.display = '';
-  var n = P.L.length, cur = 0, starts = [], fin, finished = new Promise(function (r) { fin = r; });
-  function advance(t) {
-    if (cur >= n) return;
-    var i = cur++; starts.push(t); strip.cur(i); strip.reveal(i); strip.lines[i].chs.forEach(function (c) { c.classList.add('lit'); }); sc.run(i);
-    if (cur >= n) later(1500, function () { ShMic.finish(); });
-  }
-  bNext.addEventListener('click', function () { Audio2.tap(); advance(ShMic.now()); });
-  bEnd.addEventListener('click', function () { Audio2.tap(); ShMic.finish(); });
-  var ok = await ShMic.start({
-    keep: true, gap: 0.55, maxSec: 30 + n * 8, noSpeech: 12, idle: 4.5,
-    onLevel: function (v) { ui.level(v); },
-    onSpeech: function (t) { if (cur < n && starts.length === cur) { /* 这一句开始了 */ } },
-    onSeg: function (t0) { advance(t0); },
-    onIdle: function () { if (cur < n) SV.head(P, cur, Math.min(2, shHan(P.L[cur].x).length - 1)); },
-    done: function (r) { fin(r); }
-  });
-  if (!alive()) { ShMic.stop(true); return; }
-  if (!ok) return together();
-  ui.live(true);
-  var r = await finished; ui.live(false);
-  if (!alive()) return;
-  bNext.style.display = bEnd.style.display = 'none';
-  P.L.forEach(function (_, i) { strip.reveal(i); });
-  if (!r.heard || !r.pcm) return together();
-  shLoud(r.pcm);
-  if (S.shi.rec) {
-    var wav = shWav(r.pcm, r.sr);
-    ShRec.add({ poem: P.id, at: Date.now(), dur: Math.round(r.pcm.length / r.sr), wav: wav }).then(function () { S.shi.recN[P.id] = (S.shi.recN[P.id] || 0) + 1; save(); }).catch(function () { });
-  }
-  await SV.n(SHI_SAY.reciteDone); if (!alive()) return;
-  sc.reset(); strip.clear(); strip.cur(-1);
-  var buf = shBuf(r.pcm, r.sr);
-  if (buf) await Voice.playBuffer(buf, { onstart: function () { starts.forEach(function (t, i) { later(Math.max(0, t - 0.1) * 1000, function () { strip.cur(i); strip.karaoke(i, { dur: Math.max(1, ((starts[i + 1] || buf.duration) - t) * 0.8) }); sc.run(i); }); }); } });
-  if (!alive()) return;
-  if (S.shi.rec) { await SV.n(SHI_SAY.saved); if (!alive()) return; }
-  roundWin(box);
-}
-
-const SH_GAMES = {
-  scene: shGScene, pick: shGPick, order: function (b, P) { return shGOrder(b, P, false); }, orderH: function (b, P) { return shGOrder(b, P, true); },
-  beat: shGBeat, tail: function (b, P) { return shGTail(b, P, false); }, tailH: function (b, P) { return shGTail(b, P, true); },
-  monkey: function (b, P) { return shGMonkey(b, P, false); }, monkeyH: function (b, P) { return shGMonkey(b, P, true); },
-  relay: function (b, P) { return shGRelay(b, P, false); }, relayH: function (b, P) { return shGRelay(b, P, true); }, recite: shGRecite
-};
-const SH_GAME_NAME = { scene: '诗画动起来', pick: '听句找画', order: '排排队', orderH: '排排队', beat: '拍拍诗', tail: '补一个字', tailH: '补一个字', monkey: '小猴念错了', monkeyH: '小猴念错了', relay: '接龙', relayH: '接龙', recite: '我来背' };
-var ShiNow = null;
-function shStart(P, plan) { ShiNow = { P: P, plan: plan || shPlan(P), stage: shP(P.id).s }; startSession(G.shi, 1); }
-function gShi(board) {
-  var k = ShiNow.plan[Session.doneRounds] || ShiNow.plan[0];
-  board.classList.add('shBoard');
-  SH_GAMES[k](board, ShiNow.P).catch(function (e) { console.error(e); });
-}
-
-/* ===================== 花园 ===================== */
-function shGarden() {
-  Session = null; Fit.cb = null; ROUND_ID++; stopTimer(); Voice.lastFn = null; ShMic.stop(true);
+/* ---------- 选诗 ---------- */
+function tkHome() {
+  Session = null; Fit.cb = null; ROUND_ID++; stopTimer(); TK.stop(); Voice.lastFn = null;
+  if (Music.on) Music.start();   // 打鼓时关掉的背景音乐，回到选诗再放
   var p = el('div', 'pane');
-  p.appendChild(topbar({ title: '🌸 古诗花园', sub: '一首诗就是一朵花', back: home }));
-  var body = el('div', 'shGarden'), t = shToday(), ban = el('div', 'shBanner');
-  ban.appendChild(el('span', 'owlF', '🦉'));
-  var tx = el('div', 'tx');
-  tx.appendChild(el('b', null, t.why === 'water' ? '《' + t.P.t + '》想你了 💧' : t.why === 'seed' ? '新种子：《' + t.P.t + '》' : '今天玩《' + t.P.t + '》'));
-  tx.appendChild(el('span', null, '这一组玩：' + shPlan(t.P).map(function (k) { return SH_GAME_NAME[k]; }).join(' · ')));
-  ban.appendChild(tx);
-  var go = el('button', 'bigbtn', '▶ 开始'); go.addEventListener('click', function () { Audio2.tap(); shStart(t.P); });
-  var recs = el('button', 'bigbtn ghost', '📼 我的诗集'); recs.addEventListener('click', function () { Audio2.tap(); shRecs(); });
-  ban.appendChild(go); ban.appendChild(recs);
-  var grid = el('div', 'shPlots');
-  POEMS.forEach(function (P, i) {
-    var pr = shP(P.id), open = shOpen(i), c = el('div', 'shPlot' + (open ? '' : ' lock') + (P === t.P ? ' today' : ''));
-    var fl = el('div', 'fl', open ? (pr.s >= 4 ? P.hero : SH_STAGE[pr.s]) : '🌰');
-    c.appendChild(fl);
-    if (!open) c.appendChild(el('span', 'zz', '💤'));
-    if (pr.s >= 4) c.appendChild(el('span', 'bloom', '🌸'));
+  p.appendChild(topbar({ title: '🥁 古诗太鼓', sub: '跟着念诗打小鼓', back: home }));
+  var grid = el('div', 'tkList');
+  POEMS.forEach(function (P) {
+    var c = el('div', 'tkSong'), n = tkStars(P.id);
+    c.appendChild(el('div', 'hero', P.hero));
     c.appendChild(el('div', 'nm', P.t));
-    var pg = el('div', 'pg'); for (var k = 0; k < 4; k++) pg.appendChild(el('i', k < pr.s ? 'on' : null)); c.appendChild(pg);
-    c.appendChild(el('div', 'gr', P.g));
-    if (shDue(P)) c.appendChild(el('span', 'due', '💧'));
-    if (S.shi.recN[P.id]) c.appendChild(el('span', 'rc', '🎙' + S.shi.recN[P.id]));
-    c.addEventListener('click', function () {
-      if (!open) { Audio2.soft(); shShake(c); Voice.say(SHI_SAY.locked); return; }
-      Audio2.tap(); shPoemCard(P);
-    });
+    c.appendChild(el('div', 'au', shBy(P)));
+    var st = el('div', 'st' + (n ? ' on' : ''));
+    st.appendChild(el('span', null, '⭐')); st.appendChild(el('b', 'num', n + ' / 9'));
+    c.appendChild(st);
+    c.addEventListener('click', function () { Audio2.tap(); tkDetail(P); });
     grid.appendChild(c);
   });
-  body.appendChild(ban); body.appendChild(grid); p.appendChild(body);
+  p.appendChild(grid);
   $('#screen').innerHTML = ''; $('#screen').appendChild(p);
   Fit.cb = function () {
     var r = grid.getBoundingClientRect(); if (!r.width) return;
-    var n = POEMS.length, cols = r.width > r.height * 1.4 ? 7 : r.width > r.height ? 5 : 4, rows = Math.ceil(n / cols);
+    var cols = r.width > r.height * 1.4 ? 7 : r.width > r.height ? 5 : 4, rows = Math.ceil(POEMS.length / cols);
     grid.style.gridTemplateColumns = 'repeat(' + cols + ',1fr)'; grid.style.gridTemplateRows = 'repeat(' + rows + ',1fr)';
-    var cw = (r.width - (cols - 1) * 16 * K) / cols, ch = (r.height - (rows - 1) * 16 * K) / rows, s = Math.min(cw, ch * 1.1);
-    grid.querySelectorAll('.shPlot').forEach(function (c) { c.style.fontSize = px(s / 8); });
+    var cw = (r.width - (cols - 1) * 16 * K) / cols, ch = (r.height - (rows - 1) * 16 * K) / rows;
+    grid.querySelectorAll('.tkSong').forEach(function (c) { c.style.fontSize = px(Math.min(cw, ch * 1.1) / 8); });
   };
   Fit.run();
-  if (!S.shi.hello) { S.shi.hello = true; save(); Voice.say(SHI_SAY.hello, false); }
-  else Voice.say(shT(SHI_SAY[t.why], t.P), false);
+  Voice.say(SHI_SAY.pick, false);
 }
-// 点一朵花：看整首诗、听一遍、去玩
-function shPoemCard(P) {
+// 点一首诗：看诗、听一遍、选关
+function tkDetail(P) {
   var m = el('div', 'shModal'), box = el('div', 'shCardBox'), strip = shStrip(P, { per: 1, title: true, big: true });
-  var pr = shP(P.id), row = el('div', 'btnrow');
-  var play = el('button', 'bigbtn', '▶ 玩一玩 · ' + (pr.s >= 4 ? '复习' : SH_STAGE_NAME[pr.s]));
-  var listen = el('button', 'bigbtn ghost', '🔊 听一听');
-  var close = el('button', 'iconbtn shX', '✕');
-  row.appendChild(play); row.appendChild(listen);
-  if (S.shi.recN[P.id]) { var rb = el('button', 'bigbtn ghost', '🎙 我背的 ' + S.shi.recN[P.id]); rb.addEventListener('click', function () { Audio2.tap(); shut(); shRecs(P.id); }); row.appendChild(rb); }
-  box.appendChild(close); box.appendChild(strip.el); box.appendChild(row); m.appendChild(box);
+  var rec = tkRec(P.id), next = 0;
+  while (next < 2 && rec[next].s > 0) next++;
+  var lvs = el('div', 'tkLvs');
+  TK_LV.forEach(function (L, k) {
+    var b = el('button', 'tkLvBtn' + (k === next ? ' y' : ''));
+    b.appendChild(el('span', 'no', '第' + '一二三'[k] + '关'));
+    b.appendChild(el('b', null, L.n));
+    b.appendChild(el('i', null, L.d));
+    b.appendChild(el('em', null, tkStarStr(rec[k].s)));
+    if (rec[k].b) b.appendChild(el('small', null, '最高 ' + rec[k].b + ' 分'));
+    b.addEventListener('click', function () { Audio2.tap(); Voice.stop(); m.remove(); tkPlay(P, k); });
+    lvs.appendChild(b);
+  });
+  var listen = el('button', 'bigbtn ghost', '🔊 先听一遍'), close = el('button', 'iconbtn shX', '✕');
+  box.appendChild(close); box.appendChild(strip.el); box.appendChild(lvs); box.appendChild(listen); m.appendChild(box);
   $('#screen').appendChild(m);
-  var gen = ROUND_ID;
+  var prevFit = Fit.cb, gen = ROUND_ID;
   function shut() { Voice.stop(); m.remove(); Fit.cb = prevFit; Fit.run(); }
-  var prevFit = Fit.cb;
-  Fit.cb = function () { var r = $('#screen').getBoundingClientRect(); strip.fit(r.width * 0.8, r.height * 0.58); if (prevFit) prevFit(); };
+  Fit.cb = function () { var r = $('#screen').getBoundingClientRect(); strip.fit(r.width * 0.78, r.height * 0.42); if (prevFit) prevFit(); };
   Fit.run();
-  function hear() { shPlayFull(P, strip, null); }
   close.addEventListener('click', function () { Audio2.tap(); shut(); });
   m.addEventListener('click', function (e) { if (e.target === m) shut(); });
-  listen.addEventListener('click', function () { Audio2.tap(); hear(); });
-  play.addEventListener('click', function () { Audio2.tap(); Voice.stop(); m.remove(); shStart(P); });
-  setTimeout(function () { if (gen === ROUND_ID && m.isConnected) hear(); }, 250);
+  listen.addEventListener('click', function () { Audio2.tap(); shPlayFull(P, strip, null); });
+  setTimeout(function () { if (gen === ROUND_ID && m.isConnected) SV.n(P.intro); }, 200);
 }
-// 我的诗集：背过的录音，按时间倒着排
-function shRecs(only) {
-  if (document.querySelector('.sheet')) return;
-  var s = sheet('📼 我的诗集'), body = el('div', 'sheetBody shRecList');
-  s.appendChild(body); $('#screen').appendChild(s);
-  body.appendChild(el('div', 'shEmpty', '读取中…'));
-  ShRec.all().then(function (list) {
-    body.innerHTML = '';
-    list = list.filter(function (r) { return !only || r.poem === only; }).sort(function (a, b) { return b.at - a.at; });
-    var cnt = {}; list.forEach(function (r) { cnt[r.poem] = (cnt[r.poem] || 0) + 1; });
-    if (!only) { S.shi.recN = cnt; save(); }
-    if (!list.length) { body.appendChild(el('div', 'shEmpty', '还没有录音。诗长出花苞以后，「我来背」会把她背的录下来' + (S.shi.rec ? '。' : '（家长设置里「保存背诗录音」现在是关着的）。'))); return; }
-    list.forEach(function (r) {
-      var P = PO[r.poem]; if (!P) return;
-      var row = el('div', 'shRecRow'), d = new Date(r.at);
-      row.appendChild(el('span', 'hero', P.hero));
-      var tx = el('div', 'tx'); tx.appendChild(el('b', null, '《' + P.t + '》'));
-      tx.appendChild(el('span', null, (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ' · ' + r.dur + ' 秒'));
-      row.appendChild(tx);
-      var pl = el('button', 'tg', '▶'), del = el('button', 'tg', '🗑');
-      pl.addEventListener('click', function () {
-        Audio2.init(); var ac = Audio2.ctx; if (!ac) return;
-        ac.decodeAudioData(r.wav.slice(0), function (buf) { Voice.playBuffer(buf); }, function () { toast('这段录音放不出来'); });
-      });
-      var armed = false;
-      del.addEventListener('click', function () {
-        if (!armed) { armed = true; del.textContent = '再点删除'; del.style.width = 'auto'; setTimeout(function () { armed = false; del.textContent = '🗑'; }, 2500); return; }
-        ShRec.del(r.id).then(function () { row.remove(); S.shi.recN[r.poem] = Math.max(0, (S.shi.recN[r.poem] || 1) - 1); save(); });
-      });
-      row.appendChild(pl); row.appendChild(del); body.appendChild(row);
+
+/* ---------- 打鼓 ---------- */
+async function tkPlay(P, lv) {
+  Session = null; Fit.cb = null; ROUND_ID++; stopTimer(); TK.stop(); Voice.stop(); Music.stop(); Voice.lastFn = null;
+  var id = ROUND_ID, alive = function () { return id === ROUND_ID; }, L = TK_LV[lv];
+  Audio2.init();
+  var pane = el('div', 'pane tkPane'), sc = shScene(P);
+  sc.svg.setAttribute('preserveAspectRatio', 'xMidYMid slice'); sc.svg.classList.add('tkScene'); pane.appendChild(sc.svg);
+  var bar = el('div', 'tkBar');
+  bar.appendChild(ibtn('⬅', '#fff', function () { Audio2.page(); TK.stop(); tkHome(); }));
+  var name = el('div', 'pill tkName'); name.appendChild(el('b', null, '《' + P.t + '》')); name.appendChild(el('span', null, '第' + '一二三'[lv] + '关 · ' + L.n)); bar.appendChild(name);
+  bar.appendChild(el('div', 'grow'));
+  var scoreP = el('div', 'pill tkScoreP'); scoreP.appendChild(el('span', null, '得分')); var scoreN = el('b', 'num', '0'); scoreP.appendChild(scoreN); bar.appendChild(scoreP);
+  pane.appendChild(bar);
+  var sbox = el('div', 'tkStripBox'); pane.appendChild(sbox);
+  var lane = el('div', 'tkLane'), track = el('div', 'tkTrack'), notesL = el('div', 'tkNotes'), drum = el('div', 'tkDrum'), combo = el('div', 'tkCombo'), hint = el('div', 'tkHint', '灯笼碰到鼓，拍一下！');
+  drum.appendChild(el('span', null, '🥁')); lane.appendChild(track); lane.appendChild(drum); lane.appendChild(notesL); lane.appendChild(combo); lane.appendChild(hint);
+  pane.appendChild(lane);
+  $('#screen').innerHTML = ''; $('#screen').appendChild(pane);
+  var tall = pane.clientHeight > pane.clientWidth, strip = shStrip(P, { per: tall ? 1 : 2, title: true });
+  sbox.appendChild(strip.el);
+  var G = { dx: 100, sp: 300, h: 80 };
+  Fit.cb = function () {
+    var w = pane.clientWidth, h = pane.clientHeight;
+    lane.style.height = px(clamp(h * 0.3, 150, 330));
+    var lh = lane.clientHeight; G.h = lh * 0.5; G.dx = Math.max(G.h * 0.95, w * 0.12); G.sp = (w * 1.04 - G.dx) / TK_LEAD;
+    var ds = lh * 0.8; drum.style.width = drum.style.height = px(ds); drum.style.left = px(G.dx - ds / 2); drum.style.fontSize = px(ds * 0.55);
+    notesL.style.fontSize = px(G.h * 0.42);
+    strip.fit(w * (tall ? 0.9 : 0.66), h * (tall ? 0.3 : 0.24));
+  };
+  Fit.run();
+  var clip = await tkClip(P); if (!alive()) return;
+  if (!clip) { toast('朗诵还没下载好，等一下再点'); later(1600, tkHome); return; }
+  var notes = tkNotes(P, clip.m, lv);
+  notes.forEach(function (n) { if (n.hid) n.chars.forEach(function (k) { strip.lines[n.line].chs[k].classList.add('hid'); }); });
+  await SV.n(SHI_SAY[L.say]); if (!alive()) return;
+  tkRun(P, lv, clip, notes, { pane: pane, sc: sc, strip: strip, lane: lane, notesL: notesL, drum: drum, combo: combo, hint: hint, scoreN: scoreN, G: G });
+}
+function tkRun(P, lv, clip, notes, ui) {
+  var ac = Audio2.ctx, lat = ac.outputLatency || ac.baseLatency || 0, G = ui.G;
+  var pre = lv === 0 ? 2.8 : 0.5;                      // 第一关先跟着木鱼练三下
+  var t0 = ac.currentTime + TK_LEAD + pre;              // 朗诵从这一刻开始
+  notes.forEach(function (n) { n.t += t0; });
+  if (lv === 0) for (var k = 0; k < 3; k++) notes.push({ t: t0 - 2.5 + k * 0.8, txt: '⭐', kind: 'p' });
+  notes.sort(function (a, b) { return a.t - b.t; });
+  var src = ac.createBufferSource(), g = ac.createGain();
+  src.buffer = clip.buf; src.connect(g); g.connect(ac.destination);
+  // 藏起来的那几拍：把朗诵静音，留给孩子念；静音的起止都落在字与字之间的停顿上
+  g.gain.setValueAtTime(1, ac.currentTime);
+  var song = notes.filter(function (n) { return n.kind !== 'p'; });
+  for (var j = 0; j < song.length; j++) {
+    if (!song[j].hid) continue;
+    var a = song[j].t - 0.03, q = j + 1;
+    while (q < song.length && song[q].hid) q++;
+    var b = q < song.length ? song[q].t - 0.05 : t0 + clip.buf.duration;
+    g.gain.setValueAtTime(1, a - 0.02); g.gain.linearRampToValueAtTime(0, a + 0.02);
+    g.gain.setValueAtTime(0, b - 0.02); g.gain.linearRampToValueAtTime(1, b + 0.02);
+    j = q - 1;
+  }
+  src.start(t0);
+  notes.forEach(function (n) { if (n.kind === 'p') tkTick(n.t); else if (n.hid) tkTick(n.t, true); });
+  var r = TK.r = { src: src, pad: tkPad(), dead: false, raf: 0, key: null };
+  var st = { score: 0, combo: 0, best: 0, hits: 0, total: song.length };
+  var lineAt = P.L.map(function (_, i) { var n = song.find(function (x) { return x.line === i; }); return n ? n.t : 1e9; }), lineDone = [];
+  var endT = notes[notes.length - 1].t + 1.6, hintOff = false, saidMic = {};
+  function now() { return ac.currentTime - lat; }
+  function pop(cls, text) {
+    var j = el('div', 'tkJudge ' + cls, text); j.style.left = px(G.dx); ui.lane.appendChild(j);
+    setTimeout(function () { j.remove(); }, 800);
+  }
+  function paintCombo() {
+    ui.combo.textContent = st.combo >= 2 ? '连击 ×' + st.combo + (st.combo >= 10 ? ' 🔥' : '') : '';
+    ui.combo.classList.remove('bump'); void ui.combo.offsetWidth; if (st.combo >= 2) ui.combo.classList.add('bump');
+  }
+  function stripMark(n, cls) {
+    if (n.kind === 'l') n.chars.forEach(function (k) { var c = ui.strip.lines[n.line].chs[k]; c.classList.remove('hid'); c.classList.add(cls); });
+    else { var t = ui.strip.el.querySelector('.shTitle ' + (n.kind === 't' ? 'b' : 'span')); if (t) t.classList.add(cls === 'lit' ? 'lit' : 'miss'); }
+  }
+  function judge(n, perfect) {
+    n.done = true; n.res = perfect ? 'p' : 'g';
+    if (n.kind !== 'p') { st.hits++; st.combo++; st.best = Math.max(st.best, st.combo); st.score += (perfect ? 100 : 60) + Math.min(st.combo, 20) * 5; ui.scoreN.textContent = st.score; stripMark(n, 'lit'); paintCombo(); }
+    pop(perfect ? 'p' : 'g', perfect ? '完美！' : '好！');
+    if (perfect) Audio2.pop();
+    if (n.el) { if (n.hid) n.el.querySelector('b').textContent = n.txt; n.el.classList.add('hit'); n.hitX = G.dx; setTimeout(function () { if (n.el) n.el.remove(); }, 420); }
+  }
+  function miss(n) {
+    n.done = true; n.res = 'm';
+    if (n.kind !== 'p') { if (st.combo >= 3) pop('m', '哎呀'); st.combo = 0; paintCombo(); stripMark(n, 'miss'); }
+    if (n.el) n.el.classList.add('miss');
+  }
+  function hit() {
+    if (r.dead) return;
+    Audio2.drum();
+    ui.drum.classList.remove('hit'); void ui.drum.offsetWidth; ui.drum.classList.add('hit');
+    if (!hintOff) { hintOff = true; ui.hint.classList.add('off'); }
+    var t = now(), best = null;
+    notes.forEach(function (n) { if (!n.done && Math.abs(n.t - t) <= TK_GOOD && (!best || Math.abs(n.t - t) < Math.abs(best.t - t))) best = n; });
+    if (best) judge(best, Math.abs(best.t - t) <= TK_PERFECT);
+    else if (st.combo) { st.combo = 0; paintCombo(); }   // 乱拍会断连击
+  }
+  function onDown(e) { if (r.dead || (e.target.closest && e.target.closest('button,.tkBar,.tkResult'))) return; e.preventDefault(); hit(); }
+  ui.pane.addEventListener('pointerdown', onDown);
+  r.key = function (e) { if (e.repeat) return; if (e.code === 'Space' || e.key === 'Enter' || e.key === 'f' || e.key === 'j') { e.preventDefault(); hit(); } };
+  document.addEventListener('keydown', r.key);
+  function mk(n) {
+    var e = el('div', 'tkNote' + (n.kind === 'p' ? ' star' : n.hid ? ' ask' : '') + (n.kind === 't' || n.kind === 'a' ? ' meta' : ''));   // 不能叫 hide：全站有 .hide{display:none}
+    if (n.py && !n.hid) e.appendChild(el('i', null, n.py));
+    e.appendChild(el('b', null, n.kind === 'p' ? '⭐' : n.hid ? '？' : n.txt));
+    var chars = n.kind === 'p' || n.hid ? 1 : shHan(n.txt).length;
+    e.style.height = px(G.h); e.style.width = px(G.h * (0.6 + 0.46 * chars)); e.style.borderRadius = px(G.h / 2);
+    ui.notesL.appendChild(e); n.el = e; n.w = G.h * (0.6 + 0.46 * chars);
+  }
+  function frame() {
+    if (r.dead) return;
+    var t = now();
+    for (var i = 0; i < notes.length; i++) {
+      var n = notes[i], dt = n.t - t;
+      if (!n.el && !n.gone && dt < TK_LEAD + 0.2) mk(n);
+      if (n.el && !n.res) n.el.style.transform = 'translate(' + (G.dx + dt * G.sp - n.w / 2).toFixed(1) + 'px,-50%)';
+      else if (n.el && n.res === 'm') { var x = G.dx + dt * G.sp - n.w / 2; n.el.style.transform = 'translate(' + x.toFixed(1) + 'px,-50%)'; if (x < -n.w - 20) { n.el.remove(); n.el = null; n.gone = true; } }
+      else if (n.el && n.res) n.el.style.transform = 'translate(' + (n.hitX - n.w / 2).toFixed(1) + 'px,-50%)';
+      if (!n.done && t - n.t > TK_GOOD) miss(n);
+      if (n.hid && !saidMic[n.line] && dt < 0.9 && dt > 0) { saidMic[n.line] = 1; pop('say', '你来念！'); }
+    }
+    for (var li = 0; li < lineAt.length; li++) if (!lineDone[li] && t >= lineAt[li] - 0.05) { lineDone[li] = 1; ui.strip.cur(li); ui.sc.run(li); }
+    if (t > endT) return finish();
+    r.raf = requestAnimationFrame(frame);
+  }
+  r.raf = requestAnimationFrame(frame);
+  function finish() {
+    TK.stop();
+    var rate = st.hits / Math.max(1, st.total), stars = rate >= 0.9 ? 3 : rate >= 0.7 ? 2 : rate >= 0.45 ? 1 : 0;
+    var rec = tkRec(P.id)[lv], isBest = st.score > rec.b;
+    if (isBest) rec.b = st.score; if (stars > rec.s) rec.s = stars;
+    var dk = todayKey(); S.days[dk] = (S.days[dk] || 0) + 1;
+    if (stars) addStars(stars);
+    save();
+    var box = el('div', 'tkResult');
+    box.appendChild(el('div', 'tkRT', '《' + P.t + '》 · 第' + '一二三'[lv] + '关 ' + TK_LV[lv].n));
+    var sr = el('div', 'tkStars'), ss = [];
+    for (var k = 0; k < 3; k++) { var s = el('span', null, '⭐'); sr.appendChild(s); ss.push(s); }
+    box.appendChild(sr);
+    var sc2 = el('div', 'tkRS'), num = el('b', 'num', '0'); sc2.appendChild(el('span', null, '得分')); sc2.appendChild(num);
+    if (isBest && st.score) sc2.appendChild(el('em', null, '🎉 新纪录'));
+    box.appendChild(sc2);
+    box.appendChild(el('div', 'tkStat', '打中 ' + st.hits + ' / ' + st.total + ' 拍 · 最多连击 ' + st.best + (st.hits === st.total ? ' · 全部打中！' : '')));
+    var row = el('div', 'btnrow');
+    var again = el('button', 'bigbtn', '🔁 再来一次'); again.addEventListener('click', function () { Audio2.tap(); tkPlay(P, lv); });
+    row.appendChild(again);
+    if (lv < 2) { var nx = el('button', 'bigbtn' + (stars ? '' : ' ghost'), '▶ 第' + '一二三'[lv + 1] + '关 ' + TK_LV[lv + 1].n); nx.addEventListener('click', function () { Audio2.tap(); tkPlay(P, lv + 1); }); row.appendChild(nx); if (stars) again.classList.add('ghost'); }
+    var back = el('button', 'bigbtn ghost', '📜 选诗'); back.addEventListener('click', function () { Audio2.tap(); tkHome(); });
+    row.appendChild(back); box.appendChild(row);
+    ui.pane.appendChild(box);
+    var shown = 0, target = st.score;
+    every(30, function (tm) { shown = Math.min(target, shown + Math.max(7, Math.round(target / 40))); num.textContent = shown; if (shown >= target) clearInterval(tm); });
+    for (var q = 0; q < stars; q++) (function (q) { later(500 + q * 450, function () { ss[q].classList.add('on'); Audio2.star(); }); })(q);
+    later(600 + stars * 450, function () {
+      if (st.hits === st.total) { sparkle(innerWidth / 2, innerHeight / 3, ['🎉', '⭐', '✨', '🎆']); setTimeout(function () { sparkle(innerWidth / 2, innerHeight / 3, ['🎆', '✨']); }, 350); }
+      SV.n(SHI_SAY['s' + stars]).then(function (ok) { if (ok && isBest && st.score) SV.n(SHI_SAY.best); });
     });
-  }).catch(function () { body.innerHTML = ''; body.appendChild(el('div', 'shEmpty', '这台设备存不了录音（浏览器不支持 IndexedDB，或者开着无痕模式）。')); });
+  }
 }
-// 家长设置里的两行：朗诵换声音、清空录音
+// 家长设置里的一行：朗诵换声音
 function shVoiceRow() {
   var r = el('div', 'prow'), tx = el('div', 'tx');
   tx.appendChild(el('b', null, '古诗朗诵的声音'));
-  tx.appendChild(el('span', null, '晓晓是首页读题的那个声音；云希是男声。点一下换，换完念一句给你听'));
+  tx.appendChild(el('span', null, '晓晓是首页读题的那个声音；云希是男声。点一下换，换完念一首给你听'));
   r.appendChild(tx);
   var b = el('button', 'tg', S.shi.voice === 'R' ? '云希' : '晓晓');
   b.addEventListener('click', function () { S.shi.voice = S.shi.voice === 'R' ? 'r' : 'R'; b.textContent = S.shi.voice === 'R' ? '云希' : '晓晓'; save(); SV.full(PO.jys); });
   r.appendChild(b);
   return r;
 }
-function shRecClearRow() {
-  var r = el('div', 'prow'), tx = el('div', 'tx'), n = 0;
-  Object.keys(S.shi.recN).forEach(function (k) { n += S.shi.recN[k] || 0; });
-  var sp = el('span', null, '古诗录音 ' + n + ' 段（只在这台平板上）'); tx.appendChild(sp); r.appendChild(tx);
-  var b = el('button', 'tg'); b.textContent = '清空'; b.style.color = 'var(--red)'; b.style.width = '110px';
-  var armed = false;
-  b.addEventListener('click', function () {
-    if (!armed) { armed = true; b.textContent = '再点一下'; setTimeout(function () { armed = false; b.textContent = '清空'; }, 2500); return; }
-    ShRec.clear().then(function () { S.shi.recN = {}; save(); sp.textContent = '古诗录音 0 段'; toast('录音清空了'); }).catch(function () { toast('清空失败'); });
-  });
-  r.appendChild(b);
-  return r;
-}
-// 一组三关玩完：花长一截，照样给贴纸
-function shReward() {
-  stopTimer();
-  var P = ShiNow.P, p = shP(P.id), before = p.s;
-  if (p.s < 4) p.s++; else p.n++;
-  if (p.s >= 4) p.due = shDay() + SH_REV[Math.min(before >= 4 ? p.n : 0, SH_REV.length - 1)];
-  p.last = shDay();
-  var dk = todayKey(); S.days[dk] = (S.days[dk] || 0) + ROUNDS;
-  var left = STICKERS.filter(function (s) { return S.stickers.indexOf(s) < 0; }), sticker = pick(left.length ? left : STICKERS);
-  S.stickers.push(sticker); save();
-  Audio2.fanfare();
-  var msg = shT(SHI_SAY['grow' + Math.min(5, before + 1)], P);
-  Voice.say(shT(SHI_SAY['grow' + Math.min(5, before + 1)], P));
-  var r = el('div'); r.id = 'reward';
-  var fl = el('div', 'shGrow');
-  fl.appendChild(el('span', 'from', before >= 4 ? P.hero : SH_STAGE[before]));
-  fl.appendChild(el('span', 'arr', '➜'));
-  fl.appendChild(el('span', 'to', p.s >= 4 ? P.hero : SH_STAGE[p.s]));
-  if (p.s >= 4) fl.appendChild(el('span', 'bl', '🌸'));
-  r.appendChild(fl);
-  r.appendChild(el('h2', null, msg));
-  var al = el('div', 'album');
-  al.appendChild(el('div', 't', '贴纸 ' + S.stickers.length + '/' + STICKERS.length));
-  S.stickers.slice(-5).forEach(function (s) { al.appendChild(el('s', s === sticker ? 'new' : null, s)); });
-  r.appendChild(al);
-  var row = el('div', 'btnrow');
-  var back = el('button', 'bigbtn', '🌸 回花园'); back.addEventListener('click', function () { Audio2.tap(); shGarden(); });
-  var home2 = el('button', 'bigbtn ghost', '🏠 回家'); home2.addEventListener('click', function () { Audio2.tap(); home(); });
-  row.appendChild(back); row.appendChild(home2); r.appendChild(row);
-  $('#screen').appendChild(r);
-  sparkle(innerWidth / 2, innerHeight / 3, ['🌸', '⭐', '✨', '🌼']);
-  setTimeout(function () { sparkle(innerWidth / 2, innerHeight / 3, ['🌸', '✨']); }, 400);
-}
-
 
 /* ===================== 5 照镜子 =====================
    儿童在这个年龄普遍具有「镜像不变性」：知觉上把左右翻转的图形当成同一个东西
@@ -4720,7 +4063,7 @@ function gSpan(board, lv) {
   };
 }
 
-const GAME_IMPL = { fit: gFit, span: gSpan, schulte: gSchulte, dots: gDots, bond: gBond, shi: gShi, mirror: gMirror, connect: gConnect, link: gLink, pattern: gPattern };
+const GAME_IMPL = { fit: gFit, span: gSpan, schulte: gSchulte, dots: gDots, bond: gBond, mirror: gMirror, connect: gConnect, link: gLink, pattern: gPattern };
 
 
 /* ===================== 家长设置 / 贴纸册 ===================== */
@@ -4758,7 +4101,6 @@ function openPanel() {
   c2.appendChild(toggleRow('玩得顺时自动升关', '连续三关零失误升一级，一关错五次降一级', function () { return S.autoLevel; }, function (v) { S.autoLevel = v; }));
   c2.appendChild(toggleRow('慢慢来模式', '默认打开。题目分批出现而不是一次铺满；找数字这类关卡会拆成「先找 5 个」的小目标。孩子一看到满屏内容就发怵时开着。', function () { return S.easeIn; }, function (v) { S.easeIn = v; }));
   c2.appendChild(toggleRow('找数字：藏起要找的数', '默认关闭。打开后题目牌只显示「?」，数字只念一遍，孩子得自己记着数到几了——这部分工作记忆的负荷会回到她身上。点一下牌子能偷看 1.5 秒。', function () { return S.hideTarget; }, function (v) { S.hideTarget = v; }));
-  c2.appendChild(toggleRow('古诗：保存背诗录音', '默认打开。「我来背」录下的声音只存在这台平板上，不上传；在古诗花园的「我的诗集」里能听、能删。', function () { return S.shi.rec; }, function (v) { S.shi.rec = v; }));
   c2.appendChild(toggleRow('卡住时发光提示', '默认关闭。打开后没动作时会点亮正确答案——等于替孩子做完了搜索，训练效果会打折。', function () { return S.hints; }, function (v) { S.hints = v; }, true));
   var c3 = el('div', 'pcard'); c3.appendChild(el('h3', null, '计时与记录'));
   c3.appendChild(toggleRow('给孩子看秒表', '关掉后孩子看不到计时，后台照常记录用时；容易紧张的孩子建议关', function () { return S.showTimer; }, function (v) { S.showTimer = v; }));
@@ -4768,12 +4110,11 @@ function openPanel() {
   clr.appendChild(ctx);
   var cb = el('button', 'tg'); cb.textContent = '清空'; cb.style.color = 'var(--red)'; cb.style.width = '110px';
   cb.addEventListener('click', function () {
-    S.stars = 0; S.stickers = []; S.best = {}; S.days = {}; S.shi.p = {};
+    S.stars = 0; S.stickers = []; S.best = {}; S.days = {}; S.shi.tk = {};
     GAMES.forEach(function (g) { S.level[g.id] = 1; S.streak[g.id] = 0; });
     save(); s.remove(); home(); toast('记录清空了');
   });
   clr.appendChild(cb); c3.appendChild(clr);
-  c3.appendChild(shRecClearRow());
   cols.appendChild(c1); cols.appendChild(c2); cols.appendChild(c3);
   var box = el('div', 'lvbox');
   var hd = el('div'); hd.style.cssText = 'display:flex;align-items:baseline;gap:14px';
@@ -4813,7 +4154,7 @@ function boot() {
   Fit.boot();
   home();
   document.addEventListener('pointerdown', function () { Audio2.init(); Voice.unlock(); Music.start(); }, { once: true });
-  document.addEventListener('visibilitychange', function () { if (document.hidden) { Music.stop(); Voice.stop(); ShMic.stop(true); } else Music.start(); });
+  document.addEventListener('visibilitychange', function () { if (document.hidden) { Music.stop(); Voice.stop(); TK.stop(); } else Music.start(); });
 }
 
 boot();

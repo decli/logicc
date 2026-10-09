@@ -21,11 +21,10 @@ VOICES = {
     ('n', 'en'):  ('en-US-AvaMultilingualNeural', '-25%', '+0Hz'),
     ('c0', 'en'): ('en-US-AnaNeural', '-20%', '+0Hz'),
     ('c1', 'en'): ('en-US-EmmaMultilingualNeural', '-20%', '+15Hz'),
-    # 古诗花园: poems are recited slower than the narrator talks (≈3 syllables/s inside a line, pauses between lines
-    # are cut and set by hand in poems.py), the little monkey is 云夏 a touch higher
+    # 古诗太鼓: poems are recited slower than the narrator talks (≈3 syllables/s inside a line, pauses between lines
+    # are cut and set by hand in poems.py)
     ('r', 'zh'):  ('zh-CN-XiaoxiaoNeural', '-30%', '+0Hz'),
     ('R', 'zh'):  ('zh-CN-YunxiNeural', '-30%', '+0Hz'),
-    ('m', 'zh'):  ('zh-CN-YunxiaNeural', '-8%', '+12Hz'),
 }
 POLY_VOICE = VOICES[('n', 'zh')][:2]   # all zh-CN voices share one text front end, so one voice is enough to test readings
 SR, KBPS = 24000, 40

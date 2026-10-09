@@ -72,7 +72,7 @@ POLY = {
     '数点点': 'shu3 dian3 dian3', '中间的空': 'zhong1 jian1 de5 kong4', '肚子': 'du4 zi5',
     '睡得': 'shui4 de5', '走得': 'zou3 de5', '跑得': 'pao3 de5', '画得': 'hua4 de5',
     '快快地': 'kuai4 kuai4 de5', '轻轻地': 'qing1 qing1 de5', '慢慢地': 'man4 man4 de5', '悄悄地': 'qiao1 qiao1 de5', '大声地': 'da4 sheng1 de5', '高高地': 'gao1 gao1 de5', '静静地': 'jing4 jing4 de5',
-    # 古诗花园: the poems, as the 统编 textbook marks them
+    # 古诗太鼓: the poems, as the 统编 textbook marks them
     '曲项': 'qu1 xiang4', '莲叶间': 'lian2 ye4 jian1', '汉乐府': 'han4 yue4 fu3', '乐府': 'yue4 fu3', '远看': 'yuan3 kan4', '有色': 'you3 se4',
     '花还在': 'hua1 hai2 zai4', '日当午': 'ri4 dang1 wu3', '谁知': 'shui2 zhi1', '古朗月行': 'gu3 lang3 yue4 xing2', '不识': 'bu4 shi2', '呼作': 'hu1 zuo4',
     '解落': 'jie3 luo4', '万竿斜': 'wan4 gan1 xie2', '李峤': 'li3 qiao2', '不觉晓': 'bu4 jue2 xiao3', '处处': 'chu4 chu4', '花落': 'hua1 luo4', '知多少': 'zhi1 duo1 shao3',
