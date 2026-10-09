@@ -2,8 +2,7 @@
 // Read straight out of POEMS / SHI_SAY in the page, so a new poem or a new line is picked up on the next build.
 //   node dev/voice/collect_shi.js   ->  dev/voice/lines-shi.json
 // roles:  n  narrator (晓晓)              key = the sentence
-//         r  recitation, 晓晓 (default)   key = <poem>#full (title, author, every line, with syllable times),
-//         R  recitation, 云希                   <poem>#<line>, <poem>#t (title), <poem>#a (author)
+//         r  recitation (晓晓)            key = <poem>#full (title, author, every line, with syllable times)
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const ROOT = path.resolve(__dirname, '../..');
 const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
@@ -30,15 +29,17 @@ vm.createContext(sandbox);
 vm.runInContext([grab('const POEMS = ['), grab('const SHI_SAY = {'), 'this.POEMS = POEMS; this.SHI_SAY = SHI_SAY;'].join('\n'), sandbox);
 const { POEMS, SHI_SAY } = sandbox;
 
+// banks: voice-shi has the game's own lines; each grade has its own bank (voice-shi1 … voice-shi4) with the
+// poems' introductions and recitations, downloaded when that grade is opened
 const items = [], seen = new Set();
-function add(role, key, text) { const k = role + '|' + key; if (seen.has(k)) return; seen.add(k); items.push({ role, key, segs: [text] }); }
+function add(bank, role, key, text) { const k = role + '|' + key; if (seen.has(k)) return; seen.add(k); items.push({ bank, role, key, segs: [text] }); }
 
-for (const v of Object.values(SHI_SAY)) add('n', v, v);
+for (const v of Object.values(SHI_SAY)) add('voice-shi', 'n', v, v);
 for (const p of POEMS) {
-  add('n', p.intro, p.intro);
+  const bank = 'voice-shi' + ('一二三四'.indexOf(p.g[0]) + 1);
+  add(bank, 'n', p.intro, p.intro);
   // say：屏幕上照旧显示 x，合成时用这个写法（比如 鹅？鹅？鹅？ 才念得出上扬的二声）
-  for (const role of ['r', 'R'])
-    items.push({ role, kind: 'poem', id: p.id, title: p.t, by: p.by || (p.d + '，' + p.a), lines: p.L.map(l => l.x), say: p.L.map(l => l.say || null) });
+  items.push({ bank, role: 'r', kind: 'poem', id: p.id, title: p.t, by: p.by || (p.d + '，' + p.a), lines: p.L.map(l => l.x), py: p.L.map(l => l.py), say: p.L.map(l => l.say || null) });
 }
 
 fs.writeFileSync(path.join(__dirname, 'lines-shi.json'), JSON.stringify(items, null, 0));

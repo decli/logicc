@@ -369,12 +369,13 @@ body{
 .shTitle span{font-size:.5em;color:var(--ink-soft);transition:color .15s}
 .shTitle .lit{color:var(--red)}
 .shSvg{display:block;width:100%;height:100%;touch-action:manipulation}
-.shModal{position:absolute;inset:0;background:rgba(42,37,35,.35);display:flex;align-items:center;justify-content:center;z-index:45;padding:calc(20px * var(--k))}
+.shModal{position:absolute;inset:0;background:rgba(250,244,230,.62);-webkit-backdrop-filter:blur(calc(10px * var(--k))) saturate(.6);backdrop-filter:blur(calc(10px * var(--k))) saturate(.6);animation:shFade .2s;display:flex;align-items:center;justify-content:center;z-index:45;padding:calc(20px * var(--k))}
 .shCardBox.wide{flex-direction:row;gap:calc(40px * var(--k));padding:calc(28px * var(--k)) calc(64px * var(--k)) calc(28px * var(--k)) calc(40px * var(--k))}
 .shSide{display:flex;flex-direction:column;align-items:center;gap:calc(22px * var(--k))}
 .shCardBox.wide .tkLvs{flex-direction:column;flex-wrap:nowrap}
 .shCardBox.wide .shX{right:auto;left:calc(12px * var(--k))}
 .shCardBox{position:relative;background:#FFFCF2;border:calc(6px * var(--k)) solid var(--ink);border-radius:calc(30px * var(--k));box-shadow:calc(8px * var(--k)) calc(8px * var(--k)) 0 var(--ink);padding:calc(28px * var(--k)) calc(40px * var(--k));display:flex;flex-direction:column;align-items:center;gap:calc(22px * var(--k));max-width:100%;max-height:100%;overflow:auto}
+@keyframes shFade{from{opacity:0}to{opacity:1}}
 .shX{position:absolute;top:calc(12px * var(--k));right:calc(12px * var(--k))}
 /* 选诗 */
 .tkList{flex:1 1 auto;min-height:0;display:grid;gap:calc(16px * var(--k));padding:calc(4px * var(--k)) calc(24px * var(--k)) calc(24px * var(--k))}
@@ -383,6 +384,13 @@ body{
 .tkSong .hero{font-size:3em;line-height:1}
 .tkSong .nm{font-size:1.5em;font-weight:700;white-space:nowrap}
 .tkSong .au{font-size:.75em;color:var(--ink-soft)}
+.tkTabs{flex:0 0 auto;display:flex;gap:calc(14px * var(--k));justify-content:center;padding:0 calc(24px * var(--k)) calc(14px * var(--k))}
+.tkTab{display:flex;flex-direction:column;align-items:center;gap:calc(2px * var(--k));min-width:calc(150px * var(--k));padding:calc(8px * var(--k)) calc(18px * var(--k));border:calc(4px * var(--k)) solid var(--ink);border-radius:calc(20px * var(--k));background:#fff;box-shadow:calc(4px * var(--k)) calc(4px * var(--k)) 0 var(--ink);font-family:inherit;color:var(--ink);cursor:pointer}
+.tkTab b{font-size:calc(28px * var(--k))}
+.tkTab span{font-size:calc(17px * var(--k));color:var(--ink-soft)}
+.tkTab.on{background:var(--yellow)}
+.tkTab:active{transform:translate(calc(4px * var(--k)),calc(4px * var(--k)));box-shadow:0 0 0 var(--ink)}
+.tkSong .ce{position:absolute;top:.5em;left:.7em;font-style:normal;font-size:.62em;color:var(--ink-soft);font-weight:700}
 .tkSong .st{display:flex;align-items:center;gap:.2em;font-size:.95em;color:#C9C2B4;font-weight:700}
 .tkSong .st span{filter:grayscale(1);opacity:.45}
 .tkSong .st.on{color:var(--orange)}
@@ -551,7 +559,8 @@ const Voice = {
   // 多音字逐个核对过（见 dev/voice）。包里没有的句子、或者包没加载出来，才用设备自带的语音合成。
   bank: null, bankState: 'idle', bankP: null, clip: null, bufs: new Map(),
   // 古诗太鼓另有一个语音包 voice-shi（首页的包加载完再加载）；clipDone：play() 在等的那段念完/被顶掉时的回调
-  more: [], moreState: 'idle', moreP: null, clipDone: null, lastFn: null,
+  // 古诗太鼓的语音包按年级分开（voice-shi1…4），点开哪个年级才下载哪个；moreLoads：每个包的下载
+  more: [], moreState: 'idle', moreP: null, moreLoads: {}, morePending: 0, clipDone: null, lastFn: null,
   loadBank() {
     if (this.bankState !== 'idle') return this.bankP;
     if (!window.fetch || location.protocol === 'file:') { this.bankState = 'failed'; return (this.bankP = Promise.resolve()); }
@@ -612,13 +621,17 @@ const Voice = {
   },
   est(t) { return 500 + String(t).length * 300; },
   loadMore(name) {
-    if (this.moreState !== 'idle' || !window.fetch || location.protocol === 'file:') return this.moreP || Promise.resolve();
-    this.moreState = 'loading';
-    this.moreP = Promise.all([
+    if (this.moreLoads[name]) return this.moreLoads[name];
+    if (!window.fetch || location.protocol === 'file:') return Promise.resolve();
+    this.morePending++; this.moreState = 'loading';
+    const p = this.moreLoads[name] = Promise.all([
       fetch(name + '.json').then(r => (r.ok ? r.json() : Promise.reject(r.status))),
       fetch(name + '.bin').then(r => (r.ok ? r.arrayBuffer() : Promise.reject(r.status)))
-    ]).then(([ix, bin]) => { this.more.push({ name: name, map: ix.u, meta: ix.m || {}, bin: bin }); this.moreState = 'ready'; }).catch(() => { this.moreState = 'failed'; });
-    return this.moreP;
+    ]).then(([ix, bin]) => { this.more.push({ name: name, map: ix.u, meta: ix.m || {}, bin: bin }); })
+      .catch(() => { setTimeout(() => { if (this.moreLoads[name] === p) delete this.moreLoads[name]; }, 0); })   // 下回再试
+      .then(() => { if (--this.morePending === 0) this.moreState = 'ready'; });
+    this.moreP = Promise.all(Object.values(this.moreLoads));
+    return p;
   },
   // 播一段预录的声音（古诗太鼓的旁白、朗诵）。key 是录音脚本里的键，text 是语音包里没有时让设备念的字。
   // 返回 Promise：念完是 true，被别的声音顶掉是 false。o.onstart({dur, m}) 在真正出声时调用，m 是每个字从第几秒开始
@@ -958,7 +971,7 @@ function load() {
     if (typeof r.snd === 'boolean') Audio2.on = r.snd;
     if (typeof r.voi === 'boolean') Voice.on = r.voi;
     if (typeof r.mus === 'boolean') Music.on = r.mus;
-    if (r.shi && typeof r.shi === 'object') { if (r.shi.voice === 'R') S.shi.voice = 'R'; if (r.shi.tk && typeof r.shi.tk === 'object') S.shi.tk = r.shi.tk; }
+    if (r.shi && typeof r.shi === 'object') { if (r.shi.tk && typeof r.shi.tk === 'object') S.shi.tk = r.shi.tk; if (r.shi.grade >= 1 && r.shi.grade <= 4) S.shi.grade = r.shi.grade; }
   } catch (e) { }
 }
 var HEXOF = {
@@ -1029,7 +1042,7 @@ function home() {
     var m = el('div', 'cardMeta');
     if (g.id === 'shi') {
       m.appendChild(el('span', 's', '⭐ ' + tkAllStars() + '/' + POEMS.length * 9));
-      m.appendChild(el('span', 'b', '一年级 13 首古诗'));
+      m.appendChild(el('span', 'b', '一到四年级 ' + POEMS.length + ' 首'));
       tx.appendChild(m); c.appendChild(tx);
       c.addEventListener('click', function () { Audio2.page(); tkHome(); });
       cards.appendChild(c);
@@ -2346,13 +2359,15 @@ const TK_LV = [
 ];
 const TK_LEAD = 2.3;                 // 灯笼从右边滑到鼓上要几秒
 const TK_PERFECT = 0.1, TK_GOOD = 0.24;   // 判定窗口（秒）：给五岁的手留足余量
-S.shi = { voice: 'r', tk: {} };
+S.shi = { tk: {}, grade: 1 };
+function shGrade(P) { return '一二三四'.indexOf(P.g[0]) + 1; }
+function shBank(P) { return 'voice-shi' + shGrade(P); }
 function tkRec(id) { var r = S.shi.tk[id]; if (!r || r.length !== 3) r = S.shi.tk[id] = [{ s: 0, b: 0 }, { s: 0, b: 0 }, { s: 0, b: 0 }]; return r; }
 function tkStars(id) { return tkRec(id).reduce(function (a, r) { return a + r.s; }, 0); }
 function tkAllStars() { return POEMS.reduce(function (a, P) { return a + tkStars(P.id); }, 0); }
 function tkStarStr(n) { return '★★★'.slice(0, n) + '☆☆☆'.slice(0, 3 - n); }
 const SV = {
-  role: function () { return S.shi.voice === 'R' ? 'R' : 'r'; },
+  role: function () { return 'r'; },
   n: function (t) { return Voice.play('n', t, t); },
   full: function (P, o) { return Voice.play(SV.role(), P.id + '#full', P.t + '。' + shBy(P).replace(' · ', '，') + '。' + P.L.map(function (l) { return l.x; }).join(''), o); }
 };
@@ -2361,7 +2376,8 @@ const SV = {
 function tkGroups(x) {
   var out = [], k = 0;
   x.replace(/[，。！？、；：]+$/, '').split(/[，、]/).forEach(function (seg) {
-    var n = shHan(seg).length, pat = n <= 3 ? [n] : n === 4 ? [2, 2] : n === 5 ? [2, 2, 1] : n === 6 ? [2, 2, 2] : [2, 2, 2, 1];
+    var n = shHan(seg).length, pat = [];
+    if (n <= 3) pat = [n]; else { for (var q2 = 0; q2 < n >> 1; q2++) pat.push(2); if (n & 1) pat.push(1); }
     pat.forEach(function (c) { var g = []; for (var q = 0; q < c; q++) g.push(k++); out.push(g); });
   });
   return out;
@@ -2370,7 +2386,10 @@ function tkGroups(x) {
 function tkNotes(P, m, lv) {
   var notes = [], hide = TK_LV[lv].hide;
   if (m.H) {
-    notes.push({ t: m.H[0][0], txt: P.t, kind: 't' });
+    var th = shHan(P.t.replace('·', '，'));   // 长题目（晓出净慈寺送林子方）也两个字一拍
+    (th.length <= 3 ? [th.map(function (_, i) { return i; })] : tkGroups(P.t.replace('·', '，'))).forEach(function (g) {
+      notes.push({ t: m.H[0][g[0]], txt: g.map(function (c) { return th[c]; }).join(''), kind: 't' });
+    });
     var k = 0;
     (P.by || (P.d + '，' + P.a)).split('，').forEach(function (part) { notes.push({ t: m.H[1][k], txt: part, kind: 'a' }); k += shHan(part).length; });
   }
@@ -2397,8 +2416,7 @@ function tkClip(P) {
       } catch (e) { res(null); }
     });
   };
-  if (Voice.moreState === 'loading') return Promise.race([Voice.moreP, shWait(8000)]).then(go);
-  return go();
+  return Promise.race([Voice.loadMore(shBank(P)), shWait(8000)]).then(go);
 }
 // 木鱼：练习的星星、静音的那几拍都敲一下，节奏一直听得见
 function tkTick(at, soft) {
@@ -2432,28 +2450,49 @@ function tkHome() {
   if (Music.on) Music.start();   // 打鼓时关掉的背景音乐，回到选诗再放
   var p = el('div', 'pane');
   p.appendChild(topbar({ title: '🥁 古诗太鼓', sub: '跟着念诗打小鼓', back: home }));
-  var grid = el('div', 'tkList');
-  POEMS.forEach(function (P) {
-    var c = el('div', 'tkSong'), n = tkStars(P.id);
-    c.appendChild(el('div', 'hero', P.hero));
-    c.appendChild(el('div', 'nm', P.t));
-    c.appendChild(el('div', 'au', shBy(P)));
-    var st = el('div', 'st' + (n ? ' on' : ''));
-    st.appendChild(el('span', null, '⭐')); st.appendChild(el('b', 'num', n + ' / 9'));
-    c.appendChild(st);
-    c.addEventListener('click', function () { Audio2.tap(); tkDetail(P); });
-    grid.appendChild(c);
+  // 一到四年级各一页；每页先上册后下册
+  var tabs = el('div', 'tkTabs'), grid = el('div', 'tkList'), list = [];
+  [1, 2, 3, 4].forEach(function (g) {
+    var ps = POEMS.filter(function (P) { return shGrade(P) === g; }), n = ps.reduce(function (a, P) { return a + tkStars(P.id); }, 0);
+    var b = el('button', 'tkTab'); b.dataset.g = g;
+    b.appendChild(el('b', null, '一二三四'[g - 1] + '年级'));
+    b.appendChild(el('span', 'num', '⭐ ' + n + '/' + ps.length * 9));
+    b.addEventListener('click', function () { if (S.shi.grade === g) return; Audio2.tap(); show(g); save(); });
+    tabs.appendChild(b);
   });
-  p.appendChild(grid);
+  function show(g) {
+    S.shi.grade = g; Voice.loadMore('voice-shi' + g);
+    tabs.querySelectorAll('.tkTab').forEach(function (b) { b.classList.toggle('on', +b.dataset.g === g); });
+    grid.innerHTML = ''; list = POEMS.filter(function (P) { return shGrade(P) === g; });
+    list.forEach(function (P) {
+      var c = el('div', 'tkSong'), n = tkStars(P.id);
+      c.appendChild(el('i', 'ce', P.g.slice(3)));
+      c.appendChild(el('div', 'hero', P.hero));
+      var nm = el('div', 'nm', P.t); c.appendChild(nm);
+      nm.style.fontSize = Math.min(1.5, 7.4 / Array.from(P.t).length).toFixed(2) + 'em';   // 晓出净慈寺送林子方 也放得下
+      c.appendChild(el('div', 'au', shBy(P)));
+      var st = el('div', 'st' + (n ? ' on' : ''));
+      st.appendChild(el('span', null, '⭐')); st.appendChild(el('b', 'num', n + ' / 9'));
+      c.appendChild(st);
+      c.addEventListener('click', function () { Audio2.tap(); tkDetail(P); });
+      grid.appendChild(c);
+    });
+    Fit.run();
+  }
+  p.appendChild(tabs); p.appendChild(grid);
   $('#screen').innerHTML = ''; $('#screen').appendChild(p);
-  Fit.cb = function () {
-    var r = grid.getBoundingClientRect(); if (!r.width) return;
-    var cols = r.width > r.height * 1.4 ? 7 : r.width > r.height ? 5 : 4, rows = Math.ceil(POEMS.length / cols);
-    grid.style.gridTemplateColumns = 'repeat(' + cols + ',1fr)'; grid.style.gridTemplateRows = 'repeat(' + rows + ',1fr)';
-    var cw = (r.width - (cols - 1) * 16 * K) / cols, ch = (r.height - (rows - 1) * 16 * K) / rows;
-    grid.querySelectorAll('.tkSong').forEach(function (c) { c.style.fontSize = px(Math.min(cw, ch * 1.1) / 8); });
+  Fit.cb = function () {   // 列数取卡片最大的那种
+    var r = grid.getBoundingClientRect(); if (!r.width || !list.length) return;
+    var gap = 16 * K, best = 0, cols = 4;
+    for (var c = 2; c <= 8; c++) {
+      var rows = Math.ceil(list.length / c), cw = (r.width - (c - 1) * gap) / c, ch = (r.height - (rows - 1) * gap) / rows;
+      var sz = Math.min(cw, ch * 0.86); if (sz > best) { best = sz; cols = c; }   // 卡片内容约 8.4em 宽、9.8em 高
+    }
+    var rows2 = Math.ceil(list.length / cols);
+    grid.style.gridTemplateColumns = 'repeat(' + cols + ',1fr)'; grid.style.gridTemplateRows = 'repeat(' + rows2 + ',1fr)';
+    grid.querySelectorAll('.tkSong').forEach(function (c) { c.style.fontSize = px(best / 8.6); });
   };
-  Fit.run();
+  show(S.shi.grade || 1);
   Voice.say(SHI_SAY.pick, false);
 }
 // 点一首诗：看诗、听一遍、选关
@@ -2674,18 +2713,6 @@ function tkRun(P, lv, clip, notes, ui) {
     });
   }
 }
-// 家长设置里的一行：朗诵换声音
-function shVoiceRow() {
-  var r = el('div', 'prow'), tx = el('div', 'tx');
-  tx.appendChild(el('b', null, '古诗朗诵的声音'));
-  tx.appendChild(el('span', null, '晓晓是首页读题的那个声音；云希是男声。点一下换，换完念一首给你听'));
-  r.appendChild(tx);
-  var b = el('button', 'tg', S.shi.voice === 'R' ? '云希' : '晓晓');
-  b.addEventListener('click', function () { S.shi.voice = S.shi.voice === 'R' ? 'r' : 'R'; b.textContent = S.shi.voice === 'R' ? '云希' : '晓晓'; save(); SV.full(PO.jys); });
-  r.appendChild(b);
-  return r;
-}
-
 /* ===================== 5 照镜子 =====================
    儿童在这个年龄普遍具有「镜像不变性」：知觉上把左右翻转的图形当成同一个东西
    （也是 b/d、p/q 写反的同源现象），要到六七岁才逐步解除。
@@ -4144,7 +4171,6 @@ function openPanel() {
   c1.appendChild(toggleRow('音效', '点对、消除、通关的提示音', function () { return Audio2.on; }, function (v) { Audio2.on = v; }));
   c1.appendChild(toggleRow('语音读题', '每道题自动朗读一遍，不识字也能玩', function () { return Voice.on; }, function (v) { Voice.on = v; if (!v) Voice.stop(); }));
   c1.appendChild(toggleRow('背景音乐', '朗读时自动压低', function () { return Music.on; }, function (v) { Music.on = v; if (v) Music.start(); else Music.stop(); }));
-  c1.appendChild(shVoiceRow());
   var c2 = el('div', 'pcard'); c2.appendChild(el('h3', null, '玩法'));
   c2.appendChild(toggleRow('玩得顺时自动升关', '连续三关零失误升一级，一关错五次降一级', function () { return S.autoLevel; }, function (v) { S.autoLevel = v; }));
   c2.appendChild(toggleRow('慢慢来模式', '默认打开。题目分批出现而不是一次铺满；找数字这类关卡会拆成「先找 5 个」的小目标。孩子一看到满屏内容就发怵时开着。', function () { return S.easeIn; }, function (v) { S.easeIn = v; }));

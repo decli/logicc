@@ -7,7 +7,7 @@
 | --- | --- | --- |
 | `voice-zh.bin` / `.json`（站点根目录） | 首页的闯关游戏 | 每道题的读题、提示、表扬，带数字的句子按所有可能的数字展开 |
 | `zaowu/voice-zh.*`、`zaowu/voice-en.*` | 造物 | 旁白和两只小生灵，中英文各一套；外加「词 + 翻译 + 例句」连读的整段 |
-| `voice-shi.bin` / `.json`（站点根目录） | 古诗太鼓 | 13 首诗的朗诵（整首、每一句、标题、作者，晓晓和云希各一套）和旁白；索引里多一个 `m`：标题、作者、每一句里每个字从第几秒开始——这就是鼓谱 |
+| `voice-shi.bin` / `.json`，`voice-shi1…4.bin` / `.json`（站点根目录） | 古诗太鼓 | 游戏自己的几句话；每个年级一个包：诗的介绍和整首朗诵（晓晓）；索引里多一个 `m`：标题、作者、每一句里每个字从第几秒开始——这就是鼓谱 |
 
 ## 声音
 
@@ -44,12 +44,12 @@ edge-tts 只收纯文本，不能直接告诉它拼音，`<phoneme>` 之类的 S
 需要 Python 3.10+、Node 18+、ffmpeg，以及：
 
 ```bash
-pip install edge-tts numpy librosa lameenc jieba pypinyin faster-whisper
+pip install edge-tts numpy librosa lameenc jieba pypinyin faster-whisper praat-parselmouth
 ```
 
 ```bash
 python3 dev/voice/build.py root     # 首页游戏 → voice-zh.bin|json
-python3 dev/voice/build.py shi      # 古诗太鼓 → voice-shi.bin|json（朗诵怎么切、怎么接、鼓谱怎么来见 poems.py）
+python3 dev/voice/build.py shi      # 古诗太鼓 → voice-shi.bin|json + voice-shi1…4（朗诵怎么录、怎么挑、怎么接、鼓谱怎么来见 poems.py）
 python3 dev/voice/build.py zaowu    # 造物 → zaowu/voice-zh|en.*，并重建 zaowu/index.html
 python3 dev/voice/build.py check root    # 可选：用 Whisper 回听，列出读得不对的句子
 ```
@@ -59,5 +59,6 @@ python3 dev/voice/build.py check root    # 可选：用 Whisper 回听，列出�
 - 首页的台词由 `collect_root.js` 从 `index.html` 里读出来：固定的句子直接提取，带数字、关卡名、图形名的句子按所有取值展开。
   新加了一处 `Voice.say(...)` 而它不认识，会报 `NOT COVERED`，按提示在脚本里补上。
 - 造物的台词由 `zaowu/dev/voice/collect.js` 从 `i18n.js` 列出。
-- 古诗太鼓的由 `collect_shi.js` 从 `index.html` 的 `POEMS`、`SHI_SAY` 列出。诗句只要有一个字的读音拿不准，就直接换成该读音最常用的同音字送去合成，不像别处只换判定读错的——诗里一个字读错，孩子背下来的就是错的。
-  多音字检查管不到声调被句子语气压坏的情况：《咏鹅》「鹅，鹅，鹅，」单独成句时句末降调把二声压成了 è，这种在 `POEMS` 里写 `say`（合成时的写法，这里是「鹅？鹅？鹅？」），再用音高曲线确认是上扬的。
+- 古诗太鼓的由 `collect_shi.js` 从 `index.html` 的 `POEMS`、`SHI_SAY` 列出，按年级分包。诗句里拿不准的多音字换不换同音字，两种都录：换了的字有时让一句话不成话（「莲叶坚」），语音就把句尾念塌了。
+  每句最后一个字的声调用音高量（`poems.py` 的 `tone_score`），一首诗录四遍挑声调对的那遍；都不对再单独录这一句，最后才用 Praat（`praat-parselmouth`）只改这一个字的音高曲线。结果写在 `tones-voice-shi*.json`。
+  多音字检查和句尾检查都管不到的，在 `POEMS` 里写 `say`（合成时的写法），比如《咏鹅》「鹅？鹅？鹅？」。

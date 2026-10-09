@@ -3,7 +3,7 @@
   python3 dev/voice/build.py root          home-page logic games  -> voice-zh.bin|json at the site root
   python3 dev/voice/build.py zaowu         造物 (both languages)  -> zaowu/voice-zh|en.bin|json (+ rebuilds zaowu/index.html)
   python3 dev/voice/build.py piano         彩虹钢琴               -> piano/voice-zh.bin|json
-  python3 dev/voice/build.py shi           古诗太鼓               -> voice-shi.bin|json at the site root (see poems.py)
+  python3 dev/voice/build.py shi           古诗太鼓               -> voice-shi.bin|json (the game's lines) and voice-shi1…4 (each grade's poems) at the site root (see poems.py)
   python3 dev/voice/build.py check root    listen back with speech recognition and list lines that do not read as written
   python3 dev/voice/build.py check zaowu
 
@@ -18,7 +18,9 @@ import zhpoly
 def collect(which):
     if which == 'shi':
         subprocess.run(['node', os.path.join(HERE, 'collect_shi.js')], check=True)
-        return {'voice-shi': json.load(open(os.path.join(HERE, 'lines-shi.json')))}
+        out = {}
+        for it in json.load(open(os.path.join(HERE, 'lines-shi.json'))): out.setdefault(it['bank'], []).append(it)
+        return out
     if which == 'root':
         subprocess.run(['node', os.path.join(HERE, 'collect_root.js')], check=True)
         return {'voice-zh': json.load(open(os.path.join(HERE, 'lines-root.json')))}
