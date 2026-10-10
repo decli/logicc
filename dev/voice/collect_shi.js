@@ -29,17 +29,16 @@ vm.createContext(sandbox);
 vm.runInContext([grab('const POEMS = ['), grab('const SHI_SAY = {'), 'this.POEMS = POEMS; this.SHI_SAY = SHI_SAY;'].join('\n'), sandbox);
 const { POEMS, SHI_SAY } = sandbox;
 
-// banks: voice-shi has the game's own lines; each grade has its own bank (voice-shi1 … voice-shi4) with the
-// poems' introductions and recitations, downloaded when that grade is opened
+// one bank (voice-shi) for the page; part: what poems.py records in one go (0 the game's own lines, 1–4 the grades)
 const items = [], seen = new Set();
-function add(bank, role, key, text) { const k = role + '|' + key; if (seen.has(k)) return; seen.add(k); items.push({ bank, role, key, segs: [text] }); }
+function add(part, role, key, text) { const k = role + '|' + key; if (seen.has(k)) return; seen.add(k); items.push({ part, role, key, segs: [text] }); }
 
-for (const v of Object.values(SHI_SAY)) add('voice-shi', 'n', v, v);
+for (const v of Object.values(SHI_SAY)) add(0, 'n', v, v);
 for (const p of POEMS) {
-  const bank = 'voice-shi' + ('一二三四'.indexOf(p.g[0]) + 1);
-  add(bank, 'n', p.intro, p.intro);
+  const part = '一二三四'.indexOf(p.g[0]) + 1;
+  add(part, 'n', p.intro, p.intro);
   // say：屏幕上照旧显示 x，合成时用这个写法（比如 鹅？鹅？鹅？ 才念得出上扬的二声）
-  items.push({ bank, role: 'r', kind: 'poem', id: p.id, title: p.t, by: p.by || (p.d + '，' + p.a), lines: p.L.map(l => l.x), py: p.L.map(l => l.py), say: p.L.map(l => l.say || null) });
+  items.push({ part, role: 'r', kind: 'poem', id: p.id, title: p.t, by: p.by || (p.d + '，' + p.a), lines: p.L.map(l => l.x), py: p.L.map(l => l.py), say: p.L.map(l => l.say || null) });
 }
 
 fs.writeFileSync(path.join(__dirname, 'lines-shi.json'), JSON.stringify(items, null, 0));

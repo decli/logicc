@@ -3,8 +3,8 @@
   python3 dev/voice/build.py root          home-page logic games  -> voice-zh.bin|json at the site root
   python3 dev/voice/build.py zaowu         造物 (both languages)  -> zaowu/voice-zh|en.bin|json (+ rebuilds zaowu/index.html)
   python3 dev/voice/build.py piano         彩虹钢琴               -> piano/voice-zh.bin|json
-  python3 dev/voice/build.py shi           古诗太鼓               -> voice-shi.bin|json (the game's lines) and voice-shi1…4 (each grade's poems) at the site root (see poems.py)
-  python3 dev/voice/build.py shi 3 4       古诗太鼓, only those grades
+  python3 dev/voice/build.py shi           古诗太鼓               -> voice-shi.bin|json at the site root (see poems.py)
+  python3 dev/voice/build.py shi 3 4       古诗太鼓, re-recording only those grades (the others come from dev/voice/cache/shi-parts)
   python3 dev/voice/build.py check root    listen back with speech recognition and list lines that do not read as written
   python3 dev/voice/build.py check zaowu
 
@@ -19,9 +19,7 @@ import zhpoly
 def collect(which):
     if which == 'shi':
         subprocess.run(['node', os.path.join(HERE, 'collect_shi.js')], check=True)
-        out = {}
-        for it in json.load(open(os.path.join(HERE, 'lines-shi.json'))): out.setdefault(it['bank'], []).append(it)
-        return out
+        return {'voice-shi': json.load(open(os.path.join(HERE, 'lines-shi.json')))}
     if which == 'root':
         subprocess.run(['node', os.path.join(HERE, 'collect_root.js')], check=True)
         return {'voice-zh': json.load(open(os.path.join(HERE, 'lines-root.json')))}
@@ -40,11 +38,10 @@ def out_dir(which):
 
 async def build(which, only=()):
     banks, notes = collect(which), []
-    if only: banks = {k: v for k, v in banks.items() if k[len('voice-shi'):] in only}
     for name, items in banks.items():
         if which == 'shi':
             import poems
-            notes += await poems.build_shi(items, out_dir(which), name)
+            notes += await poems.build_shi_all(items, out_dir(which), name, only)
         else:
             notes += await vk.build_bank(items, out_dir(which), name, f'{which}/{name}')
     vk.report_notes(notes, os.path.join(HERE, f'poly-report-{which}.json'))

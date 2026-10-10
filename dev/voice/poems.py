@@ -422,9 +422,44 @@ async def build_shi(items, out_dir, name):
         clipset, nt, rep = await recite(it, checker)
         notes += nt; checker.save(); reports.append((it['role'], it['id'], rep))
         for key, (pcm, m) in clipset.items(): put(it['role'], key, vk.mp3(pcm), m)
-    open(os.path.join(out_dir, name + '.bin'), 'wb').write(blob)
-    json.dump({'v': 2, 'u': index, 'm': meta}, open(os.path.join(out_dir, name + '.json'), 'w'), separators=(',', ':'))
-    json.dump([{'role': r, 'id': i, 'lines': [{'text': a, 'sent': b, 'score': c, 'tried': d} for a, b, c, d in rep]} for r, i, rep in reports],
-              open(os.path.join(vk.HERE, 'tones-' + name + '.json'), 'w'), ensure_ascii=False, indent=0)
+    os.makedirs(out_dir, exist_ok=True)
+    vk.write_atomic(os.path.join(out_dir, name + '.bin'), bytes(blob))
+    vk.write_atomic(os.path.join(out_dir, name + '.json'), json.dumps({'v': 2, 'u': index, 'm': meta}, separators=(',', ':')), 'w')
+    if reports:
+        json.dump([{'role': r, 'id': i, 'lines': [{'text': a, 'sent': b, 'score': c, 'tried': d} for a, b, c, d in rep]} for r, i, rep in reports],
+                  open(os.path.join(vk.HERE, 'tones-' + name + '.json'), 'w'), ensure_ascii=False, indent=0)
     print(f'{name}: {len(index)} clips, {len(blob) / 1e6:.2f} MB -> {os.path.relpath(os.path.join(out_dir, name), os.getcwd())}.bin|json')
     return notes
+
+# ---------- one bank for the page ----------
+# The page downloads one voice-shi.bin|json with everything (about 8 MB), so that once it is cached the game works
+# offline in every grade. Recording a poem is slow (four takes, pitch tracking), so the bank is built in parts —
+# part 0 the game's own lines, parts 1–4 the grades — kept in cache/shi-parts, and packed together at the end:
+# build.py shi 3 re-records only grade 3.
+PARTS = os.path.join(vk.CACHE, 'shi-parts')
+
+async def build_shi_all(items, out_dir, name, only=()):
+    notes, groups = [], {}
+    for it in items: groups.setdefault(str(it.get('part', 0)), []).append(it)
+    for part in sorted(groups):
+        pn = f'{name}{part}'
+        have = os.path.exists(os.path.join(PARTS, pn + '.bin')) and os.path.exists(os.path.join(PARTS, pn + '.json'))
+        if only and part not in only and have: continue
+        notes += await build_shi(groups[part], PARTS, pn)
+    pack([f'{name}{part}' for part in sorted(groups)], out_dir, name)
+    return notes
+
+def pack(parts, out_dir, name):
+    """parts (in cache/shi-parts) -> <out_dir>/<name>.bin|json; h = fingerprint of the .bin, so the page and its
+    offline cache (sw.js) can tell a new bank from the one they already have"""
+    blob, index, meta = bytearray(), {}, {}
+    for pn in parts:
+        b = open(os.path.join(PARTS, pn + '.bin'), 'rb').read(); ix = json.load(open(os.path.join(PARTS, pn + '.json')))
+        for h, (off, ln) in ix['u'].items():
+            if h in index: continue
+            index[h] = [len(blob), ln]; blob += b[off:off + ln]
+            if h in ix.get('m', {}): meta[h] = ix['m'][h]
+    vk.write_atomic(os.path.join(out_dir, name + '.bin'), bytes(blob))
+    vk.write_atomic(os.path.join(out_dir, name + '.json'),
+                    json.dumps({'v': 2, 'h': hashlib.sha1(blob).hexdigest()[:12], 'u': index, 'm': meta}, separators=(',', ':')), 'w')
+    print(f'{name}: {len(index)} clips, {len(blob) / 1e6:.2f} MB -> {os.path.relpath(os.path.join(out_dir, name), os.getcwd())}.bin|json')

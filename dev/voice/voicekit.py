@@ -1,8 +1,9 @@
 """Shared voice toolkit for the whole site: Microsoft neural voices through edge-tts,
 polyphone fixes, loudness/silence post-processing, bilingual runs, and the voice-bank format.
 
-A bank is two files: <name>.bin (MP3 clips back to back) and <name>.json {"v":2,"u":{hash: [offset, length]}},
-hash = FNV-1a over the UTF-16 code units of "<role>|<text>", the same function the pages use."""
+A bank is two files: <name>.bin (MP3 clips back to back) and <name>.json {"v":2,"h":fingerprint,"u":{hash: [offset, length]}},
+hash = FNV-1a over the UTF-16 code units of "<role>|<text>", the same function the pages use; h, the first 12 hex digits
+of the .bin's SHA-1, lets a page ask for <name>.bin?h=… so that a cached old .bin is never paired with a new index."""
 import asyncio, hashlib, json, os, re, subprocess, sys, time
 import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -173,7 +174,7 @@ async def build_bank(items, out_dir, name, label):
         print(f'  {label}: {done}/{len(items)}  {time.time() - t0:.0f}s', flush=True)
     os.makedirs(out_dir, exist_ok=True)
     open(os.path.join(out_dir, name + '.bin'), 'wb').write(blob)
-    json.dump({'v': 2, 'u': index}, open(os.path.join(out_dir, name + '.json'), 'w'), separators=(',', ':'))
+    json.dump({'v': 2, 'h': hashlib.sha1(blob).hexdigest()[:12], 'u': index}, open(os.path.join(out_dir, name + '.json'), 'w'), separators=(',', ':'))
     print(f'{label}: {len(index)} clips, {len(blob) / 1e6:.2f} MB -> {os.path.relpath(os.path.join(out_dir, name), os.getcwd())}.bin|json')
     return notes
 

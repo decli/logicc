@@ -552,6 +552,15 @@ function cnNum(n) {
 }
 function cnText(t) { return String(t).replace(/\d+/g, function (m) { return cnNum(m); }); }
 const PRAISE = ['对啦', '真棒', '好厉害', '答对啦', '你真行'];
+// 离线：sw.js 把首页、图标和两个语音包存进浏览器缓存，以后断网也能玩；每次打开时（有网）顺手检查有没有新版本。
+// 第一次打开时语音包先等 sw.js 接管页面（最多 4 秒）再下载，这样只下载一遍，下载的同时就存进了离线缓存
+const SW_GATE = (function () {
+  if (!('serviceWorker' in navigator) || location.protocol === 'file:') return Promise.resolve();
+  var sw = navigator.serviceWorker;
+  sw.register('sw.js').then(function () { return sw.ready; }).then(function (reg) { if (reg.active) reg.active.postMessage('sync'); }).catch(function () { });
+  if (sw.controller) return Promise.resolve();
+  return new Promise(function (res) { sw.addEventListener('controllerchange', res); setTimeout(res, 4000); });
+})();
 const Voice = {
   on: true, last: '', unlocked: false, voice: null, forced: null, scanned: false, failed: false, lastErr: '', tried: 0,
   gen: 0, ok: false, // gen：每说一句换一代，被顶掉的旧句子的回调/超时一律作废；ok：已有音色真正出过声
@@ -559,16 +568,22 @@ const Voice = {
   // 多音字逐个核对过（见 dev/voice）。包里没有的句子、或者包没加载出来，才用设备自带的语音合成。
   bank: null, bankState: 'idle', bankP: null, clip: null, bufs: new Map(),
   // 古诗太鼓另有一个语音包 voice-shi（首页的包加载完再加载）；clipDone：play() 在等的那段念完/被顶掉时的回调
-  // 古诗太鼓的语音包按年级分开（voice-shi1…4），点开哪个年级才下载哪个；moreLoads：每个包的下载
+  // 古诗太鼓的语音包 voice-shi（一到四年级全部，首页的包之后接着下载）；moreLoads：每个包的下载
   more: [], moreState: 'idle', moreP: null, moreLoads: {}, morePending: 0, clipDone: null, lastFn: null,
+  // 语音包先取索引 json，再按索引里的指纹 h 取 voice-xx.bin?h=…：离线缓存（sw.js）里旧的 bin 永远不会和新的索引配错
+  hashes: {},
+  fetchBank(name) {
+    return SW_GATE.then(() => fetch(name + '.json')).then(r => (r.ok ? r.json() : Promise.reject(r.status))).then(ix => {
+      this.hashes[name] = ix.h || '';
+      return fetch(name + '.bin' + (ix.h ? '?h=' + ix.h : '')).then(r => (r.ok ? r.arrayBuffer() : Promise.reject(r.status))).then(bin => [ix, bin]);
+    });
+  },
   loadBank() {
     if (this.bankState !== 'idle') return this.bankP;
     if (!window.fetch || location.protocol === 'file:') { this.bankState = 'failed'; return (this.bankP = Promise.resolve()); }
     this.bankState = 'loading';
-    this.bankP = Promise.all([
-      fetch('voice-zh.json').then(r => (r.ok ? r.json() : Promise.reject(r.status))),
-      fetch('voice-zh.bin').then(r => (r.ok ? r.arrayBuffer() : Promise.reject(r.status)))
-    ]).then(([ix, bin]) => { this.bank = { name: 'root', map: ix.u, bin }; this.bankState = 'ready'; }).catch(() => { this.bankState = 'failed'; });
+    this.bankP = this.fetchBank('voice-zh')
+      .then(([ix, bin]) => { this.bank = { name: 'root', map: ix.u, bin }; this.bankState = 'ready'; }).catch(() => { this.bankState = 'failed'; });
     return this.bankP;
   },
   fnv(s) { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); } return (h >>> 0).toString(36); },
@@ -624,10 +639,8 @@ const Voice = {
     if (this.moreLoads[name]) return this.moreLoads[name];
     if (!window.fetch || location.protocol === 'file:') return Promise.resolve();
     this.morePending++; this.moreState = 'loading';
-    const p = this.moreLoads[name] = Promise.all([
-      fetch(name + '.json').then(r => (r.ok ? r.json() : Promise.reject(r.status))),
-      fetch(name + '.bin').then(r => (r.ok ? r.arrayBuffer() : Promise.reject(r.status)))
-    ]).then(([ix, bin]) => { this.more.push({ name: name, map: ix.u, meta: ix.m || {}, bin: bin }); })
+    const p = this.moreLoads[name] = this.fetchBank(name)
+      .then(([ix, bin]) => { this.more.push({ name: name, map: ix.u, meta: ix.m || {}, bin: bin }); })
       .catch(() => { setTimeout(() => { if (this.moreLoads[name] === p) delete this.moreLoads[name]; }, 0); })   // 下回再试
       .then(() => { if (--this.morePending === 0) this.moreState = 'ready'; });
     this.moreP = Promise.all(Object.values(this.moreLoads));
@@ -804,6 +817,25 @@ if ('speechSynthesis' in window) {
   try { speechSynthesis.cancel(); speechSynthesis.getVoices(); speechSynthesis.addEventListener('voiceschanged', () => { Voice.scanned = true; }); } catch (e) { }
 }
 Voice.loadBank().then(function () { Voice.loadMore('voice-shi'); });
+// 家长设置里显示：离线需要的东西是不是都已经存好了
+function offlineState() {
+  if (!('serviceWorker' in navigator) || !window.caches || location.protocol === 'file:') return Promise.resolve('这个浏览器不支持离线缓存，需要联网玩');
+  var wait = Promise.all([Voice.bankP, Voice.moreLoads['voice-shi']].filter(Boolean));
+  return wait.then(function () {
+    var urls = ['index.html'].concat(['voice-zh', 'voice-shi'].map(function (b) { return b + '.bin' + (Voice.hashes[b] ? '?h=' + Voice.hashes[b] : ''); }));
+    return Promise.all(urls.map(function (u) { return caches.match(new URL(u, location.href).href).then(function (r) { return !!r; }); }));
+  }).then(function (got) {
+    var n = got.filter(Boolean).length;
+    if (n === got.length) return '✅ 已经全部存在这台设备上（约 17 MB），断网也能玩，古诗一到四年级都能念';
+    return '⏳ 还在下载（' + n + ' / ' + got.length + '）。连着网多开一会儿，下载完断网也能玩';
+  }).catch(function () { return '还没下载好，连上网打开一次'; });
+}
+function offlineRow() {
+  var r = el('div', 'prow'), tx = el('div', 'tx'), st = el('span', null, '检查中…');
+  tx.appendChild(el('b', null, '离线使用')); tx.appendChild(st); r.appendChild(tx);
+  offlineState().then(function (t) { st.textContent = t; });
+  return r;
+}
 
 /* ===================== 状态 ===================== */
 const STICKERS = ['🐣', '🦄', '🐙', '🍓', '🚀', '🌈', '🐢', '🦋', '🍭', '🐧', '🦖', '🌻', '🐬', '🎠', '🐨', '🍉'];
@@ -3381,7 +3413,6 @@ const TK_LEAD = 2.3;                 // 灯笼从右边滑到鼓上要几秒
 const TK_PERFECT = 0.1, TK_GOOD = 0.24;   // 判定窗口（秒）：给五岁的手留足余量
 S.shi = { tk: {}, grade: 1 };
 function shGrade(P) { return '一二三四'.indexOf(P.g[0]) + 1; }
-function shBank(P) { return 'voice-shi' + shGrade(P); }
 function tkRec(id) { var r = S.shi.tk[id]; if (!r || r.length !== 3) r = S.shi.tk[id] = [{ s: 0, b: 0 }, { s: 0, b: 0 }, { s: 0, b: 0 }]; return r; }
 function tkStars(id) { return tkRec(id).reduce(function (a, r) { return a + r.s; }, 0); }
 function tkAllStars() { return POEMS.reduce(function (a, P) { return a + tkStars(P.id); }, 0); }
@@ -3436,7 +3467,7 @@ function tkClip(P) {
       } catch (e) { res(null); }
     });
   };
-  return Promise.race([Voice.loadMore(shBank(P)), shWait(8000)]).then(go);
+  return Promise.race([Voice.loadMore('voice-shi'), shWait(8000)]).then(go);
 }
 // 木鱼：练习的星星、静音的那几拍都敲一下，节奏一直听得见
 function tkTick(at, soft) {
@@ -3481,7 +3512,7 @@ function tkHome() {
     tabs.appendChild(b);
   });
   function show(g) {
-    S.shi.grade = g; Voice.loadMore('voice-shi' + g);
+    S.shi.grade = g;
     tabs.querySelectorAll('.tkTab').forEach(function (b) { b.classList.toggle('on', +b.dataset.g === g); });
     grid.innerHTML = ''; list = POEMS.filter(function (P) { return shGrade(P) === g; });
     list.forEach(function (P) {
@@ -5198,6 +5229,7 @@ function openPanel() {
   c2.appendChild(toggleRow('卡住时发光提示', '默认关闭。打开后没动作时会点亮正确答案——等于替孩子做完了搜索，训练效果会打折。', function () { return S.hints; }, function (v) { S.hints = v; }, true));
   var c3 = el('div', 'pcard'); c3.appendChild(el('h3', null, '计时与记录'));
   c3.appendChild(toggleRow('给孩子看秒表', '关掉后孩子看不到计时，后台照常记录用时；容易紧张的孩子建议关', function () { return S.showTimer; }, function (v) { S.showTimer = v; }));
+  c3.appendChild(offlineRow());
   c3.appendChild(toggleRow('跨天保存进度', '关卡、星星、贴纸、每关最快用时留在这台平板上', function () { return S.persist; }, function (v) { S.persist = v; if (v) save(); }));
   var clr = el('div', 'prow');
   var ctx = el('div', 'tx'); ctx.appendChild(el('span', null, '已记录 ' + Object.keys(S.days).length + ' 天 · 星星 ' + S.stars + ' 颗 · 贴纸 ' + S.stickers.length + ' 张'));
