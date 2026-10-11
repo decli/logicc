@@ -1,3 +1,9 @@
-# 不收录：家用的儿童小游戏，不需要出现在搜索结果和 AI 的答案里
+# 家用的儿童小游戏，不需要出现在搜索结果和 AI 的答案里。
+# Google、Bing 放进来：它们要读到 _headers 里的 noindex 才会不收录（被 robots.txt 挡在外面的网址，别处一链接反而可能被收录）。
+# 其他爬虫（包括 GPTBot、ClaudeBot、CCBot、Google-Extended 这类 AI 训练爬虫）一律不让抓。
+User-agent: Googlebot
+User-agent: Bingbot
+Allow: /
+
 User-agent: *
 Disallow: /

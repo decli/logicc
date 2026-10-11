@@ -1,5 +1,5 @@
 # Cloudflare Pages 读这个文件（GitHub Pages 不管它）。
-# 这个小游戏不需要被搜索引擎和 AI 爬虫收录：每个页面都带 noindex，配合 robots.txt
+# 这个小游戏不需要被搜索引擎和 AI 爬虫收录：每个文件都带 noindex（Google、Bing 读得到它，见 robots.txt）
 /*
   X-Robots-Tag: noindex, nofollow, noarchive, nosnippet, noimageindex
 
