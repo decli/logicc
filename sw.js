@@ -10,15 +10,18 @@
 // - 「造物」「彩虹钢琴」（zaowu/、piano/）不预先下载（加起来快 40 MB），打开过一次就存下，之后断网也能玩
 const CACHE = 'logicc-v1';
 const SCOPE = new URL('./', self.location).href;
-const SHELL = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
+const SHELL = ['./', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 const BANKS = ['voice-zh', 'voice-shi'];
 const abs = u => new URL(u, SCOPE).href;
 const wait = ms => new Promise(r => setTimeout(r, ms));
+// Cloudflare 会把 /index.html 跳转到 /。跟着跳转拿到的响应不能拿去回应页面导航（浏览器会直接报错、打不开），
+// 所以存进缓存、从缓存拿出来时都去掉「跳转过」这个标记（旧版本存下的也一样处理）
+const plain = r => (r && r.redirected ? new Response(r.body, { status: r.status, statusText: r.statusText, headers: r.headers }) : r);
 
 // 安装时只存首页和图标（很快），马上接管页面；语音包由页面自己的请求经过这里下载、顺手存下（页面还会发 sync 补齐）
 self.addEventListener('install', e => {
   self.skipWaiting();
-  e.waitUntil(caches.open(CACHE).then(c => Promise.all(SHELL.map(u => fetch(abs(u), { cache: 'no-cache' }).then(r => (r.ok ? c.put(abs(u), r) : null)).catch(() => { })))));
+  e.waitUntil(caches.open(CACHE).then(c => Promise.all(SHELL.map(u => fetch(abs(u), { cache: 'no-cache' }).then(r => (r.ok ? c.put(abs(u), plain(r)) : null)).catch(() => { })))));
 });
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
@@ -36,7 +39,7 @@ function syncAll() {
   return once('all', async () => {
     const c = await caches.open(CACHE);
     await Promise.all([
-      ...SHELL.map(u => fetch(abs(u), { cache: 'no-cache' }).then(r => (r.ok ? c.put(abs(u), r) : null)).catch(() => { })),
+      ...SHELL.map(u => fetch(abs(u), { cache: 'no-cache' }).then(r => (r.ok ? c.put(abs(u), plain(r)) : null)).catch(() => { })),
       ...BANKS.map(b => syncBank(c, b).catch(() => { }))
     ]);
   });
@@ -90,14 +93,15 @@ async function bankIndex(name, e) {
 async function netFirst(req, e) {
   const c = await caches.open(CACHE);
   const net = fetch(req).then(r => {
-    if (r.ok && r.type === 'basic') { const copy = r.clone(); e.waitUntil(c.put(req, copy).catch(() => { })); }
+    if (r.ok && r.type === 'basic') { const copy = plain(r.clone()); e.waitUntil(c.put(req, copy).catch(() => { })); }
     return r;
   });
   e.waitUntil(net.then(() => { }, () => { }));
   const nav = req.mode === 'navigate';
-  const cached = await c.match(req, { ignoreSearch: nav }) || (nav && url0(req) ? await c.match(abs('index.html')) : null);
+  const cached = plain(await c.match(req, { ignoreSearch: nav }) || (nav && url0(req) ? await c.match(SCOPE) : null));
   if (!cached) return net.catch(() => new Response('离线，还没有缓存这个文件', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } }));
-  return Promise.race([net.then(r => (r.ok ? r : cached), () => cached), wait(4000).then(() => cached)]);
+  // 跳转（/index.html → /）原样交给浏览器去跟
+  return Promise.race([net.then(r => (r.ok || r.type === 'opaqueredirect' ? r : cached), () => cached), wait(4000).then(() => cached)]);
 }
 // 首页的几种写法（/、/index.html、带 ?v= 的）都算首页
 function url0(req) { const p = new URL(req.url).pathname; return p === new URL(SCOPE).pathname || p === new URL(abs('index.html')).pathname; }

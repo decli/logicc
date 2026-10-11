@@ -847,7 +847,7 @@ function offlineState() {
   if (!('serviceWorker' in navigator) || !window.caches || location.protocol === 'file:') return Promise.resolve('这个浏览器不支持离线缓存，需要联网玩');
   var wait = Promise.all([Voice.bankP, Voice.moreLoads['voice-shi']].filter(Boolean));
   return wait.then(function () {
-    var urls = ['index.html'].concat(['voice-zh', 'voice-shi'].map(function (b) { return b + '.bin' + (Voice.hashes[b] ? '?h=' + Voice.hashes[b] : ''); }));
+    var urls = ['./'].concat(['voice-zh', 'voice-shi'].map(function (b) { return b + '.bin' + (Voice.hashes[b] ? '?h=' + Voice.hashes[b] : ''); }));
     return Promise.all(urls.map(function (u) { return caches.match(new URL(u, location.href).href).then(function (r) { return !!r; }); }));
   }).then(function (got) {
     var n = got.filter(Boolean).length;
