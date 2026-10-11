@@ -91,6 +91,8 @@ POLY = {
     '斜着': 'xie2 zhe5', '撑着': 'cheng1 zhe5', '望着': 'wang4 zhe5', '划着': 'hua2 zhe5', '打落': 'da3 luo4', '露出': 'lu4 chu1', '干了': 'gan4 le5', '种田': 'zhong4 tian2',
     '鸡冠': 'ji1 guan1', '衣裳': 'yi1 shang5', '叫作': 'jiao4 zuo4', '浇浇水': 'jiao1 jiao1 shui3', '背诗': 'bei4 shi1', '会背': 'hui4 bei4', '背一首': 'bei4 yi4 shou3',
     '背完': 'bei4 wan2', '划回来': 'hua2 hui2 lai2', '划开': 'hua2 kai1', '低下头': 'di1 xia4 tou2', '舍不得': 'she3 bu4 de5', '玩得': 'wan2 de5', '开得': 'kai1 de5', '演出来': 'yan3 chu1 lai2', '更好看': 'geng4 hao3 kan4',
+    '划呀划': 'hua2 ya5 hua2', '划进': 'hua2 jin4', '划到': 'hua2 dao4', '划过去': 'hua2 guo4 qu4', '有只': 'you3 zhi1', '砚台': 'yan4 tai2',
+    '飞将军': 'fei1 jiang1 jun1', '韦应物': 'wei2 ying4 wu4', '种上': 'zhong4 shang4', '种下': 'zhong4 xia4', '铺了': 'pu1 le5', '铺在': 'pu1 zai4', '铺满': 'pu1 man3', '西子': 'xi1 zi3',
 }
 # readings that depend on what is around a Chinese run (digits, enumeration commas): (pattern, reading of the matched char)
 CONTEXT = [(re.compile(r'(?<=\d )行'), 'hang2'),                    # 消掉 2 行

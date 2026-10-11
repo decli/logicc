@@ -851,7 +851,7 @@ function offlineState() {
     return Promise.all(urls.map(function (u) { return caches.match(new URL(u, location.href).href).then(function (r) { return !!r; }); }));
   }).then(function (got) {
     var n = got.filter(Boolean).length;
-    if (n === got.length) return '✅ 已经全部存在这台设备上（约 17 MB），断网也能玩，古诗一到四年级都能念';
+    if (n === got.length) return '✅ 已经全部存在这台设备上（约 29 MB），断网也能玩，古诗一到四年级都能念';
     return '⏳ 还在下载（' + n + ' / ' + got.length + '）。连着网多开一会儿，下载完断网也能玩';
   }).catch(function () { return '还没下载好，连上网打开一次'; });
 }
@@ -1725,7 +1725,7 @@ const POEMS = [
   {
     id: 'hua', t: '画', tp: 'huà', d: '唐', a: '王维', g: '一年级上', hero: '🖼️',
     intro: '这首诗叫《画》，它像一个谜语。猜一猜，诗里说的是什么？',
-    story: '诗人王维看见一处好美的地方，有青青的山，有流动的水，有好看的花，有可爱的小鸟。可是这里的一切都有点奇怪，这是为什么呢？',
+    story: '诗人王维看见一个好美的地方，有青青的山，有流动的水，有好看的花，有可爱的小鸟。可是这里的一切都有点奇怪，这是为什么呢？',
     L: [
       { x: '远看山有色，', py: 'yuǎn kàn shān yǒu sè', e: '站在远处看，青山的颜色清清楚楚。',
         act: [['tint', 'm1', '#58A66B', 1500], ['tint', 'm2', '#7FC08A', 1500], ['fx', 'sparkle', 480, 230]] },
@@ -2311,7 +2311,7 @@ const POEMS = [
     L: [
       { x: '天门中断楚江开，', py: 'tiān mén zhōng duàn chǔ jiāng kāi', e: '长江像一把大斧头，把天门山从中间劈开了。',
         act: [['fade', 'plug', 0, 1600], ['fx', 'ripple', 500, 440, 3, { at: 1300 }]] },
-      { x: '碧水东流至此回。', py: 'bì shuǐ dōng liú zhì cǐ huí', e: '碧绿的江水向东流，流到这里转了个弯。',
+      { x: '碧水东流至此回。', py: 'bì shuǐ dōng liú zhì cǐ huí', e: '碧绿的江水向东流，流到这里拐了个弯。',
         act: [['tint', 'water', '#3FAE9E', 1200], ['show', 'east'], ['show', 'wave', { at: 200 }], ['move', 'wave', 120, 0, 1000, 1, { at: 300 }], ['move', 'wave', -110, 20, 1000, 0, { at: 1400 }], ['fx', 'ripple', 580, 470, 3, { at: 1100 }]] },
       { x: '两岸青山相对出，', py: 'liǎng àn qīng shān xiāng duì chū', e: '两岸的青山面对面，好像迎面走过来一样。',
         act: [['tint', 'mL', '#4C9A5A', 1200], ['tint', 'mR', '#4C9A5A', 1200], ['glow', 'mL', { at: 300 }], ['glow', 'mR', { at: 600 }]] },
