@@ -3,8 +3,9 @@
   python3 dev/voice/build.py root          home-page logic games  -> voice-zh.bin|json at the site root
   python3 dev/voice/build.py zaowu         造物 (both languages)  -> zaowu/voice-zh|en.bin|json (+ rebuilds zaowu/index.html)
   python3 dev/voice/build.py piano         彩虹钢琴               -> piano/voice-zh.bin|json
-  python3 dev/voice/build.py shi           古诗太鼓               -> voice-shi.bin|json at the site root (see poems.py)
-  python3 dev/voice/build.py shi 3 4       古诗太鼓, re-recording only those grades (the others come from dev/voice/cache/shi-parts)
+  python3 dev/voice/build.py shi           古诗小剧场             -> voice-shi.bin|json at the site root (see poems.py)
+  python3 dev/voice/build.py shi 3 4       古诗小剧场, re-recording only those parts (0 game lines, 1-4 grades,
+                                           5 stories and explanations; the others come from dev/voice/cache/shi-parts)
   python3 dev/voice/build.py check root    listen back with speech recognition and list lines that do not read as written
   python3 dev/voice/build.py check zaowu
 

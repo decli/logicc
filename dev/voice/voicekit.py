@@ -22,7 +22,7 @@ VOICES = {
     ('n', 'en'):  ('en-US-AvaMultilingualNeural', '-25%', '+0Hz'),
     ('c0', 'en'): ('en-US-AnaNeural', '-20%', '+0Hz'),
     ('c1', 'en'): ('en-US-EmmaMultilingualNeural', '-20%', '+15Hz'),
-    # 古诗太鼓: poems are recited slower than the narrator talks (≈3 syllables/s inside a line, pauses between lines
+    # 古诗小剧场: poems are recited slower than the narrator talks (≈3 syllables/s inside a line, pauses between lines
     # are cut and set by hand in poems.py)
     ('r', 'zh'):  ('zh-CN-XiaoxiaoNeural', '-30%', '+0Hz'),
     ('R', 'zh'):  ('zh-CN-YunxiNeural', '-30%', '+0Hz'),

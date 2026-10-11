@@ -349,7 +349,7 @@ body{
 .extras .sw:active{transform:translate(calc(4px * var(--k)),calc(4px * var(--k)));box-shadow:0 0 0 var(--ink)}
 .extras .sw[disabled]{opacity:.5}
 
-/* ===== 古诗太鼓 ===== */
+/* ===== 古诗小剧场 ===== */
 .shKai,.shStrip,.shTitle b,.tkNote b,.tkSong .nm,.tkLvBtn b{font-family:"Kaiti SC","STKaiti","KaiTi","BiauKai","Songti SC","STSong",serif}
 .shStrip{flex:none;display:flex;flex-direction:column;align-items:center;gap:.12em;line-height:1;font-size:32px}
 .shRow{display:flex;justify-content:center;gap:1.2em}
@@ -373,7 +373,6 @@ body{
 .shCardBox.wide{flex-direction:row;gap:calc(40px * var(--k));padding:calc(28px * var(--k)) calc(64px * var(--k)) calc(28px * var(--k)) calc(40px * var(--k))}
 .shSide{display:flex;flex-direction:column;align-items:center;gap:calc(22px * var(--k))}
 .shCardBox.wide .tkLvs{flex-direction:column;flex-wrap:nowrap}
-.shCardBox.wide .shX{right:auto;left:calc(12px * var(--k))}
 .shCardBox{position:relative;background:#FFFCF2;border:calc(6px * var(--k)) solid var(--ink);border-radius:calc(30px * var(--k));box-shadow:calc(8px * var(--k)) calc(8px * var(--k)) 0 var(--ink);padding:calc(28px * var(--k)) calc(40px * var(--k));display:flex;flex-direction:column;align-items:center;gap:calc(22px * var(--k));max-width:100%;max-height:100%;overflow:auto}
 @keyframes shFade{from{opacity:0}to{opacity:1}}
 .shX{position:absolute;top:calc(12px * var(--k));right:calc(12px * var(--k))}
@@ -431,6 +430,32 @@ body{
 .tkNote.hit{animation:tkPop .4s forwards}
 .tkNote.miss{opacity:.35;filter:grayscale(1)}
 @keyframes tkPop{0%{scale:1;opacity:1}40%{scale:1.35;opacity:1}100%{scale:1.7;opacity:0}}
+/* 小剧场：底下一条——谁在念、该谁念、听见她没有 */
+.shCh.me b{color:#2E9D4F;transform:scale(1.1)}
+.lkBar{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:calc(28px * var(--k));padding:0 calc(36px * var(--k));background:#EAF4FF;border-top:calc(6px * var(--k)) solid var(--ink);z-index:4;transition:background .3s}
+.lkBar.you{background:#E3F6E1}
+.lkBar.yay{background:#FFF4C9}
+.lkBar.story{background:#FFEFE0}
+.lkWho{flex:none;position:relative;border-radius:50%;background:#fff;border:calc(6px * var(--k)) solid var(--ink);box-shadow:calc(5px * var(--k)) calc(5px * var(--k)) 0 var(--ink);display:flex;align-items:center;justify-content:center;line-height:1}
+.lkWho span{position:relative;z-index:1}
+.lkRing{position:absolute;inset:-14%;border-radius:50%;border:calc(10px * var(--k)) solid #4CB869;opacity:0;transition:transform .08s}
+.lkBar.you .lkWho{background:#5BC27A;animation:lkPulse 1.1s ease-in-out infinite}
+.lkBar.you .lkRing{opacity:.6}
+@keyframes lkPulse{0%,100%{scale:1}50%{scale:1.08}}
+.lkMid{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:calc(10px * var(--k))}
+.lkSay{font-size:calc(48px * var(--k));font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lkBar.you .lkSay{color:#1F7A3A}
+.lkMeter{display:flex;align-items:flex-end;gap:calc(8px * var(--k));height:calc(48px * var(--k))}
+.lkMeter i{display:block;width:calc(16px * var(--k));height:24%;border-radius:calc(7px * var(--k));background:#4CB869;transition:height .06s}
+.lkDone{flex:none;font-family:inherit;font-size:calc(34px * var(--k));font-weight:700;padding:calc(16px * var(--k)) calc(28px * var(--k));border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(24px * var(--k));background:#fff;box-shadow:calc(5px * var(--k)) calc(5px * var(--k)) 0 var(--ink);color:var(--ink);cursor:pointer;animation:lkPulse 1.1s ease-in-out infinite}
+.lkBar.mic .lkDone{font-size:calc(22px * var(--k));padding:calc(10px * var(--k)) calc(16px * var(--k));animation:none;opacity:.75}
+.lkDone:active{transform:translate(calc(4px * var(--k)),calc(4px * var(--k)));box-shadow:0 0 0 var(--ink)}
+.lkDots{flex:none;display:flex;gap:calc(10px * var(--k))}
+.lkDots i{width:calc(22px * var(--k));height:calc(22px * var(--k));border-radius:50%;border:calc(4px * var(--k)) solid var(--ink);background:#fff}
+.lkDots i.on{background:#F5B921}
+.lkSteps .tkLvBtn{min-width:calc(200px * var(--k))}
+.shCardBox.wide .lkSteps{display:grid;grid-template-columns:1fr 1fr;gap:calc(16px * var(--k))}
+.lkExtra{display:flex;gap:calc(14px * var(--k));flex-wrap:wrap;justify-content:center}
 .tkJudge{position:absolute;top:2%;transform:translateX(-50%);font-weight:700;font-size:calc(46px * var(--k));white-space:nowrap;z-index:3;pointer-events:none;animation:tkJudge .75s forwards;-webkit-text-stroke:calc(1.5px * var(--k)) var(--ink)}
 .tkJudge.p{color:#FFD54A}
 .tkJudge.g{color:#8EE08A}
@@ -567,8 +592,8 @@ const Voice = {
   // 首选预录语音包 voice-zh.bin|json：每一句都提前用微软神经网络语音（晓晓）录好，放慢到适合小朋友的语速，
   // 多音字逐个核对过（见 dev/voice）。包里没有的句子、或者包没加载出来，才用设备自带的语音合成。
   bank: null, bankState: 'idle', bankP: null, clip: null, bufs: new Map(),
-  // 古诗太鼓另有一个语音包 voice-shi（首页的包加载完再加载）；clipDone：play() 在等的那段念完/被顶掉时的回调
-  // 古诗太鼓的语音包 voice-shi（一到四年级全部，首页的包之后接着下载）；moreLoads：每个包的下载
+  // 古诗小剧场另有一个语音包 voice-shi（首页的包加载完再加载）；clipDone：play() 在等的那段念完/被顶掉时的回调
+  // 古诗小剧场的语音包 voice-shi（一到四年级全部，首页的包之后接着下载）；moreLoads：每个包的下载
   more: [], moreState: 'idle', moreP: null, moreLoads: {}, morePending: 0, clipDone: null, lastFn: null,
   // 语音包先取索引 json，再按索引里的指纹 h 取 voice-xx.bin?h=…：离线缓存（sw.js）里旧的 bin 永远不会和新的索引配错
   hashes: {},
@@ -646,7 +671,7 @@ const Voice = {
     this.moreP = Promise.all(Object.values(this.moreLoads));
     return p;
   },
-  // 播一段预录的声音（古诗太鼓的旁白、朗诵）。key 是录音脚本里的键，text 是语音包里没有时让设备念的字。
+  // 播一段预录的声音（古诗小剧场的旁白、朗诵）。key 是录音脚本里的键，text 是语音包里没有时让设备念的字。
   // 返回 Promise：念完是 true，被别的声音顶掉是 false。o.onstart({dur, m}) 在真正出声时调用，m 是每个字从第几秒开始
   play(role, key, text, o) {
     o = o || {};
@@ -733,7 +758,7 @@ const Voice = {
   },
   route(t, g) {
     const e = this.entry(t); if (e) return this.playClip(t, e, g);
-    if (this.moreState === 'loading') {   // 古诗太鼓的语音包还在下载：等它一下
+    if (this.moreState === 'loading') {   // 古诗小剧场的语音包还在下载：等它一下
       let went = false;
       const go = () => { if (went) return; went = true; if (g !== this.gen) return; const e2 = this.entry(t); if (e2) this.playClip(t, e2, g); else this.sysSay(t, g); };
       this.moreP.then(go); setTimeout(go, 4000); return;
@@ -875,8 +900,8 @@ const GAMES = [
     ]
   },
   {
-    // 古诗太鼓：一年级上下册 13 首古诗做成鼓曲（见下面「4 古诗太鼓」）。不走台阶选关，点卡片进选诗
-    id: 'shi', name: '古诗太鼓', emoji: '🥁', color: 'var(--purple)', tip: '跟着念诗打小鼓，打着打着就会背了',
+    // 古诗小剧场：一到四年级的短古诗（见下面「4 古诗小剧场」）。不走台阶选关，点卡片进选诗
+    id: 'shi', name: '古诗小剧场', emoji: '🎭', color: 'var(--purple)', tip: '看诗画、听故事，跟着念，一首一首背下来',
     levels: []
   },
   {
@@ -1003,7 +1028,10 @@ function load() {
     if (typeof r.snd === 'boolean') Audio2.on = r.snd;
     if (typeof r.voi === 'boolean') Voice.on = r.voi;
     if (typeof r.mus === 'boolean') Music.on = r.mus;
-    if (r.shi && typeof r.shi === 'object') { if (r.shi.tk && typeof r.shi.tk === 'object') S.shi.tk = r.shi.tk; if (r.shi.grade >= 1 && r.shi.grade <= 4) S.shi.grade = r.shi.grade; }
+    if (r.shi && typeof r.shi === 'object') {
+      if (r.shi.tk && typeof r.shi.tk === 'object') S.shi.tk = r.shi.tk; if (r.shi.grade >= 1 && r.shi.grade <= 4) S.shi.grade = r.shi.grade;
+      if (r.shi.lp && typeof r.shi.lp === 'object') S.shi.lp = r.shi.lp; if (r.shi.mic === false) S.shi.mic = false; if (r.shi.micAsked) S.shi.micAsked = 1;
+    }
   } catch (e) { }
 }
 var HEXOF = {
@@ -1073,7 +1101,7 @@ function home() {
     tx.appendChild(el('div', 'cardTip', g.tip));
     var m = el('div', 'cardMeta');
     if (g.id === 'shi') {
-      m.appendChild(el('span', 's', '⭐ ' + tkAllStars() + '/' + POEMS.length * 9));
+      m.appendChild(el('span', 's', '⭐ ' + tkAllStars() + '/' + POEMS.length * 3));
       m.appendChild(el('span', 'b', '一到四年级 ' + POEMS.length + ' 首'));
       tx.appendChild(m); c.appendChild(tx);
       c.addEventListener('click', function () { Audio2.page(); tkHome(); });
@@ -1629,17 +1657,19 @@ function gBond(board, lv) {
   };
 }
 
-/* ===================== 4 古诗太鼓 =====================
-   一首诗就是一首鼓曲：朗诵响起来，诗句按拍子变成灯笼从右边滑过来，灯笼碰到小鼓时拍一下。
-   五言按「二二一」、七言按「二二二一」分拍（曲项·向天·歌），一拍一个灯笼，拍与拍之间大约 0.6 秒，五岁的孩子跟得上；
-   拍子的时刻取自朗诵里每个字开始的那一刻，所以打的就是诗本身的节奏。
-   每首诗三关：跟着念（全部念出来）→ 藏尾巴（每句最后一拍静音，灯笼变成「？」，你来念）→ 我来念（只念每句开头）。
-   打中多少拍给 1~3 颗星，每关记最高分；背诗不是任务——想拿满星，就得会背。
+/* ===================== 4 古诗小剧场 =====================
+   一首诗四步：看故事（小故事 → 念一句、画面演一句、再用大白话说一说）→ 跟我念（我念一句，你念一句）
+   → 接下句（我念前面，每句最后藏起来的字你来接）→ 我来背（每句只给第一个字，录下来给她听）。见下面的 lkPlay。
+   孩子开口时小话筒听着（只看有没有声音，不识别对错），她念到哪，字就绿到哪；画面要等她念完才演，画面是给她念的奖励。
+   每步第一次做完给一颗星（看故事不给星），一首诗 3 颗。打鼓只在「我来背」拿到星以后，当庆功的小游戏（tkPlay）。
    背景是这首诗的诗画（代码画的 SVG + emoji），念到哪句演哪句。
-   朗诵在 voice-shi.bin：整首一口气录完再按句接上手定的停顿，每个字的起始时刻在索引里（见 dev/voice/poems.py）。
+   朗诵在 voice-shi.bin：整首一口气录完再按句接上手定的停顿，每个字的起始时刻在索引里（见 dev/voice/poems.py），
+   一句一句截出来放、一个字一个字亮都靠它。
    ------------------------------------------------------------------------------------------------
    数据格式
+     intro     开场白一句；story 小故事（两三句，旁白讲）
      L[i].x    这一句（带标点）；say 送去合成时的写法（只在读音不对时才写）；py 拼音（按教材注音，一、不标变调）
+     L[i].e    这一句的大白话（看故事时旁白讲）
      L[i].act  念到这一句时画面怎么演
      sc        画面：sky 天色，bg 背景（按顺序画），sp 角色 [id, 字符或@形状, x, y, 大小, 标记, 挂在谁身上]
                标记：h 先藏着，f 左右翻，v 上下翻，r-16 转 -16 度，o.4 透明度
@@ -1648,15 +1678,16 @@ const POEMS = [
   {
     id: 'ye', t: '咏鹅', tp: 'yǒng é', d: '唐', a: '骆宾王', g: '一年级上', hero: '🦢',
     intro: '这首诗叫《咏鹅》。传说骆宾王写它的时候才七岁，和你差不多大呢！',
+    story: '骆宾王小时候，家门口的池塘里游着一群大白鹅。有一天，客人指着鹅让他作诗。他看着这些可爱的大白鹅，心里很高兴，张口就念出了这首诗。',
     L: [
       // say：送去合成的写法。「鹅，」单独成句时句末降调会把二声压成 è，写成问号三个鹅才是上扬的（实测音高）
-      { x: '鹅，鹅，鹅，', say: '鹅？鹅？鹅？', py: 'é é é',
+      { x: '鹅，鹅，鹅，', say: '鹅？鹅？鹅？', py: 'é é é', e: '听，池塘里的大白鹅，在叫呢。',
         act: [['show', 'goose'], ['hop', 'goose', 3, 34, { at: 400 }], ['fx', 'ripple', 500, 480]] },
-      { x: '曲项向天歌。', py: 'qū xiàng xiàng tiān gē',
+      { x: '曲项向天歌。', py: 'qū xiàng xiàng tiān gē', e: '看，大白鹅弯着长长的脖子，朝着天空唱歌呢。',
         act: [['tilt', 'goose', -16], ['fx', 'notes', 430, 300]] },
-      { x: '白毛浮绿水，', py: 'bái máo fú lǜ shuǐ',
+      { x: '白毛浮绿水，', py: 'bái máo fú lǜ shuǐ', e: '白白的羽毛，浮在绿绿的水面上。',
         act: [['tint', 'water', '#7CCB98', 1400], ['bob', 'goose'], ['fx', 'sparkle', 500, 400]] },
-      { x: '红掌拨清波。', py: 'hóng zhǎng bō qīng bō',
+      { x: '红掌拨清波。', py: 'hóng zhǎng bō qīng bō', e: '红红的脚掌在水里划呀划，拨起清清的水波。',
         act: [['show', 'feet'], ['sway', 'feet', 22], ['fx', 'ripple', 520, 505, 4], ['move', 'goose', 90, 0, 2600]] }
     ],
     sc: {
@@ -1668,20 +1699,21 @@ const POEMS = [
   {
     id: 'jn', t: '江南', tp: 'jiāng nán', d: '汉', a: '乐府', by: '汉乐府', byp: 'hàn yuè fǔ', g: '一年级上', hero: '🐟',
     intro: '这首诗叫《江南》，是很久很久以前，人们一边采莲一边唱的歌。',
+    story: '很久以前，江南有很多池塘，池塘里铺满了绿绿的荷叶。到了夏天，人们划着小船去采莲蓬，看见小鱼在荷叶下面游来游去，心里开心极了。',
     L: [
-      { x: '江南可采莲，', py: 'jiāng nán kě cǎi lián',
+      { x: '江南可采莲，', py: 'jiāng nán kě cǎi lián', e: '在江南，夏天可以划着小船去采莲。',
         act: [['move', 'boat', 420, 30, 2600], ['move', 'f1', -280, -35, 1200, null, { at: 2400 }]] },
-      { x: '莲叶何田田。', py: 'lián yè hé tián tián',
+      { x: '莲叶何田田。', py: 'lián yè hé tián tián', e: '看，荷叶又大又圆，一片挨着一片，多好看呀！',
         act: [['show', 'l5'], ['show', 'l6', { at: 120 }], ['show', 'l7', { at: 240 }], ['show', 'l8', { at: 360 }], ['show', 'l9', { at: 480 }], ['show', 'l10', { at: 600 }], ['show', 'l11', { at: 720 }]] },
-      { x: '鱼戏莲叶间。', py: 'yú xì lián yè jiān',
+      { x: '鱼戏莲叶间。', py: 'yú xì lián yè jiān', e: '戏，就是玩。小鱼在荷叶中间游来游去。',
         act: [['show', 'fish'], ['hop', 'fish', 2, 14, { at: 300 }], ['fx', 'ripple', 500, 440]] },
-      { x: '鱼戏莲叶东，', py: 'yú xì lián yè dōng',
+      { x: '鱼戏莲叶东，', py: 'yú xì lián yè dōng', e: '小鱼一会儿游到荷叶的东边。',
         act: [['show', 'lE'], ['move', 'fish', 330, 0, 1600, 1]] },
-      { x: '鱼戏莲叶西，', py: 'yú xì lián yè xī',
+      { x: '鱼戏莲叶西，', py: 'yú xì lián yè xī', e: '一会儿又游到荷叶的西边。',
         act: [['show', 'lW'], ['move', 'fish', -680, 0, 2200, 0]] },
-      { x: '鱼戏莲叶南，', py: 'yú xì lián yè nán',
+      { x: '鱼戏莲叶南，', py: 'yú xì lián yè nán', e: '一会儿游到南边，躲在荷叶下面。',
         act: [['show', 'lS'], ['move', 'fish', 350, 150, 1600, 1]] },
-      { x: '鱼戏莲叶北。', py: 'yú xì lián yè běi',
+      { x: '鱼戏莲叶北。', py: 'yú xì lián yè běi', e: '一会儿又游到北边，真是太调皮啦！',
         act: [['show', 'lN'], ['move', 'fish', 0, -290, 1600]] }
     ],
     sc: {
@@ -1693,14 +1725,15 @@ const POEMS = [
   {
     id: 'hua', t: '画', tp: 'huà', d: '唐', a: '王维', g: '一年级上', hero: '🖼️',
     intro: '这首诗叫《画》，它像一个谜语。猜一猜，诗里说的是什么？',
+    story: '诗人王维看见一处好美的地方，有青青的山，有流动的水，有好看的花，有可爱的小鸟。可是这里的一切都有点奇怪，这是为什么呢？',
     L: [
-      { x: '远看山有色，', py: 'yuǎn kàn shān yǒu sè',
+      { x: '远看山有色，', py: 'yuǎn kàn shān yǒu sè', e: '站在远处看，青山的颜色清清楚楚。',
         act: [['tint', 'm1', '#58A66B', 1500], ['tint', 'm2', '#7FC08A', 1500], ['fx', 'sparkle', 480, 230]] },
-      { x: '近听水无声。', py: 'jìn tīng shuǐ wú shēng',
+      { x: '近听水无声。', py: 'jìn tīng shuǐ wú shēng', e: '走到近处听，水在流，却一点声音也没有。',
         act: [['fx', 'flow', 'stream'], ['show', 'ear', { at: 300 }], ['bubble', 640, 400, '🔇', { at: 900 }]] },
-      { x: '春去花还在，', py: 'chūn qù huā hái zài',
+      { x: '春去花还在，', py: 'chūn qù huā hái zài', e: '春天过去了，花儿却一直开着，没有谢。',
         act: [['fx', 'fall', 120, 880, 40, 560, '🍂', 10], ['fx', 'fall', 120, 880, 40, 560, '❄️', 10, { at: 1300 }], ['hop', 'fl1', 1, 12, { at: 2500 }], ['hop', 'fl2', 1, 12, { at: 2650 }], ['hop', 'fl3', 1, 12, { at: 2800 }]] },
-      { x: '人来鸟不惊。', py: 'rén lái niǎo bù jīng',
+      { x: '人来鸟不惊。', py: 'rén lái niǎo bù jīng', e: '人走过来，鸟儿也不飞走。原来，这是一幅画呀！',
         act: [['move', 'person', -300, 0, 2200], ['hop', 'bird', 2, 10, { at: 2200 }], ['bubble', 640, 210, '😊', { at: 2300 }]] }
     ],
     sc: {
@@ -1714,14 +1747,15 @@ const POEMS = [
   {
     id: 'mn', t: '悯农', tsub: '（其二）', tp: 'mǐn nóng', d: '唐', a: '李绅', g: '一年级上', hero: '🌾',
     intro: '这首诗叫《悯农》，是李绅写的。悯，就是心疼。他心疼种田的农民伯伯。',
+    story: '夏天的中午，太阳晒得地面发烫。李绅看见田里的农民伯伯弯着腰锄草，汗水湿透了衣服。他想，我们吃的每一粒米，都来得真不容易。',
     L: [
-      { x: '锄禾日当午，', py: 'chú hé rì dāng wǔ',
+      { x: '锄禾日当午，', py: 'chú hé rì dāng wǔ', e: '大中午，太阳火辣辣的，农民伯伯在给禾苗锄草。',
         act: [['move', 'sun', -370, -120, 2000], ['glow', 'sun', { at: 2000 }], ['sway', 'farmer', 10]] },
-      { x: '汗滴禾下土。', py: 'hàn dī hé xià tǔ',
+      { x: '汗滴禾下土。', py: 'hàn dī hé xià tǔ', e: '汗水一滴一滴，落在禾苗下面的泥土里。',
         act: [['fx', 'drops', 470, 350, 150, 7]] },
-      { x: '谁知盘中餐，', py: 'shuí zhī pán zhōng cān',
+      { x: '谁知盘中餐，', py: 'shuí zhī pán zhōng cān', e: '谁知道，盘子里香喷喷的饭菜是怎么来的呢？',
         act: [['fade', 'dim', 0.45, 800], ['show', 'bowl', { at: 300 }], ['bubble', 720, 270, '❓', { at: 900 }]] },
-      { x: '粒粒皆辛苦。', py: 'lì lì jiē xīn kǔ',
+      { x: '粒粒皆辛苦。', py: 'lì lì jiē xīn kǔ', e: '每一粒米都是农民伯伯辛苦种出来的，要珍惜呀。',
         act: [['fx', 'sparkle', 500, 420], ['hop', 'bowl', 1, 12], ['bubble', 720, 270, '❤️', { at: 600 }]] }
     ],
     sc: {
@@ -1735,14 +1769,15 @@ const POEMS = [
   {
     id: 'gl', t: '古朗月行', tsub: '（节选）', tp: 'gǔ lǎng yuè xíng', d: '唐', a: '李白', g: '一年级上', hero: '🌕',
     intro: '这首诗叫《古朗月行》，是李白写的。小时候，他把月亮当成了什么呢？',
+    story: '李白小时候，晚上常常坐在院子里看天空。天上挂着一个又圆又亮的东西，他不知道那是什么，就给它想了好多好玩的名字。后来，他把这些想法写进了这首诗。',
     L: [
-      { x: '小时不识月，', py: 'xiǎo shí bù shí yuè',
+      { x: '小时不识月，', py: 'xiǎo shí bù shí yuè', e: '小时候，李白不认识天上的月亮。',
         act: [['hop', 'kid', 2, 14], ['bubble', 340, 380, '❓', { at: 300 }]] },
-      { x: '呼作白玉盘。', py: 'hū zuò bái yù pán',
+      { x: '呼作白玉盘。', py: 'hū zuò bái yù pán', e: '他把月亮叫作白玉盘，就是白玉做的大圆盘子。',
         act: [['fade', 'moon', 0, 900], ['show', 'plate', { at: 300 }], ['bubble', 340, 380, '🍽️', { at: 600 }]] },
-      { x: '又疑瑶台镜，', py: 'yòu yí yáo tái jìng',
+      { x: '又疑瑶台镜，', py: 'yòu yí yáo tái jìng', e: '他又觉得，月亮好像是神仙家里的一面镜子。',
         act: [['fade', 'plate', 0, 900], ['show', 'mirror', { at: 300 }], ['show', 'palace', { at: 900 }], ['fx', 'sparkle', 680, 190]] },
-      { x: '飞在青云端。', py: 'fēi zài qīng yún duān',
+      { x: '飞在青云端。', py: 'fēi zài qīng yún duān', e: '这面镜子飞呀飞，挂在了高高的蓝天白云上。',
         act: [['show', 'c1'], ['show', 'c2', { at: 200 }], ['show', 'c3', { at: 400 }], ['move', 'mirror', 0, -40, 2400], ['move', 'palace', 0, -40, 2400], ['bob', 'mirror', { at: 2400 }]] }
     ],
     sc: {
@@ -1754,14 +1789,15 @@ const POEMS = [
   {
     id: 'feng', t: '风', tp: 'fēng', d: '唐', a: '李峤', g: '一年级上', hero: '🌬️',
     intro: '这首诗叫《风》。诗里一个风字也没有，可是到处都是风。我们一起找一找！',
+    story: '诗人李峤喜欢看大自然。风看不见，也抓不住，可是他发现，树叶、花朵、江水和竹子，都会悄悄告诉他风来过。他觉得真有趣，就写了这首诗。',
     L: [
-      { x: '解落三秋叶，', py: 'jiě luò sān qiū yè',
+      { x: '解落三秋叶，', py: 'jiě luò sān qiū yè', e: '秋风一吹，黄黄的树叶就飘落下来。',
         act: [['hop', 'wind', 1, 12], ['fx', 'fall', 150, 320, 280, 560, '🍂', 10]] },
-      { x: '能开二月花。', py: 'néng kāi èr yuè huā',
+      { x: '能开二月花。', py: 'néng kāi èr yuè huā', e: '到了春天，暖暖的风一吹，花儿都开了。',
         act: [['hop', 'wind', 1, 12], ['show', 'b1', { at: 200 }], ['show', 'b2', { at: 400 }], ['show', 'b3', { at: 600 }], ['show', 'b4', { at: 800 }], ['show', 'b5', { at: 1000 }]] },
-      { x: '过江千尺浪，', py: 'guò jiāng qiān chǐ làng',
+      { x: '过江千尺浪，', py: 'guò jiāng qiān chǐ làng', e: '风刮过江面，掀起了很高很高的大浪。',
         act: [['hop', 'wind', 1, 12], ['show', 'w1'], ['show', 'w2', { at: 200 }], ['show', 'w3', { at: 400 }], ['hop', 'w1', 2, 46, { at: 500 }], ['hop', 'w2', 2, 60, { at: 600 }], ['hop', 'w3', 2, 46, { at: 700 }]] },
-      { x: '入竹万竿斜。', py: 'rù zhú wàn gān xié',
+      { x: '入竹万竿斜。', py: 'rù zhú wàn gān xié', e: '风钻进竹林，成千上万根竹子都被吹弯了腰。',
         act: [['hop', 'wind', 1, 12], ['tilt', 'bam', 14]] }
     ],
     sc: {
@@ -1773,14 +1809,15 @@ const POEMS = [
   {
     id: 'cx', t: '春晓', tp: 'chūn xiǎo', d: '唐', a: '孟浩然', g: '一年级下', hero: '🐦',
     intro: '这首诗叫《春晓》，是孟浩然写的。春天的早上，他睡得好香好香。',
+    story: '春天的一个早上，孟浩然醒来的时候，太阳已经出来了。窗外暖暖的，鸟儿在唱歌，他心里很快活，可是又有一点担心院子里的花儿。',
     L: [
-      { x: '春眠不觉晓，', py: 'chūn mián bù jué xiǎo',
+      { x: '春眠不觉晓，', py: 'chūn mián bù jué xiǎo', e: '春天睡得真香，不知不觉天就亮了。',
         act: [['fade', 'winDay', 1, 2200], ['show', 'sun'], ['move', 'sun', 0, -150, 2400], ['fx', 'zzz', 320, 330]] },
-      { x: '处处闻啼鸟。', py: 'chù chù wén tí niǎo',
+      { x: '处处闻啼鸟。', py: 'chù chù wén tí niǎo', e: '到处都能听到小鸟在叽叽喳喳地叫。',
         act: [['show', 'b1'], ['show', 'b2', { at: 250 }], ['show', 'b3', { at: 500 }], ['fx', 'notes', 730, 150], ['swap', 'kid', '😊', { at: 1400 }]] },
-      { x: '夜来风雨声，', py: 'yè lái fēng yǔ shēng',
+      { x: '夜来风雨声，', py: 'yè lái fēng yǔ shēng', e: '他想起来，昨天夜里又刮风又下雨。',
         act: [['bubble', 430, 250, '🌧️'], ['fx', 'rain', 575, 900, 90, 340]] },
-      { x: '花落知多少。', py: 'huā luò zhī duō shǎo',
+      { x: '花落知多少。', py: 'huā luò zhī duō shǎo', e: '院子里的花儿，不知道被打落了多少呢？',
         act: [['fx', 'fall', 580, 890, 120, 330, '🌸', 9], ['bubble', 430, 250, '❓', { at: 600 }]] }
     ],
     sc: {
@@ -1792,14 +1829,15 @@ const POEMS = [
   {
     id: 'zw', t: '赠汪伦', tp: 'zèng wāng lún', d: '唐', a: '李白', g: '一年级下', hero: '⛵',
     intro: '这首诗叫《赠汪伦》。李白要坐船走了，好朋友汪伦来送他。',
+    story: '李白到桃花潭去游玩，住在朋友汪伦家里。汪伦天天热情地招待他，两个人玩得可开心了。分别的时候，李白心里很舍不得，就写了这首诗送给汪伦。',
     L: [
-      { x: '李白乘舟将欲行，', py: 'lǐ bái chéng zhōu jiāng yù xíng',
+      { x: '李白乘舟将欲行，', py: 'lǐ bái chéng zhōu jiāng yù xíng', e: '李白坐上小船，正准备离开。',
         act: [['hop', 'boat', 1, 10], ['move', 'boat', 90, 0, 2200]] },
-      { x: '忽闻岸上踏歌声。', py: 'hū wén àn shàng tà gē shēng',
+      { x: '忽闻岸上踏歌声。', py: 'hū wén àn shàng tà gē shēng', e: '忽然听见岸上有人唱着歌，踏着步子，原来是汪伦来送他了。',
         act: [['show', 'wang'], ['show', 'f2', { at: 200 }], ['hop', 'wang', 3, 22, { at: 500 }], ['hop', 'f2', 3, 22, { at: 600 }], ['fx', 'notes', 190, 340], ['bubble', 640, 250, '👂', { at: 900 }]] },
-      { x: '桃花潭水深千尺，', py: 'táo huā tán shuǐ shēn qiān chǐ',
+      { x: '桃花潭水深千尺，', py: 'táo huā tán shuǐ shēn qiān chǐ', e: '桃花潭的水很深很深，好像有一千尺那么深。',
         act: [['fx', 'fall', 30, 320, 180, 520, '🌸', 10], ['tint', 'water', '#3D8DA6', 1500], ['show', 'arrow', { at: 400 }], ['show', 'deep', { at: 700 }]] },
-      { x: '不及汪伦送我情。', py: 'bù jí wāng lún sòng wǒ qíng',
+      { x: '不及汪伦送我情。', py: 'bù jí wāng lún sòng wǒ qíng', e: '可是潭水再深，也比不上汪伦对我的友情深。',
         act: [['show', 'heart'], ['hop', 'heart', 2, 24, { at: 400 }], ['fx', 'sparkle', 470, 300, { at: 300 }], ['bubble', 640, 250, '😊', { at: 800 }]] }
     ],
     sc: {
@@ -1811,14 +1849,15 @@ const POEMS = [
   {
     id: 'jys', t: '静夜思', tp: 'jìng yè sī', d: '唐', a: '李白', g: '一年级下', hero: '🌙',
     intro: '这首诗叫《静夜思》，是李白写的。一个安静的晚上，他睡不着……',
+    story: '很久以前，李白离开家乡，到很远很远的地方去。夜深了，屋子里静悄悄的，一片白白的月光照在床前，他望着月亮，想起了远方的家。',
     L: [
-      { x: '床前明月光，', py: 'chuáng qián míng yuè guāng',
+      { x: '床前明月光，', py: 'chuáng qián míng yuè guāng', e: '床前洒满了月光，亮亮的，白白的。',
         act: [['fade', 'beam', 0.45, 1600], ['glow', 'moon']] },
-      { x: '疑是地上霜。', py: 'yí shì dì shàng shuāng',
+      { x: '疑是地上霜。', py: 'yí shì dì shàng shuāng', e: '疑，就是好像。月光好像是地上铺了一层白霜。',
         act: [['show', 'fr1'], ['show', 'fr2', { at: 200 }], ['show', 'fr3', { at: 400 }], ['show', 'fr4', { at: 600 }], ['bubble', 370, 270, '🤔', { at: 700 }]] },
-      { x: '举头望明月，', py: 'jǔ tóu wàng míng yuè',
+      { x: '举头望明月，', py: 'jǔ tóu wàng míng yuè', e: '他抬起头，望着天上又大又圆的月亮。',
         act: [['tilt', 'libai', -18], ['glow', 'moon', { at: 500 }], ['bubble', 370, 270, '🌕', { at: 600 }]] },
-      { x: '低头思故乡。', py: 'dī tóu sī gù xiāng',
+      { x: '低头思故乡。', py: 'dī tóu sī gù xiāng', e: '低下头来，心里想念着远方的家乡。',
         act: [['tilt', 'libai', 16], ['bubble', 370, 270, '🏡', { at: 400 }]] }
     ],
     sc: {
@@ -1830,14 +1869,15 @@ const POEMS = [
   {
     id: 'xy', t: '寻隐者不遇', tp: 'xún yǐn zhě bú yù', d: '唐', a: '贾岛', g: '一年级下', hero: '🌲',
     intro: '这首诗叫《寻隐者不遇》，是贾岛写的。他去大山里找一位老爷爷，找到了吗？',
+    story: '大山深处住着一位老爷爷，他喜欢安静，常常一个人在山里采草药。有一天，诗人贾岛走了很远很远的山路，高高兴兴地去拜访他。',
     L: [
-      { x: '松下问童子，', py: 'sōng xià wèn tóng zǐ',
+      { x: '松下问童子，', py: 'sōng xià wèn tóng zǐ', e: '贾岛在大松树下，问一个小童子，你的师父在家吗？',
         act: [['move', 'poet', -450, 0, 2200], ['bubble', 470, 350, '❓', { at: 2100 }]] },
-      { x: '言师采药去。', py: 'yán shī cǎi yào qù',
+      { x: '言师采药去。', py: 'yán shī cǎi yào qù', e: '小童子说，师父到山里采药去了。',
         act: [['hop', 'boy', 1, 16], ['bubble', 300, 360, '👴', { at: 200 }], ['show', 'master', { at: 700 }], ['show', 'herb', { at: 900 }]] },
-      { x: '只在此山中，', py: 'zhǐ zài cǐ shān zhōng',
+      { x: '只在此山中，', py: 'zhǐ zài cǐ shān zhōng', e: '小童子又说，师父就在这座大山里呢。',
         act: [['glow', 'mtn'], ['hop', 'master', 2, 10, { at: 500 }]] },
-      { x: '云深不知处。', py: 'yún shēn bù zhī chù',
+      { x: '云深不知处。', py: 'yún shēn bù zhī chù', e: '可是山上的白云太厚了，不知道他到底在哪儿。',
         act: [['show', 'c1'], ['show', 'c2', { at: 200 }], ['show', 'c3', { at: 400 }], ['show', 'c4', { at: 600 }], ['show', 'c5', { at: 800 }], ['fade', 'master', 0, 800, { at: 600 }], ['fade', 'herb', 0, 800, { at: 600 }], ['bubble', 470, 350, '❓', { at: 1200 }]] }
     ],
     sc: {
@@ -1849,14 +1889,15 @@ const POEMS = [
   {
     id: 'cs', t: '池上', tp: 'chí shàng', d: '唐', a: '白居易', g: '一年级下', hero: '🛶',
     intro: '这首诗叫《池上》，是白居易写的。一个小娃娃，偷偷干了一件事……',
+    story: '夏天，池塘里开满了白白的莲花。诗人白居易在池塘边散步，看见一只小船从荷叶中间划过去，船上坐着一个小娃娃。他看着看着，忍不住笑了。',
     L: [
-      { x: '小娃撑小艇，', py: 'xiǎo wá chēng xiǎo tǐng',
+      { x: '小娃撑小艇，', py: 'xiǎo wá chēng xiǎo tǐng', e: '小娃娃撑着一只小船，在池塘里划呀划。',
         act: [['move', 'boat', 540, -110, 2800]] },
-      { x: '偷采白莲回。', py: 'tōu cǎi bái lián huí',
+      { x: '偷采白莲回。', py: 'tōu cǎi bái lián huí', e: '他偷偷摘了几朵白莲花，又划回来了。',
         act: [['move', 'wl1', -150, -10, 1200], ['swap', 'kid', '🤭', { at: 900 }], ['move', 'wl1', -330, 90, 2400, null, { at: 1400 }], ['move', 'boat', -330, 90, 2400, null, { at: 1400 }]] },
-      { x: '不解藏踪迹，', py: 'bù jiě cáng zōng jì',
+      { x: '不解藏踪迹，', py: 'bù jiě cáng zōng jì', e: '可是他不知道，要把划过的痕迹藏起来。',
         act: [['bubble', 300, 250, '😄'], ['hop', 'kid', 2, 12]] },
-      { x: '浮萍一道开。', py: 'fú píng yí dào kāi',
+      { x: '浮萍一道开。', py: 'fú píng yí dào kāi', e: '浮萍被小船分开，留下一条长长的水路，大家一看就知道啦！',
         act: [['part', 'weed', '-80,470 460,360 130,450']] }
     ],
     sc: {
@@ -1868,14 +1909,15 @@ const POEMS = [
   {
     id: 'xc', t: '小池', tp: 'xiǎo chí', d: '宋', a: '杨万里', g: '一年级下', hero: '🍃',
     intro: '这首诗叫《小池》，是杨万里写的。我们去看看，夏天的小池塘里有什么。',
+    story: '夏天刚刚到来，诗人杨万里在一个小池塘边散步。池塘很小，可是一切都那么安静，那么可爱。他看呀看，发现了好多有趣的小东西。',
     L: [
-      { x: '泉眼无声惜细流，', py: 'quán yǎn wú shēng xī xì liú',
+      { x: '泉眼无声惜细流，', py: 'quán yǎn wú shēng xī xì liú', e: '泉眼静悄悄的，好像舍不得让细细的泉水流走。',
         act: [['fx', 'flow', 'flow'], ['bubble', 230, 200, '🤫', { at: 600 }]] },
-      { x: '树阴照水爱晴柔。', py: 'shù yīn zhào shuǐ ài qíng róu',
+      { x: '树阴照水爱晴柔。', py: 'shù yīn zhào shuǐ ài qíng róu', e: '大树的影子照在水里，好像很喜欢这晴天里暖暖的阳光。',
         act: [['fade', 'refl', 0.35, 1600], ['glow', 'sun', { at: 500 }]] },
-      { x: '小荷才露尖尖角，', py: 'xiǎo hé cái lù jiān jiān jiǎo',
+      { x: '小荷才露尖尖角，', py: 'xiǎo hé cái lù jiān jiān jiǎo', e: '小荷叶刚刚冒出水面，卷着尖尖的角。',
         act: [['grow', 'bud', 1600]] },
-      { x: '早有蜻蜓立上头。', py: 'zǎo yǒu qīng tíng lì shàng tóu',
+      { x: '早有蜻蜓立上头。', py: 'zǎo yǒu qīng tíng lì shàng tóu', e: '早就有一只小蜻蜓飞来，站在了上面。',
         act: [['show', 'dfly'], ['move', 'dfly', -390, 268, 2200], ['hop', 'dfly', 1, 6, { at: 2300 }]] }
     ],
     sc: {
@@ -1887,14 +1929,15 @@ const POEMS = [
   {
     id: 'hj', t: '画鸡', tp: 'huà jī', d: '明', a: '唐寅', g: '一年级下', hero: '🐓',
     intro: '这首诗叫《画鸡》，是唐寅写的。他画了一只大公鸡，又给它写了一首诗。',
+    story: '唐寅是很久以前一位有名的大画家。他画的大公鸡昂着头，挺着胸，神气极了，好像随时都会从纸上跳下来，喔喔地叫起来。',
     L: [
-      { x: '头上红冠不用裁，', py: 'tóu shàng hóng guān bú yòng cái',
+      { x: '头上红冠不用裁，', py: 'tóu shàng hóng guān bú yòng cái', e: '公鸡头上红红的鸡冠，是天生的，不用剪裁。',
         act: [['glow', 'rooster'], ['bubble', 880, 330, '✂️🚫', { at: 500 }]] },
-      { x: '满身雪白走将来。', py: 'mǎn shēn xuě bái zǒu jiāng lái',
+      { x: '满身雪白走将来。', py: 'mǎn shēn xuě bái zǒu jiāng lái', e: '它披着一身雪白的羽毛，大摇大摆地走过来了。',
         act: [['move', 'rooster', -240, 10, 2400], ['hop', 'rooster', 4, 10]] },
-      { x: '平生不敢轻言语，', py: 'píng shēng bù gǎn qīng yán yǔ',
+      { x: '平生不敢轻言语，', py: 'píng shēng bù gǎn qīng yán yǔ', e: '它平时安安静静的，从来不随便乱叫。',
         act: [['bubble', 650, 360, '🤫']] },
-      { x: '一叫千门万户开。', py: 'yí jiào qiān mén wàn hù kāi',
+      { x: '一叫千门万户开。', py: 'yí jiào qiān mén wàn hù kāi', e: '可它早上一叫，家家户户都打开门，新的一天开始啦！',
         act: [['tilt', 'rooster', -14], ['bubble', 650, 360, 'T:喔喔喔！'], ['fade', 'dark', 0, 1800, { at: 400 }], ['open', 'h1', { at: 600 }], ['open', 'h2', { at: 800 }], ['open', 'h3', { at: 1000 }], ['open', 'h4', { at: 1200 }], ['show', 'sun', { at: 500 }], ['move', 'sun', 0, -170, 2200, null, { at: 500 }]] }
     ],
     sc: {
@@ -1907,14 +1950,15 @@ const POEMS = [
   {
     id: 'mh', t: '梅花', tp: 'méi huā', d: '宋', a: '王安石', g: '二年级上', hero: '🌸',
     intro: '这首诗叫《梅花》，是王安石写的。冬天好冷呀，墙角有什么花开了？',
+    story: '一个很冷很冷的冬天，诗人王安石走到院子里。别的花都谢了，墙角却有几枝梅花，顶着寒风开放，还飘来一股清香，他心里很喜欢。',
     L: [
-      { x: '墙角数枝梅，', py: 'qiáng jiǎo shù zhī méi',
+      { x: '墙角数枝梅，', py: 'qiáng jiǎo shù zhī méi', e: '看，在墙角那里，有几枝梅花。',
         act: [['fx', 'sparkle', 575, 430], ['fade', 'br1', 1, 800, { at: 300 }], ['fade', 'br2', 1, 800, { at: 800 }], ['fade', 'br3', 1, 800, { at: 1300 }]] },
-      { x: '凌寒独自开。', py: 'líng hán dú zì kāi',
+      { x: '凌寒独自开。', py: 'líng hán dú zì kāi', e: '天这么冷，它们不怕，自己悄悄开了花。',
         act: [['fx', 'fall', 60, 900, 0, 560, '❄️', 12], ['show', 'f1', { at: 500 }], ['show', 'f2', { at: 750 }], ['show', 'f3', { at: 1000 }], ['show', 'f4', { at: 1250 }], ['show', 'f5', { at: 1500 }], ['show', 'f6', { at: 1750 }], ['show', 'f7', { at: 2000 }]] },
-      { x: '遥知不是雪，', py: 'yáo zhī bú shì xuě',
+      { x: '遥知不是雪，', py: 'yáo zhī bú shì xuě', e: '远远一看白白的，可诗人知道那不是雪。',
         act: [['show', 'poet'], ['bubble', 300, 330, '❄️🚫', { at: 700 }]] },
-      { x: '为有暗香来。', py: 'wèi yǒu àn xiāng lái',
+      { x: '为有暗香来。', py: 'wèi yǒu àn xiāng lái', e: '因为有一阵淡淡的香味，悄悄飘过来了。',
         act: [['show', 'sc1'], ['show', 'sc2', { at: 200 }], ['show', 'sc3', { at: 400 }], ['move', 'sc1', -318, 110, 1800], ['move', 'sc2', -350, 105, 1800, null, { at: 200 }], ['move', 'sc3', -412, 195, 1800, null, { at: 400 }], ['bubble', 300, 330, '👃😊', { at: 1700 }]] }
     ],
     sc: {
@@ -1926,14 +1970,15 @@ const POEMS = [
   {
     id: 'xecd', t: '小儿垂钓', tp: 'xiǎo ér chuí diào', d: '唐', a: '胡令能', g: '二年级上', hero: '🎣',
     intro: '这首诗叫《小儿垂钓》，是胡令能写的。一个小娃娃在学钓鱼，看他多认真！',
+    story: '诗人胡令能走在小河边，看见一个小娃娃坐在草地上，手里拿着钓鱼竿。小娃娃一动也不动，那认真的样子，真是又可爱又好玩。',
     L: [
-      { x: '蓬头稚子学垂纶，', py: 'péng tóu zhì zǐ xué chuí lún',
+      { x: '蓬头稚子学垂纶，', py: 'péng tóu zhì zǐ xué chuí lún', e: '一个头发乱蓬蓬的小娃娃，在河边学钓鱼。',
         act: [['show', 'kid'], ['fade', 'rod', 1, 700, { at: 500 }], ['fade', 'line', 1, 500, { at: 1100 }], ['show', 'bob', { at: 1500 }], ['fx', 'ripple', 800, 412, 2, { at: 1600 }]] },
-      { x: '侧坐莓苔草映身。', py: 'cè zuò méi tái cǎo yìng shēn',
+      { x: '侧坐莓苔草映身。', py: 'cè zuò méi tái cǎo yìng shēn', e: '他侧着身子坐在青苔上，小草挡着他的身子。',
         act: [['tint', 'moss', '#6FA347', 1200], ['tilt', 'kid', 10], ['grow', 'g1', 1000, { at: 500 }], ['grow', 'g2', 1000, { at: 800 }]] },
-      { x: '路人借问遥招手，', py: 'lù rén jiè wèn yáo zhāo shǒu',
+      { x: '路人借问遥招手，', py: 'lù rén jiè wèn yáo zhāo shǒu', e: '有个过路的人向他问路，他远远地摆摆手。',
         act: [['move', 'walker', 290, 0, 1600, 1], ['bubble', 300, 235, '❓', { at: 1300 }], ['show', 'hand', { at: 1700 }], ['sway', 'hand', 24, { at: 1800 }]] },
-      { x: '怕得鱼惊不应人。', py: 'pà dé yú jīng bú yìng rén',
+      { x: '怕得鱼惊不应人。', py: 'pà dé yú jīng bú yìng rén', e: '他怕把鱼吓跑了，不敢出声回答人家。',
         act: [['show', 'fish'], ['move', 'fish', -80, -40, 1600], ['bubble', 620, 270, '🤫', { at: 600 }], ['fx', 'ripple', 800, 412, 3, { at: 1200 }]] }
     ],
     sc: {
@@ -1945,14 +1990,15 @@ const POEMS = [
   {
     id: 'dgql', t: '登鹳雀楼', tp: 'dēng guàn què lóu', d: '唐', a: '王之涣', g: '二年级上', hero: '🌅',
     intro: '这首诗叫《登鹳雀楼》，是王之涣写的。爬得越高，看得越远，我们一起爬上去！',
+    story: '傍晚的时候，诗人王之涣登上了黄河边高高的鹳雀楼。他看见太阳慢慢落到山后面，黄河水哗哗地流向远方，心里特别开阔。',
     L: [
-      { x: '白日依山尽，', py: 'bái rì yī shān jìn',
+      { x: '白日依山尽，', py: 'bái rì yī shān jìn', e: '太阳挨着山头，慢慢地落下去了。',
         act: [['move', 'sun', 0, 270, 2600]] },
-      { x: '黄河入海流。', py: 'huáng hé rù hǎi liú',
+      { x: '黄河入海流。', py: 'huáng hé rù hǎi liú', e: '黄河的水哗哗地流啊流，一直流进大海。',
         act: [['fx', 'flow', 'river'], ['show', 'wave', { at: 900 }], ['fx', 'ripple', 880, 560, 3, { at: 1100 }]] },
-      { x: '欲穷千里目，', py: 'yù qióng qiān lǐ mù',
+      { x: '欲穷千里目，', py: 'yù qióng qiān lǐ mù', e: '想看到千里那么远的地方，怎么办呢？',
         act: [['bubble', 330, 270, '👀'], ['show', 'far', { at: 800 }], ['fx', 'sparkle', 860, 270, { at: 900 }]] },
-      { x: '更上一层楼。', py: 'gèng shàng yì céng lóu',
+      { x: '更上一层楼。', py: 'gèng shàng yì céng lóu', e: '那就再往上爬一层楼吧！',
         act: [['move', 'poet', 0, -105, 1200], ['bubble', 330, 160, '😃', { at: 1300 }], ['show', 'boat', { at: 1400 }], ['show', 'bd1', { at: 1700 }], ['show', 'bd2', { at: 1900 }]] }
     ],
     sc: {
@@ -1966,14 +2012,15 @@ const POEMS = [
   {
     id: 'wlspb', t: '望庐山瀑布', tp: 'wàng lú shān pù bù', d: '唐', a: '李白', g: '二年级上', hero: '🏞️',
     intro: '这首诗叫《望庐山瀑布》，是李白写的。看，好大的瀑布，像从天上掉下来的！',
+    story: '李白来到庐山游玩，远远看见香炉峰旁边，挂着一条好大的瀑布。水从高高的山上冲下来，哗哗直响，他看呆了，觉得太神奇啦。',
     L: [
-      { x: '日照香炉生紫烟，', py: 'rì zhào xiāng lú shēng zǐ yān',
+      { x: '日照香炉生紫烟，', py: 'rì zhào xiāng lú shēng zǐ yān', e: '太阳照着香炉峰，升起了紫色的云烟。',
         act: [['glow', 'sun'], ['fade', 'beam', 0.4, 900], ['fade', 'm1', 0.75, 900, { at: 700 }], ['fade', 'm2', 0.75, 900, { at: 1100 }], ['fade', 'm3', 0.75, 900, { at: 1500 }]] },
-      { x: '遥看瀑布挂前川。', py: 'yáo kàn pù bù guà qián chuān',
+      { x: '遥看瀑布挂前川。', py: 'yáo kàn pù bù guà qián chuān', e: '远远望去，瀑布像一条白布挂在山前。',
         act: [['show', 'poet'], ['fade', 'fall', 1, 1200, { at: 500 }], ['fade', 'fs1', 1, 1200, { at: 500 }], ['fade', 'fs2', 1, 1200, { at: 500 }], ['bubble', 890, 330, '👀', { at: 1200 }]] },
-      { x: '飞流直下三千尺，', py: 'fēi liú zhí xià sān qiān chǐ',
+      { x: '飞流直下三千尺，', py: 'fēi liú zhí xià sān qiān chǐ', e: '水飞一样地冲下来，足足有三千尺那么高。',
         act: [['fx', 'flow', 'fall'], ['fx', 'drops', 430, 470, 50, 6, { at: 300 }], ['fx', 'ripple', 432, 512, 3, { at: 600 }], ['show', 'arrow', { at: 800 }], ['show', 'feet', { at: 1000 }]] },
-      { x: '疑是银河落九天。', py: 'yí shì yín hé luò jiǔ tiān',
+      { x: '疑是银河落九天。', py: 'yí shì yín hé luò jiǔ tiān', e: '疑，就是好像。好像天上的银河掉下来了！',
         act: [['fade', 'mw', 0.9, 1000], ['show', 'st1', { at: 300 }], ['show', 'st2', { at: 500 }], ['show', 'st3', { at: 700 }], ['fx', 'flow', 'fall', { at: 600 }], ['bubble', 890, 330, '🌌', { at: 1100 }]] }
     ],
     sc: {
@@ -1985,14 +2032,15 @@ const POEMS = [
   {
     id: 'jx', t: '江雪', tp: 'jiāng xuě', d: '唐', a: '柳宗元', g: '二年级上', hero: '❄️',
     intro: '这首诗叫《江雪》，是柳宗元写的。下大雪啦，江上只有一位老爷爷在钓鱼。',
+    story: '柳宗元住在南方一个偏远的小地方，心里常常觉得孤单。有一天下了好大的雪，他望向江面，看见一条小船上，有人静静地坐着。',
     L: [
-      { x: '千山鸟飞绝，', py: 'qiān shān niǎo fēi jué',
+      { x: '千山鸟飞绝，', py: 'qiān shān niǎo fēi jué', e: '好多好多座山上，一只鸟也看不见了。',
         act: [['move', 'b1', -560, -260, 1800], ['move', 'b2', -620, -300, 1800, null, { at: 250 }], ['move', 'b3', -700, -260, 1800, null, { at: 500 }], ['hide', 'b1', { at: 1900 }], ['hide', 'b2', { at: 2100 }], ['hide', 'b3', { at: 2300 }]] },
-      { x: '万径人踪灭。', py: 'wàn jìng rén zōng miè',
+      { x: '万径人踪灭。', py: 'wàn jìng rén zōng miè', e: '好多条小路上，也没有一个人的脚印。',
         act: [['fx', 'fall', 40, 900, 0, 560, '❄️', 14], ['hide', 'fp1', { at: 900 }], ['hide', 'fp2', { at: 1100 }], ['hide', 'fp3', { at: 1300 }], ['tint', 'p1', '#F4F7FA', 1400, { at: 800 }], ['tint', 'p2', '#F4F7FA', 1400, { at: 1000 }], ['tint', 'p3', '#F4F7FA', 1400, { at: 1200 }]] },
-      { x: '孤舟蓑笠翁，', py: 'gū zhōu suō lì wēng',
+      { x: '孤舟蓑笠翁，', py: 'gū zhōu suō lì wēng', e: '只有一条小船，船上坐着披蓑衣戴斗笠的老爷爷。',
         act: [['show', 'boat'], ['fade', 'hat', 1, 500, { at: 450 }], ['fade', 'hatB', 1, 500, { at: 450 }], ['fx', 'ripple', 500, 545, 2, { at: 300 }]] },
-      { x: '独钓寒江雪。', py: 'dú diào hán jiāng xuě',
+      { x: '独钓寒江雪。', py: 'dú diào hán jiāng xuě', e: '他一个人在下雪的冷江上，静静地钓鱼。',
         act: [['fade', 'rod', 1, 700], ['fade', 'line', 1, 500, { at: 500 }], ['fx', 'ripple', 770, 530, 3, { at: 900 }], ['tint', 'river', '#7F98AA', 1500], ['fx', 'fall', 40, 900, 0, 560, '❄️', 14]] }
     ],
     sc: {
@@ -2005,14 +2053,15 @@ const POEMS = [
   {
     id: 'ysss', t: '夜宿山寺', tp: 'yè sù shān sì', d: '唐', a: '李白', g: '二年级上', hero: '⭐',
     intro: '这首诗叫《夜宿山寺》，是李白写的。这座楼好高好高，伸手就能摘到星星！',
+    story: '一天晚上，李白住在山上的一座寺庙里。寺庙旁边有一座高高的楼，他爬上去一看，满天的星星离自己好近，心里又惊奇又开心。',
     L: [
-      { x: '危楼高百尺，', py: 'wēi lóu gāo bǎi chǐ',
+      { x: '危楼高百尺，', py: 'wēi lóu gāo bǎi chǐ', e: '这座楼好高好高，像有一百尺那么高。',
         act: [['move', 'poet', 0, -294, 2300], ['show', 'up', { at: 700 }], ['show', 'hi', { at: 1000 }]] },
-      { x: '手可摘星辰。', py: 'shǒu kě zhāi xīng chén',
+      { x: '手可摘星辰。', py: 'shǒu kě zhāi xīng chén', e: '站在楼上，伸手就能摘下天上的星星。',
         act: [['tilt', 'poet', 14], ['show', 'hand'], ['move', 'hand', 118, -98, 1200], ['glow', 's1', { at: 1100 }], ['fx', 'sparkle', 432, 78, { at: 1200 }], ['hop', 's1', 2, 14, { at: 1300 }]] },
-      { x: '不敢高声语，', py: 'bù gǎn gāo shēng yǔ',
+      { x: '不敢高声语，', py: 'bù gǎn gāo shēng yǔ', e: '在这里呀，可不敢大声说话。',
         act: [['hide', 'hand'], ['hide', 'up'], ['hide', 'hi'], ['tilt', 'poet', 0], ['bubble', 318, 82, '🤫', { at: 300 }]] },
-      { x: '恐惊天上人。', py: 'kǒng jīng tiān shàng rén',
+      { x: '恐惊天上人。', py: 'kǒng jīng tiān shàng rén', e: '怕吵到了住在天上的神仙呢。',
         act: [['show', 'pal'], ['show', 'c1', { at: 150 }], ['show', 'c2', { at: 300 }], ['show', 'fy1', { at: 600 }], ['show', 'fy2', { at: 800 }], ['fx', 'zzz', 780, 250, { at: 1000 }]] }
     ],
     sc: {
@@ -2024,20 +2073,21 @@ const POEMS = [
   {
     id: 'cleg', t: '敕勒歌', tp: 'chì lè gē', d: '北朝', a: '民歌', by: '北朝民歌', byp: 'běi cháo mín gē', g: '二年级上', hero: '🐑',
     intro: '这首诗叫《敕勒歌》，是草原上的人们唱的歌。风吹过来，草里藏着什么呢？',
+    story: '很久很久以前，敕勒族的人们住在北方的大草原上。他们放牛放羊，骑着马跑来跑去，看着又高又蓝的天空，就开心地唱出了这首歌。',
     L: [
-      { x: '敕勒川，', py: 'chì lè chuān',
+      { x: '敕勒川，', py: 'chì lè chuān', e: '这里是敕勒川，一片大大的草原。',
         act: [['tint', 'plain', '#9FD06A', 1200], ['fade', 'yd', 1, 700, { at: 500 }], ['fade', 'yw', 1, 700, { at: 500 }], ['fade', 'yb', 1, 700, { at: 500 }], ['fade', 'ydoor', 1, 700, { at: 500 }], ['fx', 'sparkle', 560, 470, { at: 900 }]] },
-      { x: '阴山下。', py: 'yīn shān xià',
+      { x: '阴山下。', py: 'yīn shān xià', e: '草原就在高高的阴山脚下。',
         act: [['tint', 'm1', '#6F7F96', 1200], ['tint', 'm2', '#5E6F88', 1200, { at: 200 }], ['tint', 'm3', '#6F7F96', 1200, { at: 400 }], ['fx', 'sparkle', 520, 330, { at: 1000 }]] },
-      { x: '天似穹庐，', py: 'tiān sì qióng lú',
+      { x: '天似穹庐，', py: 'tiān sì qióng lú', e: '天空像一个圆圆的大帐篷。',
         act: [['fade', 'dome', 0.95, 1400], ['fade', 'rib1', 0.7, 1400, { at: 300 }], ['fade', 'rib2', 0.7, 1400, { at: 300 }], ['fade', 'crown', 0.95, 1000, { at: 500 }]] },
-      { x: '笼盖四野。', py: 'lǒng gài sì yě',
+      { x: '笼盖四野。', py: 'lǒng gài sì yě', e: '把四面八方的草原都罩住了。',
         act: [['fade', 'domeF', 0.32, 1400], ['fx', 'sparkle', 60, 360, { at: 500 }], ['fx', 'sparkle', 940, 360, { at: 800 }], ['fx', 'sparkle', 500, 470, { at: 1100 }]] },
-      { x: '天苍苍，', py: 'tiān cāng cāng',
+      { x: '天苍苍，', py: 'tiān cāng cāng', e: '天空蓝蓝的，一眼望不到边。',
         act: [['tint', 'skyc', '#4C97DD', 1500], ['fx', 'sparkle', 500, 160, { at: 600 }]] },
-      { x: '野茫茫，', py: 'yě máng máng',
+      { x: '野茫茫，', py: 'yě máng máng', e: '草原宽宽的，远得看不到头。',
         act: [['tint', 'plain', '#6DB54A', 1500], ['grow', 'ga1', 900, { at: 200 }], ['grow', 'ga2', 900, { at: 450 }], ['grow', 'ga3', 900, { at: 700 }], ['grow', 'ga4', 900, { at: 950 }]] },
-      { x: '风吹草低见牛羊。', py: 'fēng chuī cǎo dī xiàn niú yáng',
+      { x: '风吹草低见牛羊。', py: 'fēng chuī cǎo dī xiàn niú yáng', e: '风吹过来，草低下了头，就看到了一群群牛羊。',
         act: [['show', 'wind'], ['move', 'wind', 120, 0, 1600], ['tilt', 'ga1', 76, { at: 400 }], ['tilt', 'ga2', 76, { at: 550 }], ['tilt', 'ga3', 76, { at: 700 }], ['tilt', 'ga4', 76, { at: 850 }], ['show', 'cow', { at: 1000 }], ['show', 'sh1', { at: 1200 }], ['show', 'sh2', { at: 1400 }], ['show', 'ox', { at: 1600 }]] }
     ],
     sc: {
@@ -2049,14 +2099,15 @@ const POEMS = [
   {
     id: 'cj', t: '村居', tp: 'cūn jū', d: '清', a: '高鼎', g: '二年级下', hero: '🪁',
     intro: '这首诗叫《村居》，是高鼎写的。春天到了，小朋友们放学回家，要去玩什么呢？',
+    story: '诗人高鼎老了以后，住在乡下的村子里。早春二月，小草绿了，柳树发芽了，孩子们在田野里跑啊笑啊，他看着看着，心里也甜甜的。',
     L: [
-      { x: '草长莺飞二月天，', py: 'cǎo zhǎng yīng fēi èr yuè tiān',
+      { x: '草长莺飞二月天，', py: 'cǎo zhǎng yīng fēi èr yuè tiān', e: '春天二月，小草青青，黄莺在空中飞来飞去。',
         act: [['grow', 'g1', 900], ['grow', 'g2', 900, { at: 200 }], ['grow', 'g3', 900, { at: 400 }], ['grow', 'g4', 900, { at: 600 }], ['grow', 'g5', 900, { at: 800 }], ['show', 'b1', { at: 200 }], ['show', 'b2', { at: 400 }], ['move', 'b1', 420, -12, 2000, 1, { at: 500 }], ['move', 'b2', 520, 30, 2000, 1, { at: 600 }]] },
-      { x: '拂堤杨柳醉春烟。', py: 'fú dī yáng liǔ zuì chūn yān',
+      { x: '拂堤杨柳醉春烟。', py: 'fú dī yáng liǔ zuì chūn yān', e: '柳枝轻轻摸着河堤，在春天的雾气里，美得像在做梦。',
         act: [['fade', 'wA', 1, 1000], ['fade', 'wB', 1, 1000, { at: 300 }], ['fade', 'mist', 0.55, 1500, { at: 900 }]] },
-      { x: '儿童散学归来早，', py: 'ér tóng sàn xué guī lái zǎo',
+      { x: '儿童散学归来早，', py: 'ér tóng sàn xué guī lái zǎo', e: '孩子们放学了，早早地跑回了家。',
         act: [['hop', 'school', 1, 12], ['show', 'boy', { at: 200 }], ['show', 'girl', { at: 500 }], ['move', 'boy', 235, 5, 1800, 1, { at: 500 }], ['move', 'girl', 420, 5, 1900, 1, { at: 700 }], ['hop', 'boy', 4, 14, { at: 500 }], ['hop', 'girl', 4, 14, { at: 700 }]] },
-      { x: '忙趁东风放纸鸢。', py: 'máng chèn dōng fēng fàng zhǐ yuān',
+      { x: '忙趁东风放纸鸢。', py: 'máng chèn dōng fēng fàng zhǐ yuān', e: '他们赶紧趁着东风，把风筝放上蓝天！',
         act: [['show', 'east'], ['show', 'wind', { at: 100 }], ['move', 'wind', -60, 0, 900, null, { at: 300 }], ['show', 'k1', { at: 500 }], ['show', 'k2', { at: 700 }], ['move', 'k1', -60, -270, 1800, null, { at: 700 }], ['move', 'k2', -40, -300, 1800, null, { at: 900 }], ['sway', 'k1', 8], ['sway', 'k2', 8], ['hop', 'boy', 2, 12, { at: 600 }], ['hop', 'girl', 2, 12, { at: 800 }]] }
     ],
     sc: {
@@ -2068,14 +2119,15 @@ const POEMS = [
   {
     id: 'yl', t: '咏柳', tp: 'yǒng liǔ', d: '唐', a: '贺知章', g: '二年级下', hero: '🌿',
     intro: '这首诗叫《咏柳》，是贺知章写的。柳树的小叶子，是谁用剪刀剪出来的呢？',
+    story: '早春二月，诗人贺知章看见一棵高高的柳树，冒出了嫩绿的新叶子。细细的柳条垂下来，在风里轻轻飘，他越看越喜欢，就写下了这首诗。',
     L: [
-      { x: '碧玉妆成一树高，', py: 'bì yù zhuāng chéng yí shù gāo',
+      { x: '碧玉妆成一树高，', py: 'bì yù zhuāng chéng yí shù gāo', e: '高高的柳树，像是用绿绿的碧玉打扮成的。',
         act: [['tint', 'crown', '#4CB37A', 1600], ['glow', 'crown', { at: 300 }], ['fx', 'sparkle', 470, 155, { at: 900 }]] },
-      { x: '万条垂下绿丝绦。', py: 'wàn tiáo chuí xià lǜ sī tāo',
+      { x: '万条垂下绿丝绦。', py: 'wàn tiáo chuí xià lǜ sī tāo', e: '千万根柳条垂下来，像一条条绿色的丝带。',
         act: [['fade', 'st1', 1, 600], ['fade', 'st2', 1, 600, { at: 450 }], ['fade', 'st3', 1, 600, { at: 900 }], ['fade', 'st4', 1, 600, { at: 1350 }]] },
-      { x: '不知细叶谁裁出，', py: 'bù zhī xì yè shuí cái chū',
+      { x: '不知细叶谁裁出，', py: 'bù zhī xì yè shuí cái chū', e: '这些细细的小叶子，是谁剪出来的呢？',
         act: [['show', 'l1'], ['show', 'l2', { at: 150 }], ['show', 'l3', { at: 300 }], ['show', 'l4', { at: 450 }], ['show', 'l5', { at: 600 }], ['show', 'l6', { at: 750 }], ['tilt', 'girl', 10, { at: 600 }], ['bubble', 850, 300, '✂️❓', { at: 900 }]] },
-      { x: '二月春风似剪刀。', py: 'èr yuè chūn fēng sì jiǎn dāo',
+      { x: '二月春风似剪刀。', py: 'èr yuè chūn fēng sì jiǎn dāo', e: '原来呀，是二月的春风，它就像一把剪刀。',
         act: [['show', 'wind'], ['move', 'wind', 110, 0, 1600, null, { at: 300 }], ['show', 'scis', { at: 300 }], ['move', 'scis', 500, 30, 2000, null, { at: 500 }], ['hop', 'scis', 5, 12, { at: 500 }], ['show', 'l7', { at: 800 }], ['show', 'l8', { at: 1200 }], ['show', 'l9', { at: 1600 }], ['tilt', 'girl', 0, { at: 400 }], ['bubble', 850, 300, '😮', { at: 1900 }]] }
     ],
     sc: {
@@ -2087,14 +2139,15 @@ const POEMS = [
   {
     id: 'xcjcs', t: '晓出净慈寺送林子方', tp: 'xiǎo chū jìng cí sì sòng lín zǐ fāng', d: '宋', a: '杨万里', g: '二年级下', hero: '🌺',
     intro: '这首诗叫《晓出净慈寺送林子方》。一大早，杨万里送朋友出门，看见了满湖的荷花！',
+    story: '六月的一个早晨，杨万里在西湖边的净慈寺，要送好朋友林子方出远门。湖上的荷叶一眼望不到边，荷花开得红红的，他心里舍不得朋友走。',
     L: [
-      { x: '毕竟西湖六月中，', py: 'bì jìng xī hú liù yuè zhōng',
+      { x: '毕竟西湖六月中，', py: 'bì jìng xī hú liù yuè zhōng', e: '真不愧是六月的西湖呀！',
         act: [['move', 'sun', 0, -190, 2400], ['fade', 'daysky', 1, 1300, { at: 1000 }], ['move', 'poet', 100, 0, 1800, 1, { at: 300 }], ['move', 'friend', 100, 0, 1800, 1, { at: 400 }]] },
-      { x: '风光不与四时同。', py: 'fēng guāng bù yǔ sì shí tóng',
+      { x: '风光不与四时同。', py: 'fēng guāng bù yǔ sì shí tóng', e: '这里的风景，和别的季节都不一样。',
         act: [['fx', 'sparkle', 640, 400], ['fx', 'ripple', 640, 430, 3], ['bubble', 300, 250, '😍', { at: 500 }], ['hop', 'friend', 1, 12, { at: 700 }]] },
-      { x: '接天莲叶无穷碧，', py: 'jiē tiān lián yè wú qióng bì',
+      { x: '接天莲叶无穷碧，', py: 'jiē tiān lián yè wú qióng bì', e: '绿绿的荷叶一片连着一片，好像连到了天边。',
         act: [['show', 'p0'], ['show', 'p1', { at: 110 }], ['show', 'p2', { at: 220 }], ['show', 'p3', { at: 330 }], ['show', 'p4', { at: 440 }], ['show', 'p5', { at: 550 }], ['show', 'p6', { at: 660 }], ['show', 'p7', { at: 770 }], ['show', 'p8', { at: 880 }], ['show', 'p9', { at: 990 }], ['show', 'p10', { at: 1100 }], ['show', 'p11', { at: 1210 }], ['show', 'p12', { at: 1320 }], ['show', 'p13', { at: 1430 }], ['show', 'p14', { at: 1540 }], ['show', 'p15', { at: 1650 }], ['show', 'p16', { at: 1760 }], ['show', 'p17', { at: 1870 }], ['tint', 'water', '#5FB596', 2000, { at: 600 }]] },
-      { x: '映日荷花别样红。', py: 'yìng rì hé huā bié yàng hóng',
+      { x: '映日荷花别样红。', py: 'yìng rì hé huā bié yàng hóng', e: '荷花在太阳的照耀下，红得特别好看。',
         act: [['glow', 'sun'], ['show', 'f1', { at: 300 }], ['show', 'f2', { at: 500 }], ['show', 'f3', { at: 700 }], ['show', 'f4', { at: 900 }], ['show', 'f5', { at: 1100 }], ['show', 'f6', { at: 1300 }], ['fx', 'sparkle', 650, 450, { at: 1500 }]] }
     ],
     sc: {
@@ -2108,14 +2161,15 @@ const POEMS = [
   {
     id: 'jj2', t: '绝句', tp: 'jué jù', d: '唐', a: '杜甫', g: '二年级下', hero: '🐤',
     intro: '这首诗叫《绝句》，是杜甫写的。从他家的窗户和门口望出去，能看见什么呢？',
+    story: '诗人杜甫离开家好多年，后来终于回到成都的草堂。春天来了，他推开窗户，走到门口，到处都是好看的景色，他心里高兴极了。',
     L: [
-      { x: '两个黄鹂鸣翠柳，', py: 'liǎng gè huáng lí míng cuì liǔ',
+      { x: '两个黄鹂鸣翠柳，', py: 'liǎng gè huáng lí míng cuì liǔ', e: '两只黄鹂鸟，在绿绿的柳树上唱歌。',
         act: [['show', 'o1'], ['show', 'o2', { at: 300 }], ['hop', 'o1', 2, 14, { at: 700 }], ['hop', 'o2', 2, 14, { at: 900 }], ['fx', 'notes', 418, 205, { at: 600 }], ['fx', 'notes', 542, 205, { at: 900 }]] },
-      { x: '一行白鹭上青天。', py: 'yì háng bái lù shàng qīng tiān',
+      { x: '一行白鹭上青天。', py: 'yì háng bái lù shàng qīng tiān', e: '一排白鹭，飞上了蓝蓝的天空。',
         act: [['show', 'e1'], ['show', 'e2', { at: 120 }], ['show', 'e3', { at: 240 }], ['show', 'e4', { at: 360 }], ['move', 'e1', 100, -150, 2000, 1, { at: 500 }], ['move', 'e2', 100, -150, 2000, 1, { at: 500 }], ['move', 'e3', 100, -150, 2000, 1, { at: 500 }], ['move', 'e4', 100, -150, 2000, 1, { at: 500 }]] },
-      { x: '窗含西岭千秋雪，', py: 'chuāng hán xī lǐng qiān qiū xuě',
+      { x: '窗含西岭千秋雪，', py: 'chuāng hán xī lǐng qiān qiū xuě', e: '窗户像个画框，框住了西山上千年不化的雪。',
         act: [['fade', 'winT', 1, 900], ['fade', 'winB', 1, 900], ['fade', 'winL', 1, 900], ['fade', 'winR', 1, 900], ['fade', 'winV', 1, 900], ['fade', 'winH', 1, 900], ['fx', 'fall', 70, 230, 90, 300, '❄️', 9, { at: 500 }], ['show', 'west', { at: 1000 }]] },
-      { x: '门泊东吴万里船。', py: 'mén bó dōng wú wàn lǐ chuán',
+      { x: '门泊东吴万里船。', py: 'mén bó dōng wú wàn lǐ chuán', e: '门口停着大船，是从万里外的东吴来的。',
         act: [['fade', 'doorT', 1, 900], ['fade', 'doorL', 1, 900], ['fade', 'doorR', 1, 900], ['move', 'boat', -330, 0, 2200, null, { at: 300 }], ['show', 'east', { at: 1400 }]] }
     ],
     sc: {
@@ -2127,14 +2181,15 @@ const POEMS = [
   {
     id: 'mn1', t: '悯农', tsub: '（其一）', tp: 'mǐn nóng', d: '唐', a: '李绅', g: '二年级下', hero: '🌱',
     intro: '这首诗叫《悯农》，是李绅写的。农民伯伯种了好多好多粮食，可是他自己却吃不饱……',
+    story: '唐朝的时候，诗人李绅常常去乡下走走。他看见农民伯伯一年到头在田里忙，流了好多汗水，心里很心疼，就写诗告诉大家，要珍惜粮食。',
     L: [
-      { x: '春种一粒粟，', py: 'chūn zhòng yí lì sù',
+      { x: '春种一粒粟，', py: 'chūn zhòng yí lì sù', e: '春天，农民伯伯种下一粒小米种子。',
         act: [['tilt', 'farmer', 12], ['show', 'seed', { at: 100 }], ['glow', 'seed', { at: 300 }], ['move', 'seed', 60, 70, 800, null, { at: 1000 }], ['hide', 'seed', { at: 1750 }], ['grow', 'sprout', 900, { at: 1700 }], ['fx', 'fall', 620, 940, 60, 300, '🌸', 6]] },
-      { x: '秋收万颗子。', py: 'qiū shōu wàn kē zǐ',
+      { x: '秋收万颗子。', py: 'qiū shōu wàn kē zǐ', e: '到了秋天，就能收到好多好多粮食。',
         act: [['tilt', 'farmer', 0], ['tint', 'field', '#E2C46A', 1500], ['swap', 'sprout', '🌾'], ['fx', 'fall', 660, 940, 110, 320, '🍂', 6], ['grow', 'r1', 700, { at: 300 }], ['grow', 'r2', 700, { at: 450 }], ['grow', 'r3', 700, { at: 600 }], ['grow', 'r4', 700, { at: 750 }], ['grow', 'r5', 700, { at: 900 }], ['grow', 'r6', 700, { at: 1050 }], ['grow', 'r7', 700, { at: 1200 }], ['fx', 'sparkle', 640, 470, { at: 1800 }]] },
-      { x: '四海无闲田，', py: 'sì hǎi wú xián tián',
+      { x: '四海无闲田，', py: 'sì hǎi wú xián tián', e: '天下所有的田地，都种上了庄稼。',
         act: [['tint', 'hl', '#D9BE62', 1200], ['tint', 'hr', '#D9BE62', 1200, { at: 400 }], ['tint', 'hm', '#E3CB78', 1200, { at: 800 }], ['show', 'q1', { at: 500 }], ['show', 'q2', { at: 900 }], ['show', 'q3', { at: 1300 }], ['show', 'q4', { at: 1700 }]] },
-      { x: '农夫犹饿死。', py: 'nóng fū yóu è sǐ',
+      { x: '农夫犹饿死。', py: 'nóng fū yóu è sǐ', e: '可是种田的农民伯伯，还常常饿着肚子。',
         act: [['fade', 'dim', 0.45, 900], ['tilt', 'farmer', 14, { at: 300 }], ['show', 'bowl', { at: 600 }], ['bubble', 360, 250, '😢', { at: 1100 }]] }
     ],
     sc: {
@@ -2148,14 +2203,15 @@ const POEMS = [
   {
     id: 'zysj', t: '舟夜书所见', tp: 'zhōu yè shū suǒ jiàn', d: '清', a: '查慎行', g: '二年级下', hero: '🏮',
     intro: '这首诗叫《舟夜书所见》。黑黑的夜里，坐在小船上，能看见什么呢？',
+    story: '清朝有一位诗人，一天夜里坐着小船在河上过夜。天上没有月亮，四周黑乎乎的，他往外一看，远远有一点亮光，在黑夜里一闪一闪，他觉得好美。',
     L: [
-      { x: '月黑见渔灯，', py: 'yuè hēi jiàn yú dēng',
+      { x: '月黑见渔灯，', py: 'yuè hēi jiàn yú dēng', e: '没有月亮的夜里，看到了一盏渔船上的灯。',
         act: [['move', 'cloud', -390, 0, 1300], ['fade', 'dark', 0.45, 1200, { at: 300 }], ['show', 'lamp', { at: 1500 }], ['glow', 'lamp', { at: 1700 }]] },
-      { x: '孤光一点萤。', py: 'gū guāng yì diǎn yíng',
+      { x: '孤光一点萤。', py: 'gū guāng yì diǎn yíng', e: '孤零零的一点光，像萤火虫一样小。',
         act: [['glow', 'lamp'], ['fade', 'refl', 0.85, 1200, { at: 300 }], ['tilt', 'poet', -8, { at: 300 }], ['bubble', 380, 320, '✨', { at: 900 }]] },
-      { x: '微微风簇浪，', py: 'wēi wēi fēng cù làng',
+      { x: '微微风簇浪，', py: 'wēi wēi fēng cù làng', e: '一阵微风吹过，河面上泛起了小小的波浪。',
         act: [['show', 'wind'], ['move', 'wind', 140, 0, 2000, null, { at: 200 }], ['fx', 'ripple', 520, 410, 3], ['fx', 'ripple', 760, 480, 3, { at: 500 }], ['fx', 'ripple', 600, 540, 3, { at: 900 }], ['bob', 'fboat'], ['bob', 'lamp']] },
-      { x: '散作满河星。', py: 'sàn zuò mǎn hé xīng',
+      { x: '散作满河星。', py: 'sàn zuò mǎn hé xīng', e: '灯光碎成好多亮点，像满河的星星。',
         act: [['fade', 'refl', 0, 800], ['show', 's0', { at: 200 }], ['show', 's1', { at: 310 }], ['show', 's2', { at: 420 }], ['show', 's3', { at: 530 }], ['show', 's4', { at: 640 }], ['show', 's5', { at: 750 }], ['show', 's6', { at: 860 }], ['show', 's7', { at: 970 }], ['show', 's8', { at: 1080 }], ['show', 's9', { at: 1190 }], ['show', 's10', { at: 1300 }], ['show', 's11', { at: 1410 }], ['show', 's12', { at: 1520 }], ['bubble', 380, 320, '🤩', { at: 1800 }]] }
     ],
     sc: {
@@ -2169,14 +2225,15 @@ const POEMS = [
   {
     id: 'sj', t: '所见', tp: 'suǒ jiàn', d: '清', a: '袁枚', g: '三年级上', hero: '🐂',
     intro: '这首诗叫《所见》，是袁枚写的。小牧童骑着黄牛，看见了什么呢？',
+    story: '有一年夏天，诗人袁枚走在乡下的树林边。一个小牧童骑着大黄牛走过来，一会儿唱歌，一会儿又想捉知了，样子特别好玩。袁枚觉得他可爱极了，就把看到的写成了这首诗。',
     L: [
-      { x: '牧童骑黄牛，', py: 'mù tóng qí huáng niú',
+      { x: '牧童骑黄牛，', py: 'mù tóng qí huáng niú', e: '放牛的小牧童，骑在一头大黄牛的背上。',
         act: [['move', 'ox', 500, 0, 2400, 1], ['hop', 'ox', 6, 8]] },
-      { x: '歌声振林樾。', py: 'gē shēng zhèn lín yuè',
+      { x: '歌声振林樾。', py: 'gē shēng zhèn lín yuè', e: '他放声唱歌，响亮的歌声在树林里回荡。',
         act: [['fx', 'notes', 380, 360], ['sway', 't1', 4], ['sway', 't2', 3, { at: 300 }], ['sway', 't3', 4, { at: 600 }], ['fx', 'notes', 380, 360, { at: 1200 }]] },
-      { x: '意欲捕鸣蝉，', py: 'yì yù bǔ míng chán',
+      { x: '意欲捕鸣蝉，', py: 'yì yù bǔ míng chán', e: '他看见树上有只知了在叫，想去捉住它。',
         act: [['show', 'cic'], ['glow', 'cic', { at: 200 }], ['fx', 'notes', 745, 200, { at: 300 }], ['move', 'ox', 80, 0, 1400], ['tilt', 'boy', 12, { at: 600 }], ['bubble', 570, 220, '🦗', { at: 1300 }]] },
-      { x: '忽然闭口立。', py: 'hū rán bì kǒu lì',
+      { x: '忽然闭口立。', py: 'hū rán bì kǒu lì', e: '他赶紧闭上嘴巴，静静地站着，怕把知了吓跑。',
         act: [['bubble', 570, 220, '🤫'], ['hop', 'boy', 1, 26, { at: 300 }], ['glow', 'cic', { at: 900 }]] }
     ],
     sc: {
@@ -2188,14 +2245,15 @@ const POEMS = [
   {
     id: 'sx', t: '山行', tp: 'shān xíng', d: '唐', a: '杜牧', g: '三年级上', hero: '🍁',
     intro: '这首诗叫《山行》，是杜牧写的。秋天的山上，什么东西比花还要红？',
+    story: '秋天到了，诗人杜牧坐着车子去山里玩。弯弯的小路一直通到山上，路边的枫树林被秋霜染得红红的。他高兴得停下车子，看了好久好久。',
     L: [
-      { x: '远上寒山石径斜，', py: 'yuǎn shàng hán shān shí jìng xié',
+      { x: '远上寒山石径斜，', py: 'yuǎn shàng hán shān shí jìng xié', e: '一条弯弯曲曲的石头小路，一直通到远远的秋山上。',
         act: [['move', 'horse', 300, 0, 2400, 1], ['hop', 'horse', 5, 10], ['fx', 'flow', 'path', { at: 300 }]] },
-      { x: '白云生处有人家。', py: 'bái yún shēng chù yǒu rén jiā',
+      { x: '白云生处有人家。', py: 'bái yún shēng chù yǒu rén jiā', e: '在白云飘出来的地方，还住着几户人家呢。',
         act: [['show', 'c1'], ['show', 'c2', { at: 300 }], ['show', 'home', { at: 800 }], ['glow', 'home', { at: 1200 }]] },
-      { x: '停车坐爱枫林晚，', py: 'tíng chē zuò ài fēng lín wǎn',
+      { x: '停车坐爱枫林晚，', py: 'tíng chē zuò ài fēng lín wǎn', e: '诗人停下车子，因为太喜欢傍晚的枫树林了。坐，就是因为。',
         act: [['move', 'horse', 270, 0, 1400], ['fade', 'dusk', 0.32, 2000], ['bubble', 560, 300, '😍', { at: 1400 }]] },
-      { x: '霜叶红于二月花。', py: 'shuāng yè hóng yú èr yuè huā',
+      { x: '霜叶红于二月花。', py: 'shuāng yè hóng yú èr yuè huā', e: '被秋霜打过的枫叶，比春天的花还要红呢！',
         act: [['tint', 'm1', '#E8352B', 1400], ['tint', 'm1b', '#D42A24', 1400], ['tint', 'm2', '#E8352B', 1400], ['tint', 'm2b', '#D42A24', 1400], ['tint', 'm3', '#E8352B', 1400], ['tint', 'm4', '#D42A24', 1400], ['fx', 'fall', 600, 960, 300, 500, '🍁', 7], ['bubble', 560, 300, '🍁>🌸', { at: 1300 }]] }
     ],
     sc: {
@@ -2207,14 +2265,15 @@ const POEMS = [
   {
     id: 'zljw', t: '赠刘景文', tp: 'zèng liú jǐng wén', d: '宋', a: '苏轼', g: '三年级上', hero: '🍊',
     intro: '这首诗叫《赠刘景文》，是苏轼写给好朋友的。秋天什么时候最好看呢？',
+    story: '苏轼有个好朋友叫刘景文，年纪大了，心里有点难过。秋天快要过完的时候，苏轼写了这首诗送给他，告诉他这个季节也很美，要打起精神来。',
     L: [
-      { x: '荷尽已无擎雨盖，', py: 'hé jìn yǐ wú qíng yǔ gài',
+      { x: '荷尽已无擎雨盖，', py: 'hé jìn yǐ wú qíng yǔ gài', e: '荷花谢了，像雨伞一样的大荷叶也没有了。',
         act: [['swap', 'lf1', '🍂'], ['swap', 'lf2', '🍂', { at: 300 }], ['fade', 'lf1', 0, 900, { at: 1200 }], ['fade', 'lf2', 0, 900, { at: 1400 }], ['fx', 'ripple', 200, 465, 3, { at: 1400 }]] },
-      { x: '菊残犹有傲霜枝。', py: 'jú cán yóu yǒu ào shuāng zhī',
+      { x: '菊残犹有傲霜枝。', py: 'jú cán yóu yǒu ào shuāng zhī', e: '菊花也快谢了，可枝干还挺得直直的，不怕寒霜。',
         act: [['fade', 'ch1', 0.3, 1200], ['fade', 'ch2', 0.3, 1200], ['fade', 'ch3', 0.3, 1200], ['fx', 'fall', 400, 600, 180, 400, '❄️', 7], ['glow', 'stem1', { at: 1300 }], ['glow', 'stem2', { at: 1300 }]] },
-      { x: '一年好景君须记，', py: 'yì nián hǎo jǐng jūn xū jì',
+      { x: '一年好景君须记，', py: 'yì nián hǎo jǐng jūn xū jì', e: '好朋友，你一定要记住一年里最美的时候。',
         act: [['hop', 'su', 1, 16], ['bubble', 750, 375, '🌸☀️🍁❄️', { at: 300 }], ['hop', 'liu', 1, 12, { at: 1300 }]] },
-      { x: '最是橙黄橘绿时。', py: 'zuì shì chéng huáng jú lǜ shí',
+      { x: '最是橙黄橘绿时。', py: 'zuì shì chéng huáng jú lǜ shí', e: '就是橙子黄黄、橘子绿绿，挂满枝头的时候呀！',
         act: [['show', 'o1'], ['show', 'o2', { at: 250 }], ['show', 'o3', { at: 500 }], ['show', 'o4', { at: 750 }], ['show', 'o5', { at: 1000 }], ['glow', 'tree', { at: 1300 }], ['bubble', 750, 375, '🍊😊', { at: 1500 }]] }
     ],
     sc: {
@@ -2226,14 +2285,15 @@ const POEMS = [
   {
     id: 'yssj', t: '夜书所见', tp: 'yè shū suǒ jiàn', d: '宋', a: '叶绍翁', g: '三年级上', hero: '🦗',
     intro: '这首诗叫《夜书所见》，是叶绍翁写的。秋天的夜里，篱笆边亮着一盏小灯……',
+    story: '叶绍翁一个人住在离家很远的地方。一个秋天的夜晚，冷冷的秋风吹着梧桐树叶，他想家了。忽然，他看见远处篱笆边亮着一盏灯，原来是小朋友在捉蟋蟀。',
     L: [
-      { x: '萧萧梧叶送寒声，', py: 'xiāo xiāo wú yè sòng hán shēng',
+      { x: '萧萧梧叶送寒声，', py: 'xiāo xiāo wú yè sòng hán shēng', e: '秋风吹着梧桐叶，沙沙沙，听起来冷冷的。',
         act: [['show', 'wind'], ['sway', 'tree', 4], ['fx', 'fall', 40, 300, 160, 420, '🍂', 9]] },
-      { x: '江上秋风动客情。', py: 'jiāng shàng qiū fēng dòng kè qíng',
+      { x: '江上秋风动客情。', py: 'jiāng shàng qiū fēng dòng kè qíng', e: '江上吹来秋风，让离家的诗人想起了家乡。',
         act: [['fx', 'flow', 'river'], ['sway', 'boat', 7], ['bubble', 420, 300, '🏡', { at: 800 }]] },
-      { x: '知有儿童挑促织，', py: 'zhī yǒu ér tóng tiǎo cù zhī',
+      { x: '知有儿童挑促织，', py: 'zhī yǒu ér tóng tiǎo cù zhī', e: '他知道，一定是小朋友在捉蟋蟀。促织，就是蟋蟀。',
         act: [['show', 'k1'], ['show', 'k2', { at: 250 }], ['show', 'cric', { at: 600 }], ['hop', 'cric', 3, 34, { at: 900 }], ['hop', 'k1', 2, 14, { at: 1100 }]] },
-      { x: '夜深篱落一灯明。', py: 'yè shēn lí luò yì dēng míng',
+      { x: '夜深篱落一灯明。', py: 'yè shēn lí luò yì dēng míng', e: '因为夜深了，篱笆边还亮着一盏小灯呢。',
         act: [['fade', 'dim', 0.4, 1400], ['show', 'lamp', { at: 500 }], ['fade', 'light', 0.3, 1200, { at: 700 }], ['fade', 'light2', 0.35, 1200, { at: 900 }], ['glow', 'lamp', { at: 900 }]] }
     ],
     sc: {
@@ -2247,14 +2307,15 @@ const POEMS = [
   {
     id: 'wtms', t: '望天门山', tp: 'wàng tiān mén shān', d: '唐', a: '李白', g: '三年级上', hero: '⛰️',
     intro: '这首诗叫《望天门山》，是李白写的。两座大山像一扇门，江水从中间流过去。',
+    story: '年轻的李白坐着小船，顺着长江往远方去。船快到天门山的时候，他看见两座大山隔着江面站着，江水从中间哗哗地冲过去，真是太壮观了。',
     L: [
-      { x: '天门中断楚江开，', py: 'tiān mén zhōng duàn chǔ jiāng kāi',
+      { x: '天门中断楚江开，', py: 'tiān mén zhōng duàn chǔ jiāng kāi', e: '长江像一把大斧头，把天门山从中间劈开了。',
         act: [['fade', 'plug', 0, 1600], ['fx', 'ripple', 500, 440, 3, { at: 1300 }]] },
-      { x: '碧水东流至此回。', py: 'bì shuǐ dōng liú zhì cǐ huí',
+      { x: '碧水东流至此回。', py: 'bì shuǐ dōng liú zhì cǐ huí', e: '碧绿的江水向东流，流到这里转了个弯。',
         act: [['tint', 'water', '#3FAE9E', 1200], ['show', 'east'], ['show', 'wave', { at: 200 }], ['move', 'wave', 120, 0, 1000, 1, { at: 300 }], ['move', 'wave', -110, 20, 1000, 0, { at: 1400 }], ['fx', 'ripple', 580, 470, 3, { at: 1100 }]] },
-      { x: '两岸青山相对出，', py: 'liǎng àn qīng shān xiāng duì chū',
+      { x: '两岸青山相对出，', py: 'liǎng àn qīng shān xiāng duì chū', e: '两岸的青山面对面，好像迎面走过来一样。',
         act: [['tint', 'mL', '#4C9A5A', 1200], ['tint', 'mR', '#4C9A5A', 1200], ['glow', 'mL', { at: 300 }], ['glow', 'mR', { at: 600 }]] },
-      { x: '孤帆一片日边来。', py: 'gū fān yí piàn rì biān lái',
+      { x: '孤帆一片日边来。', py: 'gū fān yí piàn rì biān lái', e: '一只小船挂着白帆，从太阳那边开过来了。',
         act: [['hide', 'wave'], ['hide', 'east'], ['show', 'sail', { at: 200 }], ['move', 'sail', 40, 180, 2200, null, { at: 500 }]] }
     ],
     sc: {
@@ -2266,14 +2327,15 @@ const POEMS = [
   {
     id: 'yhs', t: '饮湖上初晴后雨', tsub: '（其二）', tp: 'yǐn hú shàng chū qíng hòu yǔ', d: '宋', a: '苏轼', g: '三年级上', hero: '🌦️',
     intro: '这首诗叫《饮湖上初晴后雨》，是苏轼写的。西湖晴天好看，下雨天也好看！',
+    story: '苏轼在杭州做官的时候，和朋友在西湖上游玩。一开始是大晴天，后来下起了小雨。他看着晴天和雨天的西湖，觉得都美极了。',
     L: [
-      { x: '水光潋滟晴方好，', py: 'shuǐ guāng liàn yàn qíng fāng hǎo',
+      { x: '水光潋滟晴方好，', py: 'shuǐ guāng liàn yàn qíng fāng hǎo', e: '晴天的时候，湖水闪闪发光，真好看。',
         act: [['glow', 'sun'], ['fx', 'sparkle', 260, 420], ['fx', 'sparkle', 620, 520, { at: 500 }], ['fx', 'sparkle', 820, 400, { at: 1000 }]] },
-      { x: '山色空蒙雨亦奇。', py: 'shān sè kōng méng yǔ yì qí',
+      { x: '山色空蒙雨亦奇。', py: 'shān sè kōng méng yǔ yì qí', e: '下雨的时候，远山朦朦胧胧的，也很奇妙。',
         act: [['show', 'c1'], ['show', 'c2', { at: 200 }], ['hide', 'sun', { at: 300 }], ['fade', 'mist', 0.55, 1500], ['fx', 'rain', 60, 960, 130, 580, { at: 400 }]] },
-      { x: '欲把西湖比西子，', py: 'yù bǎ xī hú bǐ xī zǐ',
+      { x: '欲把西湖比西子，', py: 'yù bǎ xī hú bǐ xī zǐ', e: '西湖就像古时候的大美人西施。西子，就是西施。',
         act: [['show', 'lady'], ['fx', 'sparkle', 860, 420, { at: 300 }], ['fx', 'sparkle', 450, 470, { at: 700 }], ['bubble', 500, 300, '😍', { at: 1100 }]] },
-      { x: '淡妆浓抹总相宜。', py: 'dàn zhuāng nóng mǒ zǒng xiāng yí',
+      { x: '淡妆浓抹总相宜。', py: 'dàn zhuāng nóng mǒ zǒng xiāng yí', e: '不管是淡淡的打扮，还是浓浓的打扮，她都那么美。',
         act: [['swap', 'lady', '👸'], ['fx', 'sparkle', 840, 430], ['fade', 'mist', 0, 1500, { at: 600 }], ['hide', 'c1', { at: 700 }], ['show', 'sun', { at: 1000 }], ['bubble', 500, 300, '👍', { at: 1300 }]] }
     ],
     sc: {
@@ -2285,14 +2347,15 @@ const POEMS = [
   {
     id: 'wdt', t: '望洞庭', tp: 'wàng dòng tíng', d: '唐', a: '刘禹锡', g: '三年级上', hero: '🐌',
     intro: '这首诗叫《望洞庭》，是刘禹锡写的。月亮下的湖像一个大盘子，里面放着什么？',
+    story: '一个秋天的晚上，诗人刘禹锡来到洞庭湖边。月亮又大又圆，湖面一点风也没有，平平静静的。他远远望着湖中间的君山，觉得美得像一幅画。',
     L: [
-      { x: '湖光秋月两相和，', py: 'hú guāng qiū yuè liǎng xiāng hé',
+      { x: '湖光秋月两相和，', py: 'hú guāng qiū yuè liǎng xiāng hé', e: '秋天的月光照在湖面上，湖光和月光融在了一起。',
         act: [['glow', 'moon'], ['fade', 'mref', 0.8, 1500, { at: 300 }], ['fx', 'sparkle', 760, 500, { at: 900 }]] },
-      { x: '潭面无风镜未磨。', py: 'tán miàn wú fēng jìng wèi mó',
+      { x: '潭面无风镜未磨。', py: 'tán miàn wú fēng jìng wèi mó', e: '湖面上没有风，像一面还没擦亮的铜镜子。',
         act: [['hide', 'r1'], ['hide', 'r2', { at: 150 }], ['hide', 'r3', { at: 300 }], ['hide', 'r4', { at: 450 }], ['bubble', 195, 335, '🪞', { at: 700 }]] },
-      { x: '遥望洞庭山水翠，', py: 'yáo wàng dòng tíng shān shuǐ cuì',
+      { x: '遥望洞庭山水翠，', py: 'yáo wàng dòng tíng shān shuǐ cuì', e: '远远望去，洞庭湖的山和水都是青绿青绿的。',
         act: [['tilt', 'poet', -8], ['tint', 'isl', '#3E9B5B', 1500], ['tint', 'lake', '#2F7F86', 1500], ['glow', 'isl', { at: 600 }]] },
-      { x: '白银盘里一青螺。', py: 'bái yín pán lǐ yì qīng luó',
+      { x: '白银盘里一青螺。', py: 'bái yín pán lǐ yì qīng luó', e: '湖像白银盘子，湖里的君山像一颗小青螺。',
         act: [['tint', 'lake', '#C3CFDD', 1400], ['tint', 'rim', '#F4F7FA', 1400], ['bubble', 195, 335, '@plate'], ['bubble', 660, 230, '🐌', { at: 1300 }]] }
     ],
     sc: {
@@ -2304,14 +2367,15 @@ const POEMS = [
   {
     id: 'zfbdc', t: '早发白帝城', tp: 'zǎo fā bái dì chéng', d: '唐', a: '李白', g: '三年级上', hero: '🐒',
     intro: '这首诗叫《早发白帝城》，是李白写的。他坐的小船跑得好快好快！',
+    story: '李白遇到了麻烦，要被送到很远很远的地方去。走到白帝城的时候，忽然传来好消息，他不用去了！他高兴极了，一大早就坐上小船，顺着长江飞快地往东走。',
     L: [
-      { x: '朝辞白帝彩云间，', py: 'zhāo cí bái dì cǎi yún jiān',
+      { x: '朝辞白帝彩云间，', py: 'zhāo cí bái dì cǎi yún jiān', e: '早上，李白告别了白帝城，城在高高的彩云里。',
         act: [['show', 'sun'], ['glow', 'city', { at: 300 }], ['show', 'bye', { at: 900 }], ['hop', 'bye', 3, 10, { at: 1300 }]] },
-      { x: '千里江陵一日还。', py: 'qiān lǐ jiāng líng yí rì huán',
+      { x: '千里江陵一日还。', py: 'qiān lǐ jiāng líng yí rì huán', e: '很远很远的江陵，小船只要一天就到了。',
         act: [['hide', 'bye'], ['show', 'dash'], ['move', 'boat', 300, 0, 1600], ['move', 'sun', 500, 0, 2400], ['show', 'town', { at: 500 }], ['show', 'jl', { at: 800 }]] },
-      { x: '两岸猿声啼不住，', py: 'liǎng àn yuán shēng tí bú zhù',
+      { x: '两岸猿声啼不住，', py: 'liǎng àn yuán shēng tí bú zhù', e: '两岸山上的猴子，叫声一阵接着一阵。',
         act: [['show', 'mk1'], ['show', 'mk2', { at: 250 }], ['show', 'mk3', { at: 500 }], ['hop', 'mk1', 3, 16, { at: 700 }], ['hop', 'mk3', 3, 16, { at: 800 }], ['fx', 'notes', 470, 220, { at: 600 }], ['fx', 'notes', 300, 520, { at: 900 }]] },
-      { x: '轻舟已过万重山。', py: 'qīng zhōu yǐ guò wàn chóng shān',
+      { x: '轻舟已过万重山。', py: 'qīng zhōu yǐ guò wàn chóng shān', e: '轻快的小船，早就穿过了一座又一座大山。',
         act: [['move', 'boat', 350, 0, 2000], ['hop', 'boat', 4, 8], ['fx', 'sparkle', 830, 430, { at: 2000 }]] }
     ],
     sc: {
@@ -2323,14 +2387,15 @@ const POEMS = [
   {
     id: 'clq', t: '采莲曲', tp: 'cǎi lián qǔ', d: '唐', a: '王昌龄', g: '三年级上', hero: '🌸',
     intro: '这首诗叫《采莲曲》，是王昌龄写的。采莲的小姑娘藏在荷花里，你能找到她吗？',
+    story: '夏天，荷花开满了池塘。一群小姑娘穿着绿裙子，划着小船去采莲蓬。诗人王昌龄站在岸边看，只听见歌声，却找不到她们在哪儿。',
     L: [
-      { x: '荷叶罗裙一色裁，', py: 'hé yè luó qún yí sè cái',
+      { x: '荷叶罗裙一色裁，', py: 'hé yè luó qún yí sè cái', e: '小姑娘的绿裙子和荷叶一样绿，像用一块布剪出来的。',
         act: [['move', 'boat', 520, 0, 2000], ['glow', 'skirt', { at: 1500 }], ['glow', 'f1', { at: 1500 }], ['glow', 'l4', { at: 1500 }]] },
-      { x: '芙蓉向脸两边开。', py: 'fú róng xiàng liǎn liǎng biān kāi',
+      { x: '芙蓉向脸两边开。', py: 'fú róng xiàng liǎn liǎng biān kāi', e: '粉粉的荷花，围在她脸蛋两边开放。芙蓉，就是荷花。',
         act: [['grow', 'fL', 900], ['grow', 'fR', 900, { at: 400 }], ['fx', 'sparkle', 400, 340, { at: 1100 }]] },
-      { x: '乱入池中看不见，', py: 'luàn rù chí zhōng kàn bú jiàn',
+      { x: '乱入池中看不见，', py: 'luàn rù chí zhōng kàn bú jiàn', e: '小姑娘们划进荷花丛里，一下子就看不见了。',
         act: [['move', 'boat', 240, -50, 1800], ['fade', 'boat', 0.1, 1000, { at: 1200 }], ['bubble', 760, 220, '❓', { at: 1700 }]] },
-      { x: '闻歌始觉有人来。', py: 'wén gē shǐ jué yǒu rén lái',
+      { x: '闻歌始觉有人来。', py: 'wén gē shǐ jué yǒu rén lái', e: '听到了歌声，才知道有人划船过来啦。',
         act: [['fx', 'notes', 640, 300], ['bubble', 760, 220, '👂', { at: 300 }], ['fade', 'boat', 1, 900, { at: 1000 }], ['hop', 'boat', 1, 16, { at: 1900 }]] }
     ],
     sc: {
@@ -2343,14 +2408,15 @@ const POEMS = [
   {
     id: 'jj3', t: '绝句', tp: 'jué jù', d: '唐', a: '杜甫', g: '三年级下', hero: '🦆',
     intro: '这首诗叫《绝句》，是杜甫写的。春天到了，看看谁在飞，谁在睡觉？',
+    story: '杜甫走了很多很多路，终于在成都住了下来，盖了一间小草房。春天到了，他在草房外面走一走，看见到处都是好看的风景，心里很开心。',
     L: [
-      { x: '迟日江山丽，', py: 'chí rì jiāng shān lì',
+      { x: '迟日江山丽，', py: 'chí rì jiāng shān lì', e: '春天的太阳照着江水和青山，多美丽呀。',
         act: [['show', 'sun'], ['glow', 'sun', { at: 400 }], ['tint', 'm1', '#6DB87A', 1600], ['tint', 'm2', '#8FCB8E', 1600], ['tint', 'river', '#5FB9E6', 1600], ['fx', 'sparkle', 460, 230, { at: 900 }]] },
-      { x: '春风花草香。', py: 'chūn fēng huā cǎo xiāng',
+      { x: '春风花草香。', py: 'chūn fēng huā cǎo xiāng', e: '春风吹来，送来了花香和青草香。',
         act: [['show', 'wind'], ['move', 'wind', 240, 40, 2000], ['hide', 'wind', { at: 2100 }], ['grow', 'f1', 900], ['grow', 'f2', 900, { at: 250 }], ['grow', 'f3', 900, { at: 500 }], ['grow', 'f4', 900, { at: 750 }], ['sway', 'f1', 8, { at: 1000 }], ['sway', 'f3', 8, { at: 1100 }], ['grow', 'g1', 700, { at: 900 }], ['grow', 'g2', 700, { at: 1100 }], ['fx', 'sparkle', 280, 480, { at: 1400 }]] },
-      { x: '泥融飞燕子，', py: 'ní róng fēi yàn zi',
+      { x: '泥融飞燕子，', py: 'ní róng fēi yàn zi', e: '泥土变得软软的，燕子飞来飞去衔泥做窝。',
         act: [['tint', 'mud', '#7A5534', 800], ['move', 's1', -770, 300, 1300], ['hop', 's1', 2, 16, { at: 1450 }], ['move', 's2', -720, 250, 1300, null, { at: 250 }], ['move', 's2', 330, -250, 1000, 1, { at: 1600 }]] },
-      { x: '沙暖睡鸳鸯。', py: 'shā nuǎn shuì yuān yāng',
+      { x: '沙暖睡鸳鸯。', py: 'shā nuǎn shuì yuān yāng', e: '沙子晒得暖暖的，鸳鸯在沙滩上睡着了。',
         act: [['tint', 'sand', '#F4C96E', 1200], ['show', 'd1'], ['show', 'd2', { at: 200 }], ['tilt', 'd1', 10, { at: 700 }], ['tilt', 'd2', -10, { at: 700 }], ['fx', 'zzz', 790, 400, { at: 900 }]] }
     ],
     sc: {
@@ -2362,14 +2428,15 @@ const POEMS = [
   {
     id: 'hcc', t: '惠崇春江晚景', tsub: '（其一）', tp: 'huì chóng chūn jiāng wǎn jǐng', d: '宋', a: '苏轼', g: '三年级下', hero: '🐡',
     intro: '这首诗叫《惠崇春江晚景》，是苏轼看着一幅画写的。江水暖了，谁最先知道？',
+    story: '有个和尚叫惠崇，很会画画。他画了一幅春天江边的画，苏轼看了很喜欢，就在画旁边写了这首诗，把画里的景色说得活灵活现。',
     L: [
-      { x: '竹外桃花三两枝，', py: 'zhú wài táo huā sān liǎng zhī',
+      { x: '竹外桃花三两枝，', py: 'zhú wài táo huā sān liǎng zhī', e: '竹林外面，开着两三枝粉红的桃花。',
         act: [['show', 'b1'], ['show', 'b2', { at: 350 }], ['show', 'b3', { at: 700 }], ['sway', 'bam', 3]] },
-      { x: '春江水暖鸭先知。', py: 'chūn jiāng shuǐ nuǎn yā xiān zhī',
+      { x: '春江水暖鸭先知。', py: 'chūn jiāng shuǐ nuǎn yā xiān zhī', e: '江水变暖了，在水里游的鸭子最先知道。',
         act: [['hide', 'i1'], ['hide', 'i2'], ['tint', 'river', '#5DBFB2', 1400], ['move', 'd1', -600, 0, 1800], ['move', 'd2', -580, 0, 1900, null, { at: 150 }], ['fx', 'ripple', 490, 390, 3, { at: 1700 }], ['bubble', 575, 225, '😊', { at: 1900 }]] },
-      { x: '蒌蒿满地芦芽短，', py: 'lóu hāo mǎn dì lú yá duǎn',
+      { x: '蒌蒿满地芦芽短，', py: 'lóu hāo mǎn dì lú yá duǎn', e: '地上长满了嫩嫩的野菜，芦苇刚冒出短短的芽。',
         act: [['grow', 'h1', 800], ['grow', 'h2', 800, { at: 200 }], ['grow', 'h3', 800, { at: 400 }], ['grow', 'h4', 800, { at: 600 }], ['grow', 'h5', 800, { at: 800 }], ['grow', 'r1', 700, { at: 1100 }], ['grow', 'r2', 700, { at: 1300 }], ['grow', 'r3', 700, { at: 1500 }], ['grow', 'r4', 700, { at: 1700 }]] },
-      { x: '正是河豚欲上时。', py: 'zhèng shì hé tún yù shàng shí',
+      { x: '正是河豚欲上时。', py: 'zhèng shì hé tún yù shàng shí', e: '这时候，河豚鱼正要从大海游回江里来。',
         act: [['move', 'p1', -300, 0, 2200], ['move', 'p2', -250, 0, 2200, null, { at: 200 }], ['hop', 'p1', 2, 30, { at: 900 }], ['hop', 'p2', 2, 26, { at: 1200 }], ['fx', 'ripple', 790, 470, 2, { at: 1600 }]] }
     ],
     sc: {
@@ -2381,14 +2448,15 @@ const POEMS = [
   {
     id: 'sqdz', t: '三衢道中', tp: 'sān qú dào zhōng', d: '宋', a: '曾几', g: '三年级下', hero: '🐤',
     intro: '这首诗叫《三衢道中》，是曾几写的。他坐小船、走山路，听见了什么？',
+    story: '初夏的时候，梅子黄了，诗人曾几去三衢山游玩。他先坐着小船沿着小溪走，小溪到头了，又走上了山路。一路上绿树成荫，还能听到黄鹂在唱歌。',
     L: [
-      { x: '梅子黄时日日晴，', py: 'méi zi huáng shí rì rì qíng',
+      { x: '梅子黄时日日晴，', py: 'méi zi huáng shí rì rì qíng', e: '梅子黄了，本来常常下雨，今年却天天都是大晴天。',
         act: [['swap', 'p1', '🍋'], ['swap', 'p2', '🍋', { at: 300 }], ['swap', 'p3', '🍋', { at: 600 }], ['show', 'sun', { at: 900 }], ['glow', 'sun', { at: 1300 }]] },
-      { x: '小溪泛尽却山行。', py: 'xiǎo xī fàn jìn què shān xíng',
+      { x: '小溪泛尽却山行。', py: 'xiǎo xī fàn jìn què shān xíng', e: '他坐着小船，一直划到小溪的尽头，再走上山路。',
         act: [['move', 'boat', 290, 0, 1300], ['fade', 'poet', 0, 200, { at: 1300 }], ['show', 'walker', { at: 1350 }], ['move', 'walker', 130, -60, 1100, 1, { at: 1450 }]] },
-      { x: '绿阴不减来时路，', py: 'lǜ yīn bù jiǎn lái shí lù',
+      { x: '绿阴不减来时路，', py: 'lǜ yīn bù jiǎn lái shí lù', e: '山路上绿树成荫，和来的时候一样凉快。',
         act: [['grow', 't1', 800], ['grow', 't2', 800, { at: 300 }], ['grow', 't3', 800, { at: 600 }], ['move', 'walker', 120, -130, 2000, 1, { at: 300 }]] },
-      { x: '添得黄鹂四五声。', py: 'tiān dé huáng lí sì wǔ shēng',
+      { x: '添得黄鹂四五声。', py: 'tiān dé huáng lí sì wǔ shēng', e: '不一样的是，树上多了几声黄鹂鸟的歌声。',
         act: [['show', 'o1'], ['fx', 'notes', 150, 200], ['show', 'o2', { at: 500 }], ['hop', 'o2', 2, 12, { at: 900 }], ['show', 'o3', { at: 1000 }], ['fx', 'notes', 890, 250, { at: 1500 }], ['show', 'o4', { at: 1500 }], ['hop', 'o4', 2, 12, { at: 1900 }]] }
     ],
     sc: {
@@ -2400,16 +2468,17 @@ const POEMS = [
   {
     id: 'yjn', t: '忆江南', tp: 'yì jiāng nán', d: '唐', a: '白居易', g: '三年级下', hero: '🌺',
     intro: '这首词叫《忆江南》，是白居易写的。江南有多美？他一辈子都忘不了！',
+    story: '白居易年轻的时候在江南住过，后来又在杭州、苏州做官。老了以后，他回到北方的洛阳，常常想起江南美丽的春天，就写下了这首词。',
     L: [
-      { x: '江南好，', py: 'jiāng nán hǎo',
+      { x: '江南好，', py: 'jiāng nán hǎo', e: '江南的风景，真是太好了！',
         act: [['fx', 'sparkle', 500, 300], ['hop', 'boat', 1, 10], ['bubble', 340, 220, '👍', { at: 500 }]] },
-      { x: '风景旧曾谙。', py: 'fēng jǐng jiù céng ān',
+      { x: '风景旧曾谙。', py: 'fēng jǐng jiù céng ān', e: '那里美丽的风景，诗人从前就很熟悉。',
         act: [['move', 'boat', 300, 0, 2400], ['sway', 'w1', 4], ['sway', 'w2', 4], ['bubble', 640, 220, '😊', { at: 1900 }]] },
-      { x: '日出江花红胜火，', py: 'rì chū jiāng huā hóng shèng huǒ',
+      { x: '日出江花红胜火，', py: 'rì chū jiāng huā hóng shèng huǒ', e: '太阳出来了，江边的花红红的，比火还要红。',
         act: [['show', 'sun'], ['move', 'sun', 0, -150, 2000], ['grow', 'r1', 700, { at: 300 }], ['grow', 'r2', 700, { at: 500 }], ['grow', 'r3', 700, { at: 700 }], ['grow', 'r4', 700, { at: 900 }], ['bubble', 300, 410, '🔥', { at: 1500 }]] },
-      { x: '春来江水绿如蓝。', py: 'chūn lái jiāng shuǐ lǜ rú lán',
+      { x: '春来江水绿如蓝。', py: 'chūn lái jiāng shuǐ lǜ rú lán', e: '春天来了，江水绿得像蓝草一样。蓝，是一种绿绿的草。',
         act: [['tint', 'river', '#2FA48C', 1600], ['fx', 'ripple', 760, 450, 3], ['fx', 'sparkle', 350, 400, { at: 900 }], ['bubble', 640, 220, '😍', { at: 1400 }]] },
-      { x: '能不忆江南？', py: 'néng bú yì jiāng nán',
+      { x: '能不忆江南？', py: 'néng bú yì jiāng nán', e: '这么美的江南，怎么能不想念呢？',
         act: [['glow', 'poet'], ['bubble', 640, 220, '❤️', { at: 300 }]] }
     ],
     sc: {
@@ -2421,14 +2490,15 @@ const POEMS = [
   {
     id: 'yr', t: '元日', tp: 'yuán rì', d: '宋', a: '王安石', g: '三年级下', hero: '🧨',
     intro: '这首诗叫《元日》，是王安石写的。元日就是大年初一，过新年啦！',
+    story: '大年初一到了，家家户户都在过新年。诗人王安石看见人们放鞭炮、换春联，到处热热闹闹的，心里也充满了希望，就写下了这首诗。',
     L: [
-      { x: '爆竹声中一岁除，', py: 'bào zhú shēng zhōng yí suì chú',
+      { x: '爆竹声中一岁除，', py: 'bào zhú shēng zhōng yí suì chú', e: '噼里啪啦的鞭炮声里，旧的一年过去了。',
         act: [['show', 'c1'], ['show', 'c2', { at: 300 }], ['show', 'bm1', { at: 500 }], ['fx', 'sparkle', 140, 450, { at: 500 }], ['hide', 'bm1', { at: 1200 }], ['show', 'bm2', { at: 1100 }], ['fx', 'sparkle', 520, 460, { at: 1100 }], ['hide', 'bm2', { at: 1900 }], ['hop', 'kid', 2, 24, { at: 600 }]] },
-      { x: '春风送暖入屠苏。', py: 'chūn fēng sòng nuǎn rù tú sū',
+      { x: '春风送暖入屠苏。', py: 'chūn fēng sòng nuǎn rù tú sū', e: '暖暖的春风吹来，一家人举起过年的屠苏酒。',
         act: [['show', 'wind'], ['move', 'wind', 190, 150, 1700], ['hide', 'wind', { at: 2100 }], ['show', 'cup', { at: 1200 }], ['fx', 'sparkle', 650, 520, { at: 1600 }]] },
-      { x: '千门万户曈曈日，', py: 'qiān mén wàn hù tóng tóng rì',
+      { x: '千门万户曈曈日，', py: 'qiān mén wàn hù tóng tóng rì', e: '新年的太阳刚刚升起，照亮了家家户户。',
         act: [['fade', 'morn', 1, 1600], ['fade', 'dark', 0, 1600], ['show', 'sun'], ['move', 'sun', 0, -230, 2200], ['open', 'h1', { at: 600 }], ['open', 'h2', { at: 800 }], ['open', 'h3', { at: 1000 }], ['open', 'h4', { at: 1200 }]] },
-      { x: '总把新桃换旧符。', py: 'zǒng bǎ xīn táo huàn jiù fú',
+      { x: '总把新桃换旧符。', py: 'zǒng bǎ xīn táo huàn jiù fú', e: '大家都摘下旧桃符，换上新桃符。桃符，就像现在的春联。',
         act: [['tint', 'a1', '#E53935', 500], ['tint', 'a2', '#E53935', 500], ['tint', 'a3', '#E53935', 500, { at: 400 }], ['tint', 'a4', '#E53935', 500, { at: 400 }], ['tint', 'a5', '#E53935', 500, { at: 800 }], ['tint', 'a6', '#E53935', 500, { at: 800 }], ['tint', 'a7', '#E53935', 500, { at: 1200 }], ['tint', 'a8', '#E53935', 500, { at: 1200 }], ['show', 'fu1', { at: 300 }], ['show', 'fu2', { at: 700 }], ['show', 'fu3', { at: 1100 }], ['show', 'fu4', { at: 1500 }]] }
     ],
     sc: {
@@ -2442,14 +2512,15 @@ const POEMS = [
   {
     id: 'qm', t: '清明', tp: 'qīng míng', d: '唐', a: '杜牧', g: '三年级下', hero: '🌧️',
     intro: '这首诗叫《清明》，是杜牧写的。下着小雨，路上的人想找个地方歇一歇。',
+    story: '清明节到了，天上下着细细的小雨。诗人杜牧一个人走在路上，衣服湿了，心里也想念着家人，很难过。他想找个地方歇一歇，就向一个放牛的小朋友问路。',
     L: [
-      { x: '清明时节雨纷纷，', py: 'qīng míng shí jié yǔ fēn fēn',
+      { x: '清明时节雨纷纷，', py: 'qīng míng shí jié yǔ fēn fēn', e: '清明节的时候，细细的小雨下个不停。',
         act: [['fade', 'grey', 0.6, 1200], ['show', 'c1'], ['show', 'c2', { at: 300 }], ['show', 'c3', { at: 600 }], ['fx', 'rain', 40, 960, 120, 600, { at: 500 }]] },
-      { x: '路上行人欲断魂。', py: 'lù shàng xíng rén yù duàn hún',
+      { x: '路上行人欲断魂。', py: 'lù shàng xíng rén yù duàn hún', e: '路上的行人淋着雨，想念家人，心里很难过。',
         act: [['move', 'man', 360, 0, 2000, 1], ['fx', 'rain', 40, 960, 120, 600], ['bubble', 400, 330, '😔', { at: 1900 }]] },
-      { x: '借问酒家何处有，', py: 'jiè wèn jiǔ jiā hé chù yǒu',
+      { x: '借问酒家何处有，', py: 'jiè wèn jiǔ jiā hé chù yǒu', e: '请问一下，附近哪里有小酒店，可以歇一歇呢？',
         act: [['move', 'ox', -470, 0, 1800], ['fx', 'rain', 40, 960, 120, 600], ['bubble', 400, 330, '🏠❓', { at: 1700 }]] },
-      { x: '牧童遥指杏花村。', py: 'mù tóng yáo zhǐ xìng huā cūn',
+      { x: '牧童遥指杏花村。', py: 'mù tóng yáo zhǐ xìng huā cūn', e: '放牛的小牧童，指着远处开满杏花的村子。',
         act: [['move', 'ox', 0, 0, 300, 1], ['show', 'hand', { at: 400 }], ['glow', 'v1', { at: 900 }], ['show', 'fl1', { at: 900 }], ['show', 'fl2', { at: 1050 }], ['show', 'fl3', { at: 1200 }], ['show', 'fl4', { at: 1350 }], ['show', 'lamp', { at: 1600 }], ['fx', 'rain', 40, 960, 120, 600], ['bubble', 400, 330, '😊', { at: 2100 }]] }
     ],
     sc: {
@@ -2461,14 +2532,15 @@ const POEMS = [
   {
     id: 'jyjr', t: '九月九日忆山东兄弟', tp: 'jiǔ yuè jiǔ rì yì shān dōng xiōng dì', d: '唐', a: '王维', g: '三年级下', hero: '🏔️',
     intro: '这首诗叫《九月九日忆山东兄弟》，是王维写的。过节了，他好想家里的兄弟！',
+    story: '王维十七岁的时候，一个人离开家乡，到京城长安去。九月九日重阳节到了，别人都和家里人一起过节，他却一个人在外地，特别想念家里的兄弟们。',
     L: [
-      { x: '独在异乡为异客，', py: 'dú zài yì xiāng wéi yì kè',
+      { x: '独在异乡为异客，', py: 'dú zài yì xiāng wéi yì kè', e: '诗人一个人在离家很远的地方，像个客人一样。',
         act: [['move', 's1', -640, 0, 2400], ['move', 's2', -660, 0, 2400, null, { at: 200 }], ['hop', 'man', 1, 10, { at: 600 }]] },
-      { x: '每逢佳节倍思亲。', py: 'měi féng jiā jié bèi sī qīn',
+      { x: '每逢佳节倍思亲。', py: 'měi féng jiā jié bèi sī qīn', e: '每到过节的时候，就更加想念家里的亲人。',
         act: [['grow', 'm1', 700], ['grow', 'm2', 700, { at: 250 }], ['grow', 'm3', 700, { at: 500 }], ['bubble', 315, 330, '👪', { at: 1000 }]] },
-      { x: '遥知兄弟登高处，', py: 'yáo zhī xiōng dì dēng gāo chù',
+      { x: '遥知兄弟登高处，', py: 'yáo zhī xiōng dì dēng gāo chù', e: '他知道，家乡的兄弟们今天正一起爬到高高的山上。',
         act: [['show', 'b1'], ['show', 'b2', { at: 150 }], ['show', 'b3', { at: 300 }], ['move', 'b1', 147, -330, 1900, 1, { at: 300 }], ['move', 'b2', 139, -350, 1900, 1, { at: 400 }], ['move', 'b3', 193, -350, 1900, 1, { at: 500 }]] },
-      { x: '遍插茱萸少一人。', py: 'biàn chā zhū yú shǎo yì rén',
+      { x: '遍插茱萸少一人。', py: 'biàn chā zhū yú shǎo yì rén', e: '大家头上插着香香的茱萸，却少了他一个人。',
         act: [['swap', 'b1', '🧍'], ['swap', 'b2', '🧍'], ['swap', 'b3', '🧍'], ['show', 'z1', { at: 400 }], ['show', 'z2', { at: 550 }], ['show', 'z3', { at: 700 }], ['fade', 'ghost', 0.3, 700, { at: 1000 }], ['show', 'q', { at: 1300 }], ['bubble', 315, 330, '🥺', { at: 1800 }]] }
     ],
     sc: {
@@ -2480,14 +2552,15 @@ const POEMS = [
   {
     id: 'czxj', t: '滁州西涧', tp: 'chú zhōu xī jiàn', d: '唐', a: '韦应物', g: '三年级下', hero: '🌿',
     intro: '这首诗叫《滁州西涧》，是韦应物写的。小溪边有小草、小鸟，还有一只小船。',
+    story: '韦应物在滁州做官的时候，常常到城西边的小溪旁散步。一个春天的傍晚，下起了雨，溪水涨了起来，渡口边只剩下一只小船，静静地漂在水上。',
     L: [
-      { x: '独怜幽草涧边生，', py: 'dú lián yōu cǎo jiàn biān shēng',
+      { x: '独怜幽草涧边生，', py: 'dú lián yōu cǎo jiàn biān shēng', e: '诗人最喜欢小溪边那些静静长着的小草。怜，就是喜欢。',
         act: [['grow', 'g1', 800], ['grow', 'g2', 800, { at: 300 }], ['grow', 'g3', 800, { at: 600 }], ['grow', 'g4', 800, { at: 900 }], ['sway', 'g2', 6, { at: 1200 }], ['sway', 'g3', 5, { at: 1300 }], ['fx', 'sparkle', 290, 520, { at: 1400 }]] },
-      { x: '上有黄鹂深树鸣。', py: 'shàng yǒu huáng lí shēn shù míng',
+      { x: '上有黄鹂深树鸣。', py: 'shàng yǒu huáng lí shēn shù míng', e: '茂密的树林深处，有黄鹂鸟在唱歌。',
         act: [['show', 'bird'], ['hop', 'bird', 2, 14, { at: 500 }], ['fx', 'notes', 330, 250, { at: 400 }]] },
-      { x: '春潮带雨晚来急，', py: 'chūn cháo dài yǔ wǎn lái jí',
+      { x: '春潮带雨晚来急，', py: 'chūn cháo dài yǔ wǎn lái jí', e: '傍晚下起了春雨，溪水涨起来，流得好急好急。',
         act: [['fade', 'dusk', 0.35, 1600], ['fx', 'rain', 40, 960, 60, 560], ['tint', 'river', '#4F86A8', 1400], ['show', 'wv1', { at: 600 }], ['show', 'wv2', { at: 900 }], ['fx', 'flow', 'river', { at: 300 }]] },
-      { x: '野渡无人舟自横。', py: 'yě dù wú rén zhōu zì héng',
+      { x: '野渡无人舟自横。', py: 'yě dù wú rén zhōu zì héng', e: '郊外的渡口没有人，一只小船自己横在水面上。',
         act: [['tilt', 'boat', 34], ['move', 'boat', 40, 12, 1600], ['bob', 'boat', { at: 1600 }], ['fx', 'ripple', 815, 455, 2, { at: 400 }]] }
     ],
     sc: {
@@ -2500,14 +2573,15 @@ const POEMS = [
   {
     id: 'dlst', t: '大林寺桃花', tp: 'dà lín sì táo huā', d: '唐', a: '白居易', g: '三年级下', hero: '🌸',
     intro: '这首诗叫《大林寺桃花》，是白居易写的。山下的花都谢了，春天跑到哪里去了呢？',
+    story: '四月的时候，山下的花都开完了，白居易觉得春天已经走了，有点难过。他和朋友爬上庐山，来到大林寺，没想到这里的桃花开得正好，原来春天跑到山上来了。',
     L: [
-      { x: '人间四月芳菲尽，', py: 'rén jiān sì yuè fāng fēi jìn',
+      { x: '人间四月芳菲尽，', py: 'rén jiān sì yuè fāng fēi jìn', e: '四月了，山下的花都已经谢了。芳菲，就是花草。',
         act: [['fx', 'fall', 40, 320, 280, 560, '🌸', 9], ['hide', 'lb1'], ['hide', 'lb2', { at: 200 }], ['hide', 'lb3', { at: 400 }], ['hide', 'lb4', { at: 600 }], ['swap', 'k1', '🥀', { at: 900 }], ['swap', 'k2', '🥀', { at: 1100 }], ['swap', 'k3', '🥀', { at: 1300 }]] },
-      { x: '山寺桃花始盛开。', py: 'shān sì táo huā shǐ shèng kāi',
+      { x: '山寺桃花始盛开。', py: 'shān sì táo huā shǐ shèng kāi', e: '山上寺庙里的桃花，才刚刚开得满满的。',
         act: [['glow', 'temple'], ['show', 'pb1', { at: 300 }], ['show', 'pb2', { at: 450 }], ['show', 'pb3', { at: 600 }], ['show', 'pb4', { at: 750 }], ['show', 'pb5', { at: 900 }], ['show', 'pb6', { at: 1050 }], ['fx', 'sparkle', 740, 300, { at: 1300 }]] },
-      { x: '长恨春归无觅处，', py: 'cháng hèn chūn guī wú mì chù',
+      { x: '长恨春归无觅处，', py: 'cháng hèn chūn guī wú mì chù', e: '诗人常常难过，春天走了，到哪里都找不到。',
         act: [['move', 'poet', -40, 0, 600, 0], ['move', 'poet', 40, 0, 600, 1, { at: 900 }], ['bubble', 300, 330, '🌸❓', { at: 400 }]] },
-      { x: '不知转入此中来。', py: 'bù zhī zhuǎn rù cǐ zhōng lái',
+      { x: '不知转入此中来。', py: 'bù zhī zhuǎn rù cǐ zhōng lái', e: '没想到，春天是悄悄跑到这山上来了。',
         act: [['move', 'poet', 180, -60, 1800, 1], ['bubble', 725, 250, '😊', { at: 1800 }], ['fx', 'sparkle', 612, 320, { at: 1700 }]] }
     ],
     sc: {
@@ -2519,14 +2593,15 @@ const POEMS = [
   {
     id: 'lts', t: '浪淘沙', tsub: '（其七）', tp: 'làng táo shā', d: '唐', a: '刘禹锡', g: '四年级上', hero: '🌊',
     intro: '这首诗叫《浪淘沙》，是刘禹锡写的。八月的大潮来啦，听，轰隆隆！',
+    story: '诗人刘禹锡来到钱塘江边，正好赶上八月看大潮。远远地，一道白白的浪像一堵墙冲过来，声音像打雷一样响，大家都看呆了，他也觉得又惊奇又痛快。',
     L: [
-      { x: '八月涛声吼地来，', py: 'bā yuè tāo shēng hǒu dì lái',
+      { x: '八月涛声吼地来，', py: 'bā yuè tāo shēng hǒu dì lái', e: '八月里，大潮来了，浪声轰隆隆，像大地在吼叫。',
         act: [['show', 'w1'], ['show', 'w2'], ['show', 'w3'], ['move', 'w1', -430, 0, 2400], ['move', 'w2', -450, 0, 2400], ['move', 'w3', -420, 0, 2400], ['hop', 'w1', 3, 18], ['hop', 'w2', 3, 14, { at: 200 }], ['show', 'roar', { at: 500 }], ['hop', 'roar', 3, 12, { at: 1000 }]] },
-      { x: '头高数丈触山回。', py: 'tóu gāo shù zhàng chù shān huí',
+      { x: '头高数丈触山回。', py: 'tóu gāo shù zhàng chù shān huí', e: '浪头有好几丈高，撞到山上，又被弹了回去。',
         act: [['hide', 'roar'], ['hide', 'w1'], ['hide', 'w2'], ['hide', 'w3'], ['show', 'big'], ['move', 'big', -360, 0, 900, null, { at: 200 }], ['fx', 'drops', 300, 230, 140, 6, { at: 1000 }], ['fx', 'sparkle', 300, 300, { at: 1000 }], ['move', 'big', 320, 0, 1300, null, { at: 1300 }]] },
-      { x: '须臾却入海门去，', py: 'xū yú què rù hǎi mén qù',
+      { x: '须臾却入海门去，', py: 'xū yú què rù hǎi mén qù', e: '须臾，就是一会儿，大浪一会儿就退回大海去了。',
         act: [['show', 'gate'], ['move', 'big', 210, -95, 1700, null, { at: 200 }], ['fade', 'big', 0, 1100, { at: 900 }]] },
-      { x: '卷起沙堆似雪堆。', py: 'juǎn qǐ shā duī sì xuě duī',
+      { x: '卷起沙堆似雪堆。', py: 'juǎn qǐ shā duī sì xuě duī', e: '浪花卷起的沙堆，白白的，像一堆堆雪。',
         act: [['show', 'ws'], ['move', 'ws', -1170, 0, 2000], ['fade', 'm3', 1, 500, { at: 600 }], ['fade', 'm2', 1, 500, { at: 950 }], ['fade', 'm1', 1, 500, { at: 1250 }], ['tint', 'm1', '#FFFFFF', 700, { at: 1800 }], ['tint', 'm2', '#FFFFFF', 700, { at: 1800 }], ['tint', 'm3', '#FFFFFF', 700, { at: 1800 }], ['fx', 'sparkle', 520, 540, { at: 2000 }]] }
     ],
     sc: {
@@ -2538,14 +2613,15 @@ const POEMS = [
   {
     id: 'lz', t: '鹿柴', tp: 'lù zhài', d: '唐', a: '王维', g: '四年级上', hero: '🦌',
     intro: '这首诗叫《鹿柴》，是王维写的。安静的大山里，你听，是谁在说话？',
+    story: '诗人王维住在大山里，山里有一片林子，常有小鹿跑来跑去。一个傍晚，他走进林子，看见夕阳的光照进来，落在绿绿的青苔上，心里觉得特别安静。',
     L: [
-      { x: '空山不见人，', py: 'kōng shān bú jiàn rén',
+      { x: '空山不见人，', py: 'kōng shān bú jiàn rén', e: '空空的大山里，一个人也看不见。',
         act: [['show', 'look'], ['move', 'look', 560, 0, 2000, null, { at: 200 }], ['hide', 'look', { at: 2200 }], ['show', 'q', { at: 2200 }]] },
-      { x: '但闻人语响。', py: 'dàn wén rén yǔ xiǎng',
+      { x: '但闻人语响。', py: 'dàn wén rén yǔ xiǎng', e: '只听见远远的地方，有人说话的声音。',
         act: [['hide', 'q'], ['show', 'talk1', { at: 200 }], ['hop', 'talk1', 2, 14, { at: 600 }], ['show', 'talk2', { at: 800 }], ['hop', 'talk2', 2, 14, { at: 1200 }], ['hop', 'deer', 1, 16, { at: 1300 }], ['show', 'ear', { at: 1500 }]] },
-      { x: '返景入深林，', py: 'fǎn yǐng rù shēn lín',
+      { x: '返景入深林，', py: 'fǎn yǐng rù shēn lín', e: '傍晚的太阳光，照进了深深的树林。',
         act: [['hide', 'talk1'], ['hide', 'talk2'], ['hide', 'ear'], ['fade', 'beam1', 0.5, 1600, { at: 200 }], ['fx', 'sparkle', 520, 400, { at: 1300 }]] },
-      { x: '复照青苔上。', py: 'fù zhào qīng tái shàng',
+      { x: '复照青苔上。', py: 'fù zhào qīng tái shàng', e: '阳光又照在地上，照着绿绿的青苔。',
         act: [['fade', 'beam2', 0.5, 1400], ['tint', 'moss', '#9ED35A', 1400, { at: 600 }], ['glow', 'moss', { at: 1300 }], ['fx', 'sparkle', 690, 555, { at: 1600 }]] }
     ],
     sc: {
@@ -2558,14 +2634,15 @@ const POEMS = [
   {
     id: 'mjy', t: '暮江吟', tp: 'mù jiāng yín', d: '唐', a: '白居易', g: '四年级上', hero: '🌅',
     intro: '这首诗叫《暮江吟》，是白居易写的。太阳下山了，江水会变成什么颜色呢？',
+    story: '诗人白居易要到很远的地方去，一路上走呀走。九月初三的傍晚，他来到江边，看见夕阳把江水染成了两种颜色，等到天黑，又看见弯弯的月亮，觉得美极了。',
     L: [
-      { x: '一道残阳铺水中，', py: 'yí dào cán yáng pū shuǐ zhōng',
+      { x: '一道残阳铺水中，', py: 'yí dào cán yáng pū shuǐ zhōng', e: '快要落山的太阳，把光铺在了江面上。',
         act: [['move', 'sun', 0, 40, 2000], ['fade', 'beam', 0.85, 1600, { at: 300 }]] },
-      { x: '半江瑟瑟半江红。', py: 'bàn jiāng sè sè bàn jiāng hóng',
+      { x: '半江瑟瑟半江红。', py: 'bàn jiāng sè sè bàn jiāng hóng', e: '一半江水碧绿碧绿的，一半江水红红的。',
         act: [['tint', 'wl', '#2E8F86', 1300], ['tint', 'wr', '#E8684A', 1300, { at: 900 }], ['fx', 'sparkle', 250, 400, { at: 600 }], ['fx', 'sparkle', 760, 420, { at: 1500 }]] },
-      { x: '可怜九月初三夜，', py: 'kě lián jiǔ yuè chū sān yè',
+      { x: '可怜九月初三夜，', py: 'kě lián jiǔ yuè chū sān yè', e: '可怜，就是可爱。九月初三的夜晚多可爱呀！',
         act: [['move', 'sun', 0, 170, 1600], ['fade', 'beam', 0, 900], ['fade', 'nsky', 1, 1800, { at: 200 }], ['tint', 'hill', '#2D3566', 1800, { at: 200 }], ['tint', 'wl', '#24406E', 1600, { at: 500 }], ['tint', 'wr', '#24406E', 1600, { at: 500 }], ['tint', 'bank', '#3E6B4A', 1600, { at: 500 }], ['show', 's1', { at: 1200 }], ['show', 's2', { at: 1400 }], ['show', 's3', { at: 1600 }], ['show', 'day', { at: 1500 }]] },
-      { x: '露似真珠月似弓。', py: 'lù sì zhēn zhū yuè sì gōng',
+      { x: '露似真珠月似弓。', py: 'lù sì zhēn zhū yuè sì gōng', e: '露水像亮晶晶的珍珠，月亮像一张弯弓。',
         act: [['show', 'd1'], ['show', 'd2', { at: 200 }], ['show', 'd3', { at: 400 }], ['fx', 'sparkle', 200, 500, { at: 600 }], ['hide', 'day'], ['show', 'moon', { at: 700 }], ['glow', 'moon', { at: 800 }]] }
     ],
     sc: {
@@ -2579,14 +2656,15 @@ const POEMS = [
   {
     id: 'txlb', t: '题西林壁', tp: 'tí xī lín bì', d: '宋', a: '苏轼', g: '四年级上', hero: '⛰️',
     intro: '这首诗叫《题西林壁》，是苏轼写的。同一座山，换个地方看，样子就变了！',
+    story: '诗人苏轼去游庐山，在山里走了好多天。他从这边看，从那边看，山的样子总是不一样。最后，他在西林寺的墙壁上写下了这首诗。',
     L: [
-      { x: '横看成岭侧成峰，', py: 'héng kàn chéng lǐng cè chéng fēng',
+      { x: '横看成岭侧成峰，', py: 'héng kàn chéng lǐng cè chéng fēng', e: '从正面看，庐山是长长的山岭，从侧面看，是尖尖的山峰。',
         act: [['show', 'lling', { at: 200 }], ['move', 'su', 330, 0, 1200, null, { at: 600 }], ['hop', 'su', 3, 12, { at: 600 }], ['fade', 'ling', 0, 600, { at: 1100 }], ['fade', 'feng', 1, 600, { at: 1100 }], ['hide', 'lling', { at: 1100 }], ['show', 'lfeng', { at: 1600 }]] },
-      { x: '远近高低各不同。', py: 'yuǎn jìn gāo dī gè bù tóng',
+      { x: '远近高低各不同。', py: 'yuǎn jìn gāo dī gè bù tóng', e: '站远一点、近一点、高一点、低一点，样子都不一样。',
         act: [['hide', 'lfeng'], ['fade', 'feng', 0, 500], ['fade', 'twin', 1, 500], ['fade', 'twin', 0, 500, { at: 800 }], ['fade', 'round', 1, 500, { at: 800 }], ['fade', 'round', 0, 500, { at: 1600 }], ['fade', 'ling', 1, 500, { at: 1600 }], ['move', 'su', -210, 0, 700], ['move', 'su', -210, -30, 700, null, { at: 800 }], ['move', 'su', -210, 30, 700, null, { at: 1600 }]] },
-      { x: '不识庐山真面目，', py: 'bù shí lú shān zhēn miàn mù',
+      { x: '不识庐山真面目，', py: 'bù shí lú shān zhēn miàn mù', e: '可是，怎么也看不清庐山真正的样子。',
         act: [['show', 'c1'], ['show', 'c2', { at: 200 }], ['show', 'c3', { at: 400 }], ['show', 'lu', { at: 700 }], ['bubble', 315, 400, '🤔', { at: 1100 }]] },
-      { x: '只缘身在此山中。', py: 'zhǐ yuán shēn zài cǐ shān zhōng',
+      { x: '只缘身在此山中。', py: 'zhǐ yuán shēn zài cǐ shān zhōng', e: '只因为，我自己就站在这座大山里面呀。',
         act: [['move', 'su', 300, -135, 1600], ['show', 'p1', { at: 900 }], ['show', 'p2', { at: 1050 }], ['show', 'p3', { at: 1200 }], ['show', 'p4', { at: 1350 }], ['bubble', 620, 290, '💡', { at: 1700 }], ['glow', 'su', { at: 1700 }]] }
     ],
     sc: {
@@ -2598,14 +2676,15 @@ const POEMS = [
   {
     id: 'xm', t: '雪梅', tp: 'xuě méi', d: '宋', a: '卢钺', g: '四年级上', hero: '❄️',
     intro: '这首诗叫《雪梅》，是卢钺写的。梅花和雪花在比赛，猜一猜，谁会赢？',
+    story: '冬天快过完了，天上飘着白白的雪，枝头开着香香的梅花。诗人卢钺看了好久，想说说谁更好，可是想来想去，觉得它们各有各的好。',
     L: [
-      { x: '梅雪争春未肯降，', py: 'méi xuě zhēng chūn wèi kěn xiáng',
+      { x: '梅雪争春未肯降，', py: 'méi xuě zhēng chūn wèi kěn xiáng', e: '梅花和雪花在比谁最像春天，谁也不肯认输。',
         act: [['show', 'chun'], ['glow', 'chun', { at: 300 }], ['hop', 'b1', 2, 16, { at: 400 }], ['hop', 'b5', 2, 16, { at: 500 }], ['hop', 'snow', 2, 22, { at: 1200 }], ['fx', 'fall', 560, 980, 20, 420, '❄️', 9]] },
-      { x: '骚人阁笔费评章。', py: 'sāo rén gé bǐ fèi píng zhāng',
+      { x: '骚人阁笔费评章。', py: 'sāo rén gé bǐ fèi píng zhāng', e: '诗人放下笔，想了又想，也说不出谁赢了。',
         act: [['tilt', 'brush', 70], ['move', 'brush', -12, 56, 800], ['bubble', 610, 320, '🤔', { at: 900 }]] },
-      { x: '梅须逊雪三分白，', py: 'méi xū xùn xuě sān fēn bái',
+      { x: '梅须逊雪三分白，', py: 'méi xū xùn xuě sān fēn bái', e: '比颜色白，梅花可比不上雪花。',
         act: [['glow', 'snow'], ['show', 's1', { at: 300 }], ['show', 's2', { at: 550 }], ['show', 's3', { at: 800 }], ['show', 'bai', { at: 1200 }]] },
-      { x: '雪却输梅一段香。', py: 'xuě què shū méi yí duàn xiāng',
+      { x: '雪却输梅一段香。', py: 'xuě què shū méi yí duàn xiāng', e: '可是雪花没有香味，输给了香香的梅花。',
         act: [['glow', 'b1'], ['glow', 'b2', { at: 100 }], ['show', 'xiang', { at: 400 }], ['fx', 'fall', 120, 420, 220, 470, '🌸', 6, { at: 300 }], ['bubble', 610, 320, '👃', { at: 1100 }]] }
     ],
     sc: {
@@ -2619,14 +2698,15 @@ const POEMS = [
   {
     id: 'ce', t: '嫦娥', tp: 'cháng é', d: '唐', a: '李商隐', g: '四年级上', hero: '🐇',
     intro: '这首诗叫《嫦娥》，是李商隐写的。月亮上住着嫦娥姐姐，她会孤单吗？',
+    story: '传说嫦娥偷吃了仙药，一个人飞到了月亮上。有一天晚上，诗人李商隐整夜没有睡，望着天上的月亮，想起了嫦娥，觉得她一定很孤单。',
     L: [
-      { x: '云母屏风烛影深，', py: 'yún mǔ píng fēng zhú yǐng shēn',
+      { x: '云母屏风烛影深，', py: 'yún mǔ píng fēng zhú yǐng shēn', e: '漂亮的屏风上，烛光的影子越来越暗了。',
         act: [['glow', 'candle'], ['fx', 'sparkle', 230, 320, { at: 300 }], ['fade', 'cshad', 0.6, 1200, { at: 700 }], ['fade', 'shad', 0.45, 1500, { at: 1000 }]] },
-      { x: '长河渐落晓星沉。', py: 'cháng hé jiàn luò xiǎo xīng chén',
+      { x: '长河渐落晓星沉。', py: 'cháng hé jiàn luò xiǎo xīng chén', e: '天上的银河慢慢落下去，星星也不见了，天快亮了。',
         act: [['move', 'he', 0, 60, 2200], ['fade', 'he', 0.1, 1700, { at: 500 }], ['move', 'xing', 0, 50, 1800, null, { at: 300 }], ['fade', 'xing', 0, 1200, { at: 1200 }], ['fade', 'sky2', 0.25, 1800, { at: 800 }]] },
-      { x: '嫦娥应悔偷灵药，', py: 'cháng é yīng huǐ tōu líng yào',
+      { x: '嫦娥应悔偷灵药，', py: 'cháng é yīng huǐ tōu líng yào', e: '嫦娥姐姐应该后悔了，不该偷吃仙药飞上月亮。',
         act: [['show', 'change'], ['show', 'rabbit', { at: 250 }], ['bubble', 860, 105, '💊', { at: 500 }], ['bubble', 860, 105, '😔', { at: 1500 }]] },
-      { x: '碧海青天夜夜心。', py: 'bì hǎi qīng tiān yè yè xīn',
+      { x: '碧海青天夜夜心。', py: 'bì hǎi qīng tiān yè yè xīn', e: '每天晚上，她望着蓝蓝的天空，一个人好孤单。',
         act: [['tint', 'sea', '#1F9A8F', 1400], ['fade', 'sky2', 0.6, 1400, { at: 300 }], ['glow', 'moon', { at: 600 }], ['bubble', 860, 105, '🏡', { at: 1200 }]] }
     ],
     sc: {
@@ -2638,14 +2718,15 @@ const POEMS = [
   {
     id: 'cs2', t: '出塞', tsub: '（其一）', tp: 'chū sài', d: '唐', a: '王昌龄', g: '四年级上', hero: '🐎',
     intro: '这首诗叫《出塞》，是王昌龄写的。月亮下面，勇敢的将军守着边关。',
+    story: '诗人王昌龄来到很远很远的边关，看见战士们守在那里，好久都回不了家。他想，要是有一位像飞将军李广那样勇敢的将军在，敌人就不敢来了。',
     L: [
-      { x: '秦时明月汉时关，', py: 'qín shí míng yuè hàn shí guān',
+      { x: '秦时明月汉时关，', py: 'qín shí míng yuè hàn shí guān', e: '天上的月亮和这里的边关，都和很久以前一样。',
         act: [['glow', 'moon'], ['fx', 'sparkle', 130, 90, { at: 300 }], ['glow', 'guan', { at: 1000 }]] },
-      { x: '万里长征人未还。', py: 'wàn lǐ cháng zhēng rén wèi huán',
+      { x: '万里长征人未还。', py: 'wàn lǐ cháng zhēng rén wèi huán', e: '守边关的战士走了好远好远，一直回不了家。',
         act: [['show', 'so1'], ['show', 'so2', { at: 150 }], ['move', 'so1', -240, -165, 2400], ['move', 'so2', -210, -120, 2400], ['hop', 'so1', 5, 8], ['hop', 'so2', 5, 8, { at: 150 }], ['show', 'wanli', { at: 300 }], ['bubble', 430, 300, '🏠', { at: 1700 }]] },
-      { x: '但使龙城飞将在，', py: 'dàn shǐ lóng chéng fēi jiàng zài',
+      { x: '但使龙城飞将在，', py: 'dàn shǐ lóng chéng fēi jiàng zài', e: '要是有飞将军李广那样勇敢的将军守在这里，',
         act: [['hide', 'wanli'], ['show', 'gen'], ['move', 'gen', 760, 0, 1600, 1], ['glow', 'gen', { at: 1600 }], ['hop', 'gen', 1, 18, { at: 1700 }], ['show', 'flag', { at: 1800 }], ['bubble', 770, 300, '💪', { at: 1900 }]] },
-      { x: '不教胡马度阴山。', py: 'bù jiāo hú mǎ dù yīn shān',
+      { x: '不教胡马度阴山。', py: 'bù jiāo hú mǎ dù yīn shān', e: '敌人的马队，就不敢越过阴山来啦。',
         act: [['show', 'yinshan'], ['show', 'h1', { at: 200 }], ['show', 'h2', { at: 350 }], ['move', 'h1', -40, 15, 700, null, { at: 400 }], ['move', 'h2', -40, 15, 700, null, { at: 400 }], ['hop', 'gen', 1, 18, { at: 900 }], ['bubble', 770, 300, '✋', { at: 900 }], ['move', 'h1', 130, -30, 1100, 1, { at: 1300 }], ['move', 'h2', 130, -30, 1100, 1, { at: 1300 }], ['fade', 'h1', 0, 700, { at: 1800 }], ['fade', 'h2', 0, 700, { at: 1800 }]] }
     ],
     sc: {
@@ -2657,14 +2738,15 @@ const POEMS = [
   {
     id: 'lzc', t: '凉州词', tsub: '（其一）', tp: 'liáng zhōu cí', d: '唐', a: '王翰', g: '四年级上', hero: '🍇',
     intro: '这首诗叫《凉州词》，是王翰写的。很远很远的边关，夜里响起了琵琶声。',
+    story: '很久以前，在西北很远很远的边关，战士们就要出发去守卫边疆了。出发前，大家围坐在一起开宴会，又高兴又勇敢，诗人王翰就写下了这首诗。',
     L: [
-      { x: '葡萄美酒夜光杯，', py: 'pú táo měi jiǔ yè guāng bēi',
+      { x: '葡萄美酒夜光杯，', py: 'pú táo měi jiǔ yè guāng bēi', e: '出发前的宴会上，摆着葡萄美酒，杯子闪闪发光。',
         act: [['show', 'grapes'], ['show', 'cup', { at: 300 }], ['glow', 'cup', { at: 700 }], ['fx', 'sparkle', 570, 470, { at: 1000 }]] },
-      { x: '欲饮琵琶马上催。', py: 'yù yǐn pí pá mǎ shàng cuī',
+      { x: '欲饮琵琶马上催。', py: 'yù yǐn pí pá mǎ shàng cuī', e: '大家正要举杯，马背上响起了琵琶声，催大家出发。',
         act: [['hop', 'soldier', 1, 14], ['move', 'horse', -330, 0, 1800], ['move', 'pipa', -330, 0, 1800], ['hop', 'horse', 3, 10, { at: 200 }], ['hop', 'pipa', 3, 10, { at: 200 }], ['fx', 'notes', 770, 330, { at: 1100 }], ['tilt', 'pipa', -10, { at: 1800 }]] },
-      { x: '醉卧沙场君莫笑，', py: 'zuì wò shā chǎng jūn mò xiào',
+      { x: '醉卧沙场君莫笑，', py: 'zuì wò shā chǎng jūn mò xiào', e: '就算躺在沙地上睡着了，你也不要笑话我们。',
         act: [['swap', 'soldier', '😴'], ['tilt', 'soldier', -70, { at: 200 }], ['move', 'soldier', -10, 45, 800, null, { at: 200 }], ['fx', 'zzz', 300, 440, { at: 900 }], ['bubble', 420, 330, '🤫', { at: 1400 }]] },
-      { x: '古来征战几人回？', py: 'gǔ lái zhēng zhàn jǐ rén huí',
+      { x: '古来征战几人回？', py: 'gǔ lái zhēng zhàn jǐ rén huí', e: '从古到今，去远方守边关的人，有几个能早早回家呢？',
         act: [['bubble', 420, 330, '🏡', { at: 200 }], ['glow', 'moon', { at: 800 }], ['fx', 'notes', 760, 330, { at: 900 }]] }
     ],
     sc: {
@@ -2676,14 +2758,15 @@ const POEMS = [
   {
     id: 'xrjj', t: '夏日绝句', tp: 'xià rì jué jù', d: '宋', a: '李清照', g: '四年级上', hero: '🤴',
     intro: '这首诗叫《夏日绝句》，是李清照写的。她想起了很久以前一位勇敢的大英雄。',
+    story: '诗人李清照生活的时候，有很多人一遇到困难就逃跑。她很生气，想起了很久以前的大英雄项羽，他宁可不回家，也不肯认输。',
     L: [
-      { x: '生当作人杰，', py: 'shēng dāng zuò rén jié',
+      { x: '生当作人杰，', py: 'shēng dāng zuò rén jié', e: '活着的时候，要做人群里最了不起的人。',
         act: [['glow', 'hero'], ['hop', 'hero', 2, 18, { at: 300 }], ['fx', 'sparkle', 630, 450, { at: 500 }], ['bubble', 705, 330, '💪', { at: 1000 }]] },
-      { x: '死亦为鬼雄。', py: 'sǐ yì wéi guǐ xióng',
+      { x: '死亦为鬼雄。', py: 'sǐ yì wéi guǐ xióng', e: '就算到了最后，也要做顶天立地的英雄。',
         act: [['show', 'star'], ['glow', 'star', { at: 400 }], ['fx', 'sparkle', 470, 100, { at: 700 }], ['tilt', 'hero', -10, { at: 300 }]] },
-      { x: '至今思项羽，', py: 'zhì jīn sī xiàng yǔ',
+      { x: '至今思项羽，', py: 'zhì jīn sī xiàng yǔ', e: '直到今天，大家还在想念大英雄项羽。',
         act: [['tilt', 'hero', 0], ['show', 'poet'], ['bubble', 245, 395, '🤴', { at: 500 }], ['show', 'xy', { at: 1100 }]] },
-      { x: '不肯过江东。', py: 'bù kěn guò jiāng dōng',
+      { x: '不肯过江东。', py: 'bù kěn guò jiāng dōng', e: '他宁可不回江东的家，也不肯认输逃走。',
         act: [['show', 'jd'], ['move', 'boat', 110, 30, 900], ['bubble', 705, 330, '✋', { at: 900 }], ['move', 'boat', -280, -40, 1200, null, { at: 1500 }]] }
     ],
     sc: {
@@ -2695,14 +2778,15 @@ const POEMS = [
   {
     id: 'bdd', t: '别董大', tsub: '（其一）', tp: 'bié dǒng dà', d: '唐', a: '高适', g: '四年级上', hero: '👋',
     intro: '这首诗叫《别董大》，是高适写的。好朋友要走了，他对朋友说了什么呢？',
+    story: '诗人高适有一位好朋友叫董大，是很会弹琴的音乐家。一个冬天，董大要去很远的地方，北风呼呼地吹，高适送他上路，心里舍不得，却笑着给他打气。',
     L: [
-      { x: '千里黄云白日曛，', py: 'qiān lǐ huáng yún bái rì xūn',
+      { x: '千里黄云白日曛，', py: 'qiān lǐ huáng yún bái rì xūn', e: '一眼望去，天上全是黄云，太阳也昏昏暗暗的。',
         act: [['fade', 'haze', 0.55, 1500], ['fade', 'y1', 0.95, 900], ['fade', 'y2', 0.95, 900, { at: 300 }], ['fade', 'y3', 0.95, 900, { at: 600 }], ['fade', 'sun', 0.45, 1400, { at: 900 }]] },
-      { x: '北风吹雁雪纷纷。', py: 'běi fēng chuī yàn xuě fēn fēn',
+      { x: '北风吹雁雪纷纷。', py: 'běi fēng chuī yàn xuě fēn fēn', e: '北风呼呼地吹着大雁，雪花一片片飘下来。',
         act: [['show', 'wind'], ['show', 'bei', { at: 200 }], ['show', 'g1', { at: 300 }], ['show', 'g2', { at: 400 }], ['show', 'g3', { at: 500 }], ['move', 'g1', 360, 0, 2100, null, { at: 400 }], ['move', 'g2', 360, 0, 2100, null, { at: 450 }], ['move', 'g3', 360, 0, 2100, null, { at: 500 }], ['fx', 'fall', 40, 960, 30, 560, '❄️', 12, { at: 500 }]] },
-      { x: '莫愁前路无知己，', py: 'mò chóu qián lù wú zhī jǐ',
+      { x: '莫愁前路无知己，', py: 'mò chóu qián lù wú zhī jǐ', e: '别担心前面的路上，没有懂你的好朋友。',
         act: [['fx', 'flow', 'road'], ['bubble', 400, 390, '😟', { at: 200 }], ['hop', 'poet', 2, 14, { at: 1000 }], ['bubble', 400, 390, '😊', { at: 1700 }]] },
-      { x: '天下谁人不识君。', py: 'tiān xià shuí rén bù shí jūn',
+      { x: '天下谁人不识君。', py: 'tiān xià shuí rén bù shí jūn', e: '你这么有本事，天下哪个人不认识你呀！',
         act: [['show', 'q1'], ['show', 'q2', { at: 250 }], ['show', 'q3', { at: 500 }], ['show', 'q4', { at: 750 }], ['hop', 'q1', 2, 14, { at: 1000 }], ['hop', 'q2', 2, 14, { at: 1100 }], ['hop', 'q3', 2, 14, { at: 1200 }], ['hop', 'q4', 2, 14, { at: 1300 }], ['glow', 'dong', { at: 1000 }], ['fx', 'sparkle', 290, 480, { at: 1400 }]] }
     ],
     sc: {
@@ -2714,14 +2798,15 @@ const POEMS = [
   {
     id: 'sxsx', t: '宿新市徐公店', tp: 'sù xīn shì xú gōng diàn', d: '宋', a: '杨万里', g: '四年级下', hero: '🦋',
     intro: '这首诗叫《宿新市徐公店》，是杨万里写的。一个小朋友在追蝴蝶，追到了吗？',
+    story: '春天快过去了，诗人杨万里出远门，晚上住在新市一家姓徐的人开的小旅店里。早上起来，他在村子里散步，看见到处都是金黄的菜花，心里可高兴了。',
     L: [
-      { x: '篱落疏疏一径深，', py: 'lí luò shū shū yí jìng shēn',
+      { x: '篱落疏疏一径深，', py: 'lí luò shū shū yí jìng shēn', e: '稀稀疏疏的篱笆旁边，一条小路伸向远方。',
         act: [['fade', 'p1', 1, 500], ['fade', 'p2', 1, 500, { at: 250 }], ['fade', 'p3', 1, 500, { at: 500 }], ['fade', 'p4', 1, 500, { at: 750 }], ['fade', 'r1', 1, 500, { at: 1000 }], ['fade', 'r2', 1, 500, { at: 1000 }], ['fx', 'flow', 'road', { at: 600 }]] },
-      { x: '树头新绿未成阴。', py: 'shù tóu xīn lǜ wèi chéng yīn',
+      { x: '树头新绿未成阴。', py: 'shù tóu xīn lǜ wèi chéng yīn', e: '树上刚长出嫩绿的叶子，还没有长成大树荫。',
         act: [['grow', 'lf1', 700], ['grow', 'lf2', 700, { at: 200 }], ['grow', 'lf3', 700, { at: 400 }], ['grow', 'lf4', 700, { at: 600 }], ['grow', 'lf5', 700, { at: 800 }], ['grow', 'lf6', 700, { at: 1000 }], ['fx', 'sparkle', 900, 85, { at: 1200 }], ['fx', 'sparkle', 150, 530, { at: 1500 }]] },
-      { x: '儿童急走追黄蝶，', py: 'ér tóng jí zǒu zhuī huáng dié',
+      { x: '儿童急走追黄蝶，', py: 'ér tóng jí zǒu zhuī huáng dié', e: '一个小朋友急急忙忙地跑，在追一只黄蝴蝶。',
         act: [['show', 'bf'], ['bob', 'bf'], ['move', 'bf', 330, -30, 2400], ['move', 'boy', 480, 0, 2400, 1], ['hop', 'boy', 6, 12]] },
-      { x: '飞入菜花无处寻。', py: 'fēi rù cài huā wú chù xún',
+      { x: '飞入菜花无处寻。', py: 'fēi rù cài huā wú chù xún', e: '蝴蝶飞进黄黄的菜花里，再也找不到啦！',
         act: [['move', 'bf', 220, 10, 1300], ['hide', 'bf', { at: 1200 }], ['sway', 'f6', 10, { at: 900 }], ['sway', 'f2', 8, { at: 1000 }], ['move', 'boy', 110, 0, 1100], ['hop', 'boy', 2, 12], ['tilt', 'boy', -10, { at: 1300 }], ['bubble', 640, 380, '❓', { at: 1500 }]] }
     ],
     sc: {
@@ -2733,14 +2818,15 @@ const POEMS = [
   {
     id: 'sstx', t: '四时田园杂兴', tsub: '（其二十五）', tp: 'sì shí tián yuán zá xìng', d: '宋', a: '范成大', g: '四年级下', hero: '🍑',
     intro: '这首诗叫《四时田园杂兴》，是范成大写的。初夏的乡村，果子熟了，花儿开了。',
+    story: '诗人范成大老了，回到乡下的老家住。他一年四季都看着村子里的样子，写了好多好多首诗。这一首写的是初夏，大人们都去田里忙了，村子里静悄悄的。',
     L: [
-      { x: '梅子金黄杏子肥，', py: 'méi zi jīn huáng xìng zi féi',
+      { x: '梅子金黄杏子肥，', py: 'méi zi jīn huáng xìng zi féi', e: '梅子变得金黄金黄，杏子长得又大又圆。',
         act: [['show', 'm1'], ['show', 'm2', { at: 200 }], ['show', 'm3', { at: 400 }], ['show', 'm4', { at: 600 }], ['fx', 'sparkle', 150, 220, { at: 500 }], ['grow', 'x1', 600, { at: 1200 }], ['grow', 'x2', 600, { at: 1400 }], ['grow', 'x3', 600, { at: 1600 }], ['grow', 'x4', 600, { at: 1800 }]] },
-      { x: '麦花雪白菜花稀。', py: 'mài huā xuě bái cài huā xī',
+      { x: '麦花雪白菜花稀。', py: 'mài huā xuě bái cài huā xī', e: '麦花白得像雪，油菜花快谢了，只剩下稀稀的几朵。',
         act: [['show', 'd1'], ['show', 'd2', { at: 150 }], ['show', 'd3', { at: 300 }], ['show', 'd4', { at: 450 }], ['show', 'd5', { at: 600 }], ['show', 'd6', { at: 750 }], ['show', 'd7', { at: 900 }], ['show', 'd8', { at: 1050 }], ['hide', 'c2', { at: 1400 }], ['hide', 'c4', { at: 1700 }], ['hide', 'c5', { at: 2000 }]] },
-      { x: '日长篱落无人过，', py: 'rì cháng lí luò wú rén guò',
+      { x: '日长篱落无人过，', py: 'rì cháng lí luò wú rén guò', e: '白天长长的，篱笆旁边，一个人也没有走过。',
         act: [['move', 'sun', 380, -10, 2600], ['bubble', 590, 200, '🚶🚫', { at: 700 }]] },
-      { x: '惟有蜻蜓蛱蝶飞。', py: 'wéi yǒu qīng tíng jiá dié fēi',
+      { x: '惟有蜻蜓蛱蝶飞。', py: 'wéi yǒu qīng tíng jiá dié fēi', e: '只有蜻蜓和蝴蝶，在飞来飞去。',
         act: [['show', 'dfly'], ['move', 'dfly', -360, 20, 2200], ['show', 'bfly', { at: 300 }], ['move', 'bfly', 360, 40, 2200, 1, { at: 300 }], ['bob', 'bfly', { at: 2500 }], ['bob', 'dfly', { at: 2300 }]] }
     ],
     sc: {
@@ -2752,22 +2838,23 @@ const POEMS = [
   {
     id: 'qplcj', t: '清平乐·村居', tp: 'qīng píng yuè cūn jū', d: '宋', a: '辛弃疾', g: '四年级下', hero: '🛖',
     intro: '这首词叫《清平乐·村居》，是辛弃疾写的。小河边住着一家人，他们都在做什么呢？',
+    story: '诗人辛弃疾不当官以后，住在江西的乡下。他常常到村子里走走，看见小溪边的茅草屋里，老爷爷、老奶奶和三个儿子过得开开心心，心里觉得好温暖。',
     L: [
-      { x: '茅檐低小，', py: 'máo yán dī xiǎo',
+      { x: '茅檐低小，', py: 'máo yán dī xiǎo', e: '茅草盖的小屋子，屋檐又低又小。',
         act: [['show', 'hut'], ['hop', 'hut', 1, 14, { at: 600 }]] },
-      { x: '溪上青青草。', py: 'xī shàng qīng qīng cǎo',
+      { x: '溪上青青草。', py: 'xī shàng qīng qīng cǎo', e: '小溪边上，长满了青青的小草。',
         act: [['fx', 'flow', 'creek'], ['grow', 'g1', 700], ['grow', 'g2', 700, { at: 250 }], ['grow', 'g3', 700, { at: 500 }], ['grow', 'g4', 700, { at: 750 }], ['grow', 'g5', 700, { at: 1000 }]] },
-      { x: '醉里吴音相媚好，', py: 'zuì lǐ wú yīn xiāng mèi hǎo',
+      { x: '醉里吴音相媚好，', py: 'zuì lǐ wú yīn xiāng mèi hǎo', e: '听，谁在用软软的家乡话说说笑笑，好亲热呀。',
         act: [['show', 'gpa'], ['show', 'gma', { at: 200 }], ['fx', 'notes', 165, 390, { at: 500 }], ['sway', 'gpa', 6, { at: 700 }], ['sway', 'gma', 6, { at: 900 }], ['bubble', 410, 290, '🥰', { at: 1300 }]] },
-      { x: '白发谁家翁媪？', py: 'bái fà shuí jiā wēng ǎo',
+      { x: '白发谁家翁媪？', py: 'bái fà shuí jiā wēng ǎo', e: '原来是谁家头发白白的老爷爷和老奶奶。',
         act: [['glow', 'gpa'], ['glow', 'gma', { at: 200 }], ['bubble', 410, 290, '❓', { at: 900 }]] },
-      { x: '大儿锄豆溪东，', py: 'dà ér chú dòu xī dōng',
+      { x: '大儿锄豆溪东，', py: 'dà ér chú dòu xī dōng', e: '大儿子在小溪东边的豆地里锄草。',
         act: [['show', 'son1'], ['show', 'east', { at: 300 }], ['sway', 'son1', 12, { at: 500 }], ['grow', 'b1', 600, { at: 800 }], ['grow', 'b2', 600, { at: 1100 }], ['grow', 'b3', 600, { at: 1400 }], ['grow', 'b4', 600, { at: 1700 }]] },
-      { x: '中儿正织鸡笼。', py: 'zhōng ér zhèng zhī jī lóng',
+      { x: '中儿正织鸡笼。', py: 'zhōng ér zhèng zhī jī lóng', e: '二儿子正坐着，一下一下地编鸡笼。',
         act: [['show', 'son2'], ['grow', 'cage', 1600, { at: 300 }], ['hop', 'son2', 3, 10, { at: 500 }], ['show', 'hen', { at: 1900 }]] },
-      { x: '最喜小儿亡赖，', py: 'zuì xǐ xiǎo ér wú lài',
+      { x: '最喜小儿亡赖，', py: 'zuì xǐ xiǎo ér wú lài', e: '最讨人喜欢的，是调皮的小儿子。',
         act: [['fade', 'kb', 1, 500], ['fade', 'kl', 1, 500], ['fade', 'ka', 1, 500], ['fade', 'kf', 1, 500], ['show', 'kid'], ['hop', 'kid', 2, 12, { at: 600 }], ['fx', 'sparkle', 800, 540, { at: 500 }], ['bubble', 650, 440, '😜', { at: 1100 }]] },
-      { x: '溪头卧剥莲蓬。', py: 'xī tóu wò bāo lián péng',
+      { x: '溪头卧剥莲蓬。', py: 'xī tóu wò bāo lián péng', e: '他趴在小溪边上，正在剥莲蓬吃呢。',
         act: [['show', 'pod'], ['show', 's1', { at: 700 }], ['hop', 's1', 1, 30, { at: 900 }], ['show', 's2', { at: 1100 }], ['hop', 's2', 1, 30, { at: 1300 }], ['show', 's3', { at: 1500 }], ['hop', 's3', 1, 30, { at: 1700 }], ['bubble', 650, 440, '😋', { at: 2000 }]] }
     ],
     sc: {
@@ -2779,22 +2866,23 @@ const POEMS = [
   {
     id: 'bszym', t: '卜算子·咏梅', tp: 'bǔ suàn zǐ yǒng méi', d: '现代', a: '毛泽东', by: '毛泽东', byp: 'máo zé dōng', g: '四年级下', hero: '🌸',
     intro: '这首词叫《卜算子·咏梅》，是毛泽东写的。冰天雪地的山崖上，谁在笑呢？',
+    story: '很久以前，诗人陆游写过一首梅花的词，写得有点难过。毛泽东读了，换了一个想法，也写了这首词，写一枝不怕冷的梅花，勇敢又快乐。',
     L: [
-      { x: '风雨送春归，', py: 'fēng yǔ sòng chūn guī',
+      { x: '风雨送春归，', py: 'fēng yǔ sòng chūn guī', e: '刮风下雨，把春天送走了。',
         act: [['show', 'wind'], ['hop', 'wind', 2, 14, { at: 400 }], ['fx', 'rain', 380, 960, 30, 560], ['fx', 'rain', 360, 960, 30, 560, { at: 500 }], ['fx', 'rain', 20, 330, 30, 400, { at: 250 }], ['fx', 'fall', 520, 900, 120, 560, '🍂', 7, { at: 300 }]] },
-      { x: '飞雪迎春到。', py: 'fēi xuě yíng chūn dào',
+      { x: '飞雪迎春到。', py: 'fēi xuě yíng chūn dào', e: '漫天飞舞的雪花，又把春天迎回来了。',
         act: [['hide', 'wind'], ['fx', 'fall', 40, 960, 10, 580, '❄️', 14], ['tint', 'land', '#F2F6FA', 1800, { at: 500 }], ['tint', 'm1', '#E6EEF4', 1800, { at: 500 }], ['tint', 'm2', '#EDF3F7', 1800, { at: 500 }], ['fade', 'cap', 1, 1500, { at: 600 }]] },
-      { x: '已是悬崖百丈冰，', py: 'yǐ shì xuán yá bǎi zhàng bīng',
+      { x: '已是悬崖百丈冰，', py: 'yǐ shì xuán yá bǎi zhàng bīng', e: '高高的悬崖上，挂满了长长的冰。',
         act: [['tint', 'cliff', '#9FC9DE', 1400], ['fade', 'ic1', 1, 500, { at: 400 }], ['fade', 'ic2', 1, 500, { at: 700 }], ['fade', 'ic3', 1, 500, { at: 1000 }], ['fade', 'ic4', 1, 500, { at: 1300 }], ['fade', 'ic5', 1, 500, { at: 1600 }], ['fx', 'sparkle', 170, 340, { at: 1500 }]] },
-      { x: '犹有花枝俏。', py: 'yóu yǒu huā zhī qiào',
+      { x: '犹有花枝俏。', py: 'yóu yǒu huā zhī qiào', e: '可是，还有一枝梅花开得好漂亮。',
         act: [['show', 'fl1'], ['show', 'fl2', { at: 200 }], ['show', 'fl3', { at: 400 }], ['show', 'fl4', { at: 600 }], ['show', 'fl5', { at: 800 }], ['show', 'fl6', { at: 1000 }], ['glow', 'fl1', { at: 1300 }]] },
-      { x: '俏也不争春，', py: 'qiào yě bù zhēng chūn',
+      { x: '俏也不争春，', py: 'qiào yě bù zhēng chūn', e: '梅花这么漂亮，却不和别的花抢春天。',
         act: [['sway', 'fl1', 8], ['sway', 'fl3', 8], ['sway', 'fl5', 8], ['fx', 'sparkle', 480, 110, { at: 300 }], ['bubble', 700, 120, '☺️', { at: 900 }]] },
-      { x: '只把春来报。', py: 'zhǐ bǎ chūn lái bào',
+      { x: '只把春来报。', py: 'zhǐ bǎ chūn lái bào', e: '它只是告诉大家，春天就要来啦。',
         act: [['fade', 'dim', 0, 1500], ['show', 'sun', { at: 400 }], ['bubble', 712, 120, 'T:春来了！', { at: 600 }]] },
-      { x: '待到山花烂漫时，', py: 'dài dào shān huā làn màn shí',
+      { x: '待到山花烂漫时，', py: 'dài dào shān huā làn màn shí', e: '等到满山的花都开得热热闹闹的时候，',
         act: [['tint', 'land', '#9CCB7E', 1200], ['tint', 'm1', '#86B77E', 1200], ['tint', 'm2', '#97C48A', 1200], ['grow', 'h1', 600, { at: 400 }], ['grow', 'h2', 600, { at: 550 }], ['grow', 'h3', 600, { at: 700 }], ['grow', 'h4', 600, { at: 850 }], ['grow', 'h5', 600, { at: 1000 }], ['grow', 'h6', 600, { at: 1150 }], ['grow', 'h7', 600, { at: 1300 }], ['grow', 'h8', 600, { at: 1450 }], ['grow', 'h9', 600, { at: 1600 }], ['grow', 'h10', 600, { at: 1750 }]] },
-      { x: '她在丛中笑。', py: 'tā zài cóng zhōng xiào',
+      { x: '她在丛中笑。', py: 'tā zài cóng zhōng xiào', e: '梅花就在花丛里，开心地笑呀笑。',
         act: [['glow', 'fl1'], ['hop', 'fl2', 2, 14], ['hop', 'fl4', 2, 14, { at: 150 }], ['hop', 'fl6', 2, 14, { at: 300 }], ['bubble', 700, 120, '😄', { at: 600 }], ['fx', 'sparkle', 480, 110, { at: 900 }]] }
     ],
     sc: {
@@ -2806,14 +2894,15 @@ const POEMS = [
   {
     id: 'jpdb', t: '江畔独步寻花', tsub: '（其五）', tp: 'jiāng pàn dú bù xún huā', d: '唐', a: '杜甫', g: '四年级下', hero: '🌺',
     intro: '这首诗叫《江畔独步寻花》，是杜甫写的。他一个人在江边散步，找到了什么花呢？',
+    story: '诗人杜甫走了很多路，终于在成都安了家，住在江边的小草屋里。春天来了，江边的花一下子全开了，他高兴得不得了，一个人沿着江边去找花看。',
     L: [
-      { x: '黄师塔前江水东，', py: 'huáng shī tǎ qián jiāng shuǐ dōng',
+      { x: '黄师塔前江水东，', py: 'huáng shī tǎ qián jiāng shuǐ dōng', e: '黄师塔前面，江水哗哗地向东流。',
         act: [['fx', 'flow', 'river'], ['move', 'duck', 420, 0, 2600, 1], ['show', 'east', { at: 900 }], ['move', 'poet', 360, 0, 2400, 1], ['hop', 'poet', 5, 8]] },
-      { x: '春光懒困倚微风。', py: 'chūn guāng lǎn kùn yǐ wēi fēng',
+      { x: '春光懒困倚微风。', py: 'chūn guāng lǎn kùn yǐ wēi fēng', e: '春天暖洋洋的，人懒懒的，想靠着微风歇一歇。',
         act: [['glow', 'sun'], ['fx', 'fall', 60, 560, 120, 520, '🍃', 5, { at: 200 }], ['tilt', 'poet', -10, { at: 400 }], ['bubble', 400, 330, '🥱', { at: 900 }]] },
-      { x: '桃花一簇开无主，', py: 'táo huā yí cù kāi wú zhǔ',
+      { x: '桃花一簇开无主，', py: 'táo huā yí cù kāi wú zhǔ', e: '一大丛桃花开得正好，没有主人看管。',
         act: [['show', 'p1'], ['show', 'p2', { at: 150 }], ['show', 'p3', { at: 300 }], ['show', 'p4', { at: 450 }], ['show', 'p5', { at: 600 }], ['show', 'p6', { at: 750 }], ['show', 'p7', { at: 900 }], ['show', 'p8', { at: 1050 }], ['tilt', 'poet', 0], ['bubble', 400, 330, '🤷', { at: 1600 }]] },
-      { x: '可爱深红爱浅红？', py: 'kě ài shēn hóng ài qiǎn hóng',
+      { x: '可爱深红爱浅红？', py: 'kě ài shēn hóng ài qiǎn hóng', e: '你喜欢深红色的，还是浅红色的呢？',
         act: [['show', 'deep'], ['glow', 'deep', { at: 300 }], ['show', 'light', { at: 1000 }], ['glow', 'light', { at: 1300 }], ['bubble', 400, 330, '🤔', { at: 1800 }]] }
     ],
     sc: {
@@ -2825,14 +2914,15 @@ const POEMS = [
   {
     id: 'fe', t: '蜂', tp: 'fēng', d: '唐', a: '罗隐', g: '四年级下', hero: '🐝',
     intro: '这首诗叫《蜂》，是罗隐写的。小蜜蜂飞来飞去，它这么辛苦，是为了谁呢？',
+    story: '唐朝有一位诗人叫罗隐。他看见小蜜蜂从早到晚忙个不停，飞到这里，飞到那里，采了好多好多花，心里很感动，就为小蜜蜂写了这首诗。',
     L: [
-      { x: '不论平地与山尖，', py: 'bú lùn píng dì yǔ shān jiān',
+      { x: '不论平地与山尖，', py: 'bú lùn píng dì yǔ shān jiān', e: '不管是平平的地上，还是高高的山尖上，',
         act: [['move', 'bee', 220, 0, 900, 1], ['move', 'bee', 400, -350, 1400, 1, { at: 1050 }], ['hop', 'f4', 1, 14, { at: 2400 }]] },
-      { x: '无限风光尽被占。', py: 'wú xiàn fēng guāng jìn bèi zhàn',
+      { x: '无限风光尽被占。', py: 'wú xiàn fēng guāng jìn bèi zhàn', e: '开着花的好地方，全被小蜜蜂占满啦。',
         act: [['show', 'b2'], ['show', 'b3', { at: 250 }], ['show', 'b4', { at: 500 }], ['show', 'b5', { at: 750 }], ['show', 'b6', { at: 1000 }], ['bob', 'bee'], ['bob', 'b2', { at: 300 }], ['bob', 'b3', { at: 550 }], ['bob', 'b4', { at: 800 }], ['bob', 'b5', { at: 1050 }], ['bob', 'b6', { at: 1300 }]] },
-      { x: '采得百花成蜜后，', py: 'cǎi dé bǎi huā chéng mì hòu',
+      { x: '采得百花成蜜后，', py: 'cǎi dé bǎi huā chéng mì hòu', e: '小蜜蜂采了好多花，酿成了甜甜的蜂蜜。',
         act: [['move', 'bee', -230, 350, 1800, 0], ['move', 'b5', 200, 10, 1600, 1, { at: 200 }], ['move', 'b2', -35, 245, 1700, 0, { at: 100 }], ['grow', 'honey', 900, { at: 1300 }], ['fx', 'sparkle', 490, 520, { at: 2000 }]] },
-      { x: '为谁辛苦为谁甜？', py: 'wèi shuí xīn kǔ wèi shuí tián',
+      { x: '为谁辛苦为谁甜？', py: 'wèi shuí xīn kǔ wèi shuí tián', e: '它这么辛苦，是为了谁，又让谁尝到甜呢？',
         act: [['fx', 'drops', 495, 395, 70, 4], ['bubble', 380, 290, '❓', { at: 500 }], ['show', 'girl', { at: 1300 }], ['hop', 'girl', 2, 14, { at: 1800 }]] }
     ],
     sc: {
@@ -2844,14 +2934,15 @@ const POEMS = [
   {
     id: 'dzjts', t: '独坐敬亭山', tp: 'dú zuò jìng tíng shān', d: '唐', a: '李白', g: '四年级下', hero: '⛰️',
     intro: '这首诗叫《独坐敬亭山》，是李白写的。他一个人坐着，看着一座山，看了好久好久。',
+    story: '诗人李白走过很多地方，心里常常有点孤单。有一次他来到宣城，一个人坐在敬亭山前，静静地看着山，觉得这座山就像他的老朋友。',
     L: [
-      { x: '众鸟高飞尽，', py: 'zhòng niǎo gāo fēi jìn',
+      { x: '众鸟高飞尽，', py: 'zhòng niǎo gāo fēi jìn', e: '鸟儿们都高高地飞走了，一只也看不见。',
         act: [['move', 'n1', 620, -330, 2000, 1], ['move', 'n2', 600, -380, 2100, 1, { at: 150 }], ['move', 'n3', 560, -320, 2000, 1, { at: 300 }], ['move', 'n4', 520, -300, 1900, 1, { at: 450 }], ['move', 'n5', 480, -300, 1800, 1, { at: 600 }]] },
-      { x: '孤云独去闲。', py: 'gū yún dú qù xián',
+      { x: '孤云独去闲。', py: 'gū yún dú qù xián', e: '一朵孤零零的白云，也慢悠悠地飘走了。',
         act: [['move', 'cloud', 300, -20, 2600], ['fade', 'cloud', 0, 1200, { at: 1500 }]] },
-      { x: '相看两不厌，', py: 'xiāng kàn liǎng bú yàn',
+      { x: '相看两不厌，', py: 'xiāng kàn liǎng bú yàn', e: '我看着山，山看着我，怎么看也看不够。',
         act: [['show', 'eyes'], ['hop', 'eyes', 1, 10, { at: 700 }], ['bubble', 290, 300, '😊', { at: 1000 }], ['hop', 'poet', 1, 10, { at: 1300 }]] },
-      { x: '只有敬亭山。', py: 'zhǐ yǒu jìng tíng shān',
+      { x: '只有敬亭山。', py: 'zhǐ yǒu jìng tíng shān', e: '只有敬亭山，一直静静地陪着我。',
         act: [['glow', 'mtn'], ['show', 'name', { at: 600 }], ['fx', 'sparkle', 650, 300, { at: 900 }]] }
     ],
     sc: {
@@ -2863,14 +2954,15 @@ const POEMS = [
   {
     id: 'frl', t: '芙蓉楼送辛渐', tp: 'fú róng lóu sòng xīn jiàn', d: '唐', a: '王昌龄', g: '四年级下', hero: '🏯',
     intro: '这首诗叫《芙蓉楼送辛渐》，是王昌龄写的。天刚亮，他在江边送好朋友坐船走。',
+    story: '诗人王昌龄的好朋友辛渐要去洛阳。那时候，有人说王昌龄的坏话，他就请辛渐带一句话给洛阳的亲友，说自己的心一直清清白白的。',
     L: [
-      { x: '寒雨连江夜入吴，', py: 'hán yǔ lián jiāng yè rù wú',
+      { x: '寒雨连江夜入吴，', py: 'hán yǔ lián jiāng yè rù wú', e: '冷冷的雨下了一整夜，雨水和江水连成一片。',
         act: [['fx', 'rain', 300, 980, 20, 560], ['fx', 'rain', 20, 980, 20, 560, { at: 500 }], ['fx', 'ripple', 620, 400, 3, { at: 600 }], ['fx', 'ripple', 820, 500, 3, { at: 1100 }]] },
-      { x: '平明送客楚山孤。', py: 'píng míng sòng kè chǔ shān gū',
+      { x: '平明送客楚山孤。', py: 'píng míng sòng kè chǔ shān gū', e: '天刚亮，送走了朋友，远处的山孤零零的。',
         act: [['fade', 'night', 0, 1400], ['show', 'wave', { at: 600 }], ['sway', 'wave', 20, { at: 700 }], ['move', 'boat', 330, -60, 2200, 1, { at: 500 }], ['glow', 'chu', { at: 1600 }]] },
-      { x: '洛阳亲友如相问，', py: 'luò yáng qīn yǒu rú xiāng wèn',
+      { x: '洛阳亲友如相问，', py: 'luò yáng qīn yǒu rú xiāng wèn', e: '要是洛阳的亲人朋友问起我来，',
         act: [['hide', 'wave'], ['bubble', 400, 250, '👴👵❓', { at: 300 }], ['hop', 'poet', 1, 12, { at: 300 }]] },
-      { x: '一片冰心在玉壶。', py: 'yí piàn bīng xīn zài yù hú',
+      { x: '一片冰心在玉壶。', py: 'yí piàn bīng xīn zài yù hú', e: '就说我的心，像玉壶里的冰一样干净。',
         act: [['fade', 'night', 0.35, 800], ['fade', 'potO', 1, 700, { at: 300 }], ['fade', 'potF', 1, 700, { at: 300 }], ['fade', 'potH', 0.6, 700, { at: 600 }], ['show', 'heart', { at: 1100 }], ['glow', 'heart', { at: 1400 }], ['fx', 'sparkle', 680, 230, { at: 1500 }]] }
     ],
     sc: {
@@ -2884,14 +2976,15 @@ const POEMS = [
   {
     id: 'sxq', t: '塞下曲', tsub: '（其三）', tp: 'sài xià qǔ', d: '唐', a: '卢纶', g: '四年级下', hero: '🏇',
     intro: '这首诗叫《塞下曲》，是卢纶写的。下大雪的晚上，守边关的将军骑上马，准备出发啦！',
+    story: '诗人卢纶写过好几首边关的诗。这一首说的是，一个没有月亮的冬夜，敌人偷偷地逃跑了，守边关的将军一点也不怕冷，马上带着战士们去追。',
     L: [
-      { x: '月黑雁飞高，', py: 'yuè hēi yàn fēi gāo',
+      { x: '月黑雁飞高，', py: 'yuè hēi yàn fēi gāo', e: '没有月亮的黑夜里，大雁飞得高高的。',
         act: [['move', 'cloud', 250, 0, 1400], ['fade', 'moon', 0.15, 1200, { at: 300 }], ['show', 'g1', { at: 800 }], ['show', 'g2', { at: 900 }], ['show', 'g3', { at: 1000 }], ['show', 'g4', { at: 1100 }], ['move', 'g1', 270, -130, 1600, 1, { at: 900 }], ['move', 'g2', 270, -130, 1600, 1, { at: 900 }], ['move', 'g3', 270, -130, 1600, 1, { at: 900 }], ['move', 'g4', 270, -130, 1600, 1, { at: 900 }]] },
-      { x: '单于夜遁逃。', py: 'chán yú yè dùn táo',
+      { x: '单于夜遁逃。', py: 'chán yú yè dùn táo', e: '敌人的首领，趁着天黑偷偷逃跑了。',
         act: [['show', 'chief'], ['move', 'chief', 300, 0, 1800, 1, { at: 500 }], ['hop', 'chief', 4, 10, { at: 500 }]] },
-      { x: '欲将轻骑逐，', py: 'yù jiāng qīng jì zhú',
+      { x: '欲将轻骑逐，', py: 'yù jiāng qīng jì zhú', e: '将军正要带着跑得快的骑兵，去追他们。',
         act: [['show', 'r1'], ['show', 'r2', { at: 300 }], ['show', 'flag', { at: 500 }], ['hop', 'r1', 2, 14, { at: 800 }], ['hop', 'r2', 2, 14, { at: 950 }], ['move', 'r1', 70, 0, 1200, null, { at: 1300 }], ['move', 'r2', 70, 0, 1200, null, { at: 1300 }]] },
-      { x: '大雪满弓刀。', py: 'dà xuě mǎn gōng dāo',
+      { x: '大雪满弓刀。', py: 'dà xuě mǎn gōng dāo', e: '这时候，大雪落下来，盖满了弓和刀。',
         act: [['fx', 'fall', 40, 960, 10, 590, '❄️', 16], ['fx', 'fall', 40, 960, 10, 590, '❄️', 12, { at: 700 }], ['tint', 'land', '#E3EAF4', 2000, { at: 300 }], ['show', 'bow1', { at: 600 }], ['show', 'bow2', { at: 750 }], ['show', 'sn1', { at: 1500 }], ['show', 'sn2', { at: 1700 }], ['show', 'sn3', { at: 1900 }], ['show', 'sn4', { at: 2100 }]] }
     ],
     sc: {
@@ -2903,14 +2996,15 @@ const POEMS = [
   {
     id: 'mm', t: '墨梅', tp: 'mò méi', d: '元', a: '王冕', g: '四年级下', hero: '🖌️',
     intro: '这首诗叫《墨梅》，是王冕写的。他画的梅花没有红颜色，是用黑黑的墨画的。',
+    story: '王冕小时候家里很穷，要给人放牛，可他特别爱画画。长大后，他最爱画梅花，还在一幅梅花画上写了这首诗，告诉大家，做人要像梅花一样干干净净。',
     L: [
-      { x: '我家洗砚池头树，', py: 'wǒ jiā xǐ yàn chí tóu shù',
+      { x: '我家洗砚池头树，', py: 'wǒ jiā xǐ yàn chí tóu shù', e: '我家洗砚台的水池边，长着一棵梅花树。',
         act: [['move', 'brush', 40, 50, 600], ['fx', 'ripple', 300, 495, 3, { at: 500 }], ['tint', 'pond', '#59616B', 1500, { at: 600 }], ['move', 'brush', -40, -50, 600, null, { at: 1200 }], ['fx', 'sparkle', 760, 300, { at: 1900 }]] },
-      { x: '朵朵花开淡墨痕。', py: 'duǒ duǒ huā kāi dàn mò hén',
+      { x: '朵朵花开淡墨痕。', py: 'duǒ duǒ huā kāi dàn mò hén', e: '一朵朵梅花，都是淡淡的墨画出来的。',
         act: [['fade', 'k1', 0.6, 500], ['fade', 'c1', 0.85, 500, { at: 200 }], ['fade', 'k2', 0.6, 500, { at: 200 }], ['fade', 'c2', 0.85, 500, { at: 400 }], ['fade', 'k3', 0.6, 500, { at: 400 }], ['fade', 'c3', 0.85, 500, { at: 600 }], ['fade', 'k4', 0.6, 500, { at: 600 }], ['fade', 'c4', 0.85, 500, { at: 800 }], ['fade', 'k5', 0.6, 500, { at: 800 }], ['fade', 'c5', 0.85, 500, { at: 1000 }], ['fade', 'k6', 0.6, 500, { at: 1000 }], ['fade', 'c6', 0.85, 500, { at: 1200 }], ['fade', 'k7', 0.6, 500, { at: 1200 }], ['fade', 'c7', 0.85, 500, { at: 1400 }], ['fade', 'k8', 0.6, 500, { at: 1400 }], ['fade', 'c8', 0.85, 500, { at: 1600 }]] },
-      { x: '不要人夸好颜色，', py: 'bú yào rén kuā hǎo yán sè',
+      { x: '不要人夸好颜色，', py: 'bú yào rén kuā hǎo yán sè', e: '它不要别人夸它颜色好看，',
         act: [['bubble', 340, 290, '🎨🚫'], ['hop', 'poet', 2, 10, { at: 600 }]] },
-      { x: '只留清气满乾坤。', py: 'zhǐ liú qīng qì mǎn qián kūn',
+      { x: '只留清气满乾坤。', py: 'zhǐ liú qīng qì mǎn qián kūn', e: '只想把清香留下来，飘满天地之间。',
         act: [['fx', 'sparkle', 760, 260], ['fx', 'fall', 40, 960, 20, 590, '✨', 16, { at: 300 }], ['fx', 'sparkle', 300, 150, { at: 900 }], ['fx', 'sparkle', 880, 480, { at: 1300 }], ['fx', 'sparkle', 520, 330, { at: 1700 }]] }
     ],
     sc: {
@@ -2922,7 +3016,22 @@ const POEMS = [
 ];
 // 旁白（晓晓）说的每一句；录音脚本 dev/voice/collect_shi.js 从这里读
 const SHI_SAY = {
-  pick: '选一首诗，跟着念诗打小鼓！',
+  pick: '选一首诗吧！',
+  m1: '我念一句，你跟着念一句。下面的小话筒变绿、跳起来的时候，就轮到你，大声念出来！',
+  m2: '这次我念前面，后面藏起来的字，你来接！',
+  m3: '这次你来背！每句我只给你看第一个字。',
+  turn: '轮到你啦，大声念！',
+  tail: '后面的字，你来说！',
+  turn3: '从这一句开始，你来背！',
+  again: '我没听见哦，大声一点，再念一遍！',
+  help: '没关系，我先念，你再跟我念一遍。',
+  mic: '我要用小话筒听你念诗，请爸爸妈妈点允许。',
+  nomic: '小话筒用不了，你念完了，就点一下小手。',
+  good: ['真棒！', '念得真好听！', '好响亮！', '对啦！'],
+  done0: '故事听完啦！下面，跟我念一念吧。',
+  done1: '你跟着念完了整首诗，得到一颗星！',
+  done2: '接得真好，又得到一颗星！',
+  done3: '你把整首诗背下来啦！听听你自己背的。',
   lv0: '灯笼碰到小鼓的时候，拍一下！先跟着木鱼练三下。',
   lv1: '每句最后一拍藏起来了。问号灯笼来的时候，你来念，再拍一下！',
   lv2: '这次我只念每句的开头，剩下的你来念，你来拍！',
@@ -3402,8 +3511,8 @@ function shPlayFull(P, strip, sc) {
   });
 }
 
-/* ===================== 古诗太鼓：选诗、三关、打鼓 ===================== */
-// 每首诗三关：全部念出来 → 每句最后一拍静音（灯笼变成「？」，你来念）→ 只念每句开头
+/* ===================== 古诗小剧场：选诗、四步；庆功鼓 ===================== */
+// 庆功鼓（tkPlay）原来是三关：全部念出来 → 每句最后一拍静音（灯笼变成「？」，你来念）→ 只念每句开头；现在只用第 0 关
 const TK_LV = [
   { n: '跟着念', d: '我念诗，你打鼓', say: 'lv0', hide: null },
   { n: '藏尾巴', d: '每句最后一拍，你来念', say: 'lv1', hide: 'tail' },
@@ -3411,10 +3520,10 @@ const TK_LV = [
 ];
 const TK_LEAD = 2.3;                 // 灯笼从右边滑到鼓上要几秒
 const TK_PERFECT = 0.1, TK_GOOD = 0.24;   // 判定窗口（秒）：给五岁的手留足余量
-S.shi = { tk: {}, grade: 1 };
+S.shi = { tk: {}, lp: {}, grade: 1, mic: true, micAsked: 0 };
 function shGrade(P) { return '一二三四'.indexOf(P.g[0]) + 1; }
 function tkRec(id) { var r = S.shi.tk[id]; if (!r || r.length !== 3) r = S.shi.tk[id] = [{ s: 0, b: 0 }, { s: 0, b: 0 }, { s: 0, b: 0 }]; return r; }
-function tkStars(id) { return tkRec(id).reduce(function (a, r) { return a + r.s; }, 0); }
+function tkStars(id) { var r = lpRec(id); return r[1] + r[2] + r[3]; }   // 跟我念、接下句、我来背 各一颗
 function tkAllStars() { return POEMS.reduce(function (a, P) { return a + tkStars(P.id); }, 0); }
 function tkStarStr(n) { return '★★★'.slice(0, n) + '☆☆☆'.slice(0, 3 - n); }
 const SV = {
@@ -3497,17 +3606,17 @@ var TK = {
 
 /* ---------- 选诗 ---------- */
 function tkHome() {
-  Session = null; Fit.cb = null; ROUND_ID++; stopTimer(); TK.stop(); Voice.lastFn = null;
+  Session = null; Fit.cb = null; ROUND_ID++; stopTimer(); TK.stop(); lkExit(); Voice.lastFn = null;
   if (Music.on) Music.start();   // 打鼓时关掉的背景音乐，回到选诗再放
   var p = el('div', 'pane');
-  p.appendChild(topbar({ title: '🥁 古诗太鼓', sub: '跟着念诗打小鼓', back: home }));
+  p.appendChild(topbar({ title: '🎭 古诗小剧场', sub: '看诗画、听故事、跟着念', back: home }));
   // 一到四年级各一页；每页先上册后下册
   var tabs = el('div', 'tkTabs'), grid = el('div', 'tkList'), list = [];
   [1, 2, 3, 4].forEach(function (g) {
     var ps = POEMS.filter(function (P) { return shGrade(P) === g; }), n = ps.reduce(function (a, P) { return a + tkStars(P.id); }, 0);
     var b = el('button', 'tkTab'); b.dataset.g = g;
     b.appendChild(el('b', null, '一二三四'[g - 1] + '年级'));
-    b.appendChild(el('span', 'num', '⭐ ' + n + '/' + ps.length * 9));
+    b.appendChild(el('span', 'num', '⭐ ' + n + '/' + ps.length * 3));
     b.addEventListener('click', function () { if (S.shi.grade === g) return; Audio2.tap(); show(g); save(); });
     tabs.appendChild(b);
   });
@@ -3523,7 +3632,7 @@ function tkHome() {
       nm.style.fontSize = Math.min(1.5, 7.4 / Array.from(P.t).length).toFixed(2) + 'em';   // 晓出净慈寺送林子方 也放得下
       c.appendChild(el('div', 'au', shBy(P)));
       var st = el('div', 'st' + (n ? ' on' : ''));
-      st.appendChild(el('span', null, '⭐')); st.appendChild(el('b', 'num', n + ' / 9'));
+      st.appendChild(el('span', null, '⭐')); st.appendChild(el('b', 'num', n + ' / 3'));
       c.appendChild(st);
       c.addEventListener('click', function () { Audio2.tap(); tkDetail(P); });
       grid.appendChild(c);
@@ -3549,25 +3658,30 @@ function tkHome() {
 // 点一首诗：看诗、听一遍、选关
 function tkDetail(P) {
   var m = el('div', 'shModal'), box = el('div', 'shCardBox'), strip = shStrip(P, { title: true, max: 110 }), side = el('div', 'shSide');
-  var rec = tkRec(P.id), next = 0;
-  while (next < 2 && rec[next].s > 0) next++;
-  var lvs = el('div', 'tkLvs');
-  TK_LV.forEach(function (L, k) {
+  var rec = lpRec(P.id), next = lpNext(P.id);
+  var lvs = el('div', 'tkLvs lkSteps');
+  LK.forEach(function (L, k) {
     var b = el('button', 'tkLvBtn' + (k === next ? ' y' : ''));
-    b.appendChild(el('span', 'no', '第' + '一二三'[k] + '关'));
-    b.appendChild(el('b', null, L.n));
+    b.appendChild(el('span', 'no', '第' + '一二三四'[k] + '步'));
+    b.appendChild(el('b', null, L.ic + ' ' + L.n));
     b.appendChild(el('i', null, L.d));
-    b.appendChild(el('em', null, tkStarStr(rec[k].s)));
-    if (rec[k].b) b.appendChild(el('small', null, '最高 ' + rec[k].b + ' 分'));
-    b.addEventListener('click', function () { Audio2.tap(); Voice.stop(); m.remove(); tkPlay(P, k); });
+    b.appendChild(el('em', null, k ? (rec[k] ? '⭐' : '☆') : (rec[k] ? '✓ 听过' : ' ')));
+    b.addEventListener('click', function () { Audio2.tap(); Voice.stop(); m.remove(); lkPlay(P, k); });
     lvs.appendChild(b);
   });
-  var listen = el('button', 'bigbtn ghost', '🔊 先听一遍'), close = el('button', 'iconbtn shX', '✕');
-  side.appendChild(lvs); side.appendChild(listen);
+  var extra = el('div', 'lkExtra'), listen = el('button', 'bigbtn ghost', '🔊 听一遍'), close = el('button', 'iconbtn shX', '✕');
+  extra.appendChild(listen);
+  RecDB.get(P.id).then(function (v) {
+    if (!v || !m.isConnected) return;
+    var hb = el('button', 'bigbtn ghost', '🎧 听我背的'); hb.addEventListener('click', function () { Audio2.tap(); lkPlayRec(v); });
+    extra.appendChild(hb);
+  });
+  if (rec[3]) { var db = el('button', 'bigbtn ghost', '🥁 庆功鼓'); db.addEventListener('click', function () { Audio2.tap(); Voice.stop(); m.remove(); tkPlay(P, 0); }); extra.appendChild(db); }
+  side.appendChild(lvs); side.appendChild(extra);
   box.appendChild(close); box.appendChild(strip.el); box.appendChild(side); m.appendChild(box);
   $('#screen').appendChild(m);
   var prevFit = Fit.cb, gen = ROUND_ID;
-  function shut() { Voice.stop(); m.remove(); Fit.cb = prevFit; Fit.run(); }
+  function shut() { Voice.stop(); lkStopSrc(); m.remove(); Fit.cb = prevFit; Fit.run(); }
   Fit.cb = function () {   // 宽屏：诗在左、按钮在右；其余：诗在上、按钮在下
     var r = $('#screen').getBoundingClientRect(), wide = r.width > r.height * 1.5;
     box.classList.toggle('wide', wide);
@@ -3587,45 +3701,19 @@ async function tkPlay(P, lv) {
   Session = null; Fit.cb = null; ROUND_ID++; stopTimer(); TK.stop(); Voice.stop(); Music.stop(); Voice.lastFn = null;
   var id = ROUND_ID, alive = function () { return id === ROUND_ID; }, L = TK_LV[lv];
   Audio2.init();
-  var pane = el('div', 'pane tkPane'), sc = shScene(P), pic = el('div', 'tkPic');
-  sc.svg.setAttribute('preserveAspectRatio', 'xMidYMid slice'); pic.appendChild(sc.svg); pane.appendChild(pic);
-  var bar = el('div', 'tkBar');
-  bar.appendChild(ibtn('⬅', '#fff', function () { Audio2.page(); TK.stop(); tkHome(); }));
-  var name = el('div', 'pill tkName'); name.appendChild(el('b', null, '《' + P.t + '》')); name.appendChild(el('span', null, '第' + '一二三'[lv] + '关 · ' + L.n)); bar.appendChild(name);
-  bar.appendChild(el('div', 'grow'));
-  var scoreP = el('div', 'pill tkScoreP'); scoreP.appendChild(el('span', null, '得分')); var scoreN = el('b', 'num', '0'); scoreP.appendChild(scoreN); bar.appendChild(scoreP);
-  pane.appendChild(bar);
-  var sbox = el('div', 'tkStripBox'); pane.appendChild(sbox);
+  var scoreP = el('div', 'pill tkScoreP'); scoreP.appendChild(el('span', null, '得分')); var scoreN = el('b', 'num', '0'); scoreP.appendChild(scoreN);
   var lane = el('div', 'tkLane'), track = el('div', 'tkTrack'), notesL = el('div', 'tkNotes'), drum = el('div', 'tkDrum'), combo = el('div', 'tkCombo'), hint = el('div', 'tkHint', '灯笼碰到鼓，拍一下！');
   drum.appendChild(el('span', null, '🥁')); lane.appendChild(track); lane.appendChild(drum); lane.appendChild(notesL); lane.appendChild(combo); lane.appendChild(hint);
-  pane.appendChild(lane);
-  $('#screen').innerHTML = ''; $('#screen').appendChild(pane);
-  var strip = shStrip(P, { title: true, max: 96 });
-  sbox.appendChild(strip.el);
   var G = { dx: 100, sp: 300, h: 80 };
-  // 鼓道在最下面；上面分成诗和画两块，谁也不盖住谁：宽屏诗在左、画在右，竖屏诗在上、画在下。
-  // 画框和画一样宽高比（1000×620），整幅画都看得见
-  function box(e, x, y, w, h) { e.style.left = px(x); e.style.top = px(y); e.style.width = px(w); e.style.height = px(h); }
-  Fit.cb = function () {
-    var w = pane.clientWidth, h = pane.clientHeight, pad = 18 * K, R = 1000 / 620;
-    var lh = clamp(h * 0.27, 110, Math.min(300, w * 0.28)); lane.style.height = px(lh);
-    var top = bar.offsetHeight, cw = w - 2 * pad, ch = h - lh - top - pad, pw, ph;
-    if (cw > ch * 1.25) {
-      ph = Math.min(ch, cw * 0.6 / R); pw = ph * R;
-      box(pic, pad + cw - pw, top + (ch - ph) / 2, pw, ph);
-      box(sbox, pad, top, cw - pw - pad, ch);
-    } else {
-      pw = Math.min(cw, ch * 0.58 * R); ph = pw / R;
-      box(pic, pad + (cw - pw) / 2, top + ch - ph, pw, ph);
-      box(sbox, pad, top, cw, ch - ph - pad);
+  var ui = shStage(P, lv ? '第' + '一二三'[lv] + '关 · ' + L.n : '🥁 庆功鼓', lane, {
+    back: function () { Audio2.page(); TK.stop(); tkHome(); }, right: scoreP,
+    fit: function (w, h, lh2) {   // 灯笼：鼓道越高越大，但屏幕窄（灯笼走得慢）时要缩小，免得挨得近的两拍叠在一起
+      G.dx = Math.max(lh2 * 0.48, w * 0.12); G.sp = (w * 1.04 - G.dx) / TK_LEAD; G.h = Math.min(lh2 * 0.5, G.sp * 0.33);
+      var ds = lh2 * 0.8; drum.style.width = drum.style.height = px(ds); drum.style.left = px(G.dx - ds / 2); drum.style.fontSize = px(ds * 0.55);
+      notesL.style.fontSize = px(G.h * 0.42);
     }
-    strip.fit(sbox.clientWidth - 60 * K, sbox.clientHeight - 40 * K);
-    // 灯笼：鼓道越高越大，但屏幕窄（灯笼走得慢）时要缩小，免得挨得近的两拍叠在一起
-    var lh2 = lane.clientHeight; G.dx = Math.max(lh2 * 0.48, w * 0.12); G.sp = (w * 1.04 - G.dx) / TK_LEAD; G.h = Math.min(lh2 * 0.5, G.sp * 0.33);
-    var ds = lh2 * 0.8; drum.style.width = drum.style.height = px(ds); drum.style.left = px(G.dx - ds / 2); drum.style.fontSize = px(ds * 0.55);
-    notesL.style.fontSize = px(G.h * 0.42);
-  };
-  Fit.run();
+  });
+  var pane = ui.pane, sc = ui.sc, strip = ui.strip;
   var clip = await tkClip(P); if (!alive()) return;
   if (!clip) { toast('朗诵还没下载好，等一下再点'); later(1600, tkHome); return; }
   var notes = tkNotes(P, clip.m, lv);
@@ -3737,10 +3825,10 @@ function tkRun(P, lv, clip, notes, ui) {
     var rec = tkRec(P.id)[lv], isBest = st.score > rec.b;
     if (isBest) rec.b = st.score; if (stars > rec.s) rec.s = stars;
     var dk = todayKey(); S.days[dk] = (S.days[dk] || 0) + 1;
-    if (stars) addStars(stars);
+    if (stars) Audio2.star();
     save();
     var box = el('div', 'tkResult');
-    box.appendChild(el('div', 'tkRT', '《' + P.t + '》 · 第' + '一二三'[lv] + '关 ' + TK_LV[lv].n));
+    box.appendChild(el('div', 'tkRT', '《' + P.t + '》 · ' + (lv ? '第' + '一二三'[lv] + '关 ' + TK_LV[lv].n : '🥁 庆功鼓')));
     var sr = el('div', 'tkStars'), ss = [];
     for (var k = 0; k < 3; k++) { var s = el('span', null, '⭐'); sr.appendChild(s); ss.push(s); }
     box.appendChild(sr);
@@ -3751,7 +3839,7 @@ function tkRun(P, lv, clip, notes, ui) {
     var row = el('div', 'btnrow');
     var again = el('button', 'bigbtn', '🔁 再来一次'); again.addEventListener('click', function () { Audio2.tap(); tkPlay(P, lv); });
     row.appendChild(again);
-    if (lv < 2) { var nx = el('button', 'bigbtn' + (stars ? '' : ' ghost'), '▶ 第' + '一二三'[lv + 1] + '关 ' + TK_LV[lv + 1].n); nx.addEventListener('click', function () { Audio2.tap(); tkPlay(P, lv + 1); }); row.appendChild(nx); if (stars) again.classList.add('ghost'); }
+    var poem = el('button', 'bigbtn ghost', '📖 回到这首诗'); poem.addEventListener('click', function () { Audio2.tap(); tkHome(); tkDetail(P); }); row.appendChild(poem);
     var back = el('button', 'bigbtn ghost', '📜 选诗'); back.addEventListener('click', function () { Audio2.tap(); tkHome(); });
     row.appendChild(back); box.appendChild(row);
     ui.pane.appendChild(box);
@@ -3764,6 +3852,362 @@ function tkRun(P, lv, clip, notes, ui) {
     });
   }
 }
+/* ===================== 古诗小剧场：看故事 → 跟我念 → 接下句 → 我来背 =====================
+   看孩子玩下来：打鼓把注意力全抢走了，她以为只要拍鼓，不知道要念出来。所以学诗的路上不再打鼓：
+   - 看故事：先讲这首诗的小故事；每念一句，画面演这一句，旁白再用大白话说说这句的意思
+   - 跟我念：我念一句；轮到她时，底下的小话筒变绿、跳起来，写着「轮到你」。她念出声，话筒听见了，
+     字一个个变绿，画才动起来——画是她念出来的
+   - 接下句：我念前面，后面几个字藏着，她接上，我再念一遍给她对
+   - 我来背：每句只露第一个字，她背一句、翻开一句；背完放她自己背的录音
+   出声念本身就帮着记（production effect）；画面只演诗里的东西，不加跟诗无关的热闹（seductive details）。
+   话筒只判断「开没开口、念了多长」，不判对错；用不了话筒就换成「我念完了」小手按钮。
+   打鼓留着当背会以后的「庆功鼓」 */
+const LK = [
+  { n: '看故事', ic: '👀', d: '听听这首诗讲了什么' },
+  { n: '跟我念', ic: '🗣️', d: '我念一句，你念一句' },
+  { n: '接下句', ic: '🧩', d: '后面的字你来说' },
+  { n: '我来背', ic: '🏆', d: '每句只看第一个字' }
+];
+// 每首诗：[看过故事, 跟我念⭐, 接下句⭐, 我来背⭐]
+function lpRec(id) { var r = S.shi.lp[id]; if (!Array.isArray(r) || r.length !== 4) r = S.shi.lp[id] = [0, 0, 0, 0]; return r; }
+function lpNext(id) { var r = lpRec(id); for (var k = 0; k < 4; k++) if (!r[k]) return k; return 3; }
+const LK_GAP = { '，': 0.55, '、': 0.4, '。': 0.9, '？': 0.9, '！': 0.9, '；': 0.7 };   // 和 dev/voice/poems.py 一样
+
+/* ---------- 小话筒：只管「有没有开口、念了多久」，外加把「我来背」录下来 ---------- */
+const Mic = {
+  state: 'idle', stream: null, src: null, an: null, buf: null, rec: null, chunks: [], type: '',
+  usable() { return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) && S.shi.mic !== false && location.protocol !== 'file:'; },
+  open() {
+    if (this.state === 'on') return Promise.resolve(true);
+    if (!this.usable()) { this.state = 'none'; return Promise.resolve(false); }
+    Audio2.init(); const ac = Audio2.ctx; if (!ac) return Promise.resolve(false);
+    this.state = 'asking';
+    return navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }).then(st => {
+      this.stream = st; this.src = ac.createMediaStreamSource(st); this.an = ac.createAnalyser(); this.an.fftSize = 1024;
+      this.src.connect(this.an); this.buf = new Uint8Array(this.an.fftSize); this.state = 'on'; return true;
+    }).catch(() => { this.state = 'denied'; return false; });
+  },
+  level() {
+    if (!this.an) return 0; this.an.getByteTimeDomainData(this.buf);
+    let s = 0; for (let i = 0; i < this.buf.length; i++) { const v = (this.buf[i] - 128) / 128; s += v * v; }
+    return Math.sqrt(s / this.buf.length);
+  },
+  close() {
+    if (this.rec && this.rec.state !== 'inactive') try { this.rec.stop(); } catch (e) { }
+    this.rec = null;
+    if (this.stream) this.stream.getTracks().forEach(t => t.stop());
+    try { if (this.src) this.src.disconnect(); } catch (e) { }
+    this.stream = this.src = this.an = null; if (this.state === 'on' || this.state === 'asking') this.state = 'idle';
+  },
+  // 听她念：expect 这句大约要念几秒。o.alive() 不再需要时停；o.onLevel(音量 0–1, 念了多少 0–1)。
+  // 开口以后安静 0.9 秒算念完；7 秒没开口算没听见。返回 {spoke}
+  listen(expect, o) {
+    o = o || {};
+    return new Promise(res => {
+      const t0 = performance.now(), noise = [], need = Math.min(expect * 0.35, 1.2);
+      let thr = 0.03, voiced = 0, started = 0, lastVoice = 0, last = t0, done = false;
+      const fin = v => { if (done) return; done = true; clearInterval(tm); res({ spoke: v }); };
+      const tm = setInterval(() => {
+        if (o.alive && !o.alive()) return fin(false);
+        if (o.stop && o.stop()) return fin(true);
+        const now = performance.now(), dt = (now - last) / 1000, el = (now - t0) / 1000; last = now;
+        const lv = this.level();
+        if (el < 0.3) { noise.push(lv); const s = noise.slice().sort((a, b) => a - b); thr = Math.max(0.018, s[s.length >> 1] * 3); if (o.onLevel) o.onLevel(0, 0); return; }
+        if (lv > thr) { voiced += dt; lastVoice = now; if (!started && voiced > 0.12) started = now; }
+        if (o.onLevel) o.onLevel(Math.min(1, lv / (thr * 4)), started ? Math.min(1, voiced / Math.max(0.3, expect * 0.85)) : 0);
+        const quiet = (now - lastVoice) / 1000;
+        if (started && quiet > 0.9 && voiced >= need) return fin(true);
+        if (started && quiet > 2.2) return fin(voiced >= need * 0.6);
+        if (!started && el > 7.5) return fin(false);
+        if (el > expect * 2.5 + 4) return fin(voiced >= need * 0.6);
+      }, 40);
+    });
+  },
+  startRec() {
+    if (!this.stream || !window.MediaRecorder) return false;
+    const types = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm'];
+    this.type = types.find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || '';
+    try { this.rec = this.type ? new MediaRecorder(this.stream, { mimeType: this.type }) : new MediaRecorder(this.stream); } catch (e) { this.rec = null; return false; }
+    this.chunks = []; this.rec.ondataavailable = e => { if (e.data && e.data.size) this.chunks.push(e.data); };
+    this.rec.start(); return true;
+  },
+  stopRec() {
+    const r = this.rec; this.rec = null;
+    if (!r || r.state === 'inactive') return Promise.resolve(null);
+    return new Promise(res => { r.onstop = () => res(this.chunks.length ? new Blob(this.chunks, { type: r.mimeType || this.type || 'audio/mp4' }) : null); try { r.stop(); } catch (e) { res(null); } });
+  }
+};
+// 她背的录音存在这台设备上（IndexedDB），每首诗留最新的一次
+const RecDB = {
+  p: null,
+  open() {
+    if (!this.p) this.p = new Promise((res, rej) => {
+      if (!window.indexedDB) return rej(new Error('no idb'));
+      const q = indexedDB.open('logicc-rec', 1);
+      q.onupgradeneeded = () => q.result.createObjectStore('rec');
+      q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error);
+    });
+    return this.p;
+  },
+  run(mode, f) { return this.open().then(db => new Promise((res, rej) => { const t = db.transaction('rec', mode), q = f(t.objectStore('rec')); t.oncomplete = () => res(q && q.result); t.onerror = () => rej(t.error); })); },
+  put(id, blob) { return blob.arrayBuffer().then(buf => this.run('readwrite', s => s.put({ buf: buf, type: blob.type, t: Date.now() }, id))).catch(() => { }); },
+  get(id) { return this.run('readonly', s => s.get(id)).catch(() => null); },
+  clear() { return this.run('readwrite', s => s.clear()).catch(() => { }); }
+};
+// 放一段录音（她自己的），返回放完的 Promise
+function lkPlayRec(v) {
+  Audio2.init(); const ac = Audio2.ctx; if (!ac || !v) return Promise.resolve(false);
+  return new Promise(res => {
+    const ok = buf => { Voice.stop(); lkStopSrc(); const s = ac.createBufferSource(); s.buffer = buf; s.connect(ac.destination); s.onended = () => { if (LKS.src === s) LKS.src = null; res(true); }; LKS.src = s; s.start(); };
+    try { const p = ac.decodeAudioData(v.buf.slice(0), ok, () => res(false)); if (p && p.catch) p.catch(() => res(false)); } catch (e) { res(false); }
+  });
+}
+
+/* ---------- 一段朗诵：从整首的录音里截一句（或半句）来放，字跟着变红 ---------- */
+const LKS = { src: null };
+function lkStopSrc() { const s = LKS.src; LKS.src = null; if (s) try { s.onended = null; s.stop(); } catch (e) { } }
+function lkSeg(clip, a, b, lights) {
+  Audio2.init(); const ac = Audio2.ctx;
+  if (!ac || !clip) return Promise.resolve(false);
+  Voice.stop(); lkStopSrc();
+  return new Promise(res => {
+    const s = ac.createBufferSource(), gen = ROUND_ID; s.buffer = clip.buf; s.connect(ac.destination);
+    s.onended = () => { if (LKS.src === s) LKS.src = null; res(gen === ROUND_ID); };
+    LKS.src = s; s.start(ac.currentTime + 0.02, Math.max(0, a), Math.max(0.05, b - a));
+    (lights || []).forEach(x => { later(Math.max(0, x[0] - a) * 1000 + 20, () => x[1].classList.add('lit')); });
+  });
+}
+// 「轮到你」的叮咚
+function lkDing() { Audio2.beep(988, .12, 'sine', .1); setTimeout(() => Audio2.beep(1319, .2, 'sine', .1), 120); }
+
+/* ---------- 一屏：顶栏、诗卡、画框，最下面一条（鼓道，或者「轮到谁」） ---------- */
+function shStage(P, sub, bottom, o) {
+  o = o || {};
+  var pane = el('div', 'pane tkPane'), sc = shScene(P), pic = el('div', 'tkPic');
+  sc.svg.setAttribute('preserveAspectRatio', 'xMidYMid slice'); pic.appendChild(sc.svg); pane.appendChild(pic);
+  var bar = el('div', 'tkBar');
+  bar.appendChild(ibtn('⬅', '#fff', o.back));
+  var name = el('div', 'pill tkName'); name.appendChild(el('b', null, '《' + P.t + '》')); name.appendChild(el('span', null, sub)); bar.appendChild(name);
+  bar.appendChild(el('div', 'grow'));
+  if (o.right) bar.appendChild(o.right);
+  pane.appendChild(bar);
+  var sbox = el('div', 'tkStripBox'); pane.appendChild(sbox);
+  pane.appendChild(bottom);
+  $('#screen').innerHTML = ''; $('#screen').appendChild(pane);
+  var strip = shStrip(P, { title: true, max: 96 });
+  sbox.appendChild(strip.el);
+  // 下面一条在最下；上面分成诗和画两块，谁也不盖住谁：宽屏诗在左、画在右，竖屏诗在上、画在下。
+  // 画框和画一样宽高比（1000×620），整幅画都看得见
+  function box(e, x, y, w, h) { e.style.left = px(x); e.style.top = px(y); e.style.width = px(w); e.style.height = px(h); }
+  Fit.cb = function () {
+    var w = pane.clientWidth, h = pane.clientHeight, pad = 18 * K, R = 1000 / 620;
+    var lh = o.bottomH ? o.bottomH(w, h) : clamp(h * 0.27, 110, Math.min(300, w * 0.28)); bottom.style.height = px(lh);
+    var top = bar.offsetHeight, cw = w - 2 * pad, ch = h - lh - top - pad, pw, ph;
+    if (cw > ch * 1.25) {
+      ph = Math.min(ch, cw * 0.6 / R); pw = ph * R;
+      box(pic, pad + cw - pw, top + (ch - ph) / 2, pw, ph);
+      box(sbox, pad, top, cw - pw - pad, ch);
+    } else {
+      pw = Math.min(cw, ch * 0.58 * R); ph = pw / R;
+      box(pic, pad + (cw - pw) / 2, top + ch - ph, pw, ph);
+      box(sbox, pad, top, cw, ch - ph - pad);
+    }
+    strip.fit(sbox.clientWidth - 60 * K, sbox.clientHeight - 40 * K);
+    if (o.fit) o.fit(w, h, bottom.clientHeight);
+  };
+  Fit.run();
+  return { pane: pane, sc: sc, strip: strip, bar: bar, bottom: bottom, name: name };
+}
+
+/* ---------- 小剧场 ---------- */
+function lkExit() { lkStopSrc(); Mic.close(); }
+async function lkPlay(P, mode) {
+  Session = null; Fit.cb = null; ROUND_ID++; stopTimer(); TK.stop(); lkExit(); Voice.stop(); Music.stop(); Voice.lastFn = null;
+  var id = ROUND_ID, alive = function () { return id === ROUND_ID; }, step = LK[mode];
+  Audio2.init();
+  // 底下一条：谁在说话、该谁念、听到她的声音没有
+  var lk = el('div', 'lkBar'), who = el('div', 'lkWho'), whoIc = el('span', null, '🔊'), ring = el('i', 'lkRing');
+  who.appendChild(ring); who.appendChild(whoIc);
+  var mid = el('div', 'lkMid'), say = el('b', 'lkSay', ''), meter = el('div', 'lkMeter'), bars = [];
+  for (var q = 0; q < 9; q++) { var bb = el('i'); meter.appendChild(bb); bars.push(bb); }
+  mid.appendChild(say); mid.appendChild(meter);
+  var dots = el('div', 'lkDots'), dl = P.L.map(function () { var d = el('i'); dots.appendChild(d); return d; });
+  var done = el('button', 'lkDone', '✋ 我念完了');
+  lk.appendChild(who); lk.appendChild(mid); lk.appendChild(done); lk.appendChild(dots);
+  var ui = shStage(P, step.ic + ' ' + step.n, lk, {
+    back: function () { Audio2.page(); lkExit(); tkHome(); },
+    bottomH: function (w, h) { return clamp(h * 0.22, 100, Math.min(250, w * 0.24)); },
+    fit: function (w, h, bh) { who.style.width = who.style.height = px(bh * 0.72); who.style.fontSize = px(bh * 0.36); }
+  });
+  var strip = ui.strip, sc = ui.sc, pressed = false;
+  done.addEventListener('click', function () { Audio2.tap(); pressed = true; });
+  function state(s, text) {   // me 我在念 · you 轮到你 · yay 念得好 · story 讲故事
+    lk.className = 'lkBar ' + s + (Mic.state === 'on' ? ' mic' : ''); whoIc.textContent = { me: '🔊', you: '🎤', yay: '⭐', story: '📖' }[s] || '🔊';
+    say.textContent = text; meter.style.visibility = s === 'you' && Mic.state === 'on' ? 'visible' : 'hidden';
+    done.style.display = s === 'you' ? '' : 'none';
+    ring.style.transform = 'scale(1)'; bars.forEach(function (b) { b.style.height = '24%'; });
+  }
+  state('me', '准备好了吗？');
+  var clip = await tkClip(P); if (!alive()) return;
+  if (!clip) { toast('朗诵还没下载好，等一下再点'); later(1600, tkHome); return; }
+  var m = clip.m, n = P.L.length, han = P.L.map(function (L) { return shHan(L.x); });
+  function lineEnd(i) { return i + 1 < n ? m.L[i + 1] - (LK_GAP[P.L[i].x.slice(-1)] || 0.6) + 0.06 : clip.buf.duration - 0.05; }
+  function tailOf(i) { var gs = tkGroups(P.L[i].x), g = gs[gs.length - 1]; return { k: g, at: m.T[i][g[0]] - 0.05 }; }
+  function lights(i, from, to) { var o = []; for (var k = from; k < to; k++) o.push([m.T[i][k], strip.lines[i].chs[k]]); return o; }
+  function line(i, a, b, from, to) { return lkSeg(clip, a == null ? m.L[i] - 0.03 : a, b == null ? lineEnd(i) : b, lights(i, from || 0, to == null ? han[i].length : to)); }
+  function title() {
+    var tt = strip.title, a = 0, b = m.L[0] - 0.85, ls = [];
+    if (tt && m.H) { ls.push([m.H[0][0], tt.querySelector('b')]); ls.push([m.H[1][0], tt.querySelector('span')]); }
+    return lkSeg(clip, a, b, ls);
+  }
+  function dot(i, cls) { dl[i].className = cls || 'on'; }
+  // 轮到她：话筒变绿跳起来；她出声，chars 里的字跟着她一个个变绿。返回 true = 听见她念了
+  var firstTurn = true;
+  async function turn(i, expect, chars, prompt) {
+    state('you', '轮到你！大声念');
+    if (firstTurn && prompt) { await SV.n(prompt); if (!alive()) return false; firstTurn = false; } else lkDing();
+    state('you', '轮到你！大声念');
+    if (Mic.state !== 'on') {   // 没有话筒：等她念完自己点小手
+      pressed = false;
+      while (alive() && !pressed) await shWait(100);
+      chars.forEach(function (c) { c.classList.add('me'); });
+      return alive();
+    }
+    pressed = false;
+    var r = await Mic.listen(expect, {
+      alive: alive, stop: function () { return pressed; },
+      onLevel: function (lv, prog) {
+        ring.style.transform = 'scale(' + (1 + lv * 0.45).toFixed(2) + ')';
+        bars.forEach(function (b, k) { b.style.height = Math.max(24, Math.min(100, 24 + lv * 90 * (1 - Math.abs(k - 4) / 6) + Math.random() * 8)) + '%'; });
+        var lit = Math.floor(prog * chars.length + 0.15);
+        chars.forEach(function (c, k) { if (k < lit) { c.classList.add('me'); c.classList.remove('hid'); } });
+      }
+    });
+    if (!alive()) return false;
+    if (r.spoke) chars.forEach(function (c) { c.classList.add('me'); c.classList.remove('hid'); });
+    return r.spoke;
+  }
+  async function praise(i) {
+    state('yay', pick(SHI_SAY.good)); Audio2.good(); dot(i);
+    var b = strip.lines[i].el.getBoundingClientRect(); sparkle(b.left + b.width / 2, b.top + b.height / 2, ['⭐', '✨']);
+  }
+  function clearLine(i) { strip.lines[i].chs.forEach(function (c) { c.classList.remove('lit', 'me'); }); }
+  var spoke = 0, heard = 0;
+  // 第一次要话筒时先告诉她：请爸爸妈妈点允许
+  async function needMic() {
+    if (Mic.state === 'on') return true;
+    if (!Mic.usable()) { Mic.state = 'none'; await SV.n(SHI_SAY.nomic); return false; }
+    if (!S.shi.micAsked) { state('me', '请爸爸妈妈点「允许」'); await SV.n(SHI_SAY.mic); S.shi.micAsked = 1; save(); if (!alive()) return false; }
+    var ok = await Mic.open();
+    if (!ok && alive()) await SV.n(SHI_SAY.nomic);
+    return ok;
+  }
+
+  if (mode === 0) {   // 看故事
+    state('story', '听故事');
+    await SV.n(P.story || P.intro); if (!alive()) return;
+    state('me', '听我念'); await title(); if (!alive()) return;
+    for (var i = 0; i < n; i++) {
+      strip.cur(i); state('me', '听我念'); sc.run(i);
+      await line(i); if (!alive()) return;
+      if (P.L[i].e) { state('story', '这句是说……'); await SV.n(P.L[i].e); if (!alive()) return; }
+      dot(i); await shWait(250);
+    }
+    strip.cur(-1);
+  } else if (mode === 1) {   // 跟我念
+    state('me', '听我说'); await SV.n(SHI_SAY.m1); if (!alive()) return;
+    await needMic(); if (!alive()) return;
+    state('me', '听我念'); await title(); if (!alive()) return;
+    for (var i = 0; i < n; i++) {
+      strip.cur(i); state('me', '听我念'); await line(i); if (!alive()) return;
+      await shWait(250); clearLine(i);
+      var dur = lineEnd(i) - m.L[i], ok = await turn(i, dur, strip.lines[i].chs, SHI_SAY.turn); if (!alive()) return;
+      if (!ok) {
+        state('me', '再听一遍'); await SV.n(SHI_SAY.again); if (!alive()) return;
+        await line(i); if (!alive()) return; clearLine(i);
+        ok = await turn(i, dur, strip.lines[i].chs); if (!alive()) return;
+      }
+      heard += ok ? 1 : 0;
+      sc.run(i); await praise(i); if (i % 2 === 1 || i === n - 1) await SV.n(pick(SHI_SAY.good)); else await shWait(900);
+      if (!alive()) return;
+    }
+  } else if (mode === 2) {   // 接下句
+    var tails = P.L.map(function (_, i) { return tailOf(i); });
+    tails.forEach(function (t, i) { t.k.forEach(function (k) { strip.lines[i].chs[k].classList.add('hid'); }); });
+    state('me', '听我说'); await SV.n(SHI_SAY.m2); if (!alive()) return;
+    await needMic(); if (!alive()) return;
+    for (var i = 0; i < n; i++) {
+      var t = tails[i], tchs = t.k.map(function (k) { return strip.lines[i].chs[k]; });
+      strip.cur(i); state('me', '听我念前面'); await line(i, null, t.at, 0, t.k[0]); if (!alive()) return;
+      var tdur = lineEnd(i) - t.at, ok = await turn(i, tdur, tchs, SHI_SAY.tail); if (!alive()) return;
+      tchs.forEach(function (c) { c.classList.remove('hid', 'me'); });
+      state('me', ok ? '对一对' : '听我说'); await lkSeg(clip, t.at, lineEnd(i), lights(i, t.k[0], han[i].length)); if (!alive()) return;
+      if (!ok) { ok = await turn(i, tdur, tchs); if (!alive()) return; }
+      heard += ok ? 1 : 0;
+      sc.run(i); await praise(i); await shWait(900); if (!alive()) return;
+    }
+  } else {   // 我来背
+    P.L.forEach(function (_, i) { strip.lines[i].chs.forEach(function (c, k) { if (k) c.classList.add('hid'); }); });
+    state('me', '听我说'); await SV.n(SHI_SAY.m3); if (!alive()) return;
+    var mic = await needMic(); if (!alive()) return;
+    var recOn = mic && Mic.startRec();
+    for (var i = 0; i < n; i++) {
+      var rest = strip.lines[i].chs.slice(1), dur = lineEnd(i) - m.L[i];
+      strip.cur(i);
+      var ok = await turn(i, dur, rest, SHI_SAY.turn3); if (!alive()) return;
+      if (!ok) {
+        state('me', '我帮你'); await SV.n(SHI_SAY.help); if (!alive()) return;
+        rest.forEach(function (c) { c.classList.remove('hid'); }); await line(i); if (!alive()) return;
+        clearLine(i); ok = await turn(i, dur, rest); if (!alive()) return;
+      }
+      heard += ok ? 1 : 0;
+      rest.forEach(function (c) { c.classList.remove('hid'); });
+      sc.run(i); await praise(i); await shWait(900); if (!alive()) return;
+    }
+    var blob = recOn ? await Mic.stopRec() : null; if (!alive()) return;
+    if (blob && blob.size > 2000) await RecDB.put(P.id, blob);
+  }
+  if (!alive()) return;
+  var usedMic = Mic.state === 'on';
+  Mic.close();
+  lkFinish(P, mode, heard, n, ui, usedMic);
+}
+// 星星：看故事不给星；用话筒时听见她念了六成以上的句子才给，没有话筒（点小手）念完就给
+function lkFinish(P, mode, heard, n, ui, usedMic) {
+  var rec = lpRec(P.id), got = mode === 0 || !usedMic || heard >= Math.ceil(n * 0.6);
+  var first = got && !rec[mode];
+  if (got) rec[mode] = 1;
+  if (first && mode) addStars(1);
+  var dk = todayKey(); S.days[dk] = (S.days[dk] || 0) + 1;
+  save();
+  var box = el('div', 'tkResult lkResult');
+  box.appendChild(el('div', 'tkRT', '《' + P.t + '》 · ' + LK[mode].ic + ' ' + LK[mode].n));
+  var sr = el('div', 'tkStars');
+  if (mode) { var s = el('span', null, '⭐'); sr.appendChild(s); later(400, function () { s.classList.add('on'); Audio2.star(); }); }
+  else sr.appendChild(el('span', 'on', '📖'));
+  box.appendChild(sr);
+  box.appendChild(el('div', 'tkStat', mode === 0 ? '故事听完啦' : got ? '念了 ' + heard + ' / ' + n + ' 句，真棒！' : '这次听见你念了 ' + heard + ' 句，再大声一点试试'));
+  var row = el('div', 'btnrow'), nx = mode < 3 ? mode + 1 : -1;
+  if (mode === 3 && got) {
+    var hear = el('button', 'bigbtn', '🎧 听听我背的');
+    hear.addEventListener('click', function () { Audio2.tap(); RecDB.get(P.id).then(function (v) { if (v) lkPlayRec(v); else toast('这次没有录到'); }); });
+    var drumB = el('button', 'bigbtn', '🥁 庆功鼓');
+    drumB.addEventListener('click', function () { Audio2.tap(); tkPlay(P, 0); });
+    row.appendChild(hear); row.appendChild(drumB);
+  }
+  if (nx >= 0) { var nb = el('button', 'bigbtn', '▶ 下一步：' + LK[nx].ic + ' ' + LK[nx].n); nb.addEventListener('click', function () { Audio2.tap(); lkPlay(P, nx); }); row.appendChild(nb); }
+  var again = el('button', 'bigbtn ghost', '🔁 再来一次'); again.addEventListener('click', function () { Audio2.tap(); lkPlay(P, mode); }); row.appendChild(again);
+  var back = el('button', 'bigbtn ghost', '📜 选诗'); back.addEventListener('click', function () { Audio2.tap(); tkHome(); }); row.appendChild(back);
+  box.appendChild(row);
+  ui.pane.appendChild(box);
+  var words = mode === 0 ? SHI_SAY.done0 : mode === 1 ? SHI_SAY.done1 : mode === 2 ? SHI_SAY.done2 : SHI_SAY.done3;
+  if (!got) words = SHI_SAY.s0;
+  later(600, function () {
+    if (got && mode) sparkle(innerWidth / 2, innerHeight / 3, ['🎉', '⭐', '✨']);
+    SV.n(words).then(function (ok) { if (ok && got && mode === 3) RecDB.get(P.id).then(function (v) { if (v && box.isConnected) lkPlayRec(v); }); });
+  });
+}
+
 /* ===================== 5 照镜子 =====================
    儿童在这个年龄普遍具有「镜像不变性」：知觉上把左右翻转的图形当成同一个东西
    （也是 b/d、p/q 写反的同源现象），要到六七岁才逐步解除。
@@ -5230,13 +5674,14 @@ function openPanel() {
   var c3 = el('div', 'pcard'); c3.appendChild(el('h3', null, '计时与记录'));
   c3.appendChild(toggleRow('给孩子看秒表', '关掉后孩子看不到计时，后台照常记录用时；容易紧张的孩子建议关', function () { return S.showTimer; }, function (v) { S.showTimer = v; }));
   c3.appendChild(offlineRow());
+  c1.appendChild(toggleRow('古诗：用小话筒听孩子念', '「跟我念」「接下句」「我来背」时听她有没有念出声，背诗时录下来给你听（只存在这台设备上）。关掉就改成念完点小手', function () { return S.shi.mic !== false; }, function (v) { S.shi.mic = v; if (!v) Mic.close(); }));
   c3.appendChild(toggleRow('跨天保存进度', '关卡、星星、贴纸、每关最快用时留在这台平板上', function () { return S.persist; }, function (v) { S.persist = v; if (v) save(); }));
   var clr = el('div', 'prow');
   var ctx = el('div', 'tx'); ctx.appendChild(el('span', null, '已记录 ' + Object.keys(S.days).length + ' 天 · 星星 ' + S.stars + ' 颗 · 贴纸 ' + S.stickers.length + ' 张'));
   clr.appendChild(ctx);
   var cb = el('button', 'tg'); cb.textContent = '清空'; cb.style.color = 'var(--red)'; cb.style.width = '110px';
   cb.addEventListener('click', function () {
-    S.stars = 0; S.stickers = []; S.best = {}; S.days = {}; S.shi.tk = {};
+    S.stars = 0; S.stickers = []; S.best = {}; S.days = {}; S.shi.tk = {}; S.shi.lp = {}; RecDB.clear();
     GAMES.forEach(function (g) { S.level[g.id] = 1; S.streak[g.id] = 0; });
     save(); s.remove(); home(); toast('记录清空了');
   });
@@ -5280,7 +5725,7 @@ function boot() {
   Fit.boot();
   home();
   document.addEventListener('pointerdown', function () { Audio2.init(); Voice.unlock(); Music.start(); }, { once: true });
-  document.addEventListener('visibilitychange', function () { if (document.hidden) { Music.stop(); Voice.stop(); TK.stop(); } else Music.start(); });
+  document.addEventListener('visibilitychange', function () { if (document.hidden) { Music.stop(); Voice.stop(); TK.stop(); lkStopSrc(); Mic.close(); } else Music.start(); });
 }
 
 boot();
