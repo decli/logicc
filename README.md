@@ -239,7 +239,7 @@
 
 ### 换个网址（Cloudflare）
 
-github.io 打不开时，同一个仓库在 Cloudflare 上还有一份：<https://logicc.cu07167.workers.dev>（Workers 的静态网站，部署的是这个仓库的 `main`）。
+github.io 打不开时，同一个仓库在 Cloudflare 上还部署了一份（Workers 的静态网站，绑在自己的子域名上，部署的是这个仓库的 `main`，推送后一分钟左右自动更新）。
 
 1. Cloudflare 后台 → Workers & Pages → 创建 → 导入 Git 仓库，选这个仓库，生产分支 `main`；不需要构建，整个仓库根目录就是网站
    （也可以建成 Pages 项目：框架选「无」，构建命令 `exit 0`，输出目录 `/`）
