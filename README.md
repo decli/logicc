@@ -237,15 +237,16 @@
 古诗小剧场第一次进「跟我念」时会弹出「使用麦克风」，请家长点允许（不允许也能玩，孩子念完点「✋ 我念完了」）。
 声音只在这台设备上判断有没有开口，不上传；「我来背」的录音存在这台设备的浏览器里，设置里「清空」会一起删掉。
 
-### 换个网址（Cloudflare Pages）
+### 换个网址（Cloudflare）
 
-github.io 打不开时，可以把同一个仓库再部署一份到 Cloudflare Pages，绑一个自己的子域名：
+github.io 打不开时，同一个仓库在 Cloudflare 上还有一份：<https://logicc.cu07167.workers.dev>（Workers 的静态网站，部署的是这个仓库的 `main`）。
 
-1. Cloudflare 后台 → Workers & Pages → 创建 → Pages → 连接到 Git，选这个仓库，生产分支 `main`；
-   框架选「无」，构建命令填 `exit 0`（不用构建），输出目录填 `/`（仓库根目录）。以后推送到 `main`，两个网址一起更新
-2. 项目的「自定义域」里加一个子域名（比如 `kids.你的域名`），DNS 记录 Cloudflare 会自动加
-3. 根目录的 `_headers` 只有 Cloudflare 读：所有页面带 `X-Robots-Tag: noindex`，首页和 `sw.js` 每次检查新版本，语音包长缓存；
+1. Cloudflare 后台 → Workers & Pages → 创建 → 导入 Git 仓库，选这个仓库，生产分支 `main`；不需要构建，整个仓库根目录就是网站
+   （也可以建成 Pages 项目：框架选「无」，构建命令 `exit 0`，输出目录 `/`）
+2. 想用自己的域名：在这个项目的「域和路由」（Pages 叫「自定义域」）里加一个子域名，比如 `play.你的域名`，DNS 记录和证书 Cloudflare 会自动加
+3. 根目录的 `_headers` 只有 Cloudflare 读：所有文件带 `X-Robots-Tag: noindex`，首页和 `sw.js` 每次检查新版本，语音包长缓存；
    `robots.txt` 只放 Google、Bing 进来（它们要读到 noindex 才不收录），其他爬虫、AI 训练爬虫一律不让抓。和主站不互相链接，就不会影响主站的搜索收录
+4. Cloudflare 会把 `/index.html` 跳转到 `/`，所以 `sw.js` 不缓存跟着跳转拿到的页面（浏览器不认这种响应，会打不开），`manifest` 的起始页也是 `./`
 
 注意：进度、星星和「我来背」的录音存在浏览器里，按网址分开存，换了网址要从头开始；离线缓存也要在新网址上重新下载一次。
 
