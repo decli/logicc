@@ -294,11 +294,19 @@ body{
 .step{flex:1 1 0;min-width:0;border:calc(5px * var(--k)) solid var(--ink);border-bottom:0;border-radius:calc(26px * var(--k)) calc(26px * var(--k)) 0 0;display:flex;flex-direction:column;align-items:center;gap:calc(10px * var(--k));padding:calc(18px * var(--k)) calc(12px * var(--k)) 0;position:relative;cursor:pointer}
 .step .no{width:calc(92px * var(--k));height:calc(92px * var(--k));flex:none;border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(26px * var(--k));background:#fff;color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:calc(50px * var(--k))}
 .step .nm{flex:none;width:100%;font-size:calc(25px * var(--k));font-weight:700;text-align:center;line-height:1.22;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.step .nm .nb{display:inline-block}
 .step .mid{flex:1 1 auto;min-height:0;min-width:0;width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .step .ft{flex:none;display:flex;flex-direction:column;align-items:center;gap:calc(4px * var(--k));padding-bottom:calc(16px * var(--k))}
 .step .ft i{font-size:calc(21px * var(--k));font-style:normal;font-weight:700;white-space:nowrap}
 .step .go{flex:none;width:100%;margin-bottom:calc(10px * var(--k));height:calc(88px * var(--k));border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(22px * var(--k));background:var(--ink);color:#fff;font-family:inherit;font-size:calc(30px * var(--k));font-weight:700;cursor:pointer}
 .step .me{position:absolute;top:auto;bottom:100%;left:50%;margin-bottom:calc(42px * var(--k));font-size:calc(86px * var(--k));line-height:1;transform:translateX(-50%);animation:bob 3s infinite;pointer-events:none}
+/* 关卡多（找规律 11 关）时台阶变窄：缩小间距和字，关名两行放得下五个字 */
+.stair.many{gap:calc(9px * var(--k));padding-left:calc(14px * var(--k));padding-right:calc(14px * var(--k))}
+.stair.many .step{padding-left:calc(4px * var(--k));padding-right:calc(4px * var(--k))}
+.stair.many .step .no{width:calc(80px * var(--k));height:calc(80px * var(--k));font-size:calc(44px * var(--k))}
+.stair.many .step .nm{font-size:calc(23px * var(--k))}
+.stair.many .step .go{height:auto;padding:calc(8px * var(--k)) 0;font-size:calc(23px * var(--k));line-height:1.2}
+.stair.many .step .ft i{font-size:calc(18px * var(--k))}
 .step .tag{position:absolute;top:auto;bottom:100%;left:50%;margin-bottom:calc(8px * var(--k));transform:translateX(-50%);border:calc(4px * var(--k)) solid var(--ink);border-radius:999px;background:var(--green);color:#fff;font-size:calc(20px * var(--k));font-weight:700;padding:calc(3px * var(--k)) calc(14px * var(--k));white-space:nowrap;pointer-events:none}
 @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-calc(10px * var(--k)))}}
 .pv{display:grid;gap:calc(5px * var(--k))}
@@ -874,7 +882,7 @@ function offlineState() {
     return Promise.all(urls.map(function (u) { return caches.match(new URL(u, location.href).href).then(function (r) { return !!r; }); }));
   }).then(function (got) {
     var n = got.filter(Boolean).length;
-    if (n === got.length) return '✅ 已经全部存在这台设备上（约 31 MB），断网也能玩，古诗一到四年级都能念';
+    if (n === got.length) return '✅ 已经全部存在这台设备上（约 32 MB），断网也能玩，古诗一到四年级都能念';
     return '⏳ 还在下载（' + n + ' / ' + got.length + '）。连着网多开一会儿，下载完断网也能玩';
   }).catch(function () { return '还没下载好，连上网打开一次'; });
 }
@@ -970,7 +978,7 @@ const GAMES = [
   },
   {
     id: 'pattern', name: '找规律', emoji: '🧩', color: 'var(--purple)', tip: '看图找规律，问号里该放哪一个',
-    // 行测（公务员考试）图形推理的八类常考题，原创出题、每局现生成；从易到难，每题都能点 💡 听讲解
+    // 行测（公务员考试）图形推理的常考题型，原创出题、每局现生成；从易到难，后三关是挑战关；每题都能点 💡 听讲解
     levels: [
       { t: '数一数', d: '每一格里的东西每次多几个、少几个；两种形状混着时数总数（行测「数量」）', cfg: { kind: 'count' } },
       { t: '每行都有', d: '九宫格：每一行三样东西各出现一次，看缺哪个；难一点的颜色也要配齐（行测「遍历」）', cfg: { kind: 'latin' } },
@@ -978,8 +986,12 @@ const GAMES = [
       { t: '转一转', d: '箭头每次转一格或两格，分清顺时针和逆时针（行测「旋转」）', cfg: { kind: 'rotate' } },
       { t: '叠一叠', d: '九宫格：每一行前两个图叠在一起就是第三个（行测「叠加」）', cfg: { kind: 'union' } },
       { t: '数线条', d: '数每个图有几条直线，折线拐一下就多一条（行测「线数」）', cfg: { kind: 'lines' } },
-      { t: '一样的消掉', d: '叠在一起时，两个都黑的格子消掉、只有一个黑的留下（行测「去同存异」）', cfg: { kind: 'xor' } },
-      { t: '两个一起变', d: '黑球白球各走各的，两条规律要同时盯住（行测「双规律」）', cfg: { kind: 'two' } }
+      { t: '一样的消掉', b: 3, d: '叠在一起时，两个都黑的格子消掉、只有一个黑的留下（行测「去同存异」）', cfg: { kind: 'xor' } },
+      { t: '两个一起变', b: 2, d: '黑球白球各走各的，两条规律要同时盯住（行测「双规律」）', cfg: { kind: 'two' } },
+      // 后三关是挑战关，照着真题的路子出，难度接近行测原题
+      { t: '穿过几次', d: '挑战：弯弯的线穿过直线几次，没碰到直线的弯不算（行测「交点数」）', cfg: { kind: 'cross' } },
+      { t: '一层套一层', b: 2, d: '挑战：九宫格，三层套在一起，每一行里每一层都把三样东西轮一遍；三行用的东西各不一样（行测「位置遍历」）', cfg: { kind: 'nest' } },
+      { t: '框里框外', d: '挑战：小圆圈沿着方框走，同时一次在框里、一次在框外（行测「位置 + 里外」两条规律）', cfg: { kind: 'orbit' } }
     ]
   },
   {
@@ -1173,7 +1185,7 @@ function previewShape(g, i) {
   if (g.id === 'schulte') { cols = c.n; rows = c.n; }
   else if (g.id === 'mirror') { cols = c.w * 2; rows = c.h; }
   else if (g.id === 'link') { cols = c.w; rows = c.h; }
-  else if (g.id === 'pattern') { cols = /latin|union|xor/.test(c.kind) ? 3 : 5; rows = cols === 3 ? 3 : 1; }
+  else if (g.id === 'pattern') { cols = /latin|union|xor|nest/.test(c.kind) ? 3 : 5; rows = cols === 3 ? 3 : 1; }
   else if (g.id === 'dots') { cols = c.kind === 'make3' ? 3 : 2; rows = 1; }
   else if (g.id === 'bond') { cols = c.miss === 'three' ? 3 : 2; rows = 2; }
   else if (g.id === 'fit') { cols = c.w || 4; rows = c.kind === 'drop' ? Math.min(6, c.h) : 3; }
@@ -1216,8 +1228,8 @@ function levelPicker(g) {
   Session = null; Fit.cb = null; ROUND_ID++; stopTimer();
   var p = el('div', 'pane');
   p.appendChild(topbar({ title: g.emoji + ' ' + g.name, sub: '往上走，一级比一级难', back: home }));
-  var st = el('div', 'stair');
   var n = g.levels.length, cur = S.level[g.id];
+  var st = el('div', 'stair' + (n > 8 ? ' many' : ''));
   g.levels.forEach(function (L, i) {
     var lv = i + 1, isCur = lv === cur;
     var col = el('div', 'step');
@@ -1231,7 +1243,10 @@ function levelPicker(g) {
     }
     if (isCur) { col.appendChild(el('div', 'me', '🐰')); col.appendChild(el('div', 'tag', '上次玩到这')); }
     col.appendChild(el('div', 'no num', String(lv)));
-    col.appendChild(el('div', 'nm', L.t));
+    // b：五个字的关名在窄台阶上从这里换行（「一样的 / 消掉」，不要「一样的消 / 掉」）
+    var nm = el('div', 'nm', L.b ? null : L.t);
+    if (L.b) { nm.appendChild(el('span', 'nb', L.t.slice(0, L.b))); nm.appendChild(el('span', 'nb', L.t.slice(L.b))); }
+    col.appendChild(nm);
     var mid = el('div', 'mid');
     mid.appendChild(previewGrid(g, i));
     col.appendChild(mid);
@@ -4716,9 +4731,10 @@ function gLink(board, lv) {
 }
 
 /* ===================== 9 找规律（图形推理） =====================
-   原来的 AB / ABC 循环孩子玩熟了，换成公务员考试「行测」里的图形推理：照着常考的八类题型原创出题
+   原来的 AB / ABC 循环孩子玩熟了，换成公务员考试「行测」里的图形推理：照着常考的题型原创出题
    （不照搬真题；题目每局现生成），按六岁孩子的难度从易到难排：
-   数量 → 遍历（九宫格每行各有一个）→ 平移 → 旋转 → 叠加 → 线数 → 去同存异 → 两条规律一起。
+   数量 → 遍历（九宫格每行各有一个）→ 平移 → 旋转 → 叠加 → 线数 → 去同存异 → 两条规律一起，
+   后面再加三个挑战关：交点数 → 三层套在一起的位置遍历 → 位置 + 里外两条规律。
    形式也照行测：一排图或九宫格，问号里该放哪个，四个选项 A B C D。
    每题都能「💡 讲一讲」：一步一句话，画面跟着演——数到哪个标到哪个、箭头画出走过的路、前两个图飞过去叠在一起。
    讲解的每一句都由固定的几种说法拼成，GL_T 里列全了，提前录进语音包 voice-gl（dev/voice/collect_gl.js）。
@@ -4734,6 +4750,9 @@ const GL_DOT_NAME = { circle: '圆点', tri: '三角形', star: '星星', heart:
 const GL_COLORS = ['red', 'yellow', 'blue'];
 const GL_COLOR_NAME = { red: '红色', yellow: '黄色', blue: '蓝色' };
 const GL_RING = [0, 1, 2, 5, 8, 7, 6, 3];   // 3×3 外圈的八个格子，按顺时针排
+// 套在一起的三层：每一行用一套东西（两套形状、一套颜色），三角形和菱形不放在一套里（尖的套尖的，最里面会太小）
+const GL_NEST_SETS = [['circle', 'square', 'tri'], ['circle', 'square', 'diamond'], GL_COLORS];
+const GL_NEST_NAME = { circle: '圆形', square: '正方形', tri: '三角形', diamond: '菱形', red: '红色', yellow: '黄色', blue: '蓝色' };
 const GL_T = {
   askSeq: '看看前面几个图的规律，问号里该放哪一个？',
   askGrid: '看看每一行的规律，问号里该放哪一个？',
@@ -4779,7 +4798,25 @@ const GL_T = {
   // 两条规律
   twoLook: '这道题有两个球在动，我们一个一个看',
   twoRule: (w, d, k) => (w ? '再看白球，它' : '先看黑球，它') + '每次' + (d > 0 ? '顺时针' : '逆时针') + '走' + GL_NUM[k] + '格',
-  twoEnd: '两个球都走对了的，只有这一个'
+  twoEnd: '两个球都走对了的，只有这一个',
+  // 挑战 · 交点数
+  crAsk: '数一数，弯弯的线穿过直线几次',
+  crN: n => GL_NUM[n] + '次',
+  crStep: d => '每次' + (d > 0 ? '多' : '少') + '穿过一次',
+  crSame: n => '每个图都穿过' + GL_NUM[n] + '次',
+  crRes: n => '所以问号里的线，要穿过直线' + GL_NUM[n] + '次',
+  // 挑战 · 三层套在一起（位置遍历）
+  nestLook: '看第一行：每个图都是三层，一层套一层',
+  nestOuter: '看最外面一层，三个图都不一样',
+  nestAll: '中间一层、最里面一层，也是三样各一个',
+  nestOut: s => '最外面一层，还缺' + GL_NEST_NAME[s],
+  nestMid: s => '中间一层，还缺' + GL_NEST_NAME[s],
+  nestIn: s => '最里面一层，还缺' + GL_NEST_NAME[s],
+  // 挑战 · 小圆圈绕着方框走，框里框外轮着来
+  orbLook: '小圆圈有两样在变：走到哪儿，在框里还是框外。我们一样一样看',
+  orbPos: (d, k) => '先看位置：它每次沿着方框，' + (d > 0 ? '顺时针' : '逆时针') + '走' + GL_NUM[k] + '步',
+  orbSide: '再看里外：一次在框里，一次在框外，轮着来',
+  orbNext: s => '所以问号里的小圆圈，走到这里，还要在框' + (s ? '里' : '外')
 };
 // 讲解会说的每一句（语音包照这个录；collect_gl.js 还会把每类题出几千道，查有没有漏掉的说法）
 function glLines() {
@@ -4801,6 +4838,14 @@ function glLines() {
   for (let n = 1; n <= 7; n++) add(GL_T.lnN(n));    // 题里的图 1 到 7 条线，答案 3 到 8 条
   for (let n = 3; n <= 8; n++) add(GL_T.lnRes(n));
   for (let n = 3; n <= 6; n++) add(GL_T.lnSame(n));
+  [GL_T.crAsk, GL_T.nestLook, GL_T.nestOuter, GL_T.nestAll, GL_T.orbLook, GL_T.orbSide].forEach(add);
+  for (let n = 1; n <= 7; n++) add(GL_T.crN(n));    // 题里的线穿过 1 到 7 次，答案 2 到 7 次
+  [1, -1].forEach(d => add(GL_T.crStep(d)));
+  for (let n = 2; n <= 5; n++) add(GL_T.crSame(n));
+  for (let n = 2; n <= 7; n++) add(GL_T.crRes(n));
+  GL_NEST_SETS.forEach(set => set.forEach(x => { add(GL_T.nestOut(x)); add(GL_T.nestMid(x)); add(GL_T.nestIn(x)); }));
+  [1, -1].forEach(d => [1, 2].forEach(k => add(GL_T.orbPos(d, k))));
+  [0, 1].forEach(x => add(GL_T.orbNext(x)));
   return out;
 }
 
@@ -5001,7 +5046,94 @@ function glGenTwo() {
     };
   }
 }
-const GL_GEN = { count: glGenCount, latin: glGenLatin, move: glGenMove, rotate: glGenRotate, union: glGenUnion, lines: glGenLines, xor: glGenXor, two: glGenTwo };
+// —— 9 挑战 · 交点数：一条弯弯的线穿过横线几次（有的弯没碰到横线，不算） ——
+// 线是一串高高低低的转折点，相邻两点之间用两头水平的三次曲线连：一段里只往一个方向走，
+// 所以一高一低的两点之间正好穿过横线一次，同一边的两点之间不穿过
+function glCrossFig(n) {
+  const side = [], up = rnd(2) === 0;
+  for (let j = 0; j <= n; j++) side.push((j % 2 === 0) === up ? -1 : 1);
+  const wig = n <= 6 && rnd(10) < 4 ? rnd(2) : -1;   // 在开头或结尾加一个不碰线的小弯
+  let ys = side.map(sd => 50 + sd * (17 + rnd(17)));
+  if (wig === 0) ys = [50 + side[0] * (19 + rnd(14)), 50 + side[0] * (9 + rnd(4))].concat(ys);
+  if (wig === 1) { const sd = side[n]; ys = ys.concat([50 + sd * (9 + rnd(4)), 50 + sd * (19 + rnd(14))]); }
+  const m = ys.length, x0 = 10 + rnd(4), x1 = 90 - rnd(4), sp = (x1 - x0) / (m - 1);
+  const ext = ys.map((y, j) => [+(x0 + sp * j + (j && j < m - 1 ? (rnd(7) - 3) * sp / 22 : 0)).toFixed(1), y]);
+  const xs = [];
+  for (let j = 0; j + 1 < m; j++) {
+    const a = ext[j], b = ext[j + 1];
+    if ((a[1] - 50) * (b[1] - 50) >= 0) continue;
+    const f = (50 - a[1]) / (b[1] - a[1]);
+    let lo = 0, hi = 1;
+    for (let it = 0; it < 30; it++) { const t = (lo + hi) / 2; if (3 * t * t - 2 * t * t * t < f) lo = t; else hi = t; }
+    const t = (lo + hi) / 2;
+    xs.push(+(a[0] + (b[0] - a[0]) * (1.5 * t - 1.5 * t * t + t * t * t)).toFixed(1));
+  }
+  return { k: 'cross', sig: n, ext: ext, xs: xs };
+}
+function glGenCross() {
+  const r = rnd(10), d = r < 6 ? 1 : r < 8 ? 0 : -1;
+  const s = d === 1 ? 1 + rnd(3) : d === 0 ? 2 + rnd(4) : 6 + rnd(2);
+  const ns = range(0, 4).map(i => s + d * i), n = ns[4];
+  const o = glPick(glCrossFig(n), shuffle([n + 1, n - 1, n + 2]).concat([n - 2, n + 3]).filter(v => v >= 1 && v <= 9).map(glCrossFig));
+  return {
+    lay: 'seq', figs: ns.slice(0, 4).map(glCrossFig).concat([null]), blank: 4, opts: o.opts, ans: o.ans, ask: GL_T.askSeq,
+    steps: ui => [{ t: GL_T.crAsk }]
+      .concat(ns.slice(0, 4).map((v, i) => ({ t: GL_T.crN(v), fx: () => ui.tick(i).then(() => ui.badge(i, String(v))) })))
+      .concat([{ t: d ? GL_T.crStep(d) : GL_T.crSame(s) }, { t: GL_T.crRes(n), fx: () => ui.badge(4, String(n)) }, { t: GL_T.ans(o.ans), fx: () => ui.point(o.ans) }])
+  };
+}
+
+// —— 10 挑战 · 三层套在一起：每一行里，最外面、中间、最里面这三层，三样东西各轮一次 ——
+// 三行各用一套不同的东西，所以不能拿整个图去别的行里找，得一层一层看
+function glGenNest() {
+  const mats = shuffle(GL_NEST_SETS).map(set => shuffle(set));
+  const fig = ord => ({ k: 'nest', sig: ord.join('>'), mat: GL_COLORS.indexOf(ord[0]) >= 0 ? 'color' : 'shape', order: ord });
+  const at = (r, c) => { const P = mats[r]; return [P[c % 3], P[(c + 1) % 3], P[(c + 2) % 3]]; };   // 每往右一个，最外面那层钻到最里面
+  const figs = [];
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) figs.push(r === 2 && c === 2 ? null : fig(at(r, c)));
+  const P = mats[2], A = at(2, 2);
+  // 干扰项：最外面对了、里面两层换了的；照抄这一行里已经有的；别的摆法
+  const o = glPick(fig(A), [[P[2], P[1], P[0]], at(2, rnd(2))].concat(shuffle([[P[0], P[2], P[1]], [P[1], P[0], P[2]], at(2, 0), at(2, 1)])).map(fig));
+  const part = n => Object.assign(fig(A), { show: n });
+  return {
+    lay: 'grid', figs: figs, blank: 8, opts: o.opts, ans: o.ans, ask: GL_T.askGrid,
+    steps: ui => {
+      const mark = (cs, j) => cs.forEach(c => ui.mark(c, g => { if (j >= 0) glNestMark(g, figs[c], j); }));   // 把第 j 层描成绿色（j < 0 只擦掉）
+      return [
+        { t: GL_T.nestLook, fx: () => ui.row(0) },
+        { t: GL_T.nestOuter, fx: () => mark([0, 1, 2], 0) },
+        { t: GL_T.nestAll },
+        { t: GL_T.latRow, fx: () => { mark([0, 1, 2], -1); ui.row(2); } },
+        { t: GL_T.nestOut(A[0]), fx: () => { mark([6, 7], 0); ui.ghost(8, part(1)); } },
+        { t: GL_T.nestMid(A[1]), fx: () => { mark([6, 7], 1); ui.ghost(8, part(2)); } },
+        { t: GL_T.nestIn(A[2]), fx: () => { mark([6, 7], 2); ui.ghost(8, part(3)); } },
+        { t: GL_T.ans(o.ans), fx: () => ui.point(o.ans) }
+      ];
+    }
+  };
+}
+
+// —— 11 挑战 · 两条规律：小圆圈沿着方框一步一步走，同时一次在框里、一次在框外 ——
+// 方框上八个位置：四个角、四条边的中间，从左上角起顺时针数
+function glGenOrbit() {
+  const d = pick([1, -1]), k = rnd(10) < 7 ? 1 : 2, p0 = rnd(8), s0 = rnd(2);
+  const P = i => glMod(p0 + d * k * i, 8), Sd = i => (s0 + i) % 2;   // 1 = 框里
+  const fig = (p, sd) => ({ k: 'orbit', sig: glMod(p, 8) + '/' + sd, p: glMod(p, 8), s: sd });
+  const pa = P(4), sa = Sd(4);
+  const o = glPick(fig(pa, sa), shuffle([fig(pa, 1 - sa), fig(pa + d, sa), fig(P(3), sa)]).concat([fig(pa - d, sa), fig(pa + d, 1 - sa), fig(pa - d, 1 - sa)]));
+  return {
+    lay: 'seq', figs: range(0, 3).map(i => fig(P(i), Sd(i))).concat([null]), blank: 4, opts: o.opts, ans: o.ans, ask: GL_T.askSeq,
+    steps: ui => [
+      { t: GL_T.orbLook },
+      { t: GL_T.orbPos(d, k), fx: () => { for (let i = 1; i < 4; i++) ui.draw(i, g => glOrbWalk(g, P(i - 1), Sd(i - 1), d, k)); } },
+      { t: d > 0 ? GL_T.cw : GL_T.ccw, fx: () => ui.chip(d) },
+      { t: GL_T.orbSide, fx: () => { for (let i = 0; i < 4; i++) ui.badge(i, Sd(i) ? '里' : '外'); } },
+      { t: GL_T.orbNext(sa), fx: () => { ui.ghost(4, fig(pa, sa)); ui.draw(4, g => glOrbWalk(g, P(3), Sd(3), d, k)); ui.badge(4, sa ? '里' : '外'); } },
+      { t: GL_T.ans(o.ans), fx: () => ui.point(o.ans) }
+    ]
+  };
+}
+const GL_GEN = { count: glGenCount, latin: glGenLatin, move: glGenMove, rotate: glGenRotate, union: glGenUnion, lines: glGenLines, xor: glGenXor, two: glGenTwo, cross: glGenCross, nest: glGenNest, orbit: glGenOrbit };
 /* ==/GL-DATA== */
 
 /* —— 画图：每个图是 100×100 的 SVG —— */
@@ -5052,7 +5184,51 @@ function glDraw(g, f) {
     sv('rect', { x: 10, y: 10, width: 80, height: 80, fill: 'none', stroke: GL_INK, 'stroke-width': 2.6 }, g);
   } else if (f.k === 'lines') {
     f.parts.forEach(p => sv(p.closed ? 'polygon' : 'polyline', { points: glPts(p.pts), fill: 'none', stroke: GL_INK, 'stroke-width': 4, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, g));
+  } else if (f.k === 'cross') {
+    sv('path', { d: 'M5 50H95', stroke: GL_INK, 'stroke-width': 3, 'stroke-linecap': 'round' }, g);
+    let d = 'M' + f.ext[0][0] + ' ' + f.ext[0][1];
+    for (let j = 1; j < f.ext.length; j++) {
+      const a = f.ext[j - 1], b = f.ext[j], h = (b[0] - a[0]) / 2;
+      d += 'C' + (a[0] + h).toFixed(1) + ' ' + a[1] + ' ' + (b[0] - h).toFixed(1) + ' ' + b[1] + ' ' + b[0] + ' ' + b[1];
+    }
+    sv('path', { d: d, fill: 'none', stroke: GL_INK, 'stroke-width': 3.4, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
+  } else if (f.k === 'nest') {
+    glNestLayers(f).forEach((L, j) => { if (j < (f.show || 3)) glNestOne(g, f, L, null); });
+  } else if (f.k === 'orbit') {
+    sv('rect', { x: 25, y: 25, width: 50, height: 50, fill: 'none', stroke: GL_INK, 'stroke-width': 3 }, g);
+    const c = glOrbXY(f.p, f.s);
+    sv('circle', { cx: c[0], cy: c[1], r: 8, fill: '#fff', stroke: GL_INK, 'stroke-width': 3 }, g);
   }
+}
+// 三层套在一起：外面一层先画，里面一层放进上一层的内切圆里（三角形的内切圆偏下，跟着往下挪）
+const GL_NEST_FIT = { circle: [.92, .92, 0, 0], square: [1.131, .8, 0, 0], diamond: [1, .615, 0, 0], tri: [1.149, .575, .149, .175] };   // 外接圆半径、内切圆半径、外接圆心和内切圆心往下偏多少（都乘 r）
+function glNestLayers(f) {
+  if (f.mat === 'color') return f.order.map((s, j) => ({ s: s, x: 50, y: 50, r: [42, 28.5, 15][j] }));
+  let cy = 50, room = 43;
+  return f.order.map(s => {
+    const m = GL_NEST_FIT[s], r = room / m[0], y = cy - m[2] * r;
+    cy = y + m[3] * r; room = m[1] * r - 4.8;
+    return { s: s, x: 50, y: y, r: r };
+  });
+}
+function glNestOne(g, f, L, mark) {
+  if (f.mat === 'color') sv('circle', { cx: 50, cy: 50, r: L.r, fill: mark ? 'none' : GL_HEX[L.s], stroke: mark || GL_INK, 'stroke-width': mark ? 4.6 : 2.4 }, g);
+  else glShape(g, L.s, L.x, L.y, L.r, { fill: 'none', stroke: mark || GL_INK, 'stroke-width': mark ? 4.6 : 2.8, 'stroke-linejoin': 'round' });
+}
+function glNestMark(g, f, j) { glNestOne(g, f, glNestLayers(f)[j], GL_HEX.green); }
+// 小圆圈在方框上的八个位置（左上角起顺时针）；框里就贴着边往里放，框外贴着边往外放（角上斜着贴住角）
+const GL_ORB = [[25, 25], [50, 25], [75, 25], [75, 50], [75, 75], [50, 75], [25, 75], [25, 50]];
+function glOrbXY(p, inside) {
+  const a = GL_ORB[p], dx = Math.sign(50 - a[0]), dy = Math.sign(50 - a[1]);
+  if (inside) return [a[0] + dx * 9.6, a[1] + dy * 9.6];
+  const L = dx && dy ? 9.2 / Math.SQRT2 : 9.6;
+  return [a[0] - dx * L, a[1] - dy * L];
+}
+// 从上一个位置沿着方框走过来：上一个位置画虚的圆圈，再沿着框画箭头
+function glOrbWalk(g, p0, s0, d, k) {
+  const c = glOrbXY(p0, s0);
+  sv('circle', { cx: c[0], cy: c[1], r: 7.5, fill: 'none', stroke: GL_HEX.orange, 'stroke-width': 2.2, 'stroke-dasharray': '3 3' }, g);
+  glArrow(g, glTrim(range(0, k).map(j => GL_ORB[glMod(p0 + d * j, 8)]), 2, 9.5), GL_HEX.orange, 3.8);
 }
 // 一段带箭头的路（讲解时画在图上）
 function glArrow(g, pts, color, w) {
@@ -5092,6 +5268,8 @@ function glTint(g, on, color, op) {
 function glTickMarks(f) {
   const row = it => Math.round((it.y - 14) / 24);   // 格点的第几行（位置抖过，不能直接比 y）
   if (f.k === 'count') return f.items.slice().sort((a, b) => (row(a) - row(b)) || (a.x - b.x)).map(it => ({ x: it.x + 7, y: it.y - 7, dot: true }));
+  if (f.k === 'cross') return f.xs.map((x, j) => ({ x: x, y: j % 2 ? 63 : 37, at: [x, 50] }));   // 穿过的地方点一个点，号码上下错开
+
   const out = [];
   f.parts.forEach(p => {
     const n = p.closed ? p.pts.length : p.pts.length - 1;
@@ -5183,6 +5361,7 @@ function gPattern(board, lv) {
     },
     badge(i, txt) { cells[i].appendChild(el('b', 'glb num', txt)); },
     draw(i, fn) { fn(exs[i]); },
+    mark(i, fn) { const g = exs[i]; while (g.firstChild) g.firstChild.remove(); fn(g); },   // 先擦掉这一格上讲解画的，再画
     ghost(i, f) {
       if (solved && i === Q.blank) return;   // 已经答对了，答案就摆在那儿
       const g = exs[i];
@@ -5190,7 +5369,7 @@ function gPattern(board, lv) {
       const q = svgs[i].querySelector('.qm'); if (q) q.style.display = 'none';
       glDraw(sv('g', { opacity: .45 }, g), f);
     },
-    row(r) { for (let c = 0; c < 3; c++) cells[r * 3 + c].classList.add('hl'); },
+    row(r) { cells.forEach((c, i) => c.classList.toggle('hl', ((i / 3) | 0) === r)); },
     point(k) { tiles[k].classList.add('pick', 'pulse'); },
     chip(d) {
       if (chipEl) chipEl.remove();
@@ -5202,9 +5381,10 @@ function gPattern(board, lv) {
       const f = Q.figs[i], g = exs[i], ms = glTickMarks(f), gap = clamp(1400 / ms.length, 120, 260);
       ms.forEach((m, j) => later(j * gap, () => {
         if (m.seg) sv('polyline', { points: glPts(m.seg), stroke: GL_HEX.orange, 'stroke-width': 5.5, 'stroke-linecap': 'round', fill: 'none' }, g);
-        const r = m.dot ? 5.6 : 6.4;
-        sv('circle', { cx: m.x, cy: m.y, r: r, fill: m.seg ? '#fff' : GL_INK, stroke: m.seg ? GL_HEX.orange : '#fff', 'stroke-width': 1.4 }, g);
-        const t = sv('text', { x: m.x, y: m.y + r * .52, 'text-anchor': 'middle', 'font-size': r * 1.45, 'font-weight': 700, fill: m.seg ? GL_INK : '#fff' }, g);
+        if (m.at) sv('circle', { cx: m.at[0], cy: m.at[1], r: 4.2, fill: GL_HEX.orange, stroke: '#fff', 'stroke-width': 1.2 }, g);
+        const r = m.dot ? 5.6 : 6.4, hollow = m.seg || m.at;
+        sv('circle', { cx: m.x, cy: m.y, r: r, fill: hollow ? '#fff' : GL_INK, stroke: hollow ? GL_HEX.orange : '#fff', 'stroke-width': 1.4 }, g);
+        const t = sv('text', { x: m.x, y: m.y + r * .52, 'text-anchor': 'middle', 'font-size': r * 1.45, 'font-weight': 700, fill: hollow ? GL_INK : '#fff' }, g);
         t.textContent = String(j + 1);
         Audio2.count(j);
       }));
