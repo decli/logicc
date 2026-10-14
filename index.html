@@ -144,16 +144,6 @@ body{
 #cSvg .seg{stroke:var(--purple);stroke-width:6;stroke-linecap:round;fill:none}
 #cSvg .shapefill{fill:var(--yellow);opacity:0;transition:opacity .6s}
 #cSvg .shapefill.show{opacity:.85}
-/* 连连看 */
-#llHolder{position:relative}
-#llWrap{display:grid}
-.ll{border:3px solid var(--ink);border-radius:12px;background:#fff;box-shadow:3px 3px 0 var(--ink);
-  display:flex;align-items:center;justify-content:center;cursor:pointer;line-height:1}
-.ll:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
-.ll.pick{background:var(--yellow)}
-.ll.gone{visibility:hidden}
-#llSvg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
-#llSvg polyline{fill:none;stroke:var(--teal);stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
 /* 找规律 */
 .seqrow{display:flex;align-items:center;justify-content:center}
 .seq{border:3px solid var(--ink);border-radius:12px;background:#fff;display:flex;align-items:center;
@@ -303,7 +293,6 @@ body{
 .sidebtn:active{transform:translate(calc(4px * var(--k)),calc(4px * var(--k)));box-shadow:0 0 0 var(--ink)}
 .tile{border:calc(4px * var(--k)) solid var(--ink);border-radius:calc(16px * var(--k));box-shadow:calc(4px * var(--k)) calc(4px * var(--k)) 0 var(--ink)}
 .tile:active{transform:translate(calc(4px * var(--k)),calc(4px * var(--k)));box-shadow:0 0 0 var(--ink)}
-.ll{border:calc(4px * var(--k)) solid var(--ink);border-radius:calc(16px * var(--k));box-shadow:calc(4px * var(--k)) calc(4px * var(--k)) 0 var(--ink)}
 .sw{border:calc(4px * var(--k)) solid var(--ink);border-radius:calc(999px * var(--k));padding:calc(10px * var(--k)) calc(22px * var(--k));font-size:calc(24px * var(--k));font-family:inherit;font-weight:700;cursor:pointer}
 #reward .big{font-size:calc(200px * var(--k));line-height:1}
 #reward h2{font-size:calc(56px * var(--k));margin:0}
@@ -929,15 +918,14 @@ const GAMES = [
     ]
   },
   {
-    id: 'link', name: '水果连连看', emoji: '🍉', color: 'var(--teal)', tip: '点两个一样的水果把它们消掉',
-    levels: [
-      { t: '6 张·随便配对', d: '', cfg: { w: 3, h: 2, free: true } },
-      { t: '8 张·随便配对', d: '', cfg: { w: 4, h: 2, free: true } },
-      { t: '12 张·路要走得通', d: '开始有连线规则', cfg: { w: 4, h: 3, free: false } },
-      { t: '16 张·路要走得通', d: '', cfg: { w: 4, h: 4, free: false } },
-      { t: '20 张·路要走得通', d: '', cfg: { w: 5, h: 4, free: false } },
-      { t: '24 张·相近的水果', d: '形状颜色接近，要看仔细', cfg: { w: 6, h: 4, free: false, hard: true } }
-    ]
+    // 动物消消乐：开心消消乐那样的三消闯关（xiaoxiao/），十关；每局之后先做一页数学题才能再玩。点卡片直接进去
+    id: 'xiaoxiao', name: '动物消消乐', emoji: '🐼', color: 'var(--teal)', tip: '三只一样的连成一排就消掉，十关闯关', href: 'xiaoxiao/',
+    meta: function () {
+      var n = 0;
+      try { var d = JSON.parse(localStorage.getItem('logicc.xiaoxiao.v1') || '{}'); Object.keys(d.stars || {}).forEach(function (k) { n += d.stars[k]; }); } catch (e) { }
+      return ['⭐ ' + n + '/30', '玩一局，做一页数学题'];
+    },
+    levels: []
   },
   {
     // 彩虹钢琴：一架可以弹的 3D 三角钢琴（piano/），没有关卡，点卡片直接进去
@@ -1109,7 +1097,7 @@ function home() {
       return;
     }
     if (g.href) {
-      var meta = g.meta || ['✨ 随便玩', '中文 / English · 有声'];
+      var meta = typeof g.meta === 'function' ? g.meta() : g.meta || ['✨ 随便玩', '中文 / English · 有声'];
       m.appendChild(el('span', 's', meta[0]));
       m.appendChild(el('span', 'b', meta[1]));
       tx.appendChild(m); c.appendChild(tx);
@@ -1143,7 +1131,6 @@ function previewShape(g, i) {
   var c = g.levels[i].cfg, cols = 3, rows = 3;
   if (g.id === 'schulte') { cols = c.n; rows = c.n; }
   else if (g.id === 'mirror') { cols = c.w * 2; rows = c.h; }
-  else if (g.id === 'link') { cols = c.w; rows = c.h; }
   else if (g.id === 'pattern') { cols = 6; rows = 1; }
   else if (g.id === 'dots') { cols = c.kind === 'make3' ? 3 : 2; rows = 1; }
   else if (g.id === 'bond') { cols = c.miss === 'three' ? 3 : 2; rows = 2; }
@@ -4590,101 +4577,6 @@ function gConnect(board, lv) {
   Fit.cb = () => { const b = boardBox(), s2 = Math.min(b.w, b.h); box.style.width = px(s2); box.style.height = px(s2); };
 }
 
-/* ===================== 7 水果连连看 ===================== */
-const LL_EASY = ['🍎', '🍌', '🍇', '🍓', '🍉', '🍊', '🥕', '🌽', '🍄', '🍍', '🥑', '🍆'];
-const LL_HARD = ['🍎', '🍏', '🍊', '🍋', '🍐', '🥝', '🍒', '🍓', '🫐', '🍇', '🍑', '🥭'];
-function gLink(board, lv) {
-  const cfg = G.link.levels[lv - 1].cfg, W = cfg.w, H = cfg.h, pairs = W * H / 2;
-  const kinds = shuffle(cfg.hard ? LL_HARD : LL_EASY).slice(0, pairs);
-  const Gd = Array.from({ length: H + 2 }, () => new Array(W + 2).fill(null));
-  const nodes = Array.from({ length: H + 2 }, () => new Array(W + 2).fill(null));
-  let left = W * H, sel = null, busy = false;
-  const holder = el('div'); holder.id = 'llHolder';
-  const wrap = el('div'); wrap.id = 'llWrap';
-  const svg = svgEl('svg'); svg.id = 'llSvg';
-  const vals = shuffle(kinds.concat(kinds)); let k = 0;
-  for (let y = 1; y <= H; y++) for (let x = 1; x <= W; x++) {
-    Gd[y][x] = vals[k++];
-    const t = el('div', 'll', Gd[y][x]);
-    t.addEventListener('click', () => tap(y, x));
-    nodes[y][x] = t; wrap.appendChild(t);
-  }
-  holder.appendChild(wrap); holder.appendChild(svg); board.appendChild(holder);
-  const clearH = (y, a, b) => { const s = Math.min(a, b), e = Math.max(a, b); for (let i = s + 1; i < e; i++) if (Gd[y][i]) return false; return true; };
-  const clearV = (x, a, b) => { const s = Math.min(a, b), e = Math.max(a, b); for (let i = s + 1; i < e; i++) if (Gd[i][x]) return false; return true; };
-  function findPath(p, q) {
-    const [y1, x1] = p, [y2, x2] = q;
-    if (y1 === y2 && clearH(y1, x1, x2)) return [p, q];
-    if (x1 === x2 && clearV(x1, y1, y2)) return [p, q];
-    if (!Gd[y1][x2] && clearH(y1, x1, x2) && clearV(x2, y1, y2)) return [p, [y1, x2], q];
-    if (!Gd[y2][x1] && clearV(x1, y1, y2) && clearH(y2, x1, x2)) return [p, [y2, x1], q];
-    for (let x = 0; x <= W + 1; x++) { if (x === x1 || x === x2) continue; if (!Gd[y1][x] && !Gd[y2][x] && clearH(y1, x1, x) && clearH(y2, x2, x) && clearV(x, y1, y2)) return [p, [y1, x], [y2, x], q]; }
-    for (let y = 0; y <= H + 1; y++) { if (y === y1 || y === y2) continue; if (!Gd[y][x1] && !Gd[y][x2] && clearV(x1, y1, y) && clearV(x2, y2, y) && clearH(y, x1, x2)) return [p, [y, x1], [y, x2], q]; }
-    return null;
-  }
-  function anyPair() {
-    const list = [];
-    for (let y = 1; y <= H; y++) for (let x = 1; x <= W; x++) if (Gd[y][x]) list.push([y, x]);
-    for (let i = 0; i < list.length; i++) for (let j = i + 1; j < list.length; j++) {
-      const a = list[i], b = list[j];
-      if (Gd[a[0]][a[1]] !== Gd[b[0]][b[1]]) continue;
-      if (cfg.free || findPath(a, b)) return [a, b];
-    }
-    return null;
-  }
-  function reshuffle() {
-    const spots = [], vs = [];
-    for (let y = 1; y <= H; y++) for (let x = 1; x <= W; x++) if (Gd[y][x]) { spots.push([y, x]); vs.push(Gd[y][x]); }
-    for (let n = 0; n < 50; n++) { const sh = shuffle(vs); spots.forEach((s, i) => { Gd[s[0]][s[1]] = sh[i]; nodes[s[0]][s[1]].textContent = sh[i]; }); if (anyPair()) return true; }
-    return false;
-  }
-  function center(y, x) {
-    const hr = holder.getBoundingClientRect(), r0 = nodes[1][1].getBoundingClientRect();
-    const sx = W > 1 ? nodes[1][2].getBoundingClientRect().left - r0.left : r0.width;
-    const sy = H > 1 ? nodes[2][1].getBoundingClientRect().top - r0.top : r0.height;
-    return [r0.left - hr.left + r0.width / 2 + (x - 1) * sx, r0.top - hr.top + r0.height / 2 + (y - 1) * sy];
-  }
-  function drawPath(path) { const pl = svgEl('polyline'); pl.setAttribute('points', path.map(p => center(p[0], p[1]).join(',')).join(' ')); svg.appendChild(pl); setTimeout(() => pl.remove(), 520); }
-  const bump = n => { n.classList.remove('shake'); void n.offsetWidth; n.classList.add('shake'); };
-  function tap(y, x) {
-    if (busy || !Gd[y][x]) return;
-    if (sel && sel[0] === y && sel[1] === x) { nodes[y][x].classList.remove('pick'); sel = null; return; }
-    if (!sel) { sel = [y, x]; nodes[y][x].classList.add('pick'); Audio2.tap(); return; }
-    const a = sel;
-    if (Gd[a[0]][a[1]] !== Gd[y][x]) { miss(); bump(nodes[y][x]); bump(nodes[a[0]][a[1]]); nodes[a[0]][a[1]].classList.remove('pick'); sel = null; return; }
-    const path = cfg.free ? [a, [y, x]] : findPath(a, [y, x]);
-    if (!path) { miss(); Voice.say('这条路被挡住了，换一对试试'); bump(nodes[y][x]); bump(nodes[a[0]][a[1]]); nodes[a[0]][a[1]].classList.remove('pick'); sel = null; return; }
-    busy = true; Audio2.pop(); drawPath(path); nodes[a[0]][a[1]].classList.remove('pick');
-    later(420, () => {
-      Gd[a[0]][a[1]] = null; Gd[y][x] = null;
-      nodes[a[0]][a[1]].classList.add('gone'); nodes[y][x].classList.add('gone');
-      sel = null; left -= 2; busy = false;
-      if (!left) { setPrompt('全部消完啦'); return roundWin(holder); }
-      if (!cfg.free && !anyPair()) { reshuffle(); toast('重新摆一摆 🔄'); }
-      arm();
-    });
-  }
-  function arm() {
-    hintIn(13000, () => {
-      const pr = anyPair();
-      if (pr) { pr.forEach(p => nodes[p[0]][p[1]].classList.add('pulse')); setTimeout(() => pr.forEach(p => nodes[p[0]][p[1]].classList.remove('pulse')), 2600); }
-      arm();
-    });
-  }
-  if (!cfg.free && !anyPair()) reshuffle();
-  setPrompt(cfg.free ? '点两个一样的水果' : '点两个一样的，中间的路要走得通');
-  Voice.say(cfg.free ? '点两个一样的水果，就能把它们消掉' : '点两个一样的水果，中间的路要走得通');
-  arm();
-  Fit.cb = () => {
-    const b = boardBox(), gap = clamp(b.w / 110, 4, 10);
-    const c = cellFit(b.w, b.h, W, H, gap, 120);
-    wrap.style.gap = px(gap);
-    wrap.style.gridTemplateColumns = 'repeat(' + W + ',' + px(c) + ')';
-    wrap.style.gridAutoRows = px(c);
-    wrap.querySelectorAll('.ll').forEach(n => n.style.fontSize = px(c * .6));
-  };
-}
-
 /* ===================== 9 找规律 =====================
    任务层级参考 Rittle-Johnson 等人对 4 岁儿童规律任务难度的实测排序：
    补空 < 延伸 < 复杂单元 < 双属性 < 换材料重现(translate) < 指认循环单元(identify unit)。
@@ -5633,7 +5525,7 @@ function gSpan(board, lv) {
   };
 }
 
-const GAME_IMPL = { fit: gFit, span: gSpan, schulte: gSchulte, dots: gDots, bond: gBond, mirror: gMirror, connect: gConnect, link: gLink, pattern: gPattern };
+const GAME_IMPL = { fit: gFit, span: gSpan, schulte: gSchulte, dots: gDots, bond: gBond, mirror: gMirror, connect: gConnect, pattern: gPattern };
 
 
 /* ===================== 家长设置 / 贴纸册 ===================== */
