@@ -11,8 +11,10 @@
 /sw.js
   Cache-Control: no-cache
 
-# 两个语音包：页面按 ?h=内容指纹 去取，内容一变网址就变，可以放心长缓存
+# 语音包：页面按 ?h=内容指纹 去取，内容一变网址就变，可以放心长缓存
 /voice-zh.bin
+  Cache-Control: public, max-age=31536000, immutable
+/voice-gl.bin
   Cache-Control: public, max-age=31536000, immutable
 /voice-shi.bin
   Cache-Control: public, max-age=31536000, immutable

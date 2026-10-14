@@ -1,6 +1,8 @@
 """Voice banks for the whole site.
 
   python3 dev/voice/build.py root          home-page logic games  -> voice-zh.bin|json at the site root
+  python3 dev/voice/build.py gl            找规律 (figure reasoning): questions and step-by-step explanations
+                                           -> voice-gl.bin|json at the site root
   python3 dev/voice/build.py zaowu         造物 (both languages)  -> zaowu/voice-zh|en.bin|json (+ rebuilds zaowu/index.html)
   python3 dev/voice/build.py piano         彩虹钢琴               -> piano/voice-zh.bin|json
   python3 dev/voice/build.py shi           古诗小剧场             -> voice-shi.bin|json at the site root (see poems.py)
@@ -24,6 +26,9 @@ def collect(which):
     if which == 'root':
         subprocess.run(['node', os.path.join(HERE, 'collect_root.js')], check=True)
         return {'voice-zh': json.load(open(os.path.join(HERE, 'lines-root.json')))}
+    if which == 'gl':
+        subprocess.run(['node', os.path.join(HERE, 'collect_gl.js')], check=True)
+        return {'voice-gl': json.load(open(os.path.join(HERE, 'lines-gl.json')))}
     if which == 'piano':
         pd = os.path.join(ROOT, 'piano', 'dev', 'voice')
         subprocess.run(['node', os.path.join(pd, 'collect.mjs')], check=True)
@@ -35,7 +40,7 @@ def collect(which):
 
 def out_dir(which):
     if which == 'piano': return os.path.join(ROOT, 'piano')
-    return ROOT if which in ('root', 'shi') else os.path.join(ROOT, 'zaowu', 'dev', 'voice', 'out')
+    return ROOT if which in ('root', 'shi', 'gl') else os.path.join(ROOT, 'zaowu', 'dev', 'voice', 'out')
 
 async def build(which, only=()):
     banks, notes = collect(which), []
@@ -114,6 +119,6 @@ if __name__ == '__main__':
     args = sys.argv[1:]
     only = [a for a in args if a.isdigit()]   # shi 2 4: only those grades' banks
     args = [a for a in args if not a.isdigit()]
-    if not args or args[-1] not in ('root', 'zaowu', 'piano', 'shi'): sys.exit(__doc__)
+    if not args or args[-1] not in ('root', 'gl', 'zaowu', 'piano', 'shi'): sys.exit(__doc__)
     if args[0] == 'check': check(args[-1])
     else: asyncio.run(build(args[-1], only))

@@ -1,6 +1,6 @@
 // 思维小画本的离线缓存（service worker）
 //
-// 网络不稳也要能玩：第一次打开时，把首页、图标和两个语音包（读题 voice-zh，古诗小剧场 voice-shi）
+// 网络不稳也要能玩：第一次打开时，把首页、图标和三个语音包（读题 voice-zh，找规律的讲解 voice-gl，古诗小剧场 voice-shi）
 // 存进浏览器缓存，以后断网也能打开、也能出声。有网时每次打开悄悄检查新版本，下载完整了下次打开就用上。
 //
 // - 首页、json 这类小文件：先走网络，最多等 4 秒；拿到就顺手存进缓存，网络断了或太慢就用缓存里的
@@ -11,7 +11,7 @@
 const CACHE = 'logicc-v1';
 const SCOPE = new URL('./', self.location).href;
 const SHELL = ['./', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
-const BANKS = ['voice-zh', 'voice-shi'];
+const BANKS = ['voice-zh', 'voice-gl', 'voice-shi'];
 const abs = u => new URL(u, SCOPE).href;
 const wait = ms => new Promise(r => setTimeout(r, ms));
 // Cloudflare 会把 /index.html 跳转到 /。跟着跳转拿到的响应不能拿去回应页面导航（浏览器会直接报错、打不开），
