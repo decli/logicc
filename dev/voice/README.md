@@ -7,6 +7,7 @@
 | --- | --- | --- |
 | `voice-zh.bin` / `.json`（站点根目录） | 首页的闯关游戏 | 每道题的读题、提示、表扬，带数字的句子按所有可能的数字展开 |
 | `zaowu/voice-zh.*`、`zaowu/voice-en.*` | 造物 | 旁白和两只小生灵，中英文各一套；外加「词 + 翻译 + 例句」连读的整段 |
+| `xiaoxiao/voice.*` | 动物消消乐 | 中文旁白（关卡介绍、玩法提示、数学题页的表扬）和英文欢呼 Good! … Unbelievable!、Bonus time! |
 | `voice-shi.bin` / `.json`（站点根目录） | 古诗小剧场 | 游戏自己的几句话，一到四年级每首诗的介绍、小故事、每句的白话和整首朗诵（晓晓）；索引里多一个 `m`：标题、作者、每一句里每个字从第几秒开始——跟读时一个字一个字亮、截出一句来放、庆功鼓的鼓谱都靠它。分开录（`cache/shi-parts/`：0 游戏台词，1–4 各年级的介绍和朗诵，5 小故事和白话），最后合成一个包 |
 
 ## 声音
@@ -16,6 +17,7 @@
 | 旁白（首页读题也是她） | 晓晓 `zh-CN-XiaoxiaoNeural`，-20% | Ava `en-US-AvaMultilingualNeural`，-25% |
 | 小生灵 A | 晓伊 `zh-CN-XiaoyiNeural`，-10% | Ana `en-US-AnaNeural`，-20% |
 | 小生灵 B | 云夏 `zh-CN-YunxiaNeural`，-10% | Emma `en-US-EmmaMultilingualNeural`，-20%，音调 +15Hz |
+| 动物消消乐的欢呼（角色 `p`） | — | Ana `en-US-AnaNeural`，原速（童声，喊出来要有劲，不放慢） |
 
 语速是量出来的：旁白约每秒 3.5 个音节、英文约每分钟 150 词，六岁的孩子跟得上；小生灵稍快一点，更活泼。
 英文小生灵 B 原本是 Maisie（英式童声），用语音识别回听时她被听错的比例是 Ana 的两倍（21% 对 10%），
@@ -53,6 +55,7 @@ python3 dev/voice/build.py shi      # 古诗小剧场 → voice-shi.bin|json（�
 python3 dev/voice/build.py shi 3    # 只重录三年级，其余部分用 cache/shi-parts 里录好的，再合成一个包
 python3 dev/voice/build.py shi 0 5  # 只重录游戏台词和小故事、白话
 python3 dev/voice/build.py zaowu    # 造物 → zaowu/voice-zh|en.*，并重建 zaowu/index.html
+python3 dev/voice/build.py xiaoxiao # 动物消消乐 → xiaoxiao/voice.bin|json（页面直接读，不用重建）
 python3 dev/voice/build.py check root    # 可选：用 Whisper 回听，列出读得不对的句子
 ```
 
@@ -63,6 +66,7 @@ python3 dev/voice/build.py check root    # 可选：用 Whisper 回听，列出�
 - 首页的台词由 `collect_root.js` 从 `index.html` 里读出来：固定的句子直接提取，带数字、关卡名、图形名的句子按所有取值展开。
   新加了一处 `Voice.say(...)` 而它不认识，会报 `NOT COVERED`，按提示在脚本里补上。
 - 造物的台词由 `zaowu/dev/voice/collect.js` 从 `i18n.js` 列出。
+- 动物消消乐的台词由 `xiaoxiao/dev/voice/collect.js` 从 `lines.js`（加上 `levels.js` 展开每关的介绍）列出。「18只小猪」这种数字后面的「只」是量词 zhī（`zhpoly.py` 的 `CONTEXT`），「炸弹」读 dàn。
 - 古诗小剧场的由 `collect_shi.js` 从 `index.html` 的 `POEMS`（`intro`、`story`、每句的 `e`）、`SHI_SAY` 列出，分成六部分录。诗句里拿不准的多音字换不换同音字，两种都录：换了的字有时让一句话不成话（「莲叶坚」），语音就把句尾念塌了。
   每句最后一个字的声调用音高量（`poems.py` 的 `tone_score`），一首诗录四遍挑声调对的那遍；都不对再单独录这一句，最后才用 Praat（`praat-parselmouth`）只改这一个字的音高曲线。结果写在 `tones-voice-shi*.json`。
   多音字检查和句尾检查都管不到的，在 `POEMS` 里写 `say`（合成时的写法），比如《咏鹅》「鹅？鹅？鹅？」。
