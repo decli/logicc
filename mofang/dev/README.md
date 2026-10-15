@@ -42,4 +42,4 @@ python3 -m http.server 8000 --directory ../..   # 打开 http://localhost:8000/m
 python3 dev/voice/build.py mofang    # → mofang/voice.bin + voice.json，只录新句子
 ```
 
-`voice/collect.mjs` 会把 `lines.js` 里的每一句列出来（数字按「一二三」录）。没录到的句子会退回用设备自带的语音念。
+`voice/collect.mjs` 会把 `lines.js` 里的每一句列出来（数字按「一二三」录）。没录到的句子不出声（不用设备自带的语音），带 `?debug` 时控制台会提示哪句没录。
