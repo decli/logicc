@@ -1,5 +1,5 @@
 // 动物消消乐 · the screens around the game: the level map, the cards (level start, result, pause), the parents'
-// corner behind a grown-up question, and the little toast that explains new things.
+// corner behind a grown-up question, and the little toast that confirms a setting there.
 const UI = {
   modal(build, o = {}) {
     const m = $('#modal'); m.hidden = false; m.innerHTML = '';
@@ -262,10 +262,8 @@ const UI = {
     }, { close });
   },
 
-  toast(text, img) {
-    const t = $('#toast'); t.innerHTML = '';
-    if (img) { const c = el('canvas'); c.width = c.height = 128; c.getContext('2d').drawImage(img, 0, 0, 128, 128); t.appendChild(c); }
-    t.appendChild(el('div', null, text));
+  toast(text) {
+    const t = $('#toast'); t.textContent = text;
     t.classList.add('on'); clearTimeout(this._toastT);
     this._toastT = setTimeout(() => t.classList.remove('on'), 2600 + text.length * 120);
   },

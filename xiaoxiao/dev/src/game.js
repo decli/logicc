@@ -186,6 +186,7 @@ const Game = {
   pdown(e) {
     Snd.init(); Voice.unlock();
     if (!this.active || this.over) return;
+    this.hideShowOff();
     const i = this.cellAt(e);
     if (i < 0) { this.sel = -1; return; }
     this.down = { i, x: e.clientX, y: e.clientY, moved: false };
@@ -234,7 +235,7 @@ const Game = {
     if (!Store.d.owed) { Store.d.owed = true; Store.d.played++; Store.save(); }
     this.setMoves(B.moves);
     this.cheered = 0;
-    if (res.two) this.firstTime('combo', L.combo);
+    if (res.two) this.sayOnce('combo', L.combo);
     await this.play(res.phases);
     await this.afterTurn();
   },
@@ -325,7 +326,7 @@ const Game = {
           Fx.ring(x, y, '#fff', cell * 0.2, cell * 1.1, 420, 8);
           Fx.sparkles(x, y, 8, cell * 0.5, '#fff');
           if (!e.quiet) Snd.play('make');
-          if (!e.bonus && !e.quiet) this.firstTime('made_' + e.p.s, L.made[e.p.s], e.p);
+          if (!e.bonus && !e.quiet) { this.showOff(e.p); this.sayOnce('made_' + e.p.s, L.made[e.p.s]); }
         };
         if (e.bonus) {
           const m = $('.moves', $('#hud')).getBoundingClientRect();
@@ -428,7 +429,7 @@ const Game = {
       this.flyGoal(this.goalIndex('pg'), Art.tiles[PENGUIN], x, y, true);
       if (s) s.a = 0;
     }
-    this.firstTime('penguinHome', L.penguinHome, { k: 'g' });
+    this.sayOnce('penguinHome', L.penguinHome);
     await Clock.wait(350);
   },
   // sprites and board must agree after a turn (a safety net: an animation that was cut short leaves nothing behind)
@@ -514,14 +515,81 @@ const Game = {
     if (!this.b.hasMove()) { this.busy = true; await this.reshuffle(); this.busy = false; }
   },
 
-  // ---------- first-time explanations ----------
-  firstTime(key, line, p) {
+  // ---------- new things: shown on the board and said in a few words, never written (she can't read them yet) ----------
+  sayOnce(key, line) {
     if (Store.d.seen[key]) return;
     Store.d.seen[key] = 1; Store.save();
-    setTimeout(() => { if (line) Voice.say(line); if (line) UI.toast(line, p ? Art.icon(p, 128) : null); }, 700);
+    setTimeout(() => Voice.say(line), 700);
   },
   tip(key) {
-    if (key === 'bubStuck' && !this._bubTold) { this._bubTold = true; UI.toast(L.tip.bub, Art.cache.bub); Voice.say(L.tip.bub); }
+    if (key === 'bubStuck' && !this._bubTold) { this._bubTold = true; Voice.say(L.bubStuck); }
+  },
+  // a special piece just made shows off what it will do: a glowing ring and a picture of its blast (arrows along its row
+  // or column, the bomb's diamond, a spinning rainbow). The first few times of each kind a finger also shows the swipe.
+  // It follows the piece while it falls, ends when the piece is used, and gets out of the way when she touches the board.
+  showOff(p) {
+    const kind = p.s, n = Store.d.seen['hand_' + kind] || 0, hand = n < 3;
+    if (hand) { Store.d.seen['hand_' + kind] = n + 1; Store.save(); }
+    const it = { t: -380, dur: hand ? 3400 : 1500, id: p.id, kind, hand };
+    it.draw = (ctx, k, t) => this.drawShowOff(ctx, it, t);
+    Fx.items.push(it);
+  },
+  hideShowOff() { for (const it of Fx.items) if (it.kind && it.t < it.dur - 220) it.t = Math.max(it.t, it.dur - 220); },
+  drawShowOff(ctx, it, t) {
+    if (t < 0) return;
+    const s = this.active && this.sprites.get(it.id);
+    if (!s) { it.t = it.dur; return; }
+    const G = this.G, cell = G.cell, [x, y] = this.cellXY(s.r, s.c), kind = it.kind;
+    const a = Math.min(1, t / 200, (it.dur - t) / 220), pul = 0.5 + 0.5 * Math.sin(t / 130);
+    const col = kind === 'c' ? '#ffffff' : ANIMALS[s.p.c].fx[0];
+    ctx.save(); ctx.globalAlpha = a; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    // the glow ring and four twinkles going round it
+    ctx.lineWidth = cell * 0.07; ctx.strokeStyle = '#ffd23a';
+    ctx.beginPath(); ctx.arc(x, y, cell * (0.56 + 0.05 * pul), 0, 7); ctx.stroke();
+    for (let i = 0; i < 4; i++) { const an = t / 500 + i * Math.PI / 2; Fx.drawStar(ctx, x + Math.cos(an) * cell * 0.62, y + Math.sin(an) * cell * 0.62, cell * (0.1 + 0.05 * pul), '#fff6b0'); }
+    // what it will do
+    if (kind === 'h' || kind === 'v') {
+      ctx.save(); ctx.beginPath(); ctx.rect(G.ox, G.oy, G.w, G.h); ctx.clip();
+      const along = kind === 'h' ? [1, 0] : [0, 1], room = kind === 'h' ? G.w : G.h;
+      for (const sg of [-1, 1]) for (let i = 0; i < 3; i++) {
+        const d = cell * 0.85 + ((t / 650 + i / 3) % 1) * room * 0.45, f = 1 - d / (room * 0.6);
+        if (f <= 0) continue;
+        const cx = x + along[0] * sg * d, cy = y + along[1] * sg * d, w = cell * 0.18;
+        ctx.globalAlpha = a * Math.min(1, f * 1.6);
+        ctx.beginPath();
+        ctx.moveTo(cx - along[0] * sg * w + along[1] * w * 1.3, cy - along[1] * sg * w + along[0] * w * 1.3);
+        ctx.lineTo(cx + along[0] * sg * w, cy + along[1] * sg * w);
+        ctx.lineTo(cx - along[0] * sg * w - along[1] * w * 1.3, cy - along[1] * sg * w - along[0] * w * 1.3);
+        ctx.lineWidth = cell * 0.16; ctx.strokeStyle = '#fff'; ctx.stroke();
+        ctx.lineWidth = cell * 0.08; ctx.strokeStyle = col; ctx.stroke();
+      }
+      ctx.restore();
+    } else if (kind === 'b') {
+      const R = cell * (2.5 + 0.12 * pul);
+      ctx.setLineDash([cell * 0.22, cell * 0.16]); ctx.lineDashOffset = -t / 25;
+      ctx.beginPath(); ctx.moveTo(x, y - R); ctx.lineTo(x + R, y); ctx.lineTo(x, y + R); ctx.lineTo(x - R, y); ctx.closePath();
+      ctx.lineWidth = cell * 0.12; ctx.strokeStyle = '#fff'; ctx.stroke();
+      ctx.lineWidth = cell * 0.06; ctx.strokeStyle = '#ff9d3a'; ctx.stroke();
+      ctx.setLineDash([]);
+    } else if (kind === 'c') {
+      const hues = ['#ff4f6d', '#ff9d3a', '#ffd23a', '#5fe07a', '#3ac8ff', '#a77bff'];
+      ctx.lineWidth = cell * 0.09;
+      hues.forEach((h, i) => { const a0 = t / 300 + i * Math.PI / 3; ctx.strokeStyle = h; ctx.beginPath(); ctx.arc(x, y, cell * 0.74, a0, a0 + Math.PI / 3 - 0.12); ctx.stroke(); });
+    }
+    // the finger: press on the piece, slide to a neighbour, lift; again and again
+    const at = this.b.cells.findIndex(x => x.p === s.p);
+    if (it.hand && !this.busy && at >= 0) {
+      const [r, c] = this.b.rc(at), dirs = [[0, 1], [0, -1], [1, 0], [-1, 0]];
+      const dir = dirs.find(([dr, dc]) => { const j = this.b.idx(r + dr, c + dc); return j >= 0 && this.b.on(j) && this.b.movable(j); }) || [0, 1];
+      const ph = (t % 1300) / 1300, slide = Ease.inOut(clamp((ph - 0.25) / 0.4, 0, 1));
+      const fx = x + dir[1] * slide * cell, fy = y + dir[0] * slide * cell, sz = cell * 0.95;
+      ctx.globalAlpha = a * (ph < 0.08 ? ph / 0.08 : ph > 0.85 ? (1 - ph) / 0.15 : 1);
+      if (ph > 0.2 && ph < 0.75) { ctx.fillStyle = 'rgba(255,255,255,0.75)'; ctx.beginPath(); ctx.arc(fx, fy, cell * 0.2, 0, 7); ctx.fill(); }
+      ctx.font = `${sz}px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      ctx.shadowColor = 'rgba(74,43,94,0.35)'; ctx.shadowBlur = 8; ctx.shadowOffsetY = 3;
+      ctx.fillText('👆', fx + sz * 0.08, fy - sz * 0.06 + (ph < 0.25 ? (0.25 - ph) * cell * 0.6 : 0));
+    }
+    ctx.restore();
   },
 
   // ---------- side panel ----------

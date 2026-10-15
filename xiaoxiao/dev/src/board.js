@@ -585,5 +585,8 @@ function excitement(phases) {
   for (const ph of phases) if (ph.type === 'clear') { cascades = Math.max(cascades, ph.cascade); cleared += ph.cleared; acts += ph.acts; big = Math.max(big, ph.big || 0); }
   const made = phases.reduce((n, ph) => n + (ph.makes ? ph.makes.filter(m => m.s === 'c').length * 2 + ph.makes.length : 0), 0);
   const x = Math.max(cascades - 1, 0) * 1.0 + cleared / 9 + acts * 0.6 + made * 0.5 + big * 1.5;
-  return x >= 7 ? 5 : x >= 5.2 ? 4 : x >= 3.8 ? 3 : x >= 2.6 ? 2 : x >= 1.7 ? 1 : 0;
+  let lvl = x >= 7 ? 5 : x >= 5.2 ? 4 : x >= 3.8 ? 3 : x >= 2.6 ? 2 : x >= 1.7 ? 1 : 0;
+  // making a special piece always gets a cheer: "Great!" for a striped one, "Excellent!" for a bomb, "Amazing!" for a rainbow ball
+  for (const ph of phases) for (const m of ph.makes || []) lvl = Math.max(lvl, m.s === 'c' ? 4 : m.s === 'b' ? 3 : 2);
+  return lvl;
 }
