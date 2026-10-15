@@ -27,15 +27,15 @@ POLY = {
     '一种': 'yi4 zhong3', '种树': 'zhong4 shu4', '种下': 'zhong4 xia4', '种子': 'zhong3 zi5', '种出': 'zhong4 chu1', '种什么': 'zhong4 shen2 me5', '五种': 'wu3 zhong3', '种花': 'zhong4 hua1', '再种': 'zai4 zhong4', '种一': 'zhong4 yi4', '种了': 'zhong4 le5', '不同种': 'bu4 tong2 zhong3', '七种': 'qi1 zhong3',
     '重而浊': 'zhong4 er2 zhuo2', '重新': 'chong2 xin1', '重来': 'chong2 lai2', '重画': 'chong2 hua4',
     '落到': 'luo4 dao4', '掉落': 'diao4 luo4', '落下': 'luo4 xia4',
-    '只有': 'zhi3 you3', '一只': 'yi4 zhi1', '五只': 'wu3 zhi1', '两只': 'liang3 zhi1', '三只': 'san1 zhi1', '只小': 'zhi1 xiao3', '只鸟': 'zhi1 niao3', '只能': 'zhi3 neng2',
+    '只有': 'zhi3 you3', '一只': 'yi4 zhi1', '五只': 'wu3 zhi1', '两只': 'liang3 zhi1', '三只': 'san1 zhi1', '四只': 'si4 zhi1', '只小': 'zhi1 xiao3', '只鸟': 'zhi1 niao3', '只能': 'zhi3 neng2',
     '朝着': 'chao2 zhe5', '看着': 'kan4 zhe5', '睡着': 'shui4 zhao2', '着急': 'zhao2 ji2',
     '得高': 'de5 gao1', '跳得': 'tiao4 de5', '得到': 'de2 dao4',
     '数学': 'shu4 xue2', '数一数': 'shu3 yi1 shu3', '数数': 'shu3 shu4', '数双数': 'shu3 shuang1 shu4', '倒着数': 'dao4 zhe5 shu3', '顺数': 'shun4 shu3',
     '发现': 'fa1 xian4', '头发': 'tou2 fa4', '发光': 'fa1 guang1', '发生': 'fa1 sheng1', '乃发生': 'nai3 fa1 sheng1',
     '一会儿': 'yi1 hui4 er5', '一点': 'yi1 dian3',
     '弹回': 'tan2 hui2', '弹回来': 'tan2 hui2 lai2', '弹起': 'tan2 qi3',
-    # 彩虹钢琴: every 弹 on this site means playing an instrument or bouncing — tán, never dàn (子弹)
-    '弹': 'tan2', '弹完': 'tan2 wan2', '弹得': 'tan2 de5', '弹琴': 'tan2 qin2', '跟着': 'gen1 zhe5', '舞曲': 'wu3 qu3', '卡农': 'ka3 nong2',
+    # 彩虹钢琴: 弹 on this site means playing an instrument or bouncing — tán — except 动物消消乐's 炸弹
+    '弹': 'tan2', '炸弹': 'zha4 dan4', '弹完': 'tan2 wan2', '弹得': 'tan2 de5', '弹琴': 'tan2 qin2', '跟着': 'gen1 zhe5', '舞曲': 'wu3 qu3', '卡农': 'ka3 nong2',
     '转一转': 'zhuan4 yi1 zhuan4', '生日快乐': 'sheng1 ri4 kuai4 le4', '圣诞快乐': 'sheng4 dan4 kuai4 le4', '新年好': 'xin1 nian2 hao3',
     '长长的': 'chang2 chang2 de5', '变得': 'bian4 de5', '学得': 'xue2 de5', '好听': 'hao3 ting1', '一遍': 'yi1 bian4',
     '转圈': 'zhuan4 quan1', '转晕': 'zhuan4 yun1', '在转': 'zai4 zhuan4', '转圈圈': 'zhuan4 quan1 quan1', '转半圈': 'zhuan4 ban4 quan1', '转一下': 'zhuan4 yi1 xia4', '转过来': 'zhuan4 guo4 lai2', '转转': 'zhuan4 zhuan4',
@@ -100,6 +100,7 @@ POLY = {
 }
 # readings that depend on what is around a Chinese run (digits, enumeration commas): (pattern, reading of the matched char)
 CONTEXT = [(re.compile(r'(?<=\d )行'), 'hang2'),                    # 消掉 2 行
+           (re.compile(r'(?<=\d)只'), 'zhi1'),                       # 18只小猪 (a count, not 只 "only")
            (re.compile(r'(?<=、)角(?=、)'), 'jue2'), (re.compile(r'(?<=、)徵(?=、)'), 'zhi3')]   # 宫、商、角、徵、羽
 _MAXP = max(len(k) for k in POLY)
 SKIP = set('一不') | set('啊呀啦哇吧呢吗哦嗯咦嘿嘻哈呼哎呜啾嘟')   # tone sandhi (the service does it) and interjections

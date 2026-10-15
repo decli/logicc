@@ -26,6 +26,8 @@ VOICES = {
     # are cut and set by hand in poems.py)
     ('r', 'zh'):  ('zh-CN-XiaoxiaoNeural', '-30%', '+0Hz'),
     ('R', 'zh'):  ('zh-CN-YunxiNeural', '-30%', '+0Hz'),
+    # 动物消消乐: the English cheers (Good! … Unbelievable!) in a child's voice, at full speed
+    ('p', 'en'):  ('en-US-AnaNeural', '+0%', '+0Hz'),
 }
 POLY_VOICE = VOICES[('n', 'zh')][:2]   # all zh-CN voices share one text front end, so one voice is enough to test readings
 SR, KBPS = 24000, 40
