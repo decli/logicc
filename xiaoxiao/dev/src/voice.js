@@ -4,7 +4,7 @@
 // and ?debug lists it in the console so it can be added to lines.js and recorded.
 const Voice = { on: true, last: '', busy: false };
 (() => {
-  let bank = null, state = 'idle', loadP = null, clip = null, gen = 0;
+  let bank = null, state = 'idle', loadP = null, clip = null, gen = 0, tries = 0;
   const bufs = new Map(), debug = /[?&]debug\b/.test(location.search);
   const fnv = s => { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); } return (h >>> 0).toString(36); };
   Voice.load = function () {
@@ -13,7 +13,10 @@ const Voice = { on: true, last: '', busy: false };
     state = 'loading';
     loadP = fetch('voice.json').then(r => (r.ok ? r.json() : Promise.reject(r.status)))
       .then(ix => fetch('voice.bin' + (ix.h ? '?h=' + ix.h : '')).then(r => (r.ok ? r.arrayBuffer() : Promise.reject(r.status))).then(bin => { bank = { map: ix.u, bin }; state = 'ready'; }))
-      .catch(() => { state = 'failed'; });
+      .catch(() => {   // tried again a few times (a new version still going up, a bad connection)
+        state = 'failed';
+        if (++tries < 5) setTimeout(() => { state = 'idle'; Voice.load(); }, [2000, 5000, 10000, 20000][tries - 1]);
+      });
     return loadP;
   };
   const entry = (role, t) => {

@@ -56,7 +56,7 @@ const UI = {
       return n;
     });
     const av = el('canvas', 'avatar'); av.width = av.height = 152;
-    const head = Art.head(1, 152, 132); av.getContext('2d').drawImage(head, 0, 0);
+    const head = Art.friend(FRIENDS.findIndex(f => f.id === 'panda'), 152, 120); av.getContext('2d').drawImage(head, 0, 0);
     map.appendChild(av);
     const place = () => {
       const W = innerWidth, H = innerHeight, wide = W >= H;
@@ -93,7 +93,8 @@ const UI = {
 
   // ---------- before a level ----------
   intro(li) {
-    const lv = LEVELS[li];
+    const lv = LEVELS[li], goalEls = [];
+    Cast.pick(li);   // new animals every game
     this.modal(card => {
       card.appendChild(el('h2', null, `第 ${li + 1} 关`));
       card.appendChild(el('div', 'big', lv.name));
@@ -101,7 +102,7 @@ const UI = {
       const goals = el('div', 'goals');
       goals.appendChild(el('div', 'moves', `<b>${lv.moves}</b><span>步</span>`));
       const probe = new Board(lv, mulberry32(1));
-      probe.goals.forEach(g => { const d = el('div', 'goal'); d.appendChild(Art.goalIcon(g, 136)); d.appendChild(el('b', null, g.n)); goals.appendChild(d); });
+      probe.goals.forEach(g => { const d = el('div', 'goal'); d.appendChild(Art.goalIcon(g, 136)); d.appendChild(el('b', null, g.n)); goals.appendChild(d); goalEls.push(d); });
       card.appendChild(goals);
       if (Store.d.best[li]) card.appendChild(el('p', 'best', `🏆 ${Store.d.best[li].toLocaleString('en-US')}`));
       const row = el('div', 'row');
@@ -111,7 +112,17 @@ const UI = {
     }, { close: () => this.closeModal() });
     const line = L.intro(lv, li + 1);
     const tip = lv.tip && !Store.d.seen['tip_' + lv.tip] ? L.tip[lv.tip] : null;
-    Voice.say(line, { onend: tip ? () => { if (!$('#modal').hidden) Voice.say(tip); } : null });
+    // the intro, then this game's animals by name, each goal picture bouncing as it is named, then the tip
+    const open = () => !$('#modal').hidden && $('#modal .goals') === goalEls[0]?.parentNode;
+    const named = lv.goals.map((g, j) => (g.t === 'c' ? j : -1)).filter(j => j >= 0);
+    const names = k => {
+      if (!open()) return;
+      if (k >= named.length) { if (tip) Voice.say(tip); return; }
+      const j = named[k];
+      goalEls[j].animate([{ transform: 'scale(1)' }, { transform: 'scale(1.25) rotate(-6deg)' }, { transform: 'scale(1)' }], 520);
+      Voice.say(L.gift.names[ANIMALS[lv.goals[j].color].h], { onend: () => setTimeout(() => names(k + 1), 120) });
+    };
+    Voice.say(line, { onend: () => names(0) });
     if (tip) { Store.d.seen['tip_' + lv.tip] = 1; Store.save(); }
   },
   // start a level, through the math page when one is owed

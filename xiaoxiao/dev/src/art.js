@@ -2,13 +2,19 @@
 // Everything that does not move is drawn once into a canvas the size it will appear on screen (re-made on resize).
 const Art = {
   img: null, dpr: 1, cell: 0, T: 0, tiles: [], white: [], cache: {},
-  // decli's animal heads, one sprite sheet (made by dev/heads.py; HEADS in heads.js gives each head's size)
+  // decli's animal heads, one sprite sheet (made by dev/heads.py; HEADS in heads.js gives each head's size). A failed
+  // download is tried again: the start screen waits for the first three tries, later ones go on in the background and
+  // the pictures replace the coloured balls from the next game on.
   load() {
     return new Promise(res => {
-      const im = new Image();
-      im.onload = () => { this.img = im; res(); };
-      im.onerror = () => res();
-      im.src = 'heads.webp';
+      let k = 0;
+      const get = () => {
+        const im = new Image();
+        im.onload = () => { this.img = im; res(); };
+        im.onerror = () => { k++; if (k === 3) res(); if (k < 6) setTimeout(get, [1000, 2500, 5000, 10000, 20000][k - 1]); };
+        im.src = 'heads.webp' + (k ? '?try=' + k : '');
+      };
+      get();
     });
   },
   canvas(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, Math.ceil(w)); c.height = Math.max(1, Math.ceil(h)); return c; },
@@ -20,7 +26,7 @@ const Art = {
   friendTo(x, i, cx, cy, fit) {
     const [w, h] = HEADS.size[i], C = HEADS.cell, f = fit / Math.max(w, h);
     if (!this.img) {   // the picture did not load: a coloured ball
-      const b = ANIMALS.find(a => a.id === FRIENDS[i].id), col = b ? b.fx : ['#41618c', '#15243f'];
+      const col = Cast.FX[FRIENDS[i].fam[0]];
       x.fillStyle = col[0]; x.strokeStyle = col[1]; x.lineWidth = fit * 0.05;
       x.beginPath(); x.arc(cx, cy, fit * 0.42, 0, 7); x.fill(); x.stroke();
       return;
@@ -30,13 +36,14 @@ const Art = {
     x.drawImage(this.img, sx, sy, w, h, cx - w * f / 2, cy - h * f / 2, w * f, h * f);
   },
   friend(i, s, fit) { const c = this.canvas(s, s); this.friendTo(c.getContext('2d'), i, s / 2, s / 2, fit); return c; },
-  // the board's kinds (ANIMALS, then the penguin) as FRIENDS numbers
-  kindHead(k) { const id = k < ANIMALS.length ? ANIMALS[k].id : 'penguin'; return FRIENDS.findIndex(f => f.id === id); },
+  // the board's kinds (this game's six ANIMALS, then the penguin) as FRIENDS numbers
+  kindHead(k) { return k < ANIMALS.length ? ANIMALS[k].h : FRIENDS.findIndex(f => f.id === 'penguin'); },
   // an animal head (k 0-5, 6 = penguin) into a square canvas of side s, for a cell cellPx wide
   head(k, s, cellPx) { return this.friend(this.kindHead(k), s, cellPx * 0.9); },
   setCell(cell, dpr) {
-    if (cell === this.cell && dpr === this.dpr && this.tiles.length) return;
-    this.cell = cell; this.dpr = dpr;
+    const cast = ANIMALS.map(a => a.h).join() + (this.img ? '' : '?');   // the pieces change with the game's animals too
+    if (cell === this.cell && dpr === this.dpr && cast === this.cast && this.tiles.length) return;
+    this.cell = cell; this.dpr = dpr; this.cast = cast;
     const D = cell * dpr, T = this.T = Math.ceil(D * 1.3);
     this.tiles = []; this.white = [];
     for (let k = 0; k < 7; k++) {

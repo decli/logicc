@@ -19,6 +19,7 @@ const Game = {
 
   // ---------- starting a level ----------
   start(li) {
+    Cast.take(li);
     this.li = li; this.lv = LEVELS[li];
     this.b = new Board(this.lv);
     this.active = true; this.busy = false; this.over = false; this.sel = -1; this.hint = null; this.extraUsed = false; this.saidLow = false;

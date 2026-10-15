@@ -321,15 +321,8 @@ const Store = {
 // Pieces: k 'a' animal of colour c, k 'g' penguin (cannot be matched or blown up; walks out at the bottom).
 // Specials: s 'h' clears its row, 'v' its column, 'b' bomb (diamond of radius 2), 'c' rainbow ball (no colour).
 
-const ANIMALS = [
-  { id: 'pig', name: '小猪', fx: ['#ffa3c8', '#e2668f', '#ffe0ec'] },
-  { id: 'panda', name: '熊猫', fx: ['#ffffff', '#2f3040', '#e4e6ee'] },
-  { id: 'hippo', name: '河马', fx: ['#b48cff', '#7b52e0', '#e6dbff'] },
-  { id: 'giraffe', name: '长颈鹿', fx: ['#ffc83a', '#e08e10', '#fff0b8'] },
-  { id: 'parrot', name: '鹦鹉', fx: ['#ff4a3a', '#c8231a', '#ffc0b2'] },
-  { id: 'frog', name: '小青蛙', fx: ['#6fd65a', '#2f9e3a', '#d2f8b4'] },
-];
-const PENGUIN = 6;   // the kind after the six animals (its head is FRIENDS' penguin)
+const ANIMALS = [];   // this game's six animals { id, name, fx colours, h: FRIENDS number }, filled in by cast.js
+const PENGUIN = 6;   // the kind after the six animals (always FRIENDS' penguin)
 
 const PTS = { piece: 20, blast: 30, make: { h: 100, v: 100, b: 150, c: 250 }, ice: 80, box: 60, bub: 50, home: 1000, bonus: 200 };
 
@@ -904,7 +897,8 @@ function excitement(phases) {
 
 // 动物消消乐 · the levels. Add a level by adding an entry; the map, the voice lines and the simulator pick it up.
 //
-//   colors   which animals take part (0 小猪 1 熊猫 2 河马 3 长颈鹿 4 鹦鹉 5 小青蛙); six kinds is much harder than five
+//   colors   which of the game's six animals take part (0-5; cast.js picks the animals anew each game); six kinds is
+//            much harder than five
 //   layout   one string per row: . cell  _ no cell  i/I ice 1/2 layers  b/B gift box 1/2 layers  o bubble
 //            q bubble on ice  g penguin  k penguin on ice
 //   goals    c: collect n of one animal; ice / box / bub: clear all of them; pg: bring the penguins out at the bottom
@@ -915,7 +909,7 @@ function excitement(phases) {
 // take some luck or a big combo.
 const LEVELS = [
   {
-    name: '小猪和熊猫', colors: [0, 1, 2, 3, 4], moves: 18,
+    name: '小动物集合啦', colors: [0, 1, 2, 3, 4], moves: 18,
     goals: [{ t: 'c', color: 0, n: 18 }, { t: 'c', color: 1, n: 18 }],
     stars: [1, 8000, 11000], tip: 'swap',
   },
@@ -1054,43 +1048,46 @@ const LEVELS = [
 // list every line for recording, so a line built from a level must be built here and nowhere else.
 const NUM_ZH = n => String(n);   // the voice reads digits naturally ("18只" → 十八只)
 
+// the animals change every game (cast.js), so a line never names them: the intro says how many kinds to collect and
+// their names follow as clips of their own (L.gift.names), each with its goal picture bouncing (UI.intro)
 function goalSay(g, lv) {
-  if (g.t === 'c') return `${g.n}只${ANIMALS[g.color].name}`;
   if (g.t === 'ice') return '敲碎所有冰块';
   if (g.t === 'box') return '拆开所有礼物盒';
   if (g.t === 'bub') return '戳破所有泡泡';
   if (g.t === 'pg') return `把${lv.penguins.total}只小企鹅送回家`;
   return '';
 }
-// Every animal in decli's pictures (heads.webp, cut by dev/heads.py), in their order. The six on the board and the penguin
-// (tier -1) are in the album from the start; the others come out of the blind box after a win (gift.js):
-// tier 0 普通, 1 稀有, 2 隐藏款.
+// Every animal in decli's pictures (heads.webp, cut by dev/heads.py), in their order: [id, name, tier, colour].
+// tier: -1 in the album from the start (the first six on the board and the penguin), else from the blind box after a
+// win (gift.js): 0 普通, 1 稀有, 2 隐藏款. colour: the head's main colour, so a game's six animals all look different
+// (cast.js): p pink, w white, k black and white, v purple, y yellow, o orange, r red, g green, l blue, t teal,
+// b brown, a grey. A second letter: it also looks like that colour (the pigeon is grey-purple), so it never plays next
+// to those either (decli: some animals look very much alike).
 const FRIENDS = [
-  ['panda', '熊猫', -1], ['fox', '小狐狸', 0], ['tiger', '小老虎', 1], ['lion', '小狮子', 1], ['bear', '小棕熊', 0],
-  ['polar', '北极熊', 0], ['koala', '考拉', 1], ['bunny', '小兔子', 0], ['corgi', '柯基', 0], ['cat', '小蓝猫', 0],
-  ['frog', '小青蛙', -1], ['owl', '猫头鹰', 0], ['chick', '小黄鸡', 0], ['penguin', '小企鹅', -1], ['duck', '小白鸭', 0],
-  ['flamingo', '火烈鸟', 1], ['peacock', '孔雀', 1], ['parrot', '鹦鹉', -1], ['budgie', '虎皮鹦鹉', 0], ['pigeon', '小鸽子', 0],
-  ['pig', '小猪', -1], ['sheep', '小绵羊', 0], ['cow', '小奶牛', 0], ['horse', '小马', 0], ['deer', '小鹿', 0],
-  ['giraffe', '长颈鹿', -1], ['hippo', '河马', -1], ['elephant', '小象', 1], ['rhino', '犀牛', 0], ['croc', '鳄鱼', 0],
-  ['squirrel', '松鼠', 0], ['hamster', '仓鼠', 0], ['hedgehog', '刺猬', 0], ['raccoon', '浣熊', 0], ['skunk', '臭鼬', 0],
-  ['redpanda', '小熊猫', 1], ['sloth', '树懒', 1], ['fennec', '耳廓狐', 0], ['monkey', '小猴子', 0], ['capybara', '水豚', 0],
-  ['turtle', '小海龟', 0], ['seal', '海豹', 0], ['dolphin', '海豚', 1], ['shark', '小鲨鱼', 1], ['clownfish', '小丑鱼', 0],
-  ['octopus', '章鱼', 0], ['ladybug', '瓢虫', 0], ['bee', '小蜜蜂', 0], ['dragon', '小龙', 2], ['unicorn', '独角兽', 2],
-  ['dog', '小狗', 0], ['dalmatian', '斑点狗', 0], ['siamese', '暹罗猫', 0], ['axolotl', '六角恐龙', 1], ['bat', '小蝙蝠', 0],
-  ['alpaca', '羊驼', 1], ['bison', '野牛', 0], ['zebra', '斑马', 1], ['donkey', '小毛驴', 0], ['kangaroo', '袋鼠', 0],
-  ['rooster', '大公鸡', 0], ['goose', '大白鹅', 0], ['duckling', '小黄鸭', 0], ['cardinal', '小红鸟', 0], ['chameleon', '变色龙', 1],
-  ['puffer', '河豚', 0], ['orca', '虎鲸', 1], ['whale', '小蓝鲸', 0], ['otter', '水獭', 0], ['arcticfox', '北极狐', 0],
-].map(([id, name, tier], i) => ({ i, id, name, tier }));
+  ['panda', '熊猫', -1, 'k'], ['fox', '小狐狸', 0, 'o'], ['tiger', '小老虎', 1, 'o'], ['lion', '小狮子', 1, 'o'], ['bear', '小棕熊', 0, 'b'],
+  ['polar', '北极熊', 0, 'w'], ['koala', '考拉', 1, 'a'], ['bunny', '小兔子', 0, 'p'], ['corgi', '柯基', 0, 'o'], ['cat', '小蓝猫', 0, 'l'],
+  ['frog', '小青蛙', -1, 'g'], ['owl', '猫头鹰', 0, 'v'], ['chick', '小黄鸡', 0, 'y'], ['penguin', '小企鹅', -1, 'k'], ['duck', '小白鸭', 0, 'w'],
+  ['flamingo', '火烈鸟', 1, 'p'], ['peacock', '孔雀', 1, 't'], ['parrot', '鹦鹉', -1, 'r'], ['budgie', '虎皮鹦鹉', 0, 'l'], ['pigeon', '小鸽子', 0, 'av'],
+  ['pig', '小猪', -1, 'p'], ['sheep', '小绵羊', 0, 'w'], ['cow', '小奶牛', 0, 'k'], ['horse', '小马', 0, 'b'], ['deer', '小鹿', 0, 'b'],
+  ['giraffe', '长颈鹿', -1, 'y'], ['hippo', '河马', -1, 'v'], ['elephant', '小象', 1, 'l'], ['rhino', '犀牛', 0, 't'], ['croc', '鳄鱼', 0, 'g'],
+  ['squirrel', '松鼠', 0, 'o'], ['hamster', '仓鼠', 0, 'o'], ['hedgehog', '刺猬', 0, 'b'], ['raccoon', '浣熊', 0, 'a'], ['skunk', '臭鼬', 0, 'k'],
+  ['redpanda', '小熊猫', 1, 'o'], ['sloth', '树懒', 1, 'b'], ['fennec', '耳廓狐', 0, 'o'], ['monkey', '小猴子', 0, 'b'], ['capybara', '水豚', 0, 'b'],
+  ['turtle', '小海龟', 0, 'g'], ['seal', '海豹', 0, 'a'], ['dolphin', '海豚', 1, 'l'], ['shark', '小鲨鱼', 1, 'l'], ['clownfish', '小丑鱼', 0, 'o'],
+  ['octopus', '章鱼', 0, 'p'], ['ladybug', '瓢虫', 0, 'r'], ['bee', '小蜜蜂', 0, 'y'], ['dragon', '小龙', 2, 't'], ['unicorn', '独角兽', 2, 'w'],
+  ['dog', '小狗', 0, 'o'], ['dalmatian', '斑点狗', 0, 'k'], ['siamese', '暹罗猫', 0, 'w'], ['axolotl', '六角恐龙', 1, 'p'], ['bat', '小蝙蝠', 0, 'v'],
+  ['alpaca', '羊驼', 1, 'w'], ['bison', '野牛', 0, 'b'], ['zebra', '斑马', 1, 'k'], ['donkey', '小毛驴', 0, 'a'], ['kangaroo', '袋鼠', 0, 'o'],
+  ['rooster', '大公鸡', 0, 'r'], ['goose', '大白鹅', 0, 'w'], ['duckling', '小黄鸭', 0, 'y'], ['cardinal', '小红鸟', 0, 'r'], ['chameleon', '变色龙', 1, 'g'],
+  ['puffer', '河豚', 0, 'o'], ['orca', '虎鲸', 1, 'k'], ['whale', '小蓝鲸', 0, 'l'], ['otter', '水獭', 0, 'b'], ['arcticfox', '北极狐', 0, 'w'],
+].map(([id, name, tier, fam], i) => ({ i, id, name, tier, fam }));
 const L = {
   welcome: '欢迎来到动物消消乐！点一个关卡开始吧。',
   pick: '选一关吧！',
   locked: '这一关还锁着，先把前面的关过了吧。',
   intro(lv, n) {
-    const collect = lv.goals.filter(g => g.t === 'c').map(g => goalSay(g, lv));
-    const other = lv.goals.filter(g => g.t !== 'c').map(g => goalSay(g, lv));
-    const parts = [...other];
-    if (collect.length) parts.push('收集' + collect.join('、'));
-    return `第${NUM_ZH(n)}关，${lv.name}。要${parts.join('，还要')}，一共${NUM_ZH(lv.moves)}步。`;
+    const kinds = lv.goals.filter(g => g.t === 'c').length;
+    const parts = lv.goals.filter(g => g.t !== 'c').map(g => goalSay(g, lv));
+    if (kinds) parts.push(`收集${['', '这种', '这两种', '这三种'][kinds]}小动物：`);
+    return `第${NUM_ZH(n)}关，${lv.name}，一共${NUM_ZH(lv.moves)}步。要${parts.join('，还要')}` + (kinds ? '' : '。');
   },
   tip: {
     swap: '手指按住一只小动物，往旁边一拨，三只一样的连成一排就能消掉。四只连成一排，会变出条纹小动物！',
@@ -1150,23 +1147,71 @@ const CHEER = ['', 'Great!', 'Great!', 'Excellent!', 'Excellent!', 'Unbelievable
 const CHEER_CLIP = { 'Great!': 'great', 'Excellent!': 'excellent', 'Unbelievable!': 'unbelievable' };
 const BONUS = 'Bonus time!';   // shown over the board when the moves left turn into stripes; there is no recording of it
 
+// 动物消消乐 · which six animals play in a game (decli: the same ones every time got boring). Every game draws six from
+// decli's animals (FRIENDS in lines.js), each a different colour so they are easy to tell apart on the board: animals
+// that look alike (the blue dolphin, shark and whale; the orange fox, corgi and kangaroo ...) share a colour and so
+// never play together. A level with penguins leaves out the black-and-white ones, and the 隐藏款 stay a surprise of the
+// blind box.
+const Cast = {
+  // effect colours by main colour (FRIENDS' last field): base, dark, light
+  FX: {
+    p: ['#ffa3c8', '#e2668f', '#ffe0ec'], w: ['#ffffff', '#9aa3b8', '#eef1f7'], k: ['#ffffff', '#2f3040', '#e4e6ee'],
+    v: ['#b48cff', '#7b52e0', '#e6dbff'], y: ['#ffd23a', '#e0a000', '#fff0b8'], o: ['#ff9a3a', '#d9661a', '#ffd9b0'],
+    r: ['#ff4a3a', '#c8231a', '#ffc0b2'], g: ['#6fd65a', '#2f9e3a', '#d2f8b4'], l: ['#5aa6ff', '#2d6fd8', '#c4e2ff'],
+    t: ['#3ad6c4', '#1a9e90', '#c4f5ee'], b: ['#c08a5e', '#7a4f30', '#ecd2bd'], a: ['#a9adbd', '#6b7082', '#e4e6ee'],
+  },
+  // colours too close to share a board (besides the same colour twice)
+  NEAR: ['lt', 'gt', 'lv', 'ob', 'or', 'ka', 'wk', 'wa'],
+  pending: -1,
+  // two animals' colours (one or two letters each) clash
+  near(a, b) { return [...a].some(x => [...b].some(y => x === y || this.NEAR.includes(x + y) || this.NEAR.includes(y + x))); },
+  // six new animals for level li: they show at once everywhere (intro card, pieces, goals, effects) and are kept for
+  // Game.start(li)
+  pick(li) {
+    const lv = LEVELS[li], penguins = lv.goals.some(g => g.t === 'pg');
+    const pool = FRIENDS.filter(f => f.tier <= 1 && f.id !== 'penguin' && !(penguins && this.near(f.fam, 'k')));
+    let got = [];
+    for (let tries = 0; got.length < 6 && tries < 50; tries++) {   // an unlucky early pick can leave fewer than six colours: draw again
+      for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+      got = [];
+      for (const f of pool) if (got.length < 6 && got.every(g => !this.near(g.fam, f.fam))) got.push(f);
+    }
+    if (got.length < 6) got = this.FIRST();
+    this.set(got);
+    this.pending = li;
+  },
+  // when a level starts: the six its intro card showed, or new ones (a replay, the next level from the result card)
+  take(li) { if (this.pending !== li) this.pick(li); this.pending = -1; },
+  set(fs) { ANIMALS.length = 0; fs.forEach(f => ANIMALS.push({ id: f.id, name: f.name, fx: this.FX[f.fam[0]], h: f.i })); },
+  // the first six (the start screen, before any game)
+  FIRST: () => ['pig', 'panda', 'hippo', 'giraffe', 'parrot', 'frog'].map(id => FRIENDS.find(f => f.id === id)),
+};
+Cast.set(Cast.FIRST());
+
 // 动物消消乐 · sound effects, made on the spot with Web Audio, and the recorded sounds in sound/ (decli's background
 // music and English cheers). Notes come from C major pentatonic so a long cascade of pops still sounds like a melody going up.
 const Snd = {
   ctx: null, on: true, music: true, master: null, sfx: null, bus: null, mus: null, noiseBuf: null, ducked: false,
-  raw: {}, bufs: {},
+  raw: {}, bufs: {}, tries: {},
   // fetch the recorded sounds; they are decoded once sound is allowed (the first touch)
   load(names) {
     if (!window.fetch || location.protocol === 'file:') return;
-    names.forEach(n => fetch(`sound/${n}.mp3`).then(r => (r.ok ? r.arrayBuffer() : Promise.reject(r.status)))
-      .then(ab => { this.raw[n] = ab; this.decode(n); }).catch(() => { }));
+    names.forEach(n => this.get(n));
   },
+  // one sound. A download that fails (a new version still going up, a bad connection) or does not decode is tried
+  // again a few times, so a cheer is not silent until the page is opened again.
+  get(n) {
+    const k = this.tries[n] = (this.tries[n] || 0) + 1;
+    fetch(`sound/${n}.mp3`, k > 1 ? { cache: 'reload' } : undefined).then(r => (r.ok ? r.arrayBuffer() : Promise.reject(r.status)))
+      .then(ab => { this.raw[n] = ab; this.decode(n); }).catch(() => this.again(n));
+  },
+  again(n) { const k = this.tries[n]; if (k < 5) setTimeout(() => this.get(n), [2000, 5000, 10000, 20000][k - 1]); },
   decode(n) {
     const ab = this.raw[n];
     if (!this.ctx || !ab) return;
     delete this.raw[n];
     new Promise((res, rej) => { const q = this.ctx.decodeAudioData(ab, res, rej); if (q && q.catch) q.catch(rej); })
-      .then(b => { this.bufs[n] = b; Music.sync(); }).catch(() => { });
+      .then(b => { this.bufs[n] = b; Music.sync(); }).catch(() => this.again(n));
   },
   clip(n) { return this.bufs[n] || null; },
   init() {
@@ -1335,7 +1380,7 @@ const Music = {
 // and ?debug lists it in the console so it can be added to lines.js and recorded.
 const Voice = { on: true, last: '', busy: false };
 (() => {
-  let bank = null, state = 'idle', loadP = null, clip = null, gen = 0;
+  let bank = null, state = 'idle', loadP = null, clip = null, gen = 0, tries = 0;
   const bufs = new Map(), debug = /[?&]debug\b/.test(location.search);
   const fnv = s => { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); } return (h >>> 0).toString(36); };
   Voice.load = function () {
@@ -1344,7 +1389,10 @@ const Voice = { on: true, last: '', busy: false };
     state = 'loading';
     loadP = fetch('voice.json').then(r => (r.ok ? r.json() : Promise.reject(r.status)))
       .then(ix => fetch('voice.bin' + (ix.h ? '?h=' + ix.h : '')).then(r => (r.ok ? r.arrayBuffer() : Promise.reject(r.status))).then(bin => { bank = { map: ix.u, bin }; state = 'ready'; }))
-      .catch(() => { state = 'failed'; });
+      .catch(() => {   // tried again a few times (a new version still going up, a bad connection)
+        state = 'failed';
+        if (++tries < 5) setTimeout(() => { state = 'idle'; Voice.load(); }, [2000, 5000, 10000, 20000][tries - 1]);
+      });
     return loadP;
   };
   const entry = (role, t) => {
@@ -1408,13 +1456,19 @@ const HEADS = { cell: 216, cols: 10, size: [[164,141],[162,143],[160,141],[173,1
 // Everything that does not move is drawn once into a canvas the size it will appear on screen (re-made on resize).
 const Art = {
   img: null, dpr: 1, cell: 0, T: 0, tiles: [], white: [], cache: {},
-  // decli's animal heads, one sprite sheet (made by dev/heads.py; HEADS in heads.js gives each head's size)
+  // decli's animal heads, one sprite sheet (made by dev/heads.py; HEADS in heads.js gives each head's size). A failed
+  // download is tried again: the start screen waits for the first three tries, later ones go on in the background and
+  // the pictures replace the coloured balls from the next game on.
   load() {
     return new Promise(res => {
-      const im = new Image();
-      im.onload = () => { this.img = im; res(); };
-      im.onerror = () => res();
-      im.src = 'heads.webp';
+      let k = 0;
+      const get = () => {
+        const im = new Image();
+        im.onload = () => { this.img = im; res(); };
+        im.onerror = () => { k++; if (k === 3) res(); if (k < 6) setTimeout(get, [1000, 2500, 5000, 10000, 20000][k - 1]); };
+        im.src = 'heads.webp' + (k ? '?try=' + k : '');
+      };
+      get();
     });
   },
   canvas(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, Math.ceil(w)); c.height = Math.max(1, Math.ceil(h)); return c; },
@@ -1426,7 +1480,7 @@ const Art = {
   friendTo(x, i, cx, cy, fit) {
     const [w, h] = HEADS.size[i], C = HEADS.cell, f = fit / Math.max(w, h);
     if (!this.img) {   // the picture did not load: a coloured ball
-      const b = ANIMALS.find(a => a.id === FRIENDS[i].id), col = b ? b.fx : ['#41618c', '#15243f'];
+      const col = Cast.FX[FRIENDS[i].fam[0]];
       x.fillStyle = col[0]; x.strokeStyle = col[1]; x.lineWidth = fit * 0.05;
       x.beginPath(); x.arc(cx, cy, fit * 0.42, 0, 7); x.fill(); x.stroke();
       return;
@@ -1436,13 +1490,14 @@ const Art = {
     x.drawImage(this.img, sx, sy, w, h, cx - w * f / 2, cy - h * f / 2, w * f, h * f);
   },
   friend(i, s, fit) { const c = this.canvas(s, s); this.friendTo(c.getContext('2d'), i, s / 2, s / 2, fit); return c; },
-  // the board's kinds (ANIMALS, then the penguin) as FRIENDS numbers
-  kindHead(k) { const id = k < ANIMALS.length ? ANIMALS[k].id : 'penguin'; return FRIENDS.findIndex(f => f.id === id); },
+  // the board's kinds (this game's six ANIMALS, then the penguin) as FRIENDS numbers
+  kindHead(k) { return k < ANIMALS.length ? ANIMALS[k].h : FRIENDS.findIndex(f => f.id === 'penguin'); },
   // an animal head (k 0-5, 6 = penguin) into a square canvas of side s, for a cell cellPx wide
   head(k, s, cellPx) { return this.friend(this.kindHead(k), s, cellPx * 0.9); },
   setCell(cell, dpr) {
-    if (cell === this.cell && dpr === this.dpr && this.tiles.length) return;
-    this.cell = cell; this.dpr = dpr;
+    const cast = ANIMALS.map(a => a.h).join() + (this.img ? '' : '?');   // the pieces change with the game's animals too
+    if (cell === this.cell && dpr === this.dpr && cast === this.cast && this.tiles.length) return;
+    this.cell = cell; this.dpr = dpr; this.cast = cast;
     const D = cell * dpr, T = this.T = Math.ceil(D * 1.3);
     this.tiles = []; this.white = [];
     for (let k = 0; k < 7; k++) {
@@ -2403,6 +2458,7 @@ const Game = {
 
   // ---------- starting a level ----------
   start(li) {
+    Cast.take(li);
     this.li = li; this.lv = LEVELS[li];
     this.b = new Board(this.lv);
     this.active = true; this.busy = false; this.over = false; this.sel = -1; this.hint = null; this.extraUsed = false; this.saidLow = false;
@@ -3130,7 +3186,7 @@ const UI = {
       return n;
     });
     const av = el('canvas', 'avatar'); av.width = av.height = 152;
-    const head = Art.head(1, 152, 132); av.getContext('2d').drawImage(head, 0, 0);
+    const head = Art.friend(FRIENDS.findIndex(f => f.id === 'panda'), 152, 120); av.getContext('2d').drawImage(head, 0, 0);
     map.appendChild(av);
     const place = () => {
       const W = innerWidth, H = innerHeight, wide = W >= H;
@@ -3167,7 +3223,8 @@ const UI = {
 
   // ---------- before a level ----------
   intro(li) {
-    const lv = LEVELS[li];
+    const lv = LEVELS[li], goalEls = [];
+    Cast.pick(li);   // new animals every game
     this.modal(card => {
       card.appendChild(el('h2', null, `第 ${li + 1} 关`));
       card.appendChild(el('div', 'big', lv.name));
@@ -3175,7 +3232,7 @@ const UI = {
       const goals = el('div', 'goals');
       goals.appendChild(el('div', 'moves', `<b>${lv.moves}</b><span>步</span>`));
       const probe = new Board(lv, mulberry32(1));
-      probe.goals.forEach(g => { const d = el('div', 'goal'); d.appendChild(Art.goalIcon(g, 136)); d.appendChild(el('b', null, g.n)); goals.appendChild(d); });
+      probe.goals.forEach(g => { const d = el('div', 'goal'); d.appendChild(Art.goalIcon(g, 136)); d.appendChild(el('b', null, g.n)); goals.appendChild(d); goalEls.push(d); });
       card.appendChild(goals);
       if (Store.d.best[li]) card.appendChild(el('p', 'best', `🏆 ${Store.d.best[li].toLocaleString('en-US')}`));
       const row = el('div', 'row');
@@ -3185,7 +3242,17 @@ const UI = {
     }, { close: () => this.closeModal() });
     const line = L.intro(lv, li + 1);
     const tip = lv.tip && !Store.d.seen['tip_' + lv.tip] ? L.tip[lv.tip] : null;
-    Voice.say(line, { onend: tip ? () => { if (!$('#modal').hidden) Voice.say(tip); } : null });
+    // the intro, then this game's animals by name, each goal picture bouncing as it is named, then the tip
+    const open = () => !$('#modal').hidden && $('#modal .goals') === goalEls[0]?.parentNode;
+    const named = lv.goals.map((g, j) => (g.t === 'c' ? j : -1)).filter(j => j >= 0);
+    const names = k => {
+      if (!open()) return;
+      if (k >= named.length) { if (tip) Voice.say(tip); return; }
+      const j = named[k];
+      goalEls[j].animate([{ transform: 'scale(1)' }, { transform: 'scale(1.25) rotate(-6deg)' }, { transform: 'scale(1)' }], 520);
+      Voice.say(L.gift.names[ANIMALS[lv.goals[j].color].h], { onend: () => setTimeout(() => names(k + 1), 120) });
+    };
+    Voice.say(line, { onend: () => names(0) });
     if (tip) { Store.d.seen['tip_' + lv.tip] = 1; Store.save(); }
   },
   // start a level, through the math page when one is owed
@@ -3353,7 +3420,7 @@ const UI = {
 // 动物消消乐 · start-up and the frame loop.
 (function boot() {
   Store.load();
-  if (/[?&]debug\b/.test(location.search)) window.XX = { Game, Board, Store, UI, Fx, Clock, MathGate, LEVELS, Snd, Voice, Music, Gift };
+  if (/[?&]debug\b/.test(location.search)) window.XX = { Game, Board, Store, UI, Fx, Clock, MathGate, LEVELS, Snd, Voice, Music, Gift, Cast, ANIMALS, FRIENDS, Art };
   Snd.on = Store.d.snd; Snd.music = Store.d.mus; Voice.on = Store.d.voi;
   Fx.init($('#fx'));
   Game.init();

@@ -1,6 +1,7 @@
 // 动物消消乐 · the levels. Add a level by adding an entry; the map, the voice lines and the simulator pick it up.
 //
-//   colors   which animals take part (0 小猪 1 熊猫 2 河马 3 长颈鹿 4 鹦鹉 5 小青蛙); six kinds is much harder than five
+//   colors   which of the game's six animals take part (0-5; cast.js picks the animals anew each game); six kinds is
+//            much harder than five
 //   layout   one string per row: . cell  _ no cell  i/I ice 1/2 layers  b/B gift box 1/2 layers  o bubble
 //            q bubble on ice  g penguin  k penguin on ice
 //   goals    c: collect n of one animal; ice / box / bub: clear all of them; pg: bring the penguins out at the bottom
@@ -11,7 +12,7 @@
 // take some luck or a big combo.
 const LEVELS = [
   {
-    name: '小猪和熊猫', colors: [0, 1, 2, 3, 4], moves: 18,
+    name: '小动物集合啦', colors: [0, 1, 2, 3, 4], moves: 18,
     goals: [{ t: 'c', color: 0, n: 18 }, { t: 'c', color: 1, n: 18 }],
     stars: [1, 8000, 11000], tip: 'swap',
   },
