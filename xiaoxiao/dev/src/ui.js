@@ -1,5 +1,6 @@
 // 动物消消乐 · the screens around the game: the level map, the cards (level start, result, pause), the parents'
 // corner behind a grown-up question, and the little toast that confirms a setting there.
+// The cards a child sees use pictures, numbers and the narrator's voice, not sentences: she can't read yet.
 const UI = {
   modal(build, o = {}) {
     const m = $('#modal'); m.hidden = false; m.innerHTML = '';
@@ -88,17 +89,17 @@ const UI = {
     this.modal(card => {
       card.appendChild(el('h2', null, `第 ${li + 1} 关`));
       card.appendChild(el('div', 'big', lv.name));
+      // the moves and the goals as pictures, the same as the panels she will see while playing (the narrator says the rest)
       const goals = el('div', 'goals');
+      goals.appendChild(el('div', 'moves', `<b>${lv.moves}</b><span>步</span>`));
       const probe = new Board(lv, mulberry32(1));
       probe.goals.forEach(g => { const d = el('div', 'goal'); d.appendChild(Art.goalIcon(g, 136)); d.appendChild(el('b', null, g.n)); goals.appendChild(d); });
       card.appendChild(goals);
-      card.appendChild(el('p', null, `一共 <b style="font-size:30px;color:#7b4dff">${lv.moves}</b> 步` + ((Store.d.best[li]) ? `　·　最高 ${Store.d.best[li].toLocaleString('en-US')} 分` : '')));
-      if (lv.tip) card.appendChild(el('p', null, `<span style="font-size:19px;opacity:.8">💡 ${L.tip[lv.tip]}</span>`));
+      if (Store.d.best[li]) card.appendChild(el('p', 'best', `🏆 ${Store.d.best[li].toLocaleString('en-US')}`));
       const row = el('div', 'row');
       row.appendChild(this.button('🗺️', 'ghost', () => this.closeModal()));
       row.appendChild(Store.d.owed ? this.button('✏️ 先做数学题', 'sun', () => this.play(li)) : this.button('开始 ▶', 'green', () => this.play(li)));
       card.appendChild(row);
-      if (Store.d.owed) card.appendChild(el('p', null, '<span style="font-size:17px;opacity:.7">每玩一局，再玩之前都要先做一页数学题哦</span>'));
     }, { close: () => this.closeModal() });
     const line = L.intro(lv, li + 1);
     const tip = lv.tip && !Store.d.seen['tip_' + lv.tip] ? L.tip[lv.tip] : null;
@@ -128,17 +129,15 @@ const UI = {
         row.appendChild(this.button('↻ 再玩一次', 'violet', () => this.play(o.li)));
         if (!last) row.appendChild(this.button('下一关 ▶', 'green', () => this.play(o.li + 1)));
         card.appendChild(row);
-        card.appendChild(el('p', null, '<span style="font-size:17px;opacity:.7">✏️ 再玩之前，先做一页数学题</span>'));
         setTimeout(() => Voice.say(last ? L.allDone : L.stars[o.stars]), 1500);
         if (last) setTimeout(() => Fx.confetti(120), 600);
       } else {
         card.appendChild(el('h2', 'violet', '差一点点！'));
-        card.appendChild(el('p', null, '还差这些：'));
         const goals = el('div', 'goals');
         o.goals.forEach(g => { if (g.left <= 0) return; const d = el('div', 'goal'); d.appendChild(Art.goalIcon(g, 136)); d.appendChild(el('b', null, g.left)); goals.appendChild(d); });
         card.appendChild(goals);
         const row = el('div', 'row');
-        if (o.extra) row.appendChild(this.button('✏️ 做 5 道题，多 5 步', 'sun', () => { this.closeModal(); Game.moreMoves(); }));
+        if (o.extra) row.appendChild(this.button('✏️ +5 步', 'sun', () => { this.closeModal(); Game.moreMoves(); }));
         row.appendChild(this.button('↻ 再试一次', 'violet', () => this.play(o.li)));
         row.appendChild(this.button('🗺️', 'ghost', () => this.map()));
         card.appendChild(row);
