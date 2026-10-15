@@ -98,6 +98,22 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .score .sub{display:none;font-size:16px;font-weight:800;opacity:.7;text-align:center}
 #hud.top .score .sub{display:block}
 #hud.top .ibtn{width:48px;height:48px;font-size:24px}
+/* phones held upright: one row is too narrow for everything, so the score goes on a second row under the moves and goals */
+@media (max-width:560px){
+  #hud.top{flex-wrap:wrap;gap:8px 10px}
+  #hud.top .moves{width:clamp(58px,18vw,78px);height:clamp(58px,18vw,78px)}
+  #hud.top .moves b{font-size:clamp(26px,8.5vw,34px)}
+  #hud.top .moves span{font-size:13px}
+  #hud.top .goals{gap:6px}
+  #hud.top .goal{width:clamp(42px,13vw,56px);height:clamp(42px,13vw,56px);border-radius:14px}
+  #hud.top .goal img,#hud.top .goal canvas{width:80%;height:80%}
+  #hud.top .goal b{min-width:28px;height:26px;font-size:16px;right:-5px;bottom:-5px;padding:0 5px}
+  #hud.top .hbtns{margin-left:auto;align-items:center}
+  #hud.top .score{order:9;flex:1 1 100%;min-width:0;flex-direction:row;align-items:center;gap:10px;padding:4px 14px 6px}
+  #hud.top .score .sub{white-space:nowrap;font-size:15px}
+  #hud.top .score .num{font-size:20px;min-width:62px}
+  #hud.top .bar{flex:1;margin:16px 10px 2px}
+}
 
 /* ---------- cards and modals ---------- */
 .modal{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;background:rgba(74,43,94,.35);padding:20px;
@@ -165,10 +181,9 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .gate .keys{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}
 .gate .key{font-size:28px;min-height:54px}
 
-#toast{position:fixed;z-index:55;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translate(-50%,200%);max-width:min(640px,92vw);background:#fff;border-radius:24px;box-shadow:var(--shadow);
-  padding:14px 22px;font-size:21px;font-weight:800;line-height:1.4;display:flex;gap:12px;align-items:center;transition:transform .35s cubic-bezier(.2,1.4,.4,1);pointer-events:none}
+#toast{position:fixed;z-index:55;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translate(-50%,200%);width:max-content;max-width:min(640px,92vw);background:#fff;border-radius:24px;box-shadow:var(--shadow);
+  padding:14px 22px;font-size:21px;font-weight:800;line-height:1.4;transition:transform .35s cubic-bezier(.2,1.4,.4,1);pointer-events:none}
 #toast.on{transform:translate(-50%,0)}
-#toast canvas{width:64px;height:64px;flex:none}
 #loader{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:linear-gradient(170deg,#ffd9ef 0%,#e9d9ff 45%,#c9ecff 100%);
   font-size:24px;font-weight:800;transition:opacity .4s}
 #loader.gone{opacity:0;pointer-events:none}
@@ -847,7 +862,10 @@ function excitement(phases) {
   for (const ph of phases) if (ph.type === 'clear') { cascades = Math.max(cascades, ph.cascade); cleared += ph.cleared; acts += ph.acts; big = Math.max(big, ph.big || 0); }
   const made = phases.reduce((n, ph) => n + (ph.makes ? ph.makes.filter(m => m.s === 'c').length * 2 + ph.makes.length : 0), 0);
   const x = Math.max(cascades - 1, 0) * 1.0 + cleared / 9 + acts * 0.6 + made * 0.5 + big * 1.5;
-  return x >= 7 ? 5 : x >= 5.2 ? 4 : x >= 3.8 ? 3 : x >= 2.6 ? 2 : x >= 1.7 ? 1 : 0;
+  let lvl = x >= 7 ? 5 : x >= 5.2 ? 4 : x >= 3.8 ? 3 : x >= 2.6 ? 2 : x >= 1.7 ? 1 : 0;
+  // making a special piece always gets a cheer: "Great!" for a striped one, "Excellent!" for a bomb, "Amazing!" for a rainbow ball
+  for (const ph of phases) for (const m of ph.makes || []) lvl = Math.max(lvl, m.s === 'c' ? 4 : m.s === 'b' ? 3 : 2);
+  return lvl;
 }
 
 // 动物消消乐 · the levels. Add a level by adding an entry; the map, the voice lines and the simulator pick it up.
@@ -1032,13 +1050,15 @@ const L = {
     six: '这一关有六种小动物，不容易连上，多想一想再动手。',
     final: '最后一关啦！冰块、礼物盒和小企鹅都在，加油！',
   },
+  // said once, the first time she makes each special piece; the piece itself shows what it does (Game.showOff)
   made: {
-    h: '哇，条纹小动物！把它和旁边换一换，就能消掉一整行！',
-    v: '哇，条纹小动物！把它和旁边换一换，就能消掉一整列！',
-    b: '变出了炸弹小动物！摆成L形或者T形就能变出它，它会把周围炸开！',
-    c: '哇，彩虹球！五只连成一排才有！把它和任意一只小动物换一换，一样的全都消掉！',
+    h: '条纹小动物！能消掉一整行！',
+    v: '条纹小动物！能消掉一整列！',
+    b: '炸弹小动物！能炸开一大片！',
+    c: '彩虹球！一样的全都消掉！',
   },
-  combo: '两个特别的小动物换在一起，威力更大！',
+  combo: '两个特别的合体，威力更大！',
+  bubStuck: '泡泡里的挪不动哦！',
   movesLow: '只剩5步啦！',
   noMoves: '没有能消的了，洗一洗再来！',
   penguinHome: '小企鹅回家啦！',
@@ -1500,12 +1520,6 @@ const Art = {
       ctx.drawImage(p.s === 'h' ? this.cache.stripeH : this.cache.stripeV, x - w * wob / 2, y - h * wob / 2, w * wob, h * wob);
     }
     if (flash > 0) { ctx.globalAlpha = Math.min(1, flash); ctx.drawImage(this.white[p.c], x - w / 2, y - h / 2, w, h); ctx.globalAlpha = 1; }
-  },
-  // one piece as a still picture (for the toasts that explain a new special piece)
-  icon(p, px) {
-    const c = this.canvas(px, px), x = c.getContext('2d'), k = px / this.cell;
-    x.scale(k, k); this.piece(x, p, this.cell / 2, this.cell / 2, 1, 0, 0);
-    return c;
   },
   // a small picture of a goal, for the side panel and the cards
   goalIcon(g, px) {
@@ -2125,6 +2139,7 @@ const Game = {
   pdown(e) {
     Snd.init(); Voice.unlock();
     if (!this.active || this.over) return;
+    this.hideShowOff();
     const i = this.cellAt(e);
     if (i < 0) { this.sel = -1; return; }
     this.down = { i, x: e.clientX, y: e.clientY, moved: false };
@@ -2173,7 +2188,7 @@ const Game = {
     if (!Store.d.owed) { Store.d.owed = true; Store.d.played++; Store.save(); }
     this.setMoves(B.moves);
     this.cheered = 0;
-    if (res.two) this.firstTime('combo', L.combo);
+    if (res.two) this.sayOnce('combo', L.combo);
     await this.play(res.phases);
     await this.afterTurn();
   },
@@ -2264,7 +2279,7 @@ const Game = {
           Fx.ring(x, y, '#fff', cell * 0.2, cell * 1.1, 420, 8);
           Fx.sparkles(x, y, 8, cell * 0.5, '#fff');
           if (!e.quiet) Snd.play('make');
-          if (!e.bonus && !e.quiet) this.firstTime('made_' + e.p.s, L.made[e.p.s], e.p);
+          if (!e.bonus && !e.quiet) { this.showOff(e.p); this.sayOnce('made_' + e.p.s, L.made[e.p.s]); }
         };
         if (e.bonus) {
           const m = $('.moves', $('#hud')).getBoundingClientRect();
@@ -2367,7 +2382,7 @@ const Game = {
       this.flyGoal(this.goalIndex('pg'), Art.tiles[PENGUIN], x, y, true);
       if (s) s.a = 0;
     }
-    this.firstTime('penguinHome', L.penguinHome, { k: 'g' });
+    this.sayOnce('penguinHome', L.penguinHome);
     await Clock.wait(350);
   },
   // sprites and board must agree after a turn (a safety net: an animation that was cut short leaves nothing behind)
@@ -2453,14 +2468,85 @@ const Game = {
     if (!this.b.hasMove()) { this.busy = true; await this.reshuffle(); this.busy = false; }
   },
 
-  // ---------- first-time explanations ----------
-  firstTime(key, line, p) {
+  // ---------- new things: shown on the board and said in a few words, never written (she can't read them yet) ----------
+  sayOnce(key, line) {
     if (Store.d.seen[key]) return;
     Store.d.seen[key] = 1; Store.save();
-    setTimeout(() => { if (line) Voice.say(line); if (line) UI.toast(line, p ? Art.icon(p, 128) : null); }, 700);
+    setTimeout(() => Voice.say(line), 700);
   },
   tip(key) {
-    if (key === 'bubStuck' && !this._bubTold) { this._bubTold = true; UI.toast(L.tip.bub, Art.cache.bub); Voice.say(L.tip.bub); }
+    if (key === 'bubStuck' && !this._bubTold) { this._bubTold = true; Voice.say(L.bubStuck); }
+  },
+  // a special piece just made shows off what it will do: a glowing ring and a picture of its blast (arrows along its row
+  // or column, the bomb's diamond, a spinning rainbow). The first few times of each kind a finger also shows the swipe.
+  // It follows the piece while it falls, ends when the piece is used, and gets out of the way when she touches the board.
+  showOff(p) {
+    const kind = p.s, hand = (Store.d.seen['hand_' + kind] || 0) < 3;   // counted only when a finger is really shown
+    const it = { t: -380, dur: hand ? 3400 : 1500, id: p.id, kind, hand };
+    it.draw = (ctx, k, t) => this.drawShowOff(ctx, it, t);
+    Fx.items.push(it);
+  },
+  hideShowOff() { for (const it of Fx.items) if (it.kind && it.t < it.dur - 220) it.t = Math.max(it.t, it.dur - 220); },
+  drawShowOff(ctx, it, t) {
+    if (t < 0) return;
+    const s = this.active && $('#modal').hidden && this.sprites.get(it.id);
+    if (!s) { it.t = it.dur; return; }   // the piece was used up, or a card (pause, result) opened over the board
+    const G = this.G, cell = G.cell, [x, y] = this.cellXY(s.r, s.c), kind = it.kind;
+    const a = Math.min(1, t / 200, (it.dur - t) / 220), pul = 0.5 + 0.5 * Math.sin(t / 130);
+    const col = kind === 'c' ? '#ffffff' : ANIMALS[s.p.c].fx[0];
+    ctx.save(); ctx.globalAlpha = a; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    // the glow ring and four twinkles going round it
+    ctx.lineWidth = cell * 0.07; ctx.strokeStyle = '#ffd23a';
+    ctx.beginPath(); ctx.arc(x, y, cell * (0.56 + 0.05 * pul), 0, 7); ctx.stroke();
+    for (let i = 0; i < 4; i++) { const an = t / 500 + i * Math.PI / 2; Fx.drawStar(ctx, x + Math.cos(an) * cell * 0.62, y + Math.sin(an) * cell * 0.62, cell * (0.1 + 0.05 * pul), '#fff6b0'); }
+    // what it will do
+    if (kind === 'h' || kind === 'v') {
+      ctx.save(); ctx.beginPath(); ctx.rect(G.ox, G.oy, G.w, G.h); ctx.clip();
+      const along = kind === 'h' ? [1, 0] : [0, 1], room = kind === 'h' ? G.w : G.h;
+      for (const sg of [-1, 1]) for (let i = 0; i < 3; i++) {
+        const d = cell * 0.85 + ((t / 650 + i / 3) % 1) * room * 0.45, f = 1 - d / (room * 0.6);
+        if (f <= 0) continue;
+        const cx = x + along[0] * sg * d, cy = y + along[1] * sg * d, w = cell * 0.18;
+        ctx.globalAlpha = a * Math.min(1, f * 1.6);
+        ctx.beginPath();
+        ctx.moveTo(cx - along[0] * sg * w + along[1] * w * 1.3, cy - along[1] * sg * w + along[0] * w * 1.3);
+        ctx.lineTo(cx + along[0] * sg * w, cy + along[1] * sg * w);
+        ctx.lineTo(cx - along[0] * sg * w - along[1] * w * 1.3, cy - along[1] * sg * w - along[0] * w * 1.3);
+        ctx.lineWidth = cell * 0.16; ctx.strokeStyle = '#fff'; ctx.stroke();
+        ctx.lineWidth = cell * 0.08; ctx.strokeStyle = col; ctx.stroke();
+      }
+      ctx.restore();
+    } else if (kind === 'b') {
+      const R = cell * (2.5 + 0.12 * pul);
+      ctx.setLineDash([cell * 0.22, cell * 0.16]); ctx.lineDashOffset = -t / 25;
+      ctx.beginPath(); ctx.moveTo(x, y - R); ctx.lineTo(x + R, y); ctx.lineTo(x, y + R); ctx.lineTo(x - R, y); ctx.closePath();
+      ctx.lineWidth = cell * 0.12; ctx.strokeStyle = '#fff'; ctx.stroke();
+      ctx.lineWidth = cell * 0.06; ctx.strokeStyle = '#ff9d3a'; ctx.stroke();
+      ctx.setLineDash([]);
+    } else if (kind === 'c') {
+      const hues = ['#ff4f6d', '#ff9d3a', '#ffd23a', '#5fe07a', '#3ac8ff', '#a77bff'];
+      ctx.lineWidth = cell * 0.09;
+      hues.forEach((h, i) => { const a0 = t / 300 + i * Math.PI / 3; ctx.strokeStyle = h; ctx.beginPath(); ctx.arc(x, y, cell * 0.74, a0, a0 + Math.PI / 3 - 0.12); ctx.stroke(); });
+    }
+    // the finger: press on the piece, slide it the way that really works, lift; again and again. Once the board has
+    // settled it picks the best real move for this piece; if the piece has none right now, there is no finger.
+    if (it.hand && !this.busy && it.dir === undefined) {
+      const at = this.b.cells.findIndex(x => x.p === s.p);
+      const m = at < 0 ? null : this.b.allMoves().filter(m => m.a === at || m.b === at).sort((x, y) => y.v - x.v)[0];
+      if (m) { const [r1, c1] = this.b.rc(at), [r2, c2] = this.b.rc(m.a === at ? m.b : m.a); it.dir = [r2 - r1, c2 - c1]; } else it.dir = null;
+      if (it.dir) { const d = Store.d.seen; d['hand_' + it.kind] = (d['hand_' + it.kind] || 0) + 1; Store.save(); }
+    }
+    if (it.hand && !this.busy && it.dir) {
+      const dir = it.dir;
+      const ph = (t % 1300) / 1300, slide = Ease.inOut(clamp((ph - 0.25) / 0.4, 0, 1));
+      const fx = x + dir[1] * slide * cell, fy = y + dir[0] * slide * cell, sz = cell * 0.95;
+      ctx.globalAlpha = a * (ph < 0.08 ? ph / 0.08 : ph > 0.85 ? (1 - ph) / 0.15 : 1);
+      if (ph > 0.2 && ph < 0.75) { ctx.fillStyle = 'rgba(255,255,255,0.75)'; ctx.beginPath(); ctx.arc(fx, fy, cell * 0.2, 0, 7); ctx.fill(); }
+      ctx.font = `${sz}px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      ctx.shadowColor = 'rgba(74,43,94,0.35)'; ctx.shadowBlur = 8; ctx.shadowOffsetY = 3;
+      ctx.fillText('👆', fx + sz * 0.08, fy - sz * 0.06 + (ph < 0.25 ? (0.25 - ph) * cell * 0.6 : 0));
+    }
+    ctx.restore();
   },
 
   // ---------- side panel ----------
@@ -2528,7 +2614,7 @@ const Game = {
 };
 
 // 动物消消乐 · the screens around the game: the level map, the cards (level start, result, pause), the parents'
-// corner behind a grown-up question, and the little toast that explains new things.
+// corner behind a grown-up question, and the little toast that confirms a setting there.
 const UI = {
   modal(build, o = {}) {
     const m = $('#modal'); m.hidden = false; m.innerHTML = '';
@@ -2791,10 +2877,8 @@ const UI = {
     }, { close });
   },
 
-  toast(text, img) {
-    const t = $('#toast'); t.innerHTML = '';
-    if (img) { const c = el('canvas'); c.width = c.height = 128; c.getContext('2d').drawImage(img, 0, 0, 128, 128); t.appendChild(c); }
-    t.appendChild(el('div', null, text));
+  toast(text) {
+    const t = $('#toast'); t.textContent = text;
     t.classList.add('on'); clearTimeout(this._toastT);
     this._toastT = setTimeout(() => t.classList.remove('on'), 2600 + text.length * 120);
   },

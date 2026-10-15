@@ -98,6 +98,22 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .score .sub{display:none;font-size:16px;font-weight:800;opacity:.7;text-align:center}
 #hud.top .score .sub{display:block}
 #hud.top .ibtn{width:48px;height:48px;font-size:24px}
+/* phones held upright: one row is too narrow for everything, so the score goes on a second row under the moves and goals */
+@media (max-width:560px){
+  #hud.top{flex-wrap:wrap;gap:8px 10px}
+  #hud.top .moves{width:clamp(58px,18vw,78px);height:clamp(58px,18vw,78px)}
+  #hud.top .moves b{font-size:clamp(26px,8.5vw,34px)}
+  #hud.top .moves span{font-size:13px}
+  #hud.top .goals{gap:6px}
+  #hud.top .goal{width:clamp(42px,13vw,56px);height:clamp(42px,13vw,56px);border-radius:14px}
+  #hud.top .goal img,#hud.top .goal canvas{width:80%;height:80%}
+  #hud.top .goal b{min-width:28px;height:26px;font-size:16px;right:-5px;bottom:-5px;padding:0 5px}
+  #hud.top .hbtns{margin-left:auto;align-items:center}
+  #hud.top .score{order:9;flex:1 1 100%;min-width:0;flex-direction:row;align-items:center;gap:10px;padding:4px 14px 6px}
+  #hud.top .score .sub{white-space:nowrap;font-size:15px}
+  #hud.top .score .num{font-size:20px;min-width:62px}
+  #hud.top .bar{flex:1;margin:16px 10px 2px}
+}
 
 /* ---------- cards and modals ---------- */
 .modal{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;background:rgba(74,43,94,.35);padding:20px;
@@ -165,10 +181,9 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .gate .keys{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}
 .gate .key{font-size:28px;min-height:54px}
 
-#toast{position:fixed;z-index:55;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translate(-50%,200%);max-width:min(640px,92vw);background:#fff;border-radius:24px;box-shadow:var(--shadow);
-  padding:14px 22px;font-size:21px;font-weight:800;line-height:1.4;display:flex;gap:12px;align-items:center;transition:transform .35s cubic-bezier(.2,1.4,.4,1);pointer-events:none}
+#toast{position:fixed;z-index:55;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translate(-50%,200%);width:max-content;max-width:min(640px,92vw);background:#fff;border-radius:24px;box-shadow:var(--shadow);
+  padding:14px 22px;font-size:21px;font-weight:800;line-height:1.4;transition:transform .35s cubic-bezier(.2,1.4,.4,1);pointer-events:none}
 #toast.on{transform:translate(-50%,0)}
-#toast canvas{width:64px;height:64px;flex:none}
 #loader{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:linear-gradient(170deg,#ffd9ef 0%,#e9d9ff 45%,#c9ecff 100%);
   font-size:24px;font-weight:800;transition:opacity .4s}
 #loader.gone{opacity:0;pointer-events:none}

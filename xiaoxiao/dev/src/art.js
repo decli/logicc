@@ -177,12 +177,6 @@ const Art = {
     }
     if (flash > 0) { ctx.globalAlpha = Math.min(1, flash); ctx.drawImage(this.white[p.c], x - w / 2, y - h / 2, w, h); ctx.globalAlpha = 1; }
   },
-  // one piece as a still picture (for the toasts that explain a new special piece)
-  icon(p, px) {
-    const c = this.canvas(px, px), x = c.getContext('2d'), k = px / this.cell;
-    x.scale(k, k); this.piece(x, p, this.cell / 2, this.cell / 2, 1, 0, 0);
-    return c;
-  },
   // a small picture of a goal, for the side panel and the cards
   goalIcon(g, px) {
     const c = this.canvas(px, px), x = c.getContext('2d');
