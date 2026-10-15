@@ -13,6 +13,12 @@ const UI = {
   },
   closeModal() { const m = $('#modal'); m.hidden = true; m.innerHTML = ''; m.onclick = null; },
   button(label, cls, fn) { const b = el('button', 'btn ' + (cls || ''), label); b.onclick = () => { Snd.init(); Snd.play('tap'); fn(); }; return b; },
+  // the little house back to 思维小画本, on the map, in the game and on the math page (a math page still owed stays owed)
+  homeButton() {
+    const b = el('button', 'ibtn home', '🏠'); b.title = '回思维小画本'; b.setAttribute('aria-label', '回思维小画本');
+    b.onclick = () => { Snd.play('tap'); Voice.stop(); setTimeout(() => { location.href = '../'; }, 120); };
+    return b;
+  },
 
   // ---------- the level map ----------
   map() {
@@ -20,9 +26,7 @@ const UI = {
     const map = $('#map'); map.hidden = false; map.innerHTML = '';
     const d = Store.d;
     const top = el('div', 'top');
-    const home = el('button', 'ibtn', '🏠'); home.title = '回思维小画本';
-    home.onclick = () => { Snd.play('tap'); setTimeout(() => { location.href = '../'; }, 120); };
-    top.appendChild(home);
+    top.appendChild(this.homeButton());
     top.appendChild(el('h1', null, '动物消消乐'));
     const total = LEVELS.reduce((n, _, i) => n + (d.stars[i] || 0), 0);
     top.appendChild(el('div', 'pill', `⭐ ${total} / ${LEVELS.length * 3}`));

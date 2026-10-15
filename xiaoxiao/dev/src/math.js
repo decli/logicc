@@ -56,6 +56,8 @@ const MathGate = {
       let cur = 0, first = 0, finished = false;
       Music.stop();
       const sheet = el('div', 'sheet'), head = el('div', 'head');
+      const home = UI.homeButton(); home.style.width = home.style.height = '46px'; home.style.fontSize = '22px';
+      head.appendChild(home);
       head.appendChild(el('h3', null, o.extra ? '✏️ 做对 5 道题，多 5 步' : '✏️ 先做一页数学题'));
       const prog = el('div', 'prog', `0 / ${count}`);
       head.appendChild(prog);
@@ -94,15 +96,25 @@ const MathGate = {
       function fit() {
         const wide = innerWidth >= innerHeight * 1.05;
         root.className = wide ? 'wide' : 'tall';
-        // a full page fills the screen four across; the five-sum page is one tidy column
-        const small = count <= 5, cols = small ? 1 : 4, rows = Math.ceil(count / cols);
-        grid.style.gridTemplateColumns = `repeat(${cols},1fr)`;
-        grid.style.gridTemplateRows = small ? `repeat(${rows},minmax(0,110px))` : `repeat(${rows},1fr)`;
+        // a full page fills the screen four across; when four across would make the sums small (a phone, or four
+        // numbers in a sum) it takes the column count that gives the biggest sums, so none is cut off at the edges
+        // (a clipped "14 + 11" reads as "4 + 11"). The five-sum page is one tidy column.
+        const small = count <= 5;
         Object.assign(grid.style, small ? { alignContent: 'center', width: '100%', maxWidth: '600px', margin: '0 auto' } : {});
         const r = grid.getBoundingClientRect();
-        const cw = (r.width - (cols - 1) * 10) / cols, ch = (r.height - (rows - 1) * 10) / rows;
-        const chars = Math.max(...qs.map(q => q.text.length)) + 5;
-        const fs = Math.max(14, Math.min(ch * 0.42, cw / (chars * 0.6), 46));
+        cards.forEach(c => { c.style.fontSize = '100px'; });   // the widest sum in em: its two halves, the gap between them and a little air
+        const em = Math.max(...cards.map(c => [...c.children].reduce((w, s) => w + s.offsetWidth, 0))) / 100 + 0.25 + 0.2;
+        const size = cols => {
+          const rows = Math.ceil(count / cols), cw = (r.width - (cols - 1) * 10) / cols - 8;
+          const ch = small ? Math.min(110, (r.height - (rows - 1) * 10) / rows) : (r.height - (rows - 1) * 10) / rows;
+          return Math.min(ch * 0.42, cw / em, 46);
+        };
+        let cols = small ? 1 : 4;
+        if (!small && size(4) < 20) cols = [3, 2].reduce((a, c) => size(c) > size(a) + 0.5 ? c : a, 4);
+        const rows = Math.ceil(count / cols);
+        grid.style.gridTemplateColumns = `repeat(${cols},1fr)`;
+        grid.style.gridTemplateRows = small ? `repeat(${rows},minmax(0,110px))` : `repeat(${rows},1fr)`;
+        const fs = Math.max(9, size(cols));
         cards.forEach(c => { c.style.fontSize = fs + 'px'; });
       }
       function draw() {

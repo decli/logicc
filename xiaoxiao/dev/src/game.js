@@ -640,7 +640,7 @@ const Game = {
     sp.innerHTML = `<div class="sub">第 ${this.li + 1} 关 · ${lv.name}</div><div class="num">0</div><div class="bar"><i></i><s>⭐</s><s>⭐</s><s>⭐</s></div>`;
     const btns = el('div', 'hbtns');
     const pause = el('button', 'ibtn', '⏸'); pause.onclick = () => { Snd.play('tap'); UI.pause(); };
-    btns.appendChild(pause);
+    btns.appendChild(UI.homeButton()); btns.appendChild(pause);
     [name, mv, gp, sp, btns].forEach(n => hud.appendChild(n));
     const s = lv.stars, max = s[2] * 1.12, marks = $$('.bar s', sp);
     [s[1] * 0.45, s[1], s[2]].forEach((v, i) => { marks[i].style.left = (100 * v / max) + '%'; });

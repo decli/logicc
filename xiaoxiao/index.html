@@ -1826,6 +1826,8 @@ const MathGate = {
       let cur = 0, first = 0, finished = false;
       Music.stop();
       const sheet = el('div', 'sheet'), head = el('div', 'head');
+      const home = UI.homeButton(); home.style.width = home.style.height = '46px'; home.style.fontSize = '22px';
+      head.appendChild(home);
       head.appendChild(el('h3', null, o.extra ? '✏️ 做对 5 道题，多 5 步' : '✏️ 先做一页数学题'));
       const prog = el('div', 'prog', `0 / ${count}`);
       head.appendChild(prog);
@@ -1864,15 +1866,25 @@ const MathGate = {
       function fit() {
         const wide = innerWidth >= innerHeight * 1.05;
         root.className = wide ? 'wide' : 'tall';
-        // a full page fills the screen four across; the five-sum page is one tidy column
-        const small = count <= 5, cols = small ? 1 : 4, rows = Math.ceil(count / cols);
-        grid.style.gridTemplateColumns = `repeat(${cols},1fr)`;
-        grid.style.gridTemplateRows = small ? `repeat(${rows},minmax(0,110px))` : `repeat(${rows},1fr)`;
+        // a full page fills the screen four across; when four across would make the sums small (a phone, or four
+        // numbers in a sum) it takes the column count that gives the biggest sums, so none is cut off at the edges
+        // (a clipped "14 + 11" reads as "4 + 11"). The five-sum page is one tidy column.
+        const small = count <= 5;
         Object.assign(grid.style, small ? { alignContent: 'center', width: '100%', maxWidth: '600px', margin: '0 auto' } : {});
         const r = grid.getBoundingClientRect();
-        const cw = (r.width - (cols - 1) * 10) / cols, ch = (r.height - (rows - 1) * 10) / rows;
-        const chars = Math.max(...qs.map(q => q.text.length)) + 5;
-        const fs = Math.max(14, Math.min(ch * 0.42, cw / (chars * 0.6), 46));
+        cards.forEach(c => { c.style.fontSize = '100px'; });   // the widest sum in em: its two halves, the gap between them and a little air
+        const em = Math.max(...cards.map(c => [...c.children].reduce((w, s) => w + s.offsetWidth, 0))) / 100 + 0.25 + 0.2;
+        const size = cols => {
+          const rows = Math.ceil(count / cols), cw = (r.width - (cols - 1) * 10) / cols - 8;
+          const ch = small ? Math.min(110, (r.height - (rows - 1) * 10) / rows) : (r.height - (rows - 1) * 10) / rows;
+          return Math.min(ch * 0.42, cw / em, 46);
+        };
+        let cols = small ? 1 : 4;
+        if (!small && size(4) < 20) cols = [3, 2].reduce((a, c) => size(c) > size(a) + 0.5 ? c : a, 4);
+        const rows = Math.ceil(count / cols);
+        grid.style.gridTemplateColumns = `repeat(${cols},1fr)`;
+        grid.style.gridTemplateRows = small ? `repeat(${rows},minmax(0,110px))` : `repeat(${rows},1fr)`;
+        const fs = Math.max(9, size(cols));
         cards.forEach(c => { c.style.fontSize = fs + 'px'; });
       }
       function draw() {
@@ -2597,7 +2609,7 @@ const Game = {
     sp.innerHTML = `<div class="sub">第 ${this.li + 1} 关 · ${lv.name}</div><div class="num">0</div><div class="bar"><i></i><s>⭐</s><s>⭐</s><s>⭐</s></div>`;
     const btns = el('div', 'hbtns');
     const pause = el('button', 'ibtn', '⏸'); pause.onclick = () => { Snd.play('tap'); UI.pause(); };
-    btns.appendChild(pause);
+    btns.appendChild(UI.homeButton()); btns.appendChild(pause);
     [name, mv, gp, sp, btns].forEach(n => hud.appendChild(n));
     const s = lv.stars, max = s[2] * 1.12, marks = $$('.bar s', sp);
     [s[1] * 0.45, s[1], s[2]].forEach((v, i) => { marks[i].style.left = (100 * v / max) + '%'; });
@@ -2658,6 +2670,12 @@ const UI = {
   },
   closeModal() { const m = $('#modal'); m.hidden = true; m.innerHTML = ''; m.onclick = null; },
   button(label, cls, fn) { const b = el('button', 'btn ' + (cls || ''), label); b.onclick = () => { Snd.init(); Snd.play('tap'); fn(); }; return b; },
+  // the little house back to 思维小画本, on the map, in the game and on the math page (a math page still owed stays owed)
+  homeButton() {
+    const b = el('button', 'ibtn home', '🏠'); b.title = '回思维小画本'; b.setAttribute('aria-label', '回思维小画本');
+    b.onclick = () => { Snd.play('tap'); Voice.stop(); setTimeout(() => { location.href = '../'; }, 120); };
+    return b;
+  },
 
   // ---------- the level map ----------
   map() {
@@ -2665,9 +2683,7 @@ const UI = {
     const map = $('#map'); map.hidden = false; map.innerHTML = '';
     const d = Store.d;
     const top = el('div', 'top');
-    const home = el('button', 'ibtn', '🏠'); home.title = '回思维小画本';
-    home.onclick = () => { Snd.play('tap'); setTimeout(() => { location.href = '../'; }, 120); };
-    top.appendChild(home);
+    top.appendChild(this.homeButton());
     top.appendChild(el('h1', null, '动物消消乐'));
     const total = LEVELS.reduce((n, _, i) => n + (d.stars[i] || 0), 0);
     top.appendChild(el('div', 'pill', `⭐ ${total} / ${LEVELS.length * 3}`));
