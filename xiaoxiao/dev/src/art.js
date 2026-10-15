@@ -2,12 +2,13 @@
 // Everything that does not move is drawn once into a canvas the size it will appear on screen (re-made on resize).
 const Art = {
   img: null, dpr: 1, cell: 0, T: 0, tiles: [], white: [], cache: {},
+  // decli's animal heads, one sprite sheet (made by dev/heads.py; HEADS in heads.js gives each head's size)
   load() {
     return new Promise(res => {
       const im = new Image();
       im.onload = () => { this.img = im; res(); };
       im.onerror = () => res();
-      im.src = 'animals.png';
+      im.src = 'heads.webp';
     });
   },
   canvas(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, Math.ceil(w)); c.height = Math.max(1, Math.ceil(h)); return c; },
@@ -15,20 +16,24 @@ const Art = {
     ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
     ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
   },
-  // an animal head (k 0-5, 6 = penguin) into a square canvas of side s, the head circle 0.86 of a cell wide
-  head(k, s, cellPx) {
-    const c = this.canvas(s, s), x = c.getContext('2d');
-    if (!this.img) {   // the picture did not load: a coloured ball with the animal's colour
-      const col = k < 6 ? ANIMALS[k].fx : ['#3a5a66', '#1c3943', '#e6f5f9'];
-      x.fillStyle = col[0]; x.strokeStyle = col[1]; x.lineWidth = s * 0.05;
-      x.beginPath(); x.arc(s / 2, s / 2, cellPx * 0.4, 0, 7); x.fill(); x.stroke();
-      return c;
+  // FRIENDS[i]'s head drawn into x centred on (cx, cy), scaled so its longer side is fit pixels
+  friendTo(x, i, cx, cy, fit) {
+    const [w, h] = HEADS.size[i], C = HEADS.cell, f = fit / Math.max(w, h);
+    if (!this.img) {   // the picture did not load: a coloured ball
+      const b = ANIMALS.find(a => a.id === FRIENDS[i].id), col = b ? b.fx : ['#41618c', '#15243f'];
+      x.fillStyle = col[0]; x.strokeStyle = col[1]; x.lineWidth = fit * 0.05;
+      x.beginPath(); x.arc(cx, cy, fit * 0.42, 0, 7); x.fill(); x.stroke();
+      return;
     }
-    const f = 0.86 * cellPx / 213;
-    x.imageSmoothingQuality = 'high';
-    x.drawImage(this.img, k * 320, 0, 320, 320, s / 2 - 160 * f, s / 2 - 166 * f, 320 * f, 320 * f);
-    return c;
+    const sx = (i % HEADS.cols) * C + (C - w) / 2, sy = Math.floor(i / HEADS.cols) * C + (C - h) / 2;
+    x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high';
+    x.drawImage(this.img, sx, sy, w, h, cx - w * f / 2, cy - h * f / 2, w * f, h * f);
   },
+  friend(i, s, fit) { const c = this.canvas(s, s); this.friendTo(c.getContext('2d'), i, s / 2, s / 2, fit); return c; },
+  // the board's kinds (ANIMALS, then the penguin) as FRIENDS numbers
+  kindHead(k) { const id = k < ANIMALS.length ? ANIMALS[k].id : 'penguin'; return FRIENDS.findIndex(f => f.id === id); },
+  // an animal head (k 0-5, 6 = penguin) into a square canvas of side s, for a cell cellPx wide
+  head(k, s, cellPx) { return this.friend(this.kindHead(k), s, cellPx * 0.9); },
   setCell(cell, dpr) {
     if (cell === this.cell && dpr === this.dpr && this.tiles.length) return;
     this.cell = cell; this.dpr = dpr;

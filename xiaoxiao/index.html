@@ -58,6 +58,33 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 @keyframes bob{50%{transform:translateY(-6px)}}
 @keyframes hop{50%{transform:translateY(-12px) rotate(-4deg)}}
 
+#map .pill.book{cursor:pointer}
+#map .pill.book.new{animation:wig 1.1s ease-in-out infinite;box-shadow:0 4px 0 #d9c6ea,0 0 0 4px #ff4f6d}
+@keyframes wig{0%,60%,100%{transform:none}70%{transform:rotate(-6deg) scale(1.08)}80%{transform:rotate(6deg) scale(1.08)}90%{transform:rotate(-3deg)}}
+
+/* ---------- the blind box and the album (gift.js) ---------- */
+#gift{position:fixed;inset:0;z-index:31;touch-action:none}
+#gift canvas{position:absolute;left:0;top:0}
+#gift .keep{position:absolute;left:50%;bottom:max(34px,env(safe-area-inset-bottom));min-height:68px;font-size:30px;padding:0 40px;
+  transform:translate(-50%,60px);opacity:0;pointer-events:none;transition:transform .4s cubic-bezier(.2,1.6,.4,1),opacity .25s}
+#gift .keep.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+#album{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;gap:12px;
+  background:radial-gradient(circle at 85% 10%,rgba(255,255,255,.7) 0 70px,transparent 71px),linear-gradient(170deg,#fff4d6 0%,#ffe3f1 55%,#e3e9ff 100%);
+  padding:max(14px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))}
+#album .top{display:flex;align-items:center;gap:14px}
+#album h1{margin:0;font-size:34px;font-weight:900;letter-spacing:2px;color:#fff;-webkit-text-stroke:2px var(--ink);paint-order:stroke fill;text-shadow:0 4px 0 var(--ink);flex:1;text-align:center;white-space:nowrap}
+#album .pill{background:#fff;border-radius:999px;padding:8px 16px;font-size:22px;font-weight:800;box-shadow:0 4px 0 #d9c6ea}
+#album .agrid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(10,minmax(0,1fr));grid-template-rows:repeat(7,minmax(0,1fr));gap:8px}
+.aslot{position:relative;min-width:0;min-height:0;border-radius:18px;background:#fff;box-shadow:0 4px 0 #ecd3b0;display:flex;align-items:center;justify-content:center}
+.aslot.t1{background:radial-gradient(circle at 50% 45%,#fffdf0 0 35%,#ffe27a 100%);box-shadow:0 4px 0 #e0a800}
+.aslot.t2{background:conic-gradient(#ffc6dc,#ffe3a8,#fff6a8,#c8f5d2,#c4e9ff,#e0d0ff,#ffc6dc);box-shadow:0 4px 0 #a982ff}
+.aslot.no{background:#f3ebfb;box-shadow:0 4px 0 #ddd0ea}
+.aslot.no.t1{background:#fbf3d6;box-shadow:0 4px 0 #ecd9a0}
+.aslot.no.t2{background:conic-gradient(#f6e3ee,#f8efdc,#f7f4dc,#e3f4e7,#e2eff8,#ece4f8,#f6e3ee);box-shadow:0 4px 0 #d3c4ef}
+.aslot canvas{display:block;pointer-events:none}
+.aslot b{position:absolute;right:-5px;bottom:-5px;min-width:30px;height:26px;padding:0 6px;border-radius:999px;background:var(--violet2);color:#fff;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;border:3px solid #fff}
+.aslot .anew{position:absolute;left:-6px;top:-6px;background:#ff4f6d;color:#fff;font-size:13px;font-weight:900;font-style:normal;padding:2px 7px;border-radius:999px;border:2px solid #fff;animation:pulse .8s ease-in-out infinite}
+
 /* ---------- in-game HUD ---------- */
 #hud{position:fixed;z-index:5;display:flex;gap:12px;pointer-events:none}
 #hud > *{pointer-events:auto}
@@ -200,6 +227,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 <canvas id="cv"></canvas>
 <div id="hud" hidden></div>
 <div id="map" hidden></div>
+<div id="album" hidden></div>
 <canvas id="fx"></canvas>
 <div id="modal" class="modal" hidden></div>
 <div id="math" hidden></div>
@@ -262,6 +290,8 @@ const Store = {
       math: { max: 20, ops: 2, mode: 'mix', count: 20 },
       log: [],               // finished math pages: [time, count, right first time, seconds, settings label]
       seen: {},              // tips already shown
+      gifts: {},             // friends from the blind box (gift.js): id -> how many
+      giftFresh: [],         // new friends not yet seen in the album
       snd: true, voi: true, mus: true,
     };
   },
@@ -292,14 +322,14 @@ const Store = {
 // Specials: s 'h' clears its row, 'v' its column, 'b' bomb (diamond of radius 2), 'c' rainbow ball (no colour).
 
 const ANIMALS = [
-  { id: 'pig', name: '小猪', fx: ['#f7a8e6', '#d977c8', '#fff0fb'] },
-  { id: 'panda', name: '熊猫', fx: ['#ffffff', '#3a3a3a', '#d9d9d9'] },
-  { id: 'hippo', name: '河马', fx: ['#5b95e2', '#2f63b3', '#cfe2ff'] },
-  { id: 'giraffe', name: '长颈鹿', fx: ['#ffd23a', '#d9a300', '#fff4c2'] },
-  { id: 'parrot', name: '鹦鹉', fx: ['#ff5a2a', '#c22a08', '#ffd2c2'] },
-  { id: 'snake', name: '小青蛇', fx: ['#7ad94a', '#3d8f17', '#e0ffcc'] },
+  { id: 'pig', name: '小猪', fx: ['#ffa3c8', '#e2668f', '#ffe0ec'] },
+  { id: 'panda', name: '熊猫', fx: ['#ffffff', '#2f3040', '#e4e6ee'] },
+  { id: 'hippo', name: '河马', fx: ['#b48cff', '#7b52e0', '#e6dbff'] },
+  { id: 'giraffe', name: '长颈鹿', fx: ['#ffc83a', '#e08e10', '#fff0b8'] },
+  { id: 'parrot', name: '鹦鹉', fx: ['#ff4a3a', '#c8231a', '#ffc0b2'] },
+  { id: 'frog', name: '小青蛙', fx: ['#6fd65a', '#2f9e3a', '#d2f8b4'] },
 ];
-const PENGUIN = 6;   // its cell in animals.png
+const PENGUIN = 6;   // the kind after the six animals (its head is FRIENDS' penguin)
 
 const PTS = { piece: 20, blast: 30, make: { h: 100, v: 100, b: 150, c: 250 }, ice: 80, box: 60, bub: 50, home: 1000, bonus: 200 };
 
@@ -867,14 +897,14 @@ function excitement(phases) {
   const made = phases.reduce((n, ph) => n + (ph.makes ? ph.makes.filter(m => m.s === 'c').length * 2 + ph.makes.length : 0), 0);
   const x = Math.max(cascades - 1, 0) * 1.0 + cleared / 9 + acts * 0.6 + made * 0.5 + big * 1.5;
   let lvl = x >= 7 ? 5 : x >= 5.2 ? 4 : x >= 3.8 ? 3 : x >= 2.6 ? 2 : x >= 1.7 ? 1 : 0;
-  // making a special piece always gets a cheer: "Great!" for a striped one, "Excellent!" for a bomb, "Amazing!" for a rainbow ball
-  for (const ph of phases) for (const m of ph.makes || []) lvl = Math.max(lvl, m.s === 'c' ? 4 : m.s === 'b' ? 3 : 2);
+  // making a special piece always gets a cheer: "Great!" for a striped one, "Excellent!" for a bomb, "Unbelievable!" for a rainbow ball
+  for (const ph of phases) for (const m of ph.makes || []) lvl = Math.max(lvl, m.s === 'c' ? 5 : m.s === 'b' ? 3 : 2);
   return lvl;
 }
 
 // 动物消消乐 · the levels. Add a level by adding an entry; the map, the voice lines and the simulator pick it up.
 //
-//   colors   which animals take part (0 小猪 1 熊猫 2 河马 3 长颈鹿 4 鹦鹉 5 小青蛇); six kinds is much harder than five
+//   colors   which animals take part (0 小猪 1 熊猫 2 河马 3 长颈鹿 4 鹦鹉 5 小青蛙); six kinds is much harder than five
 //   layout   one string per row: . cell  _ no cell  i/I ice 1/2 layers  b/B gift box 1/2 layers  o bubble
 //            q bubble on ice  g penguin  k penguin on ice
 //   goals    c: collect n of one animal; ice / box / bub: clear all of them; pg: bring the penguins out at the bottom
@@ -1032,6 +1062,25 @@ function goalSay(g, lv) {
   if (g.t === 'pg') return `把${lv.penguins.total}只小企鹅送回家`;
   return '';
 }
+// Every animal in decli's pictures (heads.webp, cut by dev/heads.py), in their order. The six on the board and the penguin
+// (tier -1) are in the album from the start; the others come out of the blind box after a win (gift.js):
+// tier 0 普通, 1 稀有, 2 隐藏款.
+const FRIENDS = [
+  ['panda', '熊猫', -1], ['fox', '小狐狸', 0], ['tiger', '小老虎', 1], ['lion', '小狮子', 1], ['bear', '小棕熊', 0],
+  ['polar', '北极熊', 0], ['koala', '考拉', 1], ['bunny', '小兔子', 0], ['corgi', '柯基', 0], ['cat', '小蓝猫', 0],
+  ['frog', '小青蛙', -1], ['owl', '猫头鹰', 0], ['chick', '小黄鸡', 0], ['penguin', '小企鹅', -1], ['duck', '小白鸭', 0],
+  ['flamingo', '火烈鸟', 1], ['peacock', '孔雀', 1], ['parrot', '鹦鹉', -1], ['budgie', '虎皮鹦鹉', 0], ['pigeon', '小鸽子', 0],
+  ['pig', '小猪', -1], ['sheep', '小绵羊', 0], ['cow', '小奶牛', 0], ['horse', '小马', 0], ['deer', '小鹿', 0],
+  ['giraffe', '长颈鹿', -1], ['hippo', '河马', -1], ['elephant', '小象', 1], ['rhino', '犀牛', 0], ['croc', '鳄鱼', 0],
+  ['squirrel', '松鼠', 0], ['hamster', '仓鼠', 0], ['hedgehog', '刺猬', 0], ['raccoon', '浣熊', 0], ['skunk', '臭鼬', 0],
+  ['redpanda', '小熊猫', 1], ['sloth', '树懒', 1], ['fennec', '耳廓狐', 0], ['monkey', '小猴子', 0], ['capybara', '水豚', 0],
+  ['turtle', '小海龟', 0], ['seal', '海豹', 0], ['dolphin', '海豚', 1], ['shark', '小鲨鱼', 1], ['clownfish', '小丑鱼', 0],
+  ['octopus', '章鱼', 0], ['ladybug', '瓢虫', 0], ['bee', '小蜜蜂', 0], ['dragon', '小龙', 2], ['unicorn', '独角兽', 2],
+  ['dog', '小狗', 0], ['dalmatian', '斑点狗', 0], ['siamese', '暹罗猫', 0], ['axolotl', '六角恐龙', 1], ['bat', '小蝙蝠', 0],
+  ['alpaca', '羊驼', 1], ['bison', '野牛', 0], ['zebra', '斑马', 1], ['donkey', '小毛驴', 0], ['kangaroo', '袋鼠', 0],
+  ['rooster', '大公鸡', 0], ['goose', '大白鹅', 0], ['duckling', '小黄鸭', 0], ['cardinal', '小红鸟', 0], ['chameleon', '变色龙', 1],
+  ['puffer', '河豚', 0], ['orca', '虎鲸', 1], ['whale', '小蓝鲸', 0], ['otter', '水獭', 0], ['arcticfox', '北极狐', 0],
+].map(([id, name, tier], i) => ({ i, id, name, tier }));
 const L = {
   welcome: '欢迎来到动物消消乐！点一个关卡开始吧。',
   pick: '选一关吧！',
@@ -1083,15 +1132,43 @@ const L = {
     doneExtra: '做完啦！多给你5步！',
   },
   parent: '这里是给爸爸妈妈的设置哦。',
+  gift: {
+    drop: '过关礼物！是一个神秘盲盒，点它三下，打开看看！',
+    rare: '稀有款！运气真好！',
+    hidden: '天哪！是隐藏款！超级超级难得！',
+    got: FRIENDS.map(f => `哇！是${f.name}！`),
+    again: '又抽到它啦！',
+    full: '所有的动物小伙伴都集齐啦！你是收集大王！',
+    album: '这是你的动物收集册。每过一关就能拆一个盲盒，把小伙伴都集齐吧！',
+    names: FRIENDS.map(f => f.name),
+    locked: '还没抽到它呢，过关拆盲盒就有机会哦！',
+  },
 };
-// English cheers, said by a lively child voice (role p in the voice bank)
-const CHEER = ['', 'Good!', 'Great!', 'Excellent!', 'Amazing!', 'Unbelievable!'];
-const BONUS = 'Bonus time!';
+// English cheers for each step of excitement (excitement() in board.js): decli's own recordings in sound/, not the
+// voice bank. Level 0 says nothing.
+const CHEER = ['', 'Great!', 'Great!', 'Excellent!', 'Excellent!', 'Unbelievable!'];
+const CHEER_CLIP = { 'Great!': 'great', 'Excellent!': 'excellent', 'Unbelievable!': 'unbelievable' };
+const BONUS = 'Bonus time!';   // shown over the board when the moves left turn into stripes; there is no recording of it
 
-// 动物消消乐 · sound effects and the background tune, all made on the spot with Web Audio (no sound files).
-// Notes come from C major pentatonic so a long cascade of pops still sounds like a melody going up.
+// 动物消消乐 · sound effects, made on the spot with Web Audio, and the recorded sounds in sound/ (decli's background
+// music and English cheers). Notes come from C major pentatonic so a long cascade of pops still sounds like a melody going up.
 const Snd = {
   ctx: null, on: true, music: true, master: null, sfx: null, bus: null, mus: null, noiseBuf: null, ducked: false,
+  raw: {}, bufs: {},
+  // fetch the recorded sounds; they are decoded once sound is allowed (the first touch)
+  load(names) {
+    if (!window.fetch || location.protocol === 'file:') return;
+    names.forEach(n => fetch(`sound/${n}.mp3`).then(r => (r.ok ? r.arrayBuffer() : Promise.reject(r.status)))
+      .then(ab => { this.raw[n] = ab; this.decode(n); }).catch(() => { }));
+  },
+  decode(n) {
+    const ab = this.raw[n];
+    if (!this.ctx || !ab) return;
+    delete this.raw[n];
+    new Promise((res, rej) => { const q = this.ctx.decodeAudioData(ab, res, rej); if (q && q.catch) q.catch(rej); })
+      .then(b => { this.bufs[n] = b; Music.sync(); }).catch(() => { });
+  },
+  clip(n) { return this.bufs[n] || null; },
   init() {
     if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; }
     const AC = window.AudioContext || window.webkitAudioContext;
@@ -1112,10 +1189,11 @@ const Snd = {
     for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
     this.noiseBuf = nb;
     if (c.state === 'suspended') c.resume();
+    Object.keys(this.raw).forEach(n => this.decode(n));
   },
   setOn(v) { this.on = v; if (this.sfx) this.sfx.gain.value = v ? 0.8 : 0; },
   duck(v) { this.ducked = v; if (this.mus) this.mus.gain.setTargetAtTime(this.musicLevel(), this.ctx.currentTime, 0.15); },
-  musicLevel() { return this.music && Music.playing ? (this.ducked ? 0.05 : 0.14) : 0; },
+  musicLevel() { return this.music && Music.playing ? (this.ducked ? 0.36 : 0.6) : 0; },
 
   tone(f, dur, o = {}) {
     if (!this.ctx || !this.on) return;
@@ -1195,65 +1273,70 @@ const Snd = {
       case 'right': this.tone(this.pent(7), 0.15, { type: 'triangle', vol: 0.18 }); this.tone(this.pent(9), 0.3, { type: 'triangle', vol: 0.18, at: 0.1, verb: true }); break;
       case 'wrong': this.tone(220, 0.25, { type: 'triangle', vol: 0.15, to: 190 }); break;
       case 'key': this.tone(700 + k * 30, 0.05, { type: 'sine', vol: 0.1 }); break;
+      // the blind box (gift.js): landing, each tap (k = 1-3, higher each time), bursting open, and a rare friend
+      case 'gland': this.tone(150, 0.3, { type: 'sine', to: 70, vol: 0.35 }); this.noise(0.14, { f: 320, q: 1, vol: 0.22 }); this.tone(this.pent(4), 0.25, { type: 'triangle', vol: 0.1, at: 0.06, verb: true }); break;
+      case 'gtap':
+        this.noise(0.12, { f: 1600 + k * 500, q: 1.2, vol: 0.22 }); this.tone(220 + k * 40, 0.1, { type: 'triangle', to: 140, vol: 0.18 });
+        this.tone(this.pent(5 + k * 2), 0.22, { type: 'triangle', vol: 0.16, at: 0.04, verb: true }); this.tone(this.pent(8 + k * 2), 0.25, { type: 'sine', vol: 0.08, at: 0.08, verb: true }); break;
+      case 'gopen':
+        this.noise(0.4, { f: 700, fto: 7000, q: 0.7, vol: 0.3 }); this.tone(110, 0.35, { type: 'sine', to: 55, vol: 0.3 });
+        [0, 2, 4, 5, 7, 9, 10, 12].forEach((n, i) => this.tone(this.pent(5 + n), 0.45, { type: 'triangle', vol: 0.13, at: 0.08 + i * 0.05, verb: true }));
+        this.tone(this.pent(17), 1.3, { type: 'sine', vol: 0.06, at: 0.5, verb: true }); break;
+      case 'grare': [0, 2, 4, 5, 7, 9].forEach((n, i) => this.tone(this.pent(12 + n), 0.9, { type: 'sine', vol: 0.06, at: 0.55 + i * 0.07, verb: true })); break;
       case 'sparkle': for (let i = 0; i < 5; i++) this.tone(this.pent(10 + Math.floor(Math.random() * 6)), 0.15, { type: 'sine', vol: 0.05, at: i * 0.04, verb: true }); break;
     }
   },
 };
 
-// A cheerful little loop: four chords, a walking bass, a marimba melody that changes every bar but repeats every
-// eight bars so it is catchy rather than random.
+// The background music: decli's two cheerful tunes, sound/bg1.mp3 and sound/bg2.mp3, one after the other. decli: it
+// keeps playing all through the game (map, levels, cards, the blind box) and stops only for the pause card and the
+// math page; the narrator turns it down a little while speaking. Each tune crossfades into the next, so there is no
+// gap or click at the seam, and starting it while it plays changes nothing.
 const Music = {
-  playing: false, timer: 0, step: 0, next: 0,
+  want: false, order: ['bg1', 'bg2'], cur: null, timer: 0, X: 0.8,
+  get playing() { return this.want; },
   start() {
-    if (!Snd.ctx || this.playing) return;
-    this.playing = true; this.step = 0; this.next = Snd.ctx.currentTime + 0.1;
-    Snd.mus.gain.setTargetAtTime(Snd.musicLevel(), Snd.ctx.currentTime, 0.3);
-    const tick = () => { if (!this.playing) return; this.schedule(); this.timer = setTimeout(tick, 60); };
-    tick();
+    this.want = true;
+    this.sync();
+    if (Snd.mus) Snd.mus.gain.setTargetAtTime(Snd.musicLevel(), Snd.ctx.currentTime, 0.3);
   },
-  stop() { this.playing = false; clearTimeout(this.timer); if (Snd.mus) Snd.mus.gain.setTargetAtTime(0, Snd.ctx.currentTime, 0.2); },
+  stop() {
+    this.want = false; clearTimeout(this.timer);
+    const o = this.cur; this.cur = null;
+    if (!o || !Snd.ctx) return;
+    const now = Snd.ctx.currentTime;
+    o.g.gain.cancelScheduledValues(now); o.g.gain.setValueAtTime(Math.max(0.0001, o.g.gain.value), now); o.g.gain.linearRampToValueAtTime(0.0001, now + 0.5);
+    try { o.src.stop(now + 0.55); } catch (_) { }
+  },
   refresh() { if (Snd.mus) Snd.mus.gain.setTargetAtTime(Snd.musicLevel(), Snd.ctx.currentTime, 0.2); },
-  // C G Am F, sixteenth steps at 112 bpm
-  CH: [[0, 4, 7], [7, 11, 14], [9, 12, 16], [5, 9, 12]],
-  MEL: [[0, 2, 4, -1, 4, -1, 2, 4], [7, -1, 4, 2, 4, -1, -1, -1], [9, -1, 7, 4, 2, -1, 4, -1], [5, 4, 2, -1, 0, -1, -1, -1],
-    [4, 4, 7, -1, 9, 7, 4, -1], [7, 9, 11, -1, 7, -1, -1, -1], [9, 7, 9, 12, 11, -1, 9, -1], [7, -1, 5, 4, 2, -1, 0, -1]],
-  schedule() {
-    const c = Snd.ctx, sp = 60 / 112 / 4;
-    while (this.next < c.currentTime + 0.25) {
-      const s = this.step, bar = Math.floor(s / 16) % 8, inBar = s % 16, ch = this.CH[bar % 4];
-      const t = this.next - c.currentTime;
-      const note = (semi, oct) => 261.63 * Math.pow(2, semi / 12 + oct);
-      if (inBar % 4 === 0) this.voice(note(ch[0], -1), 0.3, 'sine', 0.22, t);                         // bass
-      if (inBar % 4 === 2) this.voice(note(ch[(inBar / 2) % 3], -1) * 2, 0.15, 'triangle', 0.05, t);  // offbeat chord tone
-      if (inBar % 2 === 0) { const m = this.MEL[bar][inBar / 2]; if (m >= 0) this.voice(note(m, 0), 0.28, 'triangle', 0.09, t, true); }
-      if (inBar % 8 === 4) this.hat(t);
-      this.step++; this.next += sp;
-    }
+  // start the first tune that has been decoded, if none is playing yet (called again when a tune finishes decoding)
+  sync() {
+    const c = Snd.ctx, name = this.order.find(n => Snd.clip(n));
+    if (!c || !this.want || this.cur || !name) return;
+    this.loop(name, c.currentTime + 0.05, 0.6);
   },
-  voice(f, dur, type, vol, at, bell) {
-    const c = Snd.ctx, t = c.currentTime + at, o = c.createOscillator(), g = c.createGain();
-    o.type = type; o.frequency.value = f;
-    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    o.connect(g); g.connect(Snd.mus);
-    if (bell) { const o2 = c.createOscillator(), g2 = c.createGain(); o2.frequency.value = f * 4; g2.gain.setValueAtTime(vol * 0.25, t); g2.gain.exponentialRampToValueAtTime(0.0001, t + 0.08); o2.connect(g2); g2.connect(Snd.mus); o2.start(t); o2.stop(t + 0.1); }
-    o.start(t); o.stop(t + dur + 0.02);
-  },
-  hat(at) {
-    const c = Snd.ctx, t = c.currentTime + at, s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
-    s.buffer = Snd.noiseBuf; f.type = 'highpass'; f.frequency.value = 7000;
-    g.gain.setValueAtTime(0.04, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
-    s.connect(f); f.connect(g); g.connect(Snd.mus); s.start(t, Math.random() * 0.5); s.stop(t + 0.06);
+  loop(name, at, fadeIn) {
+    const c = Snd.ctx, X = this.X, buf = Snd.clip(name), src = c.createBufferSource(), g = c.createGain(), end = at + buf.duration;
+    src.buffer = buf; src.connect(g); g.connect(Snd.mus);
+    g.gain.setValueAtTime(0.0001, at); g.gain.linearRampToValueAtTime(1, at + fadeIn);
+    g.gain.setValueAtTime(1, end - X); g.gain.linearRampToValueAtTime(0.0001, end);
+    src.start(at); src.stop(end + 0.05);
+    const me = this.cur = { name, src, g };
+    clearTimeout(this.timer);
+    // the other tune next (the same one again if the other has not loaded)
+    const other = this.order[(this.order.indexOf(name) + 1) % this.order.length];
+    this.timer = setTimeout(() => { if (this.cur === me) this.loop(Snd.clip(other) ? other : name, Math.max(c.currentTime + 0.05, end - X), X); }, Math.max(0, (end - X - c.currentTime - 0.5) * 1000));
   },
 };
 
-// 动物消消乐 · the voices. Every line is pre-recorded (voice.bin|json next to the page, made with edge-tts by
-// ../../dev/voice/build.py xiaoxiao): Chinese by 晓晓 like the rest of 思维小画本, the English cheers by Ana, a child voice.
-// A line missing from the bank, or a bank that did not load, falls back to the device's own speech.
-const SS = 'speechSynthesis' in window ? window.speechSynthesis : null;
+// 动物消消乐 · the voices. Every Chinese line is pre-recorded (voice.bin|json next to the page, made with edge-tts by
+// ../../dev/voice/build.py xiaoxiao) by 晓晓 like the rest of 思维小画本; the English cheers are decli's recordings in
+// sound/. The device's own speech is never used (decli: it sounds stiff): a line missing from the bank stays silent,
+// and ?debug lists it in the console so it can be added to lines.js and recorded.
 const Voice = { on: true, last: '', busy: false };
 (() => {
   let bank = null, state = 'idle', loadP = null, clip = null, gen = 0;
-  const bufs = new Map();
+  const bufs = new Map(), debug = /[?&]debug\b/.test(location.search);
   const fnv = s => { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); } return (h >>> 0).toString(36); };
   Voice.load = function () {
     if (state !== 'idle') return loadP;
@@ -1264,7 +1347,11 @@ const Voice = { on: true, last: '', busy: false };
       .catch(() => { state = 'failed'; });
     return loadP;
   };
-  const entry = (role, t) => bank && bank.map[fnv(role + '|' + t)];
+  const entry = (role, t) => {
+    const e = bank && bank.map[fnv(role + '|' + t)];
+    if (!e && bank && debug) console.warn('voice: not recorded: ' + role + '|' + t);
+    return e;
+  };
   const decode = e => {
     const got = bufs.get(e[0]);
     if (got) return Promise.resolve(got);
@@ -1274,7 +1361,7 @@ const Voice = { on: true, last: '', busy: false };
   };
   function stopClip() { const c = clip; clip = null; if (c) { try { c.onended = null; c.stop(); } catch (_) { } } }
   function done(g, onend) { if (g !== gen) return; Voice.busy = false; Snd.duck(false); if (onend) onend(); }
-  Voice.stop = function () { gen++; stopClip(); if (SS) try { SS.cancel(); } catch (_) { } Voice.busy = false; Snd.duck(false); };
+  Voice.stop = function () { gen++; stopClip(); Voice.busy = false; Snd.duck(false); };
 
   // say a Chinese line; the newest line wins. o.onend runs when it has been said (or skipped).
   Voice.say = function (t, o = {}) {
@@ -1285,77 +1372,49 @@ const Voice = { on: true, last: '', busy: false };
     const go = () => {
       if (g !== gen) return;
       const e = entry('n', t);
-      if (e && Snd.ctx) play(e, g, o, false); else sysSay(t, 'zh-CN', g, o);
+      if (e && Snd.ctx) play(e, g, o); else setTimeout(() => done(g, o.onend), 300);
     };
     if (state === 'loading') { let went = false; const once = () => { if (!went) { went = true; go(); } }; loadP.then(once); setTimeout(once, 2500); }
     else go();
   };
-  // an English cheer: does not interrupt the narrator's bookkeeping, plays over the music with a bit of room
+  // an English cheer (decli's recording): does not interrupt the narrator, plays over the music with a bit of room
   Voice.cheer = function (word) {
-    if (!Voice.on || !word) return;
-    const e = entry('p', word);
-    if (e && Snd.ctx) {
-      decode(e).then(buf => {
-        const c = Snd.ctx, src = c.createBufferSource(), gn = c.createGain();
-        src.buffer = buf; src.playbackRate.value = 1.04; gn.gain.value = 1.15;
-        src.connect(gn); gn.connect(Snd.voice); gn.connect(Snd.verb);
-        src.start();
-      }).catch(() => { });
-    } else if (SS) {
-      try { const u = new SpeechSynthesisUtterance(word); u.lang = 'en-US'; u.rate = 1; u.pitch = 1.4; SS.speak(u); } catch (_) { }
-    }
+    const buf = Voice.on && word && Snd.ctx && Snd.clip(CHEER_CLIP[word]);
+    if (!buf) return;
+    const c = Snd.ctx, src = c.createBufferSource(), gn = c.createGain();
+    src.buffer = buf; gn.gain.value = 1.1;
+    src.connect(gn); gn.connect(Snd.voice); gn.connect(Snd.verb);
+    src.start();
   };
   Voice.repeat = () => Voice.say(Voice.last);
 
   function play(e, g, o) {
     decode(e).then(buf => {
       if (g !== gen) return;
-      stopClip(); if (SS) try { SS.cancel(); } catch (_) { }
+      stopClip();
       const c = Snd.ctx, src = c.createBufferSource(), gn = c.createGain();
       gn.gain.value = 1.05; src.buffer = buf; src.connect(gn); gn.connect(Snd.voice);
       src.onended = () => { if (clip !== src) return; clip = null; done(g, o.onend); };
       clip = src; src.start(); Voice.busy = true; Snd.duck(true);
-    }).catch(() => sysSay(Voice.last, 'zh-CN', g, o));
+    }).catch(() => done(g, o.onend));
   }
-  let sysVoice = null;
-  function pickVoice() {
-    if (sysVoice || !SS) return sysVoice;
-    const vs = (SS.getVoices() || []).filter(v => /^(zh|cmn)/i.test(v.lang || ''));
-    const score = v => { const n = (v.name || '').toLowerCase(); let s = 0; if (/xiaoxiao|ting-?ting|mei-?jia|yu-?shu|google/.test(n)) s += 6; if (/zh[-_]?cn/i.test(v.lang)) s += 3; if (v.localService) s += 1; return s; };
-    vs.sort((a, b) => score(b) - score(a));
-    return (sysVoice = vs[0] || null);
-  }
-  function sysSay(t, lang, g, o) {
-    if (!SS) { setTimeout(() => done(g, o.onend), 600); return; }
-    stopClip();
-    try {
-      SS.cancel();
-      const u = new SpeechSynthesisUtterance(t);
-      u.lang = lang; u.rate = 0.95; u.pitch = 1.1;
-      const v = pickVoice(); if (v) u.voice = v;
-      let fin = false; const end = () => { if (fin) return; fin = true; done(g, o.onend); };
-      u.onend = end; u.onerror = end;
-      setTimeout(end, 1200 + t.length * 330);
-      Voice.busy = true; Snd.duck(true);
-      SS.speak(u);
-    } catch (_) { done(g, o.onend); }
-  }
-  Voice.unlock = function () {
-    if (!SS || Voice._unlocked) return; Voice._unlocked = true;
-    try { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; SS.speak(u); } catch (_) { }
-  };
 })();
+
+// 动物消消乐 · made by dev/heads.py: the sprite sheet heads.webp, and each head's width and height in it (its cell is
+// 216 px square, the head in the middle), in the order of FRIENDS (lines.js).
+const HEADS = { cell: 216, cols: 10, size: [[164,141],[162,143],[160,141],[173,178],[161,140],[160,138],[208,136],[137,184],[148,154],[153,144],[158,131],[162,138],[149,142],[154,141],[142,142],[168,149],[129,164],[154,153],[148,148],[131,144],[166,136],[188,143],[195,151],[157,161],[173,172],[157,163],[163,140],[208,136],[146,144],[155,129],[152,160],[161,137],[177,143],[171,137],[150,140],[164,139],[158,142],[188,147],[187,134],[146,138],[175,129],[150,133],[162,151],[174,148],[182,140],[162,146],[157,147],[184,153],[187,142],[147,152],[139,115],[149,110],[122,125],[150,106],[133,116],[116,133],[136,124],[113,129],[110,137],[116,133],[127,139],[112,124],[124,133],[123,134],[135,134],[143,125],[138,136],[142,132],[135,117],[134,125]] };
 
 // 动物消消乐 · drawing the pieces, the cell layers (ice, gift boxes, bubbles) and the little sprites the effects use.
 // Everything that does not move is drawn once into a canvas the size it will appear on screen (re-made on resize).
 const Art = {
   img: null, dpr: 1, cell: 0, T: 0, tiles: [], white: [], cache: {},
+  // decli's animal heads, one sprite sheet (made by dev/heads.py; HEADS in heads.js gives each head's size)
   load() {
     return new Promise(res => {
       const im = new Image();
       im.onload = () => { this.img = im; res(); };
       im.onerror = () => res();
-      im.src = 'animals.png';
+      im.src = 'heads.webp';
     });
   },
   canvas(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, Math.ceil(w)); c.height = Math.max(1, Math.ceil(h)); return c; },
@@ -1363,20 +1422,24 @@ const Art = {
     ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
     ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
   },
-  // an animal head (k 0-5, 6 = penguin) into a square canvas of side s, the head circle 0.86 of a cell wide
-  head(k, s, cellPx) {
-    const c = this.canvas(s, s), x = c.getContext('2d');
-    if (!this.img) {   // the picture did not load: a coloured ball with the animal's colour
-      const col = k < 6 ? ANIMALS[k].fx : ['#3a5a66', '#1c3943', '#e6f5f9'];
-      x.fillStyle = col[0]; x.strokeStyle = col[1]; x.lineWidth = s * 0.05;
-      x.beginPath(); x.arc(s / 2, s / 2, cellPx * 0.4, 0, 7); x.fill(); x.stroke();
-      return c;
+  // FRIENDS[i]'s head drawn into x centred on (cx, cy), scaled so its longer side is fit pixels
+  friendTo(x, i, cx, cy, fit) {
+    const [w, h] = HEADS.size[i], C = HEADS.cell, f = fit / Math.max(w, h);
+    if (!this.img) {   // the picture did not load: a coloured ball
+      const b = ANIMALS.find(a => a.id === FRIENDS[i].id), col = b ? b.fx : ['#41618c', '#15243f'];
+      x.fillStyle = col[0]; x.strokeStyle = col[1]; x.lineWidth = fit * 0.05;
+      x.beginPath(); x.arc(cx, cy, fit * 0.42, 0, 7); x.fill(); x.stroke();
+      return;
     }
-    const f = 0.86 * cellPx / 213;
-    x.imageSmoothingQuality = 'high';
-    x.drawImage(this.img, k * 320, 0, 320, 320, s / 2 - 160 * f, s / 2 - 166 * f, 320 * f, 320 * f);
-    return c;
+    const sx = (i % HEADS.cols) * C + (C - w) / 2, sy = Math.floor(i / HEADS.cols) * C + (C - h) / 2;
+    x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high';
+    x.drawImage(this.img, sx, sy, w, h, cx - w * f / 2, cy - h * f / 2, w * f, h * f);
   },
+  friend(i, s, fit) { const c = this.canvas(s, s); this.friendTo(c.getContext('2d'), i, s / 2, s / 2, fit); return c; },
+  // the board's kinds (ANIMALS, then the penguin) as FRIENDS numbers
+  kindHead(k) { const id = k < ANIMALS.length ? ANIMALS[k].id : 'penguin'; return FRIENDS.findIndex(f => f.id === id); },
+  // an animal head (k 0-5, 6 = penguin) into a square canvas of side s, for a cell cellPx wide
+  head(k, s, cellPx) { return this.friend(this.kindHead(k), s, cellPx * 0.9); },
   setCell(cell, dpr) {
     if (cell === this.cell && dpr === this.dpr && this.tiles.length) return;
     this.cell = cell; this.dpr = dpr;
@@ -1824,7 +1887,7 @@ const MathGate = {
       $('#fx').style.zIndex = 46;   // sparkles and confetti over the page
       const t0 = Date.now();
       let cur = 0, first = 0, finished = false;
-      Music.stop();
+      Music.stop();   // quiet for the sums (decli); the game starts it again
       const sheet = el('div', 'sheet'), head = el('div', 'head');
       const home = UI.homeButton(); home.style.width = home.style.height = '46px'; home.style.fontSize = '22px';
       head.appendChild(home);
@@ -1967,6 +2030,358 @@ const MathGate = {
   },
 };
 
+// 动物消消乐 · the blind box after each win (decli asked for a gift to open after a level): a box drops in, she taps it
+// three times, and an animal friend from decli's picture pops out. More stars give a finer box and better odds of a
+// rare friend; a friend she does not have yet always comes before one she has. The album (🎁 on the map) shows every
+// friend, the missing ones as shadows to guess. Everything here is pictures and the narrator's voice: she can't read.
+const Gift = {
+  // chance of 稀有 and 隐藏款 for a box won with 1, 2 or 3 stars
+  ODDS: [[0.12, 0], [0.12, 0], [0.25, 0.04], [0.4, 0.1]],
+  // the box by stars: light, base, dark, ribbon, ribbon shade
+  LOOK: [null, ['#ffd3e8', '#ff8fc4', '#d9478d', '#fff3a6', '#e0a800'], ['#e6dbff', '#a982ff', '#6a3fd6', '#ffd0e6', '#e05a9a'],
+    ['#fff3bf', '#ffcf3a', '#d98e00', '#ff6b8a', '#c42c55']],
+  on: false,
+
+  owned(i) { return FRIENDS[i].tier < 0 || (Store.d.gifts[FRIENDS[i].id] || 0) > 0; },
+  count() { return FRIENDS.filter(f => this.owned(f.i)).length; },
+  roll(stars) {
+    const [pr, ph] = this.ODDS[stars] || this.ODDS[1], r = Math.random();
+    const tier = r < ph ? 2 : r < ph + pr ? 1 : 0;
+    const of = t => FRIENDS.filter(f => f.tier === t), fresh = l => l.filter(f => !this.owned(f.i));
+    let pool = fresh(of(tier));
+    // that tier is complete: most of the time a missing ordinary or rare friend comes instead (never a free 隐藏款)
+    if (!pool.length && Math.random() < 0.7) pool = fresh([...of(0), ...of(1)]);
+    if (!pool.length) pool = of(tier);
+    return pick(pool);
+  },
+
+  // ---------- opening a box: resolves when she has taken the friend ----------
+  open(stars) {
+    return new Promise(resolve => {
+      const d = Store.d, f = this.roll(stars), fresh = !this.owned(f.i);
+      d.gifts[f.id] = (d.gifts[f.id] || 0) + 1;
+      if (fresh) d.giftFresh = [...(d.giftFresh || []), f.id];
+      d.seen.boxes = (d.seen.boxes || 0) + 1;
+      Store.save();   // saved before the box opens, so leaving half-way neither loses it nor rolls again
+      const s = this.s = {
+        f, fresh, n: d.gifts[f.id], look: this.LOOK[clamp(stars, 1, 3)], all: fresh && this.count() === FRIENDS.length,
+        phase: 'drop', t: 0, taps: 0, tapT: 9e9, idleT: 0, openT: 0, popT: 9e9, leaveT: 0, rot: 0, sparkT: 0, said: false, token: {},
+        resolve,
+      };
+      const ov = this.ov = el('div'); ov.id = 'gift';
+      this.cv = el('canvas'); ov.appendChild(this.cv);
+      const keep = this.keep = UI.button('收下 👍', 'green keep', () => this.leave());
+      ov.appendChild(keep);
+      ov.addEventListener('pointerdown', e => { if (e.target !== keep) this.tap(e.clientX, e.clientY); });
+      document.body.appendChild(ov);
+      Fx.hush();
+      this.on = true; this.prize = null; this.W = 0;
+      let last = performance.now();
+      const step = now => {
+        if (!this.on) return;
+        const dt = Math.min(50, now - last); last = now;
+        this.update(dt); this.draw();
+        requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  },
+  geo() {
+    const W = innerWidth, H = innerHeight, S = Math.min(W * 0.3, H * 0.4);
+    return { W, H, S, bx: W / 2, by: H * 0.8 - S * 0.36, px: W / 2, py: H * 0.43, P: Math.min(H * 0.46, W * 0.36) };
+  },
+  tap(x, y) {
+    const s = this.s, g = this.geo();
+    Snd.init();
+    if (s.phase === 'show') {   // tap the friend to hear its name again
+      if (Math.hypot(x - g.px, y - g.py) < g.P * 0.6) { s.popT = 0; Snd.play('select'); Voice.say(L.gift.got[s.f.i]); }
+      return;
+    }
+    if (s.phase !== 'idle') return;
+    s.taps++; s.tapT = 0; s.idleT = 0;
+    Snd.play('gtap', s.taps);
+    Fx.burst(g.bx, g.by - g.S * 0.2, [s.look[1], s.look[3]], 8 + s.taps * 4, 0.8 + s.taps * 0.3, g.S * 0.4);
+    Fx.sparkles(g.bx, g.by - g.S * 0.4, 6 + s.taps * 3, g.S * 0.5, '#fff6b0');
+    if (s.taps >= 3) this.burst();
+  },
+  burst() {
+    const s = this.s, g = this.geo(), f = s.f;
+    s.phase = 'open'; s.openT = 0;
+    Voice.stop();
+    Snd.play('gopen'); if (f.tier > 0) Snd.play('grare');
+    Fx.flash(0.75, '#fff');
+    Fx.confetti(f.tier > 0 ? 140 : 90);
+    Fx.burst(g.bx, g.by - g.S * 0.4, ['#ffd23a', '#ffffff'], 30, 2.2, g.S * 0.5);
+    // what the narrator says: the kind of friend, its name, and whether it is a new one
+    const lines = [f.tier === 2 ? L.gift.hidden : f.tier === 1 ? L.gift.rare : null, L.gift.got[f.i], s.fresh ? null : L.gift.again, s.all ? L.gift.full : null].filter(Boolean);
+    const tok = s.token;
+    const next = () => { const t = lines.shift(); if (t && this.on && this.s.token === tok) Voice.say(t, { onend: () => setTimeout(next, 150) }); };
+    setTimeout(next, 650);
+  },
+  leave() {
+    const s = this.s;
+    if (s.phase !== 'show') return;
+    s.phase = 'leave'; s.leaveT = 0; s.token = {};
+    this.keep.classList.remove('on');
+    Snd.play('home');
+  },
+  close() {
+    this.on = false; this.ov.remove(); this.ov = null;
+    this.s.resolve();
+  },
+
+  update(dt) {
+    const s = this.s, g = this.geo();
+    s.t += dt; s.tapT += dt; s.popT += dt; s.rot += dt * (s.phase === 'show' || s.phase === 'open' ? 0.00025 : 0.00012);
+    if (s.phase === 'drop' && s.t > 650) {
+      s.phase = 'idle'; s.tapT = 0;
+      Snd.play('gland');
+      Fx.sparkles(g.bx, g.by + g.S * 0.3, 10, g.S * 0.6, '#ffffff');
+      if (Store.d.seen.boxes <= 3) Voice.say(L.gift.drop);
+    }
+    if (s.phase === 'idle') s.idleT += dt;
+    if (s.phase === 'open') { s.openT += dt; if (s.openT > 1000) { s.phase = 'show'; s.showT = 0; } }
+    if (s.phase === 'show') {
+      s.showT += dt;
+      if (s.showT > 700 && !this.keep.classList.contains('on')) this.keep.classList.add('on');
+      if (s.f.tier > 0 && (s.sparkT -= dt) < 0) { s.sparkT = 140; Fx.sparkles(g.px + rnd(-1, 1) * g.P * 0.55, g.py + rnd(-1, 1) * g.P * 0.5, 2, 10, s.f.tier === 2 ? pick(['#ff9fca', '#9fe3ff', '#fff3a6', '#c6a6ff']) : '#ffe680'); }
+    }
+    if (s.phase === 'leave') { s.leaveT += dt; if (s.leaveT > 480) this.close(); }
+  },
+
+  // ---------- drawing ----------
+  draw() {
+    const s = this.s, g = this.geo(), dpr = Math.min(devicePixelRatio || 1, 2), cv = this.cv;
+    if (g.W !== this.W || g.H !== this.H) {
+      this.W = g.W; this.H = g.H; cv.width = Math.round(g.W * dpr); cv.height = Math.round(g.H * dpr);
+      cv.style.width = g.W + 'px'; cv.style.height = g.H + 'px'; this.prize = null;
+    }
+    if (!this.prize) this.prize = Art.friend(s.f.i, g.P * dpr, g.P * dpr * 0.92);
+    const x = cv.getContext('2d');
+    x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, cv.width, cv.height); x.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const fade = s.phase === 'leave' ? 1 - s.leaveT / 480 : Math.min(1, s.t / 250);
+    x.globalAlpha = fade;
+    x.fillStyle = 'rgba(46,20,78,0.72)'; x.fillRect(0, 0, g.W, g.H);
+    const opened = s.phase === 'open' || s.phase === 'show' || s.phase === 'leave';
+    const ok = opened ? Math.min(1, s.openT / 500) : 0;
+    // light rays: soft behind the box, then the friend's colour (gold for 稀有, a rainbow for 隐藏款)
+    const rcx = lerp(g.bx, g.px, ok), rcy = lerp(g.by - g.S * 0.1, g.py, ok);
+    this.rays(x, rcx, rcy, Math.max(g.W, g.H) * 0.75, 16, s.rot * Math.PI * 2, i => {
+      if (!opened) return 'rgba(255,255,255,0.10)';
+      if (s.f.tier === 2) return `hsla(${(i * 360 / 16 + s.t * 0.05) % 360},95%,70%,${0.32 * ok})`;
+      return s.f.tier === 1 ? `rgba(255,214,60,${0.34 * ok})` : `rgba(255,236,190,${0.2 * ok})`;
+    });
+    if (!opened || s.openT < 900) this.drawBoxAt(x, g, s);
+    if (opened) this.drawPrize(x, g, s, dpr);
+    if (s.phase === 'idle' && s.idleT > 2600) {   // a finger showing where to tap
+      const ph = (s.idleT % 900) / 900, sz = g.S * 0.32;
+      x.font = `${sz}px ${FONT}`; x.textAlign = 'center'; x.textBaseline = 'middle';
+      x.fillText('👆', g.bx + g.S * 0.42, g.by + g.S * 0.32 + (ph < 0.3 ? (0.3 - ph) * sz * 0.8 : 0));
+    }
+    x.globalAlpha = 1;
+  },
+  rays(x, cx, cy, R, n, rot, col) {
+    for (let i = 0; i < n; i++) {
+      const a0 = rot + i * Math.PI * 2 / n, gr = x.createRadialGradient(cx, cy, 0, cx, cy, R), c = col(i);
+      gr.addColorStop(0, c); gr.addColorStop(1, 'rgba(255,255,255,0)');
+      x.fillStyle = gr; x.beginPath(); x.moveTo(cx, cy); x.arc(cx, cy, R, a0, a0 + Math.PI / n); x.closePath(); x.fill();
+    }
+  },
+  drawBoxAt(x, g, s) {
+    const S = g.S;
+    let dy = 0, sx = 1, sy = 1, rot = 0, a = 1;
+    if (s.phase === 'drop') {   // falling in with a bounce
+      const k = Math.min(1, s.t / 650);
+      dy = -(g.by + S) * (1 - this.bounce(k));
+    } else if (s.phase === 'idle') {
+      const k = s.tapT / 420;   // squash and wobble after each tap (and on landing)
+      if (k < 1) { const w = Math.sin(k * Math.PI * 3) * (1 - k); sx = 1 + 0.16 * w; sy = 1 - 0.16 * w; rot = 0.12 * w * (s.taps % 2 ? 1 : -1); dy = -S * 0.12 * Math.max(0, Math.sin(k * Math.PI)) * (s.taps ? 1 : 0); }
+      else { sy = 1 + 0.025 * Math.sin(s.t / 260); sx = 2 - sy; const p = (s.t % 2400) / 2400; if (p > 0.85) rot = Math.sin((p - 0.85) / 0.15 * Math.PI * 4) * 0.06; }
+    } else {   // opened: the lid flies off, the box sinks away
+      const k = clamp((s.openT - 200) / 600, 0, 1);
+      dy = S * 1.4 * Ease.in(k); a = 1 - k;
+      const q = Math.min(1, s.openT / 160); sx = 1 + 0.2 * Math.sin(q * Math.PI); sy = 1 - 0.2 * Math.sin(q * Math.PI);
+    }
+    // the shadow on the floor
+    x.save(); x.globalAlpha *= a * (s.phase === 'drop' ? Math.min(1, s.t / 650) : 1);
+    x.fillStyle = 'rgba(20,6,40,0.35)'; x.beginPath(); x.ellipse(g.bx, g.by + S * 0.38, S * 0.6 * sx, S * 0.09, 0, 0, 7); x.fill();
+    x.restore();
+    x.save();
+    x.translate(g.bx, g.by + S * 0.36 + dy); x.rotate(rot); x.scale(sx, sy); x.translate(0, -S * 0.36);
+    let lid = { x: 0, y: 0, r: 0 }, glow = s.phase === 'idle' ? s.taps / 3 : 0;
+    if (s.phase !== 'drop' && s.phase !== 'idle') {   // the lid flies up and away, spinning, while the box sinks
+      const e = Math.min(1, s.openT / 900);
+      lid = { x: -S * 1.3 * e, y: -dy - g.H * 0.9 * e + g.H * 1.4 * e * e, r: -2.4 * e };
+      glow = 1;
+    }
+    this.drawBox(x, S, s.look, lid, glow, a);
+    x.restore();
+  },
+  bounce(k) {   // ease out with two little bounces
+    const n = 7.5625, d = 2.75;
+    if (k < 1 / d) return n * k * k;
+    if (k < 2 / d) return n * (k -= 1.5 / d) * k + 0.75;
+    if (k < 2.5 / d) return n * (k -= 2.25 / d) * k + 0.9375;
+    return n * (k -= 2.625 / d) * k + 0.984375;
+  },
+  // the box, its body's centre at (0, 0); lid offset {x, y, r} once it is flying; glow 0-1 = light leaking out;
+  // bodyA the body's opacity (it fades as it sinks away; the lid stays whole)
+  drawBox(x, S, look, lid, glow, bodyA) {
+    const [lt, base, dk, rb, rbd] = look, w = S, h = S * 0.72, r = S * 0.07, lw = S * 0.028, ink = '#4a2b5e', rw = S * 0.17;
+    x.lineJoin = 'round';
+    const ribbon = (y0, hh) => {
+      const rg = x.createLinearGradient(-rw / 2, 0, rw / 2, 0);
+      rg.addColorStop(0, rbd); rg.addColorStop(0.25, rb); rg.addColorStop(0.75, rb); rg.addColorStop(1, rbd);
+      x.fillStyle = rg; x.fillRect(-rw / 2, y0, rw, hh);
+    };
+    // body
+    x.save(); x.globalAlpha *= bodyA;
+    const g = x.createLinearGradient(0, -h / 2, 0, h / 2); g.addColorStop(0, lt); g.addColorStop(0.3, base); g.addColorStop(1, dk);
+    Art.rr(x, -w / 2, -h / 2, w, h, r); x.fillStyle = g; x.fill();
+    x.save(); Art.rr(x, -w / 2, -h / 2, w, h, r); x.clip();
+    ribbon(-h / 2, h);
+    x.fillStyle = 'rgba(255,255,255,0.3)'; Art.rr(x, -w / 2 + S * 0.06, -h / 2 + S * 0.07, S * 0.07, h * 0.62, S * 0.035); x.fill();
+    x.fillStyle = 'rgba(60,20,80,0.18)'; x.fillRect(-w / 2, -h / 2, w, S * 0.05);   // the lid's shadow
+    x.restore();
+    Art.rr(x, -w / 2, -h / 2, w, h, r); x.lineWidth = lw; x.strokeStyle = ink; x.stroke();
+    // the question-mark sticker on the ribbon
+    x.beginPath(); x.arc(0, h * 0.08, S * 0.155, 0, 7); x.fillStyle = '#fff'; x.fill(); x.lineWidth = lw * 0.8; x.stroke();
+    x.font = `900 ${S * 0.23}px ${FONT}`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillStyle = dk; x.fillText('?', 0, h * 0.08 + S * 0.012);
+    x.restore();
+    // light leaking out under the lid, brighter with each tap
+    if (glow > 0) {
+      x.save(); x.globalAlpha *= bodyA; x.globalCompositeOperation = 'lighter';
+      const gg = x.createRadialGradient(0, -h / 2, 0, 0, -h / 2, S * (0.45 + 0.5 * glow));
+      gg.addColorStop(0, `rgba(255,250,200,${0.95 * glow})`); gg.addColorStop(0.4, `rgba(255,220,120,${0.5 * glow})`); gg.addColorStop(1, 'rgba(255,200,80,0)');
+      x.fillStyle = gg; x.beginPath(); x.ellipse(0, -h / 2, S * (0.45 + 0.5 * glow), S * (0.12 + 0.25 * glow), 0, 0, 7); x.fill();
+      x.restore();
+    }
+    // lid with the bow
+    x.save(); x.translate(lid.x, -h / 2 + lid.y); x.rotate(lid.r);
+    const LW = w * 1.1, LH = S * 0.22;
+    const lg = x.createLinearGradient(0, -LH, 0, 0); lg.addColorStop(0, lt); lg.addColorStop(0.5, base); lg.addColorStop(1, dk);
+    Art.rr(x, -LW / 2, -LH, LW, LH, S * 0.05); x.fillStyle = lg; x.fill();
+    x.save(); Art.rr(x, -LW / 2, -LH, LW, LH, S * 0.05); x.clip(); ribbon(-LH, LH);
+    x.fillStyle = 'rgba(255,255,255,0.35)'; x.fillRect(-LW / 2, -LH + S * 0.025, LW, S * 0.035); x.restore();
+    Art.rr(x, -LW / 2, -LH, LW, LH, S * 0.05); x.lineWidth = lw; x.strokeStyle = ink; x.stroke();
+    for (const sd of [-1, 1]) {   // the bow's two loops
+      x.save(); x.translate(sd * S * 0.12, -LH - S * 0.07); x.rotate(sd * 0.45);
+      x.beginPath(); x.ellipse(0, 0, S * 0.13, S * 0.085, 0, 0, 7);
+      const bg = x.createLinearGradient(0, -S * 0.08, 0, S * 0.08); bg.addColorStop(0, rb); bg.addColorStop(1, rbd);
+      x.fillStyle = bg; x.fill(); x.lineWidth = lw * 0.9; x.stroke();
+      x.beginPath(); x.ellipse(sd * S * 0.02, 0, S * 0.055, S * 0.03, 0, 0, 7); x.fillStyle = 'rgba(80,20,40,0.35)'; x.fill();
+      x.restore();
+    }
+    x.beginPath(); x.arc(0, -LH - S * 0.04, S * 0.06, 0, 7); x.fillStyle = rb; x.fill(); x.lineWidth = lw * 0.9; x.stroke();
+    x.beginPath(); x.arc(-S * 0.018, -LH - S * 0.058, S * 0.02, 0, 7); x.fillStyle = 'rgba(255,255,255,0.7)'; x.fill();
+    x.restore();
+  },
+  drawPrize(x, g, s, dpr) {
+    const f = s.f, P = g.P;
+    let k = clamp((s.openT - 120) / 750, 0, 1), sc = 0.15 + 0.85 * Ease.back(k), cx = g.px, cy = lerp(g.by - g.S * 0.3, g.py, Ease.out(k));
+    if (s.phase === 'show') cy += Math.sin(s.showT / 380) * P * 0.02;
+    if (s.popT < 400) sc *= 1 + 0.12 * Math.sin(s.popT / 400 * Math.PI);
+    let a = 1;
+    if (s.phase === 'leave') { const q = Ease.in(Math.min(1, s.leaveT / 480)); sc *= 1 - 0.7 * q; cy -= g.H * 0.35 * q; a = 1 - q; }
+    x.save(); x.globalAlpha *= a;
+    // a glow behind the friend
+    const R = P * 0.62 * sc, gl = x.createRadialGradient(cx, cy, 0, cx, cy, R);
+    const c = f.tier === 1 ? '255,214,60' : f.tier === 2 ? '255,170,230' : '255,250,235';
+    gl.addColorStop(0, `rgba(255,255,255,0.95)`); gl.addColorStop(0.55, `rgba(${c},0.7)`); gl.addColorStop(1, `rgba(${c},0)`);
+    x.fillStyle = gl; x.beginPath(); x.arc(cx, cy, R, 0, 7); x.fill();
+    const D = P * sc;
+    x.drawImage(this.prize, cx - D / 2, cy - D / 2, D, D);
+    if (s.phase === 'show' || s.phase === 'leave') this.badges(x, cx, cy, P * sc, s, Math.min(1, (s.showT || 0) / 300));
+    x.restore();
+  },
+  // NEW, ×2, and a ribbon for 稀有 / 隐藏款
+  badges(x, cx, cy, P, s, k) {
+    const f = s.f, e = Ease.back(k);
+    x.textAlign = 'center'; x.textBaseline = 'middle';
+    if (s.fresh) {
+      x.save(); x.translate(cx + P * 0.38, cy - P * 0.36); x.rotate(-0.25 + Math.sin(s.t / 300) * 0.06); x.scale(e, e);
+      x.beginPath();
+      for (let i = 0; i < 24; i++) { const ang = i * Math.PI / 12, rr = i % 2 ? P * 0.1 : P * 0.13; x.lineTo(Math.cos(ang) * rr, Math.sin(ang) * rr); }
+      x.closePath(); x.fillStyle = '#ff4f6d'; x.fill(); x.lineWidth = P * 0.018; x.strokeStyle = '#fff'; x.stroke();
+      x.font = `900 ${P * 0.075}px "Arial Rounded MT Bold","Trebuchet MS",${FONT}`; x.fillStyle = '#fff'; x.fillText('NEW', 0, P * 0.004);
+      x.restore();
+    } else {
+      x.save(); x.translate(cx + P * 0.38, cy + P * 0.34); x.scale(e, e);
+      Art.rr(x, -P * 0.1, -P * 0.06, P * 0.2, P * 0.12, P * 0.06); x.fillStyle = '#7b4dff'; x.fill(); x.lineWidth = P * 0.014; x.strokeStyle = '#fff'; x.stroke();
+      x.font = `900 ${P * 0.075}px ${FONT}`; x.fillStyle = '#fff'; x.fillText('×' + s.n, 0, P * 0.004);
+      x.restore();
+    }
+    if (f.tier > 0) {
+      const w = P * 0.62, h = P * 0.15;
+      x.save(); x.translate(cx, cy + P * 0.56); x.scale(e, e);
+      x.beginPath(); x.moveTo(-w / 2 - h * 0.5, -h / 2 + h * 0.15); x.lineTo(-w / 2 - h * 0.15, 0 + h * 0.15); x.lineTo(-w / 2 - h * 0.5, h / 2 + h * 0.15);
+      x.lineTo(w / 2 + h * 0.5, h / 2 + h * 0.15); x.lineTo(w / 2 + h * 0.15, h * 0.15); x.lineTo(w / 2 + h * 0.5, -h / 2 + h * 0.15); x.closePath();
+      x.fillStyle = f.tier === 2 ? '#c06ad6' : '#d98e00'; x.fill();
+      const gr = x.createLinearGradient(-w / 2, 0, w / 2, 0);
+      if (f.tier === 2) ['#ff5f8f', '#ffb13a', '#ffe04a', '#5fe07a', '#4ac8ff', '#a77bff'].forEach((c2, i) => gr.addColorStop(i / 5, c2));
+      else { gr.addColorStop(0, '#ffe680'); gr.addColorStop(0.5, '#ffcf3a'); gr.addColorStop(1, '#ffe680'); }
+      Art.rr(x, -w / 2, -h / 2, w, h, h * 0.3); x.fillStyle = gr; x.fill(); x.lineWidth = P * 0.014; x.strokeStyle = '#fff'; x.stroke();
+      x.font = `900 ${h * 0.62}px ${FONT}`; x.lineJoin = 'round'; x.lineWidth = h * 0.16; x.strokeStyle = f.tier === 2 ? '#6a2a8a' : '#8a5200';
+      const label = f.tier === 2 ? '隐藏款' : '稀有';
+      x.strokeText(label, 0, h * 0.04); x.fillStyle = '#fff'; x.fillText(label, 0, h * 0.04);
+      x.restore();
+    }
+  },
+
+  // ---------- the album: every friend on one page, ten in a row like decli's pictures ----------
+  album() {
+    const d = Store.d, fresh = new Set(d.giftFresh || []);
+    d.giftFresh = []; Store.save();
+    UI.closeModal();
+    const root = $('#album'); root.hidden = false; root.innerHTML = '';
+    const top = el('div', 'top');
+    const back = el('button', 'ibtn', '🗺️'); back.onclick = () => { Snd.play('tap'); root.hidden = true; root.innerHTML = ''; UI.map(); };
+    top.appendChild(back);
+    top.appendChild(el('h1', null, '动物收集册'));
+    top.appendChild(el('div', 'pill', `🎁 ${this.count()} / ${FRIENDS.length}`));
+    root.appendChild(top);
+    const grid = el('div', 'agrid'); root.appendChild(grid);
+    const slots = FRIENDS.map(f => {
+      const b = el('button', 'aslot t' + Math.max(0, f.tier) + (this.owned(f.i) ? '' : ' no'));
+      if (fresh.has(f.id)) b.appendChild(el('i', 'anew', 'NEW'));
+      const n = d.gifts[f.id] || 0;
+      if (n > 1) b.appendChild(el('b', null, '×' + n));
+      b.onclick = () => {
+        if (this.owned(f.i)) { Snd.play('select'); Voice.say(L.gift.names[f.i]); b.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.18)' }, { transform: 'scale(1)' }], 380); }
+        else { Snd.play('bad'); Voice.say(L.gift.locked); b.animate([{ transform: 'translateX(-5px)' }, { transform: 'translateX(5px)' }, { transform: 'none' }], 250); }
+      };
+      grid.appendChild(b);
+      return b;
+    });
+    // the heads are drawn once the slots have their size
+    const paint = () => {
+      if (root.hidden) return;
+      const dpr = Math.min(devicePixelRatio || 1, 2), r = slots[0].getBoundingClientRect(), px = Math.floor(Math.min(r.width, r.height) * 0.94);
+      slots.forEach((b, i) => {
+        const old = $('canvas', b); if (old) old.remove();
+        const c = this.slot(FRIENDS[i], px * dpr); c.style.width = c.style.height = px + 'px';
+        b.prepend(c);
+      });
+    };
+    requestAnimationFrame(paint);
+    this._albumResize && removeEventListener('resize', this._albumResize);
+    this._albumResize = () => requestAnimationFrame(paint);
+    addEventListener('resize', this._albumResize);
+    if (!d.seen.album) { d.seen.album = 1; Store.save(); Voice.say(L.gift.album); }
+  },
+  // a friend for the album: its head, or its shadow with a question mark if she has not found it yet
+  slot(f, s) {
+    const c = Art.friend(f.i, s, s * 0.86);
+    if (this.owned(f.i)) return c;
+    const x = c.getContext('2d');
+    x.globalCompositeOperation = 'source-in'; x.fillStyle = f.tier === 2 ? '#d7b8f0' : '#cbbcdb'; x.fillRect(0, 0, s, s);
+    x.globalCompositeOperation = 'source-over';
+    x.font = `900 ${s * 0.38}px ${FONT}`; x.textAlign = 'center'; x.textBaseline = 'middle';
+    x.lineWidth = s * 0.05; x.strokeStyle = '#a593bd'; x.strokeText('?', s / 2, s * 0.53); x.fillStyle = '#fff'; x.fillText('?', s / 2, s * 0.53);
+    return c;
+  },
+};
+
 // 动物消消乐 · one level being played: drawing the board, the finger, playing back what board.js worked out,
 // the side panel (moves, goals, score) and the end of the level.
 const Game = {
@@ -2020,7 +2435,7 @@ const Game = {
     this.sprites.set(p.id, s);
     return s;
   },
-  stop() { this.active = false; Music.stop(); $('#hud').hidden = true; Fx.clear(); Clock.clear(); },
+  stop() { this.active = false; $('#hud').hidden = true; Fx.clear(); Clock.clear(); },
 
   // ---------- layout ----------
   layout() {
@@ -2178,7 +2593,7 @@ const Game = {
     return this.b.on(i) ? i : -1;
   },
   pdown(e) {
-    Snd.init(); Voice.unlock();
+    Snd.init();
     if (!this.active || this.over) return;
     this.hideShowOff();
     const i = this.cellAt(e);
@@ -2247,12 +2662,13 @@ const Game = {
     }
   },
   maybeCheer(done) {
-    const lvl = excitement(done);
-    if (lvl > this.cheered && Clock.now - this.lastCheer > 650) {
+    const lvl = excitement(done), word = CHEER[lvl];
+    // a word only once per turn: Excellent! for level 3 and again for 4 would just repeat itself
+    if (lvl > this.cheered && word !== CHEER[this.cheered] && Clock.now - this.lastCheer > 650) {
       this.cheered = lvl; this.lastCheer = Clock.now;
       const G = this.G;
-      Voice.cheer(CHEER[lvl]);
-      Fx.praise(CHEER[lvl], G.ox + G.w / 2, G.oy + G.h * 0.42, G.w, lvl);
+      Voice.cheer(word);
+      Fx.praise(word, G.ox + G.w / 2, G.oy + G.h * 0.42, G.w, lvl);
       if (lvl >= 4) Fx.shake(6, 300);
     }
   },
@@ -2476,7 +2892,7 @@ const Game = {
     Fx.confetti(60);
     if (B.moves > 0) {
       await Clock.wait(900);
-      Voice.cheer(BONUS);
+      Snd.play('sparkle');
       Fx.praise(BONUS, G.ox + G.w / 2, G.oy + G.h * 0.42, G.w, 3);
       await Clock.wait(600);
       await this.play(B.bonus());
@@ -2491,6 +2907,7 @@ const Game = {
     d.best[li] = Math.max(d.best[li] || 0, B.score);
     d.open = Math.max(d.open, Math.min(LEVELS.length, li + 2));
     Store.save();
+    await Gift.open(stars);   // the blind box first, then the stars card
     UI.result({ win: true, stars, score: B.score, li });
   },
   async fail() {
@@ -2679,7 +3096,8 @@ const UI = {
 
   // ---------- the level map ----------
   map() {
-    Game.stop(); this.closeModal();
+    Game.stop(); this.closeModal(); $('#album').hidden = true;
+    Music.start();
     const map = $('#map'); map.hidden = false; map.innerHTML = '';
     const d = Store.d;
     const top = el('div', 'top');
@@ -2687,6 +3105,9 @@ const UI = {
     top.appendChild(el('h1', null, '动物消消乐'));
     const total = LEVELS.reduce((n, _, i) => n + (d.stars[i] || 0), 0);
     top.appendChild(el('div', 'pill', `⭐ ${total} / ${LEVELS.length * 3}`));
+    const book = el('button', 'pill book' + ((d.giftFresh || []).length ? ' new' : ''), `🎁 ${Gift.count()} / ${FRIENDS.length}`);
+    book.onclick = () => { Snd.init(); Snd.play('select'); Gift.album(); };
+    top.appendChild(book);
     const gear = el('button', 'ibtn', '⚙️'); gear.onclick = () => { Snd.play('tap'); this.parent({}); };
     top.appendChild(gear);
     map.appendChild(top);
@@ -2701,7 +3122,7 @@ const UI = {
       n.appendChild(el('span', 'st', open ? '⭐'.repeat(st) + '<span style="opacity:.3">' + '⭐'.repeat(3 - st) + '</span>' : ''));
       if (open) n.appendChild(el('span', 'nm', lv.name));
       n.onclick = () => {
-        Snd.init(); Voice.unlock();
+        Snd.init();
         if (!open) { Snd.play('bad'); Voice.say(L.locked); n.animate([{ transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'none' }], 250); return; }
         Snd.play('select'); this.intro(i);
       };
@@ -2912,12 +3333,12 @@ const UI = {
       else row.appendChild(this.button(d.owed ? '免做下一页数学题' : '下一局不用做题 ✓', 'sun small', () => { d.owed = false; Store.save(); this.toast('好的，下一局不用先做题'); }));
       row.appendChild(this.button('解锁全部关卡', 'ghost small', () => { d.open = LEVELS.length; Store.save(); this.toast('10 关都打开了'); }));
       row.appendChild(this.button('清空进度', 'ghost small', () => {
-        if (!confirm('清空关卡、星星和做题记录？')) return;
+        if (!confirm('清空关卡、星星、收集册和做题记录？')) return;
         const keep = { math: d.math, snd: d.snd, voi: d.voi, mus: d.mus };
         Store.d = Object.assign(Store.defaults(), keep); Store.save(); this.toast('已清空');
       }));
       card.appendChild(row);
-      card.appendChild(el('p', null, '<span style="font-size:14px;opacity:.6">小动物头像来自 Kenney 的 Animal Pack（CC0 公共领域）；语音由微软神经网络语音（edge-tts）预先录制。</span>'));
+      card.appendChild(el('p', null, '<span style="font-size:14px;opacity:.6">中文旁白由微软神经网络语音（edge-tts）预先录制。</span>'));
       const done = el('div', 'row done'); done.appendChild(this.button('完成', 'green', close)); card.appendChild(done);
     }, { close });
   },
@@ -2932,7 +3353,7 @@ const UI = {
 // 动物消消乐 · start-up and the frame loop.
 (function boot() {
   Store.load();
-  if (/[?&]debug\b/.test(location.search)) window.XX = { Game, Board, Store, UI, Fx, Clock, MathGate, LEVELS, Snd, Voice };
+  if (/[?&]debug\b/.test(location.search)) window.XX = { Game, Board, Store, UI, Fx, Clock, MathGate, LEVELS, Snd, Voice, Music, Gift };
   Snd.on = Store.d.snd; Snd.music = Store.d.mus; Voice.on = Store.d.voi;
   Fx.init($('#fx'));
   Game.init();
@@ -2940,6 +3361,7 @@ const UI = {
   const bar = $('#ldBar');
   bar.style.width = '30%';
   Voice.load();
+  Snd.load(['bg1', 'bg2', 'great', 'excellent', 'unbelievable']);
   let last = performance.now();
   const loop = now => {
     const dt = Math.min(50, now - last); last = now;
@@ -2952,7 +3374,7 @@ const UI = {
   };
   requestAnimationFrame(loop);
   // the first touch anywhere wakes up sound (browsers keep it off until then)
-  const wake = () => { Snd.init(); Voice.unlock(); if (Snd.ctx) { Snd.setOn(Store.d.snd); } };
+  const wake = () => { Snd.init(); if (Snd.ctx) { Snd.setOn(Store.d.snd); } };
   addEventListener('pointerdown', wake, true);
   Art.load().then(() => {
     bar.style.width = '100%';

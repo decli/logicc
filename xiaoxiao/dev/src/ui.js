@@ -22,7 +22,8 @@ const UI = {
 
   // ---------- the level map ----------
   map() {
-    Game.stop(); this.closeModal();
+    Game.stop(); this.closeModal(); $('#album').hidden = true;
+    Music.start();
     const map = $('#map'); map.hidden = false; map.innerHTML = '';
     const d = Store.d;
     const top = el('div', 'top');
@@ -30,6 +31,9 @@ const UI = {
     top.appendChild(el('h1', null, '动物消消乐'));
     const total = LEVELS.reduce((n, _, i) => n + (d.stars[i] || 0), 0);
     top.appendChild(el('div', 'pill', `⭐ ${total} / ${LEVELS.length * 3}`));
+    const book = el('button', 'pill book' + ((d.giftFresh || []).length ? ' new' : ''), `🎁 ${Gift.count()} / ${FRIENDS.length}`);
+    book.onclick = () => { Snd.init(); Snd.play('select'); Gift.album(); };
+    top.appendChild(book);
     const gear = el('button', 'ibtn', '⚙️'); gear.onclick = () => { Snd.play('tap'); this.parent({}); };
     top.appendChild(gear);
     map.appendChild(top);
@@ -44,7 +48,7 @@ const UI = {
       n.appendChild(el('span', 'st', open ? '⭐'.repeat(st) + '<span style="opacity:.3">' + '⭐'.repeat(3 - st) + '</span>' : ''));
       if (open) n.appendChild(el('span', 'nm', lv.name));
       n.onclick = () => {
-        Snd.init(); Voice.unlock();
+        Snd.init();
         if (!open) { Snd.play('bad'); Voice.say(L.locked); n.animate([{ transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'none' }], 250); return; }
         Snd.play('select'); this.intro(i);
       };
@@ -255,12 +259,12 @@ const UI = {
       else row.appendChild(this.button(d.owed ? '免做下一页数学题' : '下一局不用做题 ✓', 'sun small', () => { d.owed = false; Store.save(); this.toast('好的，下一局不用先做题'); }));
       row.appendChild(this.button('解锁全部关卡', 'ghost small', () => { d.open = LEVELS.length; Store.save(); this.toast('10 关都打开了'); }));
       row.appendChild(this.button('清空进度', 'ghost small', () => {
-        if (!confirm('清空关卡、星星和做题记录？')) return;
+        if (!confirm('清空关卡、星星、收集册和做题记录？')) return;
         const keep = { math: d.math, snd: d.snd, voi: d.voi, mus: d.mus };
         Store.d = Object.assign(Store.defaults(), keep); Store.save(); this.toast('已清空');
       }));
       card.appendChild(row);
-      card.appendChild(el('p', null, '<span style="font-size:14px;opacity:.6">小动物头像来自 Kenney 的 Animal Pack（CC0 公共领域）；语音由微软神经网络语音（edge-tts）预先录制。</span>'));
+      card.appendChild(el('p', null, '<span style="font-size:14px;opacity:.6">中文旁白由微软神经网络语音（edge-tts）预先录制。</span>'));
       const done = el('div', 'row done'); done.appendChild(this.button('完成', 'green', close)); card.appendChild(done);
     }, { close });
   },

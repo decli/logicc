@@ -51,7 +51,7 @@ const Game = {
     this.sprites.set(p.id, s);
     return s;
   },
-  stop() { this.active = false; Music.stop(); $('#hud').hidden = true; Fx.clear(); Clock.clear(); },
+  stop() { this.active = false; $('#hud').hidden = true; Fx.clear(); Clock.clear(); },
 
   // ---------- layout ----------
   layout() {
@@ -209,7 +209,7 @@ const Game = {
     return this.b.on(i) ? i : -1;
   },
   pdown(e) {
-    Snd.init(); Voice.unlock();
+    Snd.init();
     if (!this.active || this.over) return;
     this.hideShowOff();
     const i = this.cellAt(e);
@@ -278,12 +278,13 @@ const Game = {
     }
   },
   maybeCheer(done) {
-    const lvl = excitement(done);
-    if (lvl > this.cheered && Clock.now - this.lastCheer > 650) {
+    const lvl = excitement(done), word = CHEER[lvl];
+    // a word only once per turn: Excellent! for level 3 and again for 4 would just repeat itself
+    if (lvl > this.cheered && word !== CHEER[this.cheered] && Clock.now - this.lastCheer > 650) {
       this.cheered = lvl; this.lastCheer = Clock.now;
       const G = this.G;
-      Voice.cheer(CHEER[lvl]);
-      Fx.praise(CHEER[lvl], G.ox + G.w / 2, G.oy + G.h * 0.42, G.w, lvl);
+      Voice.cheer(word);
+      Fx.praise(word, G.ox + G.w / 2, G.oy + G.h * 0.42, G.w, lvl);
       if (lvl >= 4) Fx.shake(6, 300);
     }
   },
@@ -507,7 +508,7 @@ const Game = {
     Fx.confetti(60);
     if (B.moves > 0) {
       await Clock.wait(900);
-      Voice.cheer(BONUS);
+      Snd.play('sparkle');
       Fx.praise(BONUS, G.ox + G.w / 2, G.oy + G.h * 0.42, G.w, 3);
       await Clock.wait(600);
       await this.play(B.bonus());
@@ -522,6 +523,7 @@ const Game = {
     d.best[li] = Math.max(d.best[li] || 0, B.score);
     d.open = Math.max(d.open, Math.min(LEVELS.length, li + 2));
     Store.save();
+    await Gift.open(stars);   // the blind box first, then the stars card
     UI.result({ win: true, stars, score: B.score, li });
   },
   async fail() {
