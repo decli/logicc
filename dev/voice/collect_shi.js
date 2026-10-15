@@ -1,11 +1,11 @@
-// Every clip 古诗小剧场 (the poem game in ../../index.html) can play, as the page will look it up.
-// Read straight out of POEMS / SHI_SAY in the page, so a new poem or a new line is picked up on the next build.
+// Every clip 古诗小剧场 (the poem game in ../../shi/game.js) can play, as the page will look it up.
+// Read straight out of POEMS / SHI_SAY there, so a new poem or a new line is picked up on the next build.
 //   node dev/voice/collect_shi.js   ->  dev/voice/lines-shi.json
 // roles:  n  narrator (晓晓)              key = the sentence
 //         r  recitation (晓晓)            key = <poem>#full (title, author, every line, with syllable times)
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const ROOT = path.resolve(__dirname, '../..');
-const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+const src = fs.readFileSync(path.join(ROOT, 'shi', 'game.js'), 'utf8');
 
 function skipString(s, i) { const q = s[i]; i++; while (i < s.length && s[i] !== q) { if (s[i] === '\\') i++; i++; } return i + 1; }
 function balanced(s, open) {
@@ -29,7 +29,7 @@ vm.createContext(sandbox);
 vm.runInContext([grab('const POEMS = ['), grab('const SHI_SAY = {'), 'this.POEMS = POEMS; this.SHI_SAY = SHI_SAY;'].join('\n'), sandbox);
 const { POEMS, SHI_SAY } = sandbox;
 
-// one bank (voice-shi) for the page; part: what poems.py records in one go (0 the game's own lines, 1–4 each grade's
+// one bank (shi/voice-shi) for the page; part: what poems.py records in one go (0 the game's own lines, 1–4 each grade's
 // introductions and recitations, 5 every poem's little story and what each line means — narrator only, quick to redo)
 const items = [], seen = new Set();
 function add(part, role, key, text) { const k = role + '|' + key; if (seen.has(k)) return; seen.add(k); items.push({ part, role, key, segs: [text] }); }

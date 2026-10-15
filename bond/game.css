@@ -1,0 +1,7 @@
+/* 思维小画本 · 凑数字的样式，和 game.js 一起由首页加载 */
+/* 数的分解 */
+.bnode{border-radius:50%;border:4px solid var(--ink);background:#fff;display:flex;align-items:center;
+  justify-content:center;box-shadow:4px 4px 0 var(--ink);flex:0 0 auto}
+.bnode.top{background:var(--blue);color:#fff}
+.bnode.q{color:var(--line)}
+.bnode.fill{background:var(--green);color:#fff}
