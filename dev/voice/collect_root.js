@@ -31,7 +31,6 @@ vm.createContext(sandbox);
 vm.runInContext([grab('const GAMES = ['), grab('const PRAISE = ['), grab('const CN_DIG = ['), grab('function cnNum('), grab('function cnText('),
   'this.GAMES = GAMES; this.PRAISE = PRAISE; this.cnText = cnText;'].join('\n'), sandbox);
 const { GAMES, PRAISE, cnText } = sandbox;
-const SHAPES = [...grab('const SHAPE_LIB = [').matchAll(/\bn: '([^']+)'/g)].map(m => m[1]);
 const WHY = [...src.matchAll(/why: '([^']+)'/g)].map(m => m[1]);
 const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
 
@@ -42,8 +41,8 @@ function add(t, cn) { if (!t) return; const key = cnText(t); if (!lines.has(key)
 // ---- 1. every Voice.say / Voice.short call in the page ----
 const KNOWN = [   // calls built at run time, expanded below; matched on a piece of their argument
   "g.name + '，' + L.t", "'红色的 '", "'这次倒着找，先找 '", "'一共要 '", "' 分成 ' + a + '、'", "' 和 ' + b + ' 合起来是几？'",
-  "' 分成几和 '", "' 分成 ' + a + ' 和几？'", 'c.why', "'画的都对，还差 '", "'画好啦，是一个'", "'这一笔画完了，跳到 '",
-  "'这次倒着数，从 '", "'一次消掉 '",
+  "' 分成几和 '", "' 分成 ' + a + ' 和几？'", 'c.why', "'画的都对，还差 '",
+  "'一次消掉 '",
   'SHI_SAY',   // 古诗小剧场的旁白在它自己的语音包里（collect_shi.js）
   'GL_T.', 'Q.ask',   // 找规律的题目和讲解也在自己的语音包里（collect_gl.js）
 ];
@@ -72,9 +71,6 @@ for (const N of range(2, 10)) {                                                 
 }
 for (const w of WHY) add(w);                                                                          // 照镜子
 for (const r of range(1, 12)) add('画的都对，还差 ' + r + ' 个');
-for (const n of SHAPES) add('画好啦，是一个' + n);                                                       // 连点成画
-for (const k of range(1, 60)) { add('这一笔画完了，跳到 ' + k); add('下一个是 ' + k); add('这次倒着数，从 ' + k + ' 开始往回连'); }
-add('按双数连，2、4、6 这样往下'); add('从 1 开始，按数字顺序连起来'); add('从 1 开始，按数字顺序连起来，中间要抬笔跳一次');
 for (const k of range(2, 6)) add('一次消掉 ' + k + ' 行，太厉害了');                                        // 方块拼拼
 for (const p of PRAISE) add(p);
 

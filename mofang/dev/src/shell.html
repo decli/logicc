@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no, maximum-scale=1">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="魔方世界">
+<meta name="theme-color" content="#BFE6FF">
+<meta name="description" content="魔方世界：在 3D 积木世界里练空间想象。换个角度看积木、数藏起来的积木、转积木钻墙洞、折纸盒、玩二阶三阶魔方、照样子搭城堡。">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="icon" href="../icon-192.png">
+<title>魔方世界</title>
+<style>
+/*__CSS__*/
+</style>
+</head>
+<body>
+<canvas id="gl" aria-label="魔方世界的 3D 画面"></canvas>
+
+<div id="hud" class="hidden">
+  <header id="top">
+    <button class="btn round" id="homeBtn" aria-label="回去"><span class="ic">🏠</span></button>
+    <div id="dots" aria-hidden="true"></div>
+    <div class="grow"></div>
+    <button class="btn round" id="hintBtn" aria-label="提示"><span class="ic">💡</span></button>
+    <button class="btn round" id="sayBtn" aria-label="再说一遍"><span class="ic">🔊</span></button>
+    <button class="btn round" id="gearBtn" aria-label="家长设置"><span class="ic">⚙️</span></button>
+  </header>
+  <section id="panel"></section>
+  <section id="tools"></section>
+</div>
+
+<div id="mapUI" class="hidden">
+  <h1 id="mapTitle">魔方世界</h1>
+  <button class="btn round arrow" id="prevBtn" aria-label="上一个小岛">◀</button>
+  <button class="btn round arrow" id="nextBtn" aria-label="下一个小岛">▶</button>
+  <div id="isle">
+    <div id="isleName"></div>
+    <div id="levels"></div>
+  </div>
+</div>
+
+<div id="card" class="hidden" role="dialog" aria-modal="true"></div>
+<div id="sheet" class="hidden" role="dialog" aria-modal="true"></div>
+
+<div id="loader" role="status" aria-live="polite">
+  <div class="ld-cube" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <h1>魔方世界</h1>
+  <p class="ld-sub">换个角度看世界</p>
+  <button class="btn big" id="startBtn" disabled><span class="ic">▶</span></button>
+  <p class="ld-msg" id="ldMsg">正在搬积木…</p>
+  <noscript><p class="ld-msg">需要打开 JavaScript 才能玩</p></noscript>
+</div>
+<script type="module" src="__APP__"></script>
+</body>
+</html>

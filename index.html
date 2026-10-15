@@ -135,15 +135,6 @@ body{
 .mc.show{box-shadow:inset 0 0 0 4px var(--green)}
 .axis{position:absolute;border:0;border-left:4px dashed var(--orange)}
 .axis.h{border-left:0;border-top:4px dashed var(--orange)}
-/* 连点 */
-#cSvg .dot{fill:#fff;stroke:var(--ink);stroke-width:3}
-#cSvg .dot.on{fill:var(--green)}
-#cSvg .dot.next{fill:var(--yellow)}
-#cSvg text{font-family:"Arial Rounded MT Bold","PingFang SC",sans-serif;font-weight:700;font-size:7px;fill:var(--ink);
-  text-anchor:middle;pointer-events:none}
-#cSvg .seg{stroke:var(--purple);stroke-width:6;stroke-linecap:round;fill:none}
-#cSvg .shapefill{fill:var(--yellow);opacity:0;transition:opacity .6s}
-#cSvg .shapefill.show{opacity:.85}
 /* 找规律（图形推理）：--gs 题目格子、--go 选项的边长，由 Fit 量出来 */
 .glWrap{display:flex;align-items:center;justify-content:center;position:relative}
 .glQ,.glO{display:grid;flex:none}
@@ -274,6 +265,7 @@ body{
 .card,.card:nth-child(odd),.card:nth-child(even){display:flex;overflow:hidden;border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(24px * var(--k));background:#fff;box-shadow:calc(7px * var(--k)) calc(7px * var(--k)) 0 var(--ink);cursor:pointer;min-height:0;padding:0;transform:none;flex-direction:row;align-items:stretch;justify-content:flex-start}
 .card:active{transform:translate(calc(5px * var(--k)),calc(5px * var(--k)));box-shadow:0 0 0 var(--ink)}
 .cardArt{flex:0 0 calc(148px * var(--k));background:var(--c);display:flex;align-items:center;justify-content:center;font-size:calc(84px * var(--k));line-height:1}
+.cardArt svg{width:calc(104px * var(--k));height:calc(104px * var(--k));filter:drop-shadow(0 calc(4px * var(--k)) 0 rgba(0,0,0,.18))}
 .cardTx{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:calc(6px * var(--k));padding:calc(14px * var(--k)) calc(18px * var(--k))}
 .cardName{font-size:calc(38px * var(--k));font-weight:700;line-height:1.1}
 .cardTip{font-size:calc(21px * var(--k));color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -938,15 +930,29 @@ const GAMES = [
     ]
   },
   {
-    id: 'connect', name: '连点成画', emoji: '✏️', color: 'var(--orange)', tip: '按数字顺序连起来，看看是什么',
-    levels: [
-      { t: '一笔画完', d: '8 到 10 个点，先熟悉规则', cfg: { pts: 10, strokes: 1, step: 1 } },
-      { t: '点变多了', d: '14 个点上下', cfg: { pts: 14, strokes: 1, step: 1 } },
-      { t: '要抬笔', d: '画完一笔要跳到别处接着画，不能只顺着最近的点连', cfg: { pts: 16, strokes: 2, step: 1 } },
-      { t: '数双数', d: '2、4、6…按双数连', cfg: { pts: 18, strokes: 2, step: 2 } },
-      { t: '三笔画', d: '跳两次，图案也更复杂', cfg: { pts: 22, strokes: 3, step: 1 } },
-      { t: '倒着数', d: '从最大的数往回连，得压住顺数的习惯', cfg: { pts: 20, strokes: 2, step: 1, down: true } }
-    ]
+    // 魔方世界：three.js 做的 3D 空间小世界（mofang/），六个小岛三十一关：从不同方向看积木、数藏起来的积木、转积木钻墙洞、
+    // 纸盒展开图、二阶/三阶魔方、照样子搭积木（外加自由玩魔方和自由搭城堡）。点卡片直接进去
+    id: 'mofang', name: '魔方世界', emoji: '🧊', color: 'var(--orange)', tip: '转着看积木、玩魔方、搭城堡', href: 'mofang/',
+    // 卡片上画一个有点乱的三阶魔方（没有合适的 emoji）
+    art: (function () {
+      var faces = [[[50, 8], [36, 21], [-36, 21], 'yyyyyryyw'], [[14, 29], [36, 21], [0, 42], 'gggyggggg'], [[50, 50], [36, -21], [0, 42], 'bbbbbbgbb']];
+      var C = { y: '#FFD23F', g: '#3DCC6E', b: '#4D96FF', r: '#FF5A5F', w: '#FFFFFF' }, out = '';
+      faces.forEach(function (f) {
+        for (var k = 0; k < 9; k++) {
+          var i = k % 3, j = Math.floor(k / 3), pts = [[i + .1, j + .1], [i + .9, j + .1], [i + .9, j + .9], [i + .1, j + .9]].map(function (q) {
+            return (f[0][0] + (q[0] * f[1][0] + q[1] * f[2][0]) / 3).toFixed(1) + ',' + (f[0][1] + (q[0] * f[1][1] + q[1] * f[2][1]) / 3).toFixed(1);
+          });
+          out += '<polygon points="' + pts.join(' ') + '" fill="' + C[f[3][k]] + '" stroke-linejoin="round"/>';
+        }
+      });
+      return '<svg viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,4 90,27 90,73 50,96 10,73 10,27" fill="#2B2D42" stroke="#2B2D42" stroke-width="6" stroke-linejoin="round"/>' + out + '</svg>';
+    })(),
+    meta: function () {
+      var n = 0;
+      try { var d = JSON.parse(localStorage.getItem('logicc.mofang.v1') || '{}'); Object.keys(d.stars || {}).forEach(function (k) { n += d.stars[k]; }); } catch (e) { }
+      return ['⭐ ' + n + '/93', '六个小岛 · 3D 空间'];
+    },
+    levels: []
   },
   {
     // 动物消消乐：开心消消乐那样的三消闯关（xiaoxiao/），十关；每局之后先做一页数学题才能再玩。点卡片直接进去
@@ -1124,7 +1130,8 @@ function home() {
   var cards = el('div'); cards.id = 'cards';
   GAMES.forEach(function (g) {
     var c = el('div', 'card'); c.style.setProperty('--c', g.color);
-    c.appendChild(el('div', 'cardArt', g.emoji));
+    var art = el('div', 'cardArt', g.art ? null : g.emoji); if (g.art) art.innerHTML = g.art;
+    c.appendChild(art);
     var tx = el('div', 'cardTx');
     tx.appendChild(el('div', 'cardName', g.name));
     tx.appendChild(el('div', 'cardTip', g.tip));
@@ -1177,7 +1184,6 @@ function previewShape(g, i) {
   else if (g.id === 'bond') { cols = c.miss === 'three' ? 3 : 2; rows = 2; }
   else if (g.id === 'fit') { cols = c.w || 4; rows = c.kind === 'drop' ? Math.min(6, c.h) : 3; }
   else if (g.id === 'span') { cols = c.w; rows = c.h; }
-  else if (g.id === 'connect') { cols = Math.min(6, Math.round(c.pts / 3)); rows = 1; }
   return { cols: cols, rows: rows };
 }
 function previewGrid(g, i) {
@@ -4503,125 +4509,6 @@ function gMirror(board, lv) {
   };
 }
 
-/* ===================== 6 连点成画 =====================
-   原来只有 6 个固定单环图形：点排成一圈，下一个点永远是视觉上最近的，
-   不看数字也能连完。现在改成：多笔画（要抬笔跳到别处）+ 每局随机旋转/镜像/
-   抖动 + 多种编号规则（顺数/双数/倒数），从形状库里随机取。
-   ================================================================ */
-function polyPts(n, R, cx, cy, rot) {
-  const p = [];
-  for (let i = 0; i < n; i++) { const a = rot + i * Math.PI * 2 / n; p.push([cx + Math.cos(a) * R, cy + Math.sin(a) * R]); }
-  return p;
-}
-function starPts2(sp, R, r, cx, cy) {
-  const p = [];
-  for (let i = 0; i < sp * 2; i++) { const a = -Math.PI / 2 + i * Math.PI / sp, rad = i % 2 ? r : R; p.push([cx + Math.cos(a) * rad, cy + Math.sin(a) * rad]); }
-  return p;
-}
-// 每个图形 = 若干笔画，笔画之间要抬笔
-const SHAPE_LIB = [
-  { n: '小房子', e: '🏠', st: [[[50, 10], [88, 36], [78, 36], [78, 88], [22, 88], [22, 36], [12, 36]], [[40, 88], [40, 62], [60, 62], [60, 88]]] },
-  { n: '小鱼', e: '🐟', st: [[[14, 50], [40, 26], [66, 30], [88, 12], [92, 50], [88, 88], [66, 70], [40, 74]], [[26, 42], [34, 42], [34, 50], [26, 50]]] },
-  { n: '帆船', e: '⛵', st: [[[8, 68], [92, 68], [78, 88], [22, 88]], [[50, 64], [50, 10], [86, 58]]] },
-  { n: '小树', e: '🌳', st: [[[50, 8], [78, 44], [64, 44], [86, 74], [14, 74], [36, 44], [22, 44]], [[42, 74], [42, 92], [58, 92], [58, 74]]] },
-  { n: '火箭', e: '🚀', st: [[[50, 6], [70, 40], [70, 74], [30, 74], [30, 40]], [[30, 56], [12, 84], [30, 78]], [[70, 56], [88, 84], [70, 78]]] },
-  { n: '雪人', e: '⛄', st: [polyPts(7, 20, 50, 28, -Math.PI / 2), polyPts(9, 28, 50, 70, -Math.PI / 2)] },
-  { n: '蝴蝶', e: '🦋', st: [[[50, 20], [16, 6], [8, 40], [30, 52], [50, 50]], [[50, 50], [30, 56], [12, 84], [44, 92], [50, 72]], [[50, 20], [84, 6], [92, 40], [70, 52], [50, 50]]] },
-  { n: '小猫', e: '🐱', st: [[[26, 30], [30, 8], [44, 24], [56, 24], [70, 8], [74, 30], [78, 56], [50, 80], [22, 56]], [[38, 44], [44, 50], [38, 56]], [[62, 44], [56, 50], [62, 56]]] },
-  { n: '星星', e: '⭐', st: [starPts2(5, 44, 18, 50, 52)] },
-  { n: '小花', e: '🌸', st: [starPts2(6, 34, 15, 50, 38), [[46, 62], [46, 92], [54, 92], [54, 62]]] },
-  { n: '汽车', e: '🚗', st: [[[10, 66], [18, 44], [40, 44], [46, 26], [74, 26], [80, 44], [90, 48], [90, 66]], polyPts(6, 10, 28, 74, 0), polyPts(6, 10, 72, 74, 0)] },
-  { n: '爱心', e: '💖', st: [(function () { const p = []; for (let i = 0; i < 12; i++) { const t = -Math.PI / 2 + i / 12 * Math.PI * 2; const x = 16 * Math.pow(Math.sin(t), 3); const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t); p.push([50 + x * 2.3, 48 - y * 2.3]); } return p; })()] },
-  { n: '月亮', e: '🌙', st: [[[58, 8], [34, 18], [22, 42], [26, 68], [44, 88], [66, 92], [50, 74], [44, 50], [48, 28]]] },
-  { n: '闪电', e: '⚡', st: [[[56, 6], [26, 52], [46, 52], [36, 94], [72, 44], [50, 44], [66, 6]]] },
-  { n: '叶子', e: '🍃', st: [[[50, 6], [72, 20], [84, 44], [78, 70], [50, 92], [22, 70], [16, 44], [28, 20]]] },
-  { n: '箭头', e: '➡️', st: [[[10, 38], [58, 38], [58, 18], [92, 50], [58, 82], [58, 62], [10, 62]]] },
-  { n: '六角星', e: '✨', st: [starPts2(6, 44, 20, 50, 50)] },
-  { n: '眼镜', e: '👓', st: [polyPts(7, 18, 28, 54, 0), polyPts(7, 18, 72, 54, 0)] },
-  { n: '苹果', e: '🍎', st: [polyPts(10, 34, 50, 58, -Math.PI / 2), [[50, 24], [56, 8], [68, 10], [58, 22]]] },
-  { n: '皇冠', e: '👑', st: [[[10, 78], [16, 26], [32, 48], [50, 18], [68, 48], [84, 26], [90, 78]]] }
-];
-function gConnect(board, lv) {
-  const cfg = G.connect.levels[lv - 1].cfg;
-  // 选一个笔画数合适、点数接近目标的图形
-  const cnt = sh2 => sh2.st.reduce((n, x) => n + x.length, 0);
-  let cand = SHAPE_LIB.filter(x => x.st.length === cfg.strokes);
-  if (!cand.length) cand = SHAPE_LIB;
-  const near = cand.filter(x => Math.abs(cnt(x) - cfg.pts) <= 8);
-  const sh = pick(near.length >= 2 ? near : cand);
-  // 每局随机：镜像 + 旋转 + 轻微抖动
-  const mir = rnd(2) ? 1 : -1, rot = (rnd(4) * 90 + (rnd(25) - 12)) * Math.PI / 180;
-  const ca = Math.cos(rot), sa = Math.sin(rot);
-  const tf = p => {
-    let x = (p[0] - 50) * mir, y = p[1] - 50;
-    let nx = x * ca - y * sa, ny = x * sa + y * ca;
-    return [50 + nx * .86 + (rnd(5) - 2) * .3, 50 + ny * .86 + (rnd(5) - 2) * .3];
-  };
-  const strokes = sh.st.map(st => st.map(tf));
-  const flat = []; strokes.forEach((st, si) => st.forEach((p, pi) => flat.push({ p: p, s: si, first: pi === 0 })));
-  const N = flat.length;
-  const label = i => cfg.down ? (N - i) * (cfg.step || 1) : (i + 1) * (cfg.step || 1);
-
-  const box = el('div');
-  const svg = svgEl('svg'); svg.id = 'cSvg'; svg.setAttribute('viewBox', '0 0 100 100');
-  svg.setAttribute('preserveAspectRatio', 'xMidYMid meet'); svg.style.width = '100%'; svg.style.height = '100%';
-  const fills = svgEl('g'); svg.appendChild(fills);
-  strokes.forEach(st => {
-    const f = svgEl('polygon'); f.setAttribute('class', 'shapefill');
-    f.setAttribute('points', st.map(p => p.join(',')).join(' ')); fills.appendChild(f);
-  });
-  const segs = svgEl('g'); svg.appendChild(segs);
-  let next = 0; const dots = [];
-  flat.forEach((node, i) => {
-    const g2 = svgEl('g'); g2.style.cursor = 'pointer';
-    const c = svgEl('circle'); c.setAttribute('cx', node.p[0]); c.setAttribute('cy', node.p[1]);
-    c.setAttribute('r', N > 18 ? 5.4 : 6.2);
-    c.setAttribute('class', 'dot' + (i === 0 ? ' next' : ''));
-    const t = svgEl('text'); t.setAttribute('x', node.p[0]); t.setAttribute('y', node.p[1]); t.setAttribute('dy', '0.35em');
-    t.setAttribute('style', 'font-size:' + (N > 18 ? 5 : 6) + 'px');
-    t.textContent = String(label(i));
-    g2.appendChild(c); g2.appendChild(t);
-    g2.addEventListener('click', () => {
-      if (i === next) {
-        Audio2.good(); c.setAttribute('class', 'dot on');
-        if (next > 0 && !node.first) {
-          const l = svgEl('line'), q = flat[next - 1].p;
-          l.setAttribute('x1', q[0]); l.setAttribute('y1', q[1]); l.setAttribute('x2', node.p[0]); l.setAttribute('y2', node.p[1]);
-          l.setAttribute('class', 'seg'); segs.appendChild(l);
-        }
-        next++;
-        if (next >= N) {
-          strokes.forEach(st => {
-            const l = svgEl('line');
-            l.setAttribute('x1', st[st.length - 1][0]); l.setAttribute('y1', st[st.length - 1][1]);
-            l.setAttribute('x2', st[0][0]); l.setAttribute('y2', st[0][1]);
-            l.setAttribute('class', 'seg'); segs.appendChild(l);
-          });
-          fills.querySelectorAll('.shapefill').forEach(f => f.classList.add('show'));
-          setPrompt('是一个' + sh.n + ' ' + sh.e);
-          Voice.say('画好啦，是一个' + sh.n);
-          later(700, () => roundWin(box));
-        } else {
-          dots[next].setAttribute('class', 'dot next');
-          const jump = flat[next].first;
-          setPrompt((jump ? '抬笔，跳到 ' : '下一个是 ') + '<span class="num">' + label(next) + '</span>');
-          Voice.say((jump ? '这一笔画完了，跳到 ' : '下一个是 ') + label(next));
-        }
-      } else { miss(); g2.classList.remove('shake'); g2.classList.add('shake'); setTimeout(() => g2.classList.remove('shake'), 350); }
-    });
-    dots.push(c); svg.appendChild(g2);
-  });
-  box.appendChild(svg); board.appendChild(box);
-  setPrompt('从 <span class="num">' + label(0) + '</span> 开始，按数字连');
-  Voice.say(cfg.down ? '这次倒着数，从 ' + label(0) + ' 开始往回连'
-    : cfg.step > 1 ? '按双数连，' + label(0) + '、' + label(1) + '、' + label(2) + ' 这样往下'
-      : '从 ' + label(0) + ' 开始，按数字顺序连起来'
-    + (cfg.strokes > 1 ? '，中间要抬笔跳一次' : ''));
-  const arm = () => hintIn(9000, () => { if (dots[next]) dots[next].setAttribute('class', 'dot next pulse'); arm(); });
-  arm();
-  Fit.cb = () => { const b = boardBox(), s2 = Math.min(b.w, b.h); box.style.width = px(s2); box.style.height = px(s2); };
-}
-
 /* ===================== 9 找规律（图形推理） ==============   ================================================================ */
 /* ==GL-DATA== 出题和讲解的文字：dev/voice/collect_gl.js 把这一段拿去列出所有要录的句子，这一段里不碰页面 */
 const GL_INK = '#2A2523', GL_SOFT = '#C9C2B4';
@@ -6138,7 +6025,7 @@ function gSpan(board, lv) {
   };
 }
 
-const GAME_IMPL = { fit: gFit, span: gSpan, schulte: gSchulte, dots: gDots, bond: gBond, mirror: gMirror, connect: gConnect, pattern: gPattern };
+const GAME_IMPL = { fit: gFit, span: gSpan, schulte: gSchulte, dots: gDots, bond: gBond, mirror: gMirror, pattern: gPattern };
 
 
 /* ===================== 家长设置 / 贴纸册 ===================== */
