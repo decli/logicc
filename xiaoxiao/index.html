@@ -61,8 +61,8 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 /* ---------- in-game HUD ---------- */
 #hud{position:fixed;z-index:5;display:flex;gap:12px;pointer-events:none}
 #hud > *{pointer-events:auto}
-#hud.side{right:0;top:0;bottom:0;flex-direction:column;justify-content:center;padding:max(14px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) 6px}
-#hud.top{left:0;right:0;top:0;flex-direction:row;align-items:stretch;padding:max(10px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) 0 max(12px,env(safe-area-inset-left))}
+#hud.side{right:0;top:0;bottom:0;transform-origin:100% 0;flex-direction:column;justify-content:center;padding:max(14px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) 6px}
+#hud.top{left:0;right:0;top:0;transform-origin:0 0;flex-direction:row;align-items:stretch;padding:max(10px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) 0 max(12px,env(safe-area-inset-left))}
 .panel{background:rgba(255,255,255,.88);border-radius:26px;box-shadow:var(--shadow);padding:12px 14px;display:flex;flex-direction:column;align-items:center;gap:6px}
 .lvname{font-size:20px;font-weight:900;text-align:center;line-height:1.2}
 .lvname small{display:block;font-size:15px;font-weight:700;opacity:.65}
@@ -130,6 +130,10 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .card .goals{margin:14px 0 4px;gap:16px}
 .card .goal{width:84px;height:84px}
 .card .goal img,.card .goal canvas{width:68px;height:68px}
+.card .moves{width:84px;height:84px;margin-right:6px}
+.card .moves b{font-size:36px}
+.card .moves span{font-size:13px}
+.card p.best{font-size:22px;font-weight:900;opacity:.75;margin:6px 0 0}
 .bigstars{font-size:64px;letter-spacing:4px;margin:4px 0 0;height:80px}
 .bigstars span{display:inline-block;filter:grayscale(1) opacity(.3)}
 .bigstars span.on{filter:none;animation:starIn .5s cubic-bezier(.2,1.8,.4,1) both}
@@ -1957,7 +1961,7 @@ const Game = {
   b: null, lv: null, li: 0, sprites: new Map(), vis: [], cv: null, ctx: null, dpr: 1,
   G: { cell: 60, ox: 0, oy: 0, w: 0, h: 0 }, base: null, clip: null, active: false, busy: false, over: false,
   sel: -1, down: null, hint: null, lastAct: 0, cheered: 0, lastCheer: -1e9, hudScore: 0, hudGoals: [], extraUsed: false,
-  saidLow: false, popSnd: 0, bg: [],
+  saidLow: false, popSnd: 0, bg: [], hintT: 0, hintAfter: 7000,
 
   init() {
     this.cv = $('#cv'); this.ctx = this.cv.getContext('2d');
@@ -1976,6 +1980,7 @@ const Game = {
     this.b = new Board(this.lv);
     this.active = true; this.busy = false; this.over = false; this.sel = -1; this.hint = null; this.extraUsed = false; this.saidLow = false;
     this.cheered = 0; this.hudScore = 0;
+    this.hintAfter = Store.d.seen.swipe ? 7000 : 1500;   // the very first game: the finger shows how to swipe straight away
     Fx.clear(); Clock.clear();
     this.sprites.clear();
     this.vis = this.b.cells.map(x => ({ ice: x.ice, box: x.box, bub: x.bub, hit: -1e9 }));
@@ -2015,10 +2020,17 @@ const Game = {
     if (!this.b) return;
     const wide = W >= H * 1.1;
     hud.className = wide ? 'side' : 'top';
+    // a landscape phone is too short for the side panel (and a very narrow phone too narrow for the top one):
+    // measure the panels at full size, then shrink the whole column (or row) until it fits
+    hud.style.transform = ''; hud.style.height = ''; hud.style.bottom = wide ? 'auto' : '';
     hud.style.width = wide ? clamp(W * 0.25, 200, 290) + 'px' : '';
+    const k = Math.min(1, wide ? H / hud.offsetHeight : W / hud.scrollWidth);
+    if (wide) hud.style.height = H / k + 'px'; else if (k < 1) hud.style.width = W / k + 'px';
+    if (k < 1) hud.style.transform = `scale(${k})`;
+    const box = hud.getBoundingClientRect();
     let area;
-    if (wide) area = { x: 0, y: 0, w: W - hud.offsetWidth, h: H };
-    else area = { x: 0, y: hud.offsetHeight, w: W, h: H - hud.offsetHeight };
+    if (wide) area = { x: 0, y: 0, w: W - box.width, h: H };
+    else area = { x: 0, y: box.height, w: W, h: H - box.height };
     const pad = 26, R = this.b.R, C = this.b.C, extra = this.b.pg.total ? 0.35 : 0;
     const cell = Math.floor(Math.min((area.w - 2 * pad) / C, (area.h - 2 * pad) / (R + extra), 120));
     const G = this.G;
@@ -2106,22 +2118,39 @@ const Game = {
       if (v.box) { const s = cell * (1 - hit); ctx.drawImage(Art.cache['box' + v.box], x - s / 2, y - s / 2, s, s); }
       if (v.bub) { const w = 1 + Math.sin(t / 400 + i) * 0.03, s = Art.T / d * w; ctx.drawImage(Art.cache.bub, x - s / 2, y - s / 2, s, s); }
     });
+    if (this.hint && !this.busy && $('#modal').hidden) {
+      const [r1, c1] = b.rc(this.hint.a), [r2, c2] = b.rc(this.hint.b), [x1, y1] = this.cellXY(r1, c1), [x2, y2] = this.cellXY(r2, c2);
+      this.drawFinger(ctx, x1, y1, x2, y2, t - this.hintT, 1);
+    }
   },
   frame(dt) {
     if (!this.active) return;
     for (const s of this.sprites.values()) { if (s.flash > 0 && !s.holdFlash) s.flash = Math.max(0, s.flash - dt / 250); }
-    // a gentle nudge when she has not moved for a while
-    if (!this.busy && !this.over && Clock.now - this.lastAct > 7000 && !this.hint && $('#modal').hidden) {
+    // a gentle nudge when she has not moved for a while: the two pieces wiggle and a finger shows the swipe
+    if (!this.busy && !this.over && Clock.now - this.lastAct > this.hintAfter && !this.hint && $('#modal').hidden) {
       const h = this.b.hint();
       if (h) {
         this.hint = h;
         const [r1, c1] = this.b.rc(h.a), [r2, c2] = this.b.rc(h.b);
         const A = this.sprites.get(this.b.cells[h.a].p.id), B = this.sprites.get(this.b.cells[h.b].p.id);
         if (A && B) { A.wig = 1; A.wdx = c2 - c1; A.wdy = r2 - r1; B.wig = 1; B.wdx = c1 - c2; B.wdy = r1 - r2; }
+        this.hintT = Clock.now;
       }
     }
     const want = this.b.score;
     if (this.hudScore < want) { this.hudScore = Math.min(want, this.hudScore + Math.max(10, (want - this.hudScore) * dt / 180)); this.drawScore(); }
+  },
+  // the hint's finger, drawn like the one in drawShowOff: press on (x0, y0), slide to (x1, y1), lift; t: ms since it began
+  drawFinger(ctx, x0, y0, x1, y1, t, a) {
+    const cell = this.G.cell, ph = (t % 1300) / 1300, slide = Ease.inOut(clamp((ph - 0.25) / 0.4, 0, 1));
+    const fx = lerp(x0, x1, slide), fy = lerp(y0, y1, slide), sz = cell * 0.95;
+    ctx.save();
+    ctx.globalAlpha = a * (ph < 0.08 ? ph / 0.08 : ph > 0.85 ? (1 - ph) / 0.15 : 1);
+    if (ph > 0.2 && ph < 0.75) { ctx.fillStyle = 'rgba(255,255,255,0.75)'; ctx.beginPath(); ctx.arc(fx, fy, cell * 0.2, 0, 7); ctx.fill(); }
+    ctx.font = `${sz}px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.shadowColor = 'rgba(74,43,94,0.35)'; ctx.shadowBlur = 8; ctx.shadowOffsetY = 3;
+    ctx.fillText('👆', fx + sz * 0.08, fy - sz * 0.06 + (ph < 0.25 ? (0.25 - ph) * cell * 0.6 : 0));
+    ctx.restore();
   },
   clearHint() {
     this.lastAct = Clock.now;
@@ -2186,6 +2215,7 @@ const Game = {
       return;
     }
     if (!Store.d.owed) { Store.d.owed = true; Store.d.played++; Store.save(); }
+    if (!Store.d.seen.swipe) { Store.d.seen.swipe = 1; Store.save(); this.hintAfter = 7000; }
     this.setMoves(B.moves);
     this.cheered = 0;
     if (res.two) this.sayOnce('combo', L.combo);
@@ -2615,6 +2645,7 @@ const Game = {
 
 // 动物消消乐 · the screens around the game: the level map, the cards (level start, result, pause), the parents'
 // corner behind a grown-up question, and the little toast that confirms a setting there.
+// The cards a child sees use pictures, numbers and the narrator's voice, not sentences: she can't read yet.
 const UI = {
   modal(build, o = {}) {
     const m = $('#modal'); m.hidden = false; m.innerHTML = '';
@@ -2703,17 +2734,17 @@ const UI = {
     this.modal(card => {
       card.appendChild(el('h2', null, `第 ${li + 1} 关`));
       card.appendChild(el('div', 'big', lv.name));
+      // the moves and the goals as pictures, the same as the panels she will see while playing (the narrator says the rest)
       const goals = el('div', 'goals');
+      goals.appendChild(el('div', 'moves', `<b>${lv.moves}</b><span>步</span>`));
       const probe = new Board(lv, mulberry32(1));
       probe.goals.forEach(g => { const d = el('div', 'goal'); d.appendChild(Art.goalIcon(g, 136)); d.appendChild(el('b', null, g.n)); goals.appendChild(d); });
       card.appendChild(goals);
-      card.appendChild(el('p', null, `一共 <b style="font-size:30px;color:#7b4dff">${lv.moves}</b> 步` + ((Store.d.best[li]) ? `　·　最高 ${Store.d.best[li].toLocaleString('en-US')} 分` : '')));
-      if (lv.tip) card.appendChild(el('p', null, `<span style="font-size:19px;opacity:.8">💡 ${L.tip[lv.tip]}</span>`));
+      if (Store.d.best[li]) card.appendChild(el('p', 'best', `🏆 ${Store.d.best[li].toLocaleString('en-US')}`));
       const row = el('div', 'row');
       row.appendChild(this.button('🗺️', 'ghost', () => this.closeModal()));
       row.appendChild(Store.d.owed ? this.button('✏️ 先做数学题', 'sun', () => this.play(li)) : this.button('开始 ▶', 'green', () => this.play(li)));
       card.appendChild(row);
-      if (Store.d.owed) card.appendChild(el('p', null, '<span style="font-size:17px;opacity:.7">每玩一局，再玩之前都要先做一页数学题哦</span>'));
     }, { close: () => this.closeModal() });
     const line = L.intro(lv, li + 1);
     const tip = lv.tip && !Store.d.seen['tip_' + lv.tip] ? L.tip[lv.tip] : null;
@@ -2743,17 +2774,15 @@ const UI = {
         row.appendChild(this.button('↻ 再玩一次', 'violet', () => this.play(o.li)));
         if (!last) row.appendChild(this.button('下一关 ▶', 'green', () => this.play(o.li + 1)));
         card.appendChild(row);
-        card.appendChild(el('p', null, '<span style="font-size:17px;opacity:.7">✏️ 再玩之前，先做一页数学题</span>'));
         setTimeout(() => Voice.say(last ? L.allDone : L.stars[o.stars]), 1500);
         if (last) setTimeout(() => Fx.confetti(120), 600);
       } else {
         card.appendChild(el('h2', 'violet', '差一点点！'));
-        card.appendChild(el('p', null, '还差这些：'));
         const goals = el('div', 'goals');
         o.goals.forEach(g => { if (g.left <= 0) return; const d = el('div', 'goal'); d.appendChild(Art.goalIcon(g, 136)); d.appendChild(el('b', null, g.left)); goals.appendChild(d); });
         card.appendChild(goals);
         const row = el('div', 'row');
-        if (o.extra) row.appendChild(this.button('✏️ 做 5 道题，多 5 步', 'sun', () => { this.closeModal(); Game.moreMoves(); }));
+        if (o.extra) row.appendChild(this.button('✏️ +5 步', 'sun', () => { this.closeModal(); Game.moreMoves(); }));
         row.appendChild(this.button('↻ 再试一次', 'violet', () => this.play(o.li)));
         row.appendChild(this.button('🗺️', 'ghost', () => this.map()));
         card.appendChild(row);

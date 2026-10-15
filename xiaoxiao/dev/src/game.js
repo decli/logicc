@@ -4,7 +4,7 @@ const Game = {
   b: null, lv: null, li: 0, sprites: new Map(), vis: [], cv: null, ctx: null, dpr: 1,
   G: { cell: 60, ox: 0, oy: 0, w: 0, h: 0 }, base: null, clip: null, active: false, busy: false, over: false,
   sel: -1, down: null, hint: null, lastAct: 0, cheered: 0, lastCheer: -1e9, hudScore: 0, hudGoals: [], extraUsed: false,
-  saidLow: false, popSnd: 0, bg: [],
+  saidLow: false, popSnd: 0, bg: [], hintT: 0, hintAfter: 7000,
 
   init() {
     this.cv = $('#cv'); this.ctx = this.cv.getContext('2d');
@@ -23,6 +23,7 @@ const Game = {
     this.b = new Board(this.lv);
     this.active = true; this.busy = false; this.over = false; this.sel = -1; this.hint = null; this.extraUsed = false; this.saidLow = false;
     this.cheered = 0; this.hudScore = 0;
+    this.hintAfter = Store.d.seen.swipe ? 7000 : 1500;   // the very first game: the finger shows how to swipe straight away
     Fx.clear(); Clock.clear();
     this.sprites.clear();
     this.vis = this.b.cells.map(x => ({ ice: x.ice, box: x.box, bub: x.bub, hit: -1e9 }));
@@ -62,10 +63,17 @@ const Game = {
     if (!this.b) return;
     const wide = W >= H * 1.1;
     hud.className = wide ? 'side' : 'top';
+    // a landscape phone is too short for the side panel (and a very narrow phone too narrow for the top one):
+    // measure the panels at full size, then shrink the whole column (or row) until it fits
+    hud.style.transform = ''; hud.style.height = ''; hud.style.bottom = wide ? 'auto' : '';
     hud.style.width = wide ? clamp(W * 0.25, 200, 290) + 'px' : '';
+    const k = Math.min(1, wide ? H / hud.offsetHeight : W / hud.scrollWidth);
+    if (wide) hud.style.height = H / k + 'px'; else if (k < 1) hud.style.width = W / k + 'px';
+    if (k < 1) hud.style.transform = `scale(${k})`;
+    const box = hud.getBoundingClientRect();
     let area;
-    if (wide) area = { x: 0, y: 0, w: W - hud.offsetWidth, h: H };
-    else area = { x: 0, y: hud.offsetHeight, w: W, h: H - hud.offsetHeight };
+    if (wide) area = { x: 0, y: 0, w: W - box.width, h: H };
+    else area = { x: 0, y: box.height, w: W, h: H - box.height };
     const pad = 26, R = this.b.R, C = this.b.C, extra = this.b.pg.total ? 0.35 : 0;
     const cell = Math.floor(Math.min((area.w - 2 * pad) / C, (area.h - 2 * pad) / (R + extra), 120));
     const G = this.G;
@@ -153,22 +161,39 @@ const Game = {
       if (v.box) { const s = cell * (1 - hit); ctx.drawImage(Art.cache['box' + v.box], x - s / 2, y - s / 2, s, s); }
       if (v.bub) { const w = 1 + Math.sin(t / 400 + i) * 0.03, s = Art.T / d * w; ctx.drawImage(Art.cache.bub, x - s / 2, y - s / 2, s, s); }
     });
+    if (this.hint && !this.busy && $('#modal').hidden) {
+      const [r1, c1] = b.rc(this.hint.a), [r2, c2] = b.rc(this.hint.b), [x1, y1] = this.cellXY(r1, c1), [x2, y2] = this.cellXY(r2, c2);
+      this.drawFinger(ctx, x1, y1, x2, y2, t - this.hintT, 1);
+    }
   },
   frame(dt) {
     if (!this.active) return;
     for (const s of this.sprites.values()) { if (s.flash > 0 && !s.holdFlash) s.flash = Math.max(0, s.flash - dt / 250); }
-    // a gentle nudge when she has not moved for a while
-    if (!this.busy && !this.over && Clock.now - this.lastAct > 7000 && !this.hint && $('#modal').hidden) {
+    // a gentle nudge when she has not moved for a while: the two pieces wiggle and a finger shows the swipe
+    if (!this.busy && !this.over && Clock.now - this.lastAct > this.hintAfter && !this.hint && $('#modal').hidden) {
       const h = this.b.hint();
       if (h) {
         this.hint = h;
         const [r1, c1] = this.b.rc(h.a), [r2, c2] = this.b.rc(h.b);
         const A = this.sprites.get(this.b.cells[h.a].p.id), B = this.sprites.get(this.b.cells[h.b].p.id);
         if (A && B) { A.wig = 1; A.wdx = c2 - c1; A.wdy = r2 - r1; B.wig = 1; B.wdx = c1 - c2; B.wdy = r1 - r2; }
+        this.hintT = Clock.now;
       }
     }
     const want = this.b.score;
     if (this.hudScore < want) { this.hudScore = Math.min(want, this.hudScore + Math.max(10, (want - this.hudScore) * dt / 180)); this.drawScore(); }
+  },
+  // the hint's finger, drawn like the one in drawShowOff: press on (x0, y0), slide to (x1, y1), lift; t: ms since it began
+  drawFinger(ctx, x0, y0, x1, y1, t, a) {
+    const cell = this.G.cell, ph = (t % 1300) / 1300, slide = Ease.inOut(clamp((ph - 0.25) / 0.4, 0, 1));
+    const fx = lerp(x0, x1, slide), fy = lerp(y0, y1, slide), sz = cell * 0.95;
+    ctx.save();
+    ctx.globalAlpha = a * (ph < 0.08 ? ph / 0.08 : ph > 0.85 ? (1 - ph) / 0.15 : 1);
+    if (ph > 0.2 && ph < 0.75) { ctx.fillStyle = 'rgba(255,255,255,0.75)'; ctx.beginPath(); ctx.arc(fx, fy, cell * 0.2, 0, 7); ctx.fill(); }
+    ctx.font = `${sz}px ${FONT}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.shadowColor = 'rgba(74,43,94,0.35)'; ctx.shadowBlur = 8; ctx.shadowOffsetY = 3;
+    ctx.fillText('👆', fx + sz * 0.08, fy - sz * 0.06 + (ph < 0.25 ? (0.25 - ph) * cell * 0.6 : 0));
+    ctx.restore();
   },
   clearHint() {
     this.lastAct = Clock.now;
@@ -233,6 +258,7 @@ const Game = {
       return;
     }
     if (!Store.d.owed) { Store.d.owed = true; Store.d.played++; Store.save(); }
+    if (!Store.d.seen.swipe) { Store.d.seen.swipe = 1; Store.save(); this.hintAfter = 7000; }
     this.setMoves(B.moves);
     this.cheered = 0;
     if (res.two) this.sayOnce('combo', L.combo);
