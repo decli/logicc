@@ -45,6 +45,7 @@ const KNOWN = [   // calls built at run time, expanded below; matched on a piece
   "' 分成几和 '", "' 分成 ' + a + ' 和几？'", 'c.why', "'画的都对，还差 '", "'画好啦，是一个'", "'这一笔画完了，跳到 '",
   "'这次倒着数，从 '", "'一次消掉 '",
   'SHI_SAY',   // 古诗小剧场的旁白在它自己的语音包里（collect_shi.js）
+  'GL_T.', 'Q.ask',   // 找规律的题目和讲解也在自己的语音包里（collect_gl.js）
 ];
 const calls = [...src.matchAll(/Voice\.(say|short)\(/g)];
 const unknown = [];

@@ -69,6 +69,10 @@ POLY = {
     '一模一样': 'yi1 mu2 yi1 yang4', '模样': 'mu2 yang4', '规律': 'gui1 lv4', '重复': 'chong2 fu4',
     '分成': 'fen1 cheng2', '分一分': 'fen1 yi1 fen1', '合起来': 'he2 qi3 lai2', '和几': 'he2 ji3',
     '先点': 'xian1 dian3', '暂停': 'zan4 ting2', '堆满': 'dui1 man3', '拼满': 'pin1 man3',
+    # 找规律（图形推理）的讲解
+    '每行': 'mei3 hang2', '还缺': 'hai2 que1', '第二行': 'di4 er4 hang2', '第三行': 'di4 san1 hang2', '指着': 'zhi3 zhe5', '针转': 'zhen1 zhuan4',
+    '转一格': 'zhuan4 yi1 ge2', '转两格': 'zhuan4 liang3 ge2', '再转': 'zai4 zhuan4', '三种': 'san1 zhong3', '外圈': 'wai4 quan1',
+    '叠起来': 'die2 qi3 lai2', '涂黑': 'tu2 hei1', '都涂黑': 'dou1 tu2 hei1', '直线': 'zhi2 xian4', '数线条': 'shu3 xian4 tiao2',
     '数点点': 'shu3 dian3 dian3', '中间的空': 'zhong1 jian1 de5 kong4', '肚子': 'du4 zi5',
     '睡得': 'shui4 de5', '走得': 'zou3 de5', '跑得': 'pao3 de5', '画得': 'hua4 de5',
     '快快地': 'kuai4 kuai4 de5', '轻轻地': 'qing1 qing1 de5', '慢慢地': 'man4 man4 de5', '悄悄地': 'qiao1 qiao1 de5', '大声地': 'da4 sheng1 de5', '高高地': 'gao1 gao1 de5', '静静地': 'jing4 jing4 de5',

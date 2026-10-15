@@ -1,0 +1,6 @@
+# 不当成网站文件上传到 Cloudflare 的东西（_headers 和这个文件本身 wrangler 会自动跳过）
+.git
+wrangler.jsonc
+.wrangler
+.dev.vars*
+.env*
