@@ -2481,8 +2481,7 @@ const Game = {
   // or column, the bomb's diamond, a spinning rainbow). The first few times of each kind a finger also shows the swipe.
   // It follows the piece while it falls, ends when the piece is used, and gets out of the way when she touches the board.
   showOff(p) {
-    const kind = p.s, n = Store.d.seen['hand_' + kind] || 0, hand = n < 3;
-    if (hand) { Store.d.seen['hand_' + kind] = n + 1; Store.save(); }
+    const kind = p.s, hand = (Store.d.seen['hand_' + kind] || 0) < 3;   // counted only when a finger is really shown
     const it = { t: -380, dur: hand ? 3400 : 1500, id: p.id, kind, hand };
     it.draw = (ctx, k, t) => this.drawShowOff(ctx, it, t);
     Fx.items.push(it);
@@ -2490,8 +2489,8 @@ const Game = {
   hideShowOff() { for (const it of Fx.items) if (it.kind && it.t < it.dur - 220) it.t = Math.max(it.t, it.dur - 220); },
   drawShowOff(ctx, it, t) {
     if (t < 0) return;
-    const s = this.active && this.sprites.get(it.id);
-    if (!s) { it.t = it.dur; return; }
+    const s = this.active && $('#modal').hidden && this.sprites.get(it.id);
+    if (!s) { it.t = it.dur; return; }   // the piece was used up, or a card (pause, result) opened over the board
     const G = this.G, cell = G.cell, [x, y] = this.cellXY(s.r, s.c), kind = it.kind;
     const a = Math.min(1, t / 200, (it.dur - t) / 220), pul = 0.5 + 0.5 * Math.sin(t / 130);
     const col = kind === 'c' ? '#ffffff' : ANIMALS[s.p.c].fx[0];
@@ -2529,11 +2528,16 @@ const Game = {
       ctx.lineWidth = cell * 0.09;
       hues.forEach((h, i) => { const a0 = t / 300 + i * Math.PI / 3; ctx.strokeStyle = h; ctx.beginPath(); ctx.arc(x, y, cell * 0.74, a0, a0 + Math.PI / 3 - 0.12); ctx.stroke(); });
     }
-    // the finger: press on the piece, slide to a neighbour, lift; again and again
-    const at = this.b.cells.findIndex(x => x.p === s.p);
-    if (it.hand && !this.busy && at >= 0) {
-      const [r, c] = this.b.rc(at), dirs = [[0, 1], [0, -1], [1, 0], [-1, 0]];
-      const dir = dirs.find(([dr, dc]) => { const j = this.b.idx(r + dr, c + dc); return j >= 0 && this.b.on(j) && this.b.movable(j); }) || [0, 1];
+    // the finger: press on the piece, slide it the way that really works, lift; again and again. Once the board has
+    // settled it picks the best real move for this piece; if the piece has none right now, there is no finger.
+    if (it.hand && !this.busy && it.dir === undefined) {
+      const at = this.b.cells.findIndex(x => x.p === s.p);
+      const m = at < 0 ? null : this.b.allMoves().filter(m => m.a === at || m.b === at).sort((x, y) => y.v - x.v)[0];
+      if (m) { const [r1, c1] = this.b.rc(at), [r2, c2] = this.b.rc(m.a === at ? m.b : m.a); it.dir = [r2 - r1, c2 - c1]; } else it.dir = null;
+      if (it.dir) { const d = Store.d.seen; d['hand_' + it.kind] = (d['hand_' + it.kind] || 0) + 1; Store.save(); }
+    }
+    if (it.hand && !this.busy && it.dir) {
+      const dir = it.dir;
       const ph = (t % 1300) / 1300, slide = Ease.inOut(clamp((ph - 0.25) / 0.4, 0, 1));
       const fx = x + dir[1] * slide * cell, fy = y + dir[0] * slide * cell, sz = cell * 0.95;
       ctx.globalAlpha = a * (ph < 0.08 ? ph / 0.08 : ph > 0.85 ? (1 - ph) / 0.15 : 1);
