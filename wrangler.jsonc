@@ -1,0 +1,9 @@
+// Cloudflare Workers 的部署配置（静态网站，整个仓库根目录就是网站，见 README「换个网址（Cloudflare）」）。
+// 以前没有这个文件：main 的正式构建（wrangler deploy）会自动生成一份一样的配置，
+// 但 PR 分支的预览构建（wrangler versions upload）不会自动生成，没有它就直接失败。
+{
+  "name": "logicc",
+  "compatibility_date": "2026-10-01",
+  "observability": { "enabled": true },
+  "assets": { "directory": "." }
+}

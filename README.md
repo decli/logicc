@@ -304,7 +304,9 @@
 github.io 打不开时，同一个仓库在 Cloudflare 上还部署了一份（Workers 的静态网站，绑在自己的子域名上，部署的是这个仓库的 `main`，推送后一分钟左右自动更新）。
 
 1. Cloudflare 后台 → Workers & Pages → 创建 → 导入 Git 仓库，选这个仓库，生产分支 `main`；不需要构建，整个仓库根目录就是网站
-   （也可以建成 Pages 项目：框架选「无」，构建命令 `exit 0`，输出目录 `/`）
+   （也可以建成 Pages 项目：框架选「无」，构建命令 `exit 0`，输出目录 `/`）。
+   根目录的 `wrangler.jsonc` 写明了 Worker 名 `logicc` 和「整个目录都是静态文件」：PR 分支的预览构建（`wrangler versions upload`）
+   不会像正式构建那样自动生成配置，没有这个文件就会失败。`.assetsignore` 列出不上传的东西（`.git` 等）
 2. 想用自己的域名：在这个项目的「域和路由」（Pages 叫「自定义域」）里加一个子域名，比如 `play.你的域名`，DNS 记录和证书 Cloudflare 会自动加
 3. 根目录的 `_headers` 只有 Cloudflare 读：所有文件带 `X-Robots-Tag: noindex`，首页和 `sw.js` 每次检查新版本，语音包长缓存；
    `robots.txt` 只放 Google、Bing 进来（它们要读到 noindex 才不收录），其他爬虫、AI 训练爬虫一律不让抓。和主站不互相链接，就不会影响主站的搜索收录
