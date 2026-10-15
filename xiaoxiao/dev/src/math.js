@@ -53,12 +53,12 @@ const MathGate = {
       const root = $('#math'); root.hidden = false; root.innerHTML = '';
       $('#fx').style.zIndex = 46;   // sparkles and confetti over the page
       const t0 = Date.now();
-      let cur = 0, first = 0, finished = false;
+      let cur = 0, first = 0, finished = false, praised = '';
       Music.stop();   // quiet for the sums (decli); the game starts it again
       const sheet = el('div', 'sheet'), head = el('div', 'head');
       const home = UI.homeButton(); home.style.width = home.style.height = '46px'; home.style.fontSize = '22px';
       head.appendChild(home);
-      head.appendChild(el('h3', null, o.extra ? '✏️ 做对 5 道题，多 5 步' : '✏️ 先做一页数学题'));
+      head.appendChild(el('h3', null, o.extra ? '✏️ 做对 5 道题，多 5 步' : '✏️ ' + L.math.title));
       const prog = el('div', 'prog', `0 / ${count}`);
       head.appendChild(prog);
       const lock = el('button', 'ibtn', '🔒'); lock.style.width = lock.style.height = '46px'; lock.style.fontSize = '22px';
@@ -148,7 +148,9 @@ const MathGate = {
           Fx.burst(r.left + r.width * 0.8, r.top + r.height / 2, ['#5fe0b0', '#ffd23a'], 10, 0.8, 60);
           const n = qs.filter(x => x.ok).length;
           if (n === count) { draw(); return finish(false); }
-          Voice.say(n === Math.floor(count / 2) && count >= 10 ? L.math.half : pick(L.math.right));
+          // never the same praise twice in a row
+          if (n === Math.floor(count / 2) && count >= 10) Voice.say(L.math.half);
+          else { praised = pick(L.math.right.filter(t => t !== praised)); Voice.say(praised); }
           let next = qs.findIndex((x, i) => i > cur && !x.ok);
           if (next < 0) next = qs.findIndex(x => !x.ok);
           cur = next;

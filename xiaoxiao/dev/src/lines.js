@@ -1,5 +1,6 @@
 // 动物消消乐 · everything the narrator says. dev/voice/collect.js reads this file (with levels.js and board.js) to
 // list every line for recording, so a line built from a level must be built here and nowhere else.
+const KID = '可可';   // decli's daughter, who plays this
 const NUM_ZH = n => String(n);   // the voice reads digits naturally ("18只" → 十八只)
 
 // the animals change every game (cast.js), so a line never names them: the intro says how many kinds to collect and
@@ -72,15 +73,17 @@ const L = {
   extraOffer: '做5道数学题，就能再多5步！',
   extraDone: '多了5步，加油！',
   allDone: '十关全部通过啦！你是消消乐大师！',
+  // decli: call her by name on the math page, every right answer is praise for 可可
   math: {
-    start: '玩之前，先做一页数学题吧！20道题都做对，就能接着玩啦。',
+    title: `${KID}，敢不敢先挑战一页数学题？`,
+    start: `${KID}，敢不敢先挑战一页数学题？20道题都做对，就能接着玩啦。`,
     extra: '做对5道题，就多给你5步！',
-    right: ['对啦！', '真棒！', '答对了！', '没错！', '好厉害！'],
+    right: [`${KID}，你答对啦！`, `${KID}真棒！`, `${KID}，完全正确！`, `${KID}，你好厉害！`, `${KID}，没错，就是这样！`],
     wrong: '再想一想。',
     show: '看看正确答案，照着写一遍。',
-    half: '已经做完一半啦！',
-    done: '全部做完啦！真厉害，去玩吧！',
-    doneExtra: '做完啦！多给你5步！',
+    half: `${KID}，已经做完一半啦！`,
+    done: `${KID}，全部做完啦！真厉害，去玩吧！`,
+    doneExtra: `${KID}，做完啦！多给你5步！`,
   },
   parent: '这里是给爸爸妈妈的设置哦。',
   gift: {
