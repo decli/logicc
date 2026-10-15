@@ -1,7 +1,22 @@
-// 动物消消乐 · sound effects and the background tune, all made on the spot with Web Audio (no sound files).
-// Notes come from C major pentatonic so a long cascade of pops still sounds like a melody going up.
+// 动物消消乐 · sound effects, made on the spot with Web Audio, and the recorded sounds in sound/ (decli's background
+// music and English cheers). Notes come from C major pentatonic so a long cascade of pops still sounds like a melody going up.
 const Snd = {
   ctx: null, on: true, music: true, master: null, sfx: null, bus: null, mus: null, noiseBuf: null, ducked: false,
+  raw: {}, bufs: {},
+  // fetch the recorded sounds; they are decoded once sound is allowed (the first touch)
+  load(names) {
+    if (!window.fetch || location.protocol === 'file:') return;
+    names.forEach(n => fetch(`sound/${n}.mp3`).then(r => (r.ok ? r.arrayBuffer() : Promise.reject(r.status)))
+      .then(ab => { this.raw[n] = ab; this.decode(n); }).catch(() => { }));
+  },
+  decode(n) {
+    const ab = this.raw[n];
+    if (!this.ctx || !ab) return;
+    delete this.raw[n];
+    new Promise((res, rej) => { const q = this.ctx.decodeAudioData(ab, res, rej); if (q && q.catch) q.catch(rej); })
+      .then(b => { this.bufs[n] = b; Music.sync(); }).catch(() => { });
+  },
+  clip(n) { return this.bufs[n] || null; },
   init() {
     if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; }
     const AC = window.AudioContext || window.webkitAudioContext;
@@ -22,10 +37,11 @@ const Snd = {
     for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
     this.noiseBuf = nb;
     if (c.state === 'suspended') c.resume();
+    Object.keys(this.raw).forEach(n => this.decode(n));
   },
   setOn(v) { this.on = v; if (this.sfx) this.sfx.gain.value = v ? 0.8 : 0; },
   duck(v) { this.ducked = v; if (this.mus) this.mus.gain.setTargetAtTime(this.musicLevel(), this.ctx.currentTime, 0.15); },
-  musicLevel() { return this.music && Music.playing ? (this.ducked ? 0.05 : 0.14) : 0; },
+  musicLevel() { return this.music && Music.playing ? (this.ducked ? 0.36 : 0.6) : 0; },
 
   tone(f, dur, o = {}) {
     if (!this.ctx || !this.on) return;
@@ -105,53 +121,58 @@ const Snd = {
       case 'right': this.tone(this.pent(7), 0.15, { type: 'triangle', vol: 0.18 }); this.tone(this.pent(9), 0.3, { type: 'triangle', vol: 0.18, at: 0.1, verb: true }); break;
       case 'wrong': this.tone(220, 0.25, { type: 'triangle', vol: 0.15, to: 190 }); break;
       case 'key': this.tone(700 + k * 30, 0.05, { type: 'sine', vol: 0.1 }); break;
+      // the blind box (gift.js): landing, each tap (k = 1-3, higher each time), bursting open, and a rare friend
+      case 'gland': this.tone(150, 0.3, { type: 'sine', to: 70, vol: 0.35 }); this.noise(0.14, { f: 320, q: 1, vol: 0.22 }); this.tone(this.pent(4), 0.25, { type: 'triangle', vol: 0.1, at: 0.06, verb: true }); break;
+      case 'gtap':
+        this.noise(0.12, { f: 1600 + k * 500, q: 1.2, vol: 0.22 }); this.tone(220 + k * 40, 0.1, { type: 'triangle', to: 140, vol: 0.18 });
+        this.tone(this.pent(5 + k * 2), 0.22, { type: 'triangle', vol: 0.16, at: 0.04, verb: true }); this.tone(this.pent(8 + k * 2), 0.25, { type: 'sine', vol: 0.08, at: 0.08, verb: true }); break;
+      case 'gopen':
+        this.noise(0.4, { f: 700, fto: 7000, q: 0.7, vol: 0.3 }); this.tone(110, 0.35, { type: 'sine', to: 55, vol: 0.3 });
+        [0, 2, 4, 5, 7, 9, 10, 12].forEach((n, i) => this.tone(this.pent(5 + n), 0.45, { type: 'triangle', vol: 0.13, at: 0.08 + i * 0.05, verb: true }));
+        this.tone(this.pent(17), 1.3, { type: 'sine', vol: 0.06, at: 0.5, verb: true }); break;
+      case 'grare': [0, 2, 4, 5, 7, 9].forEach((n, i) => this.tone(this.pent(12 + n), 0.9, { type: 'sine', vol: 0.06, at: 0.55 + i * 0.07, verb: true })); break;
       case 'sparkle': for (let i = 0; i < 5; i++) this.tone(this.pent(10 + Math.floor(Math.random() * 6)), 0.15, { type: 'sine', vol: 0.05, at: i * 0.04, verb: true }); break;
     }
   },
 };
 
-// A cheerful little loop: four chords, a walking bass, a marimba melody that changes every bar but repeats every
-// eight bars so it is catchy rather than random.
+// The background music: decli's two cheerful tunes, sound/bg1.mp3 and sound/bg2.mp3, one after the other. decli: it
+// keeps playing all through the game (map, levels, cards, the blind box) and stops only for the pause card and the
+// math page; the narrator turns it down a little while speaking. Each tune crossfades into the next, so there is no
+// gap or click at the seam, and starting it while it plays changes nothing.
 const Music = {
-  playing: false, timer: 0, step: 0, next: 0,
+  want: false, order: ['bg1', 'bg2'], cur: null, timer: 0, X: 0.8,
+  get playing() { return this.want; },
   start() {
-    if (!Snd.ctx || this.playing) return;
-    this.playing = true; this.step = 0; this.next = Snd.ctx.currentTime + 0.1;
-    Snd.mus.gain.setTargetAtTime(Snd.musicLevel(), Snd.ctx.currentTime, 0.3);
-    const tick = () => { if (!this.playing) return; this.schedule(); this.timer = setTimeout(tick, 60); };
-    tick();
+    this.want = true;
+    this.sync();
+    if (Snd.mus) Snd.mus.gain.setTargetAtTime(Snd.musicLevel(), Snd.ctx.currentTime, 0.3);
   },
-  stop() { this.playing = false; clearTimeout(this.timer); if (Snd.mus) Snd.mus.gain.setTargetAtTime(0, Snd.ctx.currentTime, 0.2); },
+  stop() {
+    this.want = false; clearTimeout(this.timer);
+    const o = this.cur; this.cur = null;
+    if (!o || !Snd.ctx) return;
+    const now = Snd.ctx.currentTime;
+    o.g.gain.cancelScheduledValues(now); o.g.gain.setValueAtTime(Math.max(0.0001, o.g.gain.value), now); o.g.gain.linearRampToValueAtTime(0.0001, now + 0.5);
+    try { o.src.stop(now + 0.55); } catch (_) { }
+  },
   refresh() { if (Snd.mus) Snd.mus.gain.setTargetAtTime(Snd.musicLevel(), Snd.ctx.currentTime, 0.2); },
-  // C G Am F, sixteenth steps at 112 bpm
-  CH: [[0, 4, 7], [7, 11, 14], [9, 12, 16], [5, 9, 12]],
-  MEL: [[0, 2, 4, -1, 4, -1, 2, 4], [7, -1, 4, 2, 4, -1, -1, -1], [9, -1, 7, 4, 2, -1, 4, -1], [5, 4, 2, -1, 0, -1, -1, -1],
-    [4, 4, 7, -1, 9, 7, 4, -1], [7, 9, 11, -1, 7, -1, -1, -1], [9, 7, 9, 12, 11, -1, 9, -1], [7, -1, 5, 4, 2, -1, 0, -1]],
-  schedule() {
-    const c = Snd.ctx, sp = 60 / 112 / 4;
-    while (this.next < c.currentTime + 0.25) {
-      const s = this.step, bar = Math.floor(s / 16) % 8, inBar = s % 16, ch = this.CH[bar % 4];
-      const t = this.next - c.currentTime;
-      const note = (semi, oct) => 261.63 * Math.pow(2, semi / 12 + oct);
-      if (inBar % 4 === 0) this.voice(note(ch[0], -1), 0.3, 'sine', 0.22, t);                         // bass
-      if (inBar % 4 === 2) this.voice(note(ch[(inBar / 2) % 3], -1) * 2, 0.15, 'triangle', 0.05, t);  // offbeat chord tone
-      if (inBar % 2 === 0) { const m = this.MEL[bar][inBar / 2]; if (m >= 0) this.voice(note(m, 0), 0.28, 'triangle', 0.09, t, true); }
-      if (inBar % 8 === 4) this.hat(t);
-      this.step++; this.next += sp;
-    }
+  // start the first tune that has been decoded, if none is playing yet (called again when a tune finishes decoding)
+  sync() {
+    const c = Snd.ctx, name = this.order.find(n => Snd.clip(n));
+    if (!c || !this.want || this.cur || !name) return;
+    this.loop(name, c.currentTime + 0.05, 0.6);
   },
-  voice(f, dur, type, vol, at, bell) {
-    const c = Snd.ctx, t = c.currentTime + at, o = c.createOscillator(), g = c.createGain();
-    o.type = type; o.frequency.value = f;
-    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    o.connect(g); g.connect(Snd.mus);
-    if (bell) { const o2 = c.createOscillator(), g2 = c.createGain(); o2.frequency.value = f * 4; g2.gain.setValueAtTime(vol * 0.25, t); g2.gain.exponentialRampToValueAtTime(0.0001, t + 0.08); o2.connect(g2); g2.connect(Snd.mus); o2.start(t); o2.stop(t + 0.1); }
-    o.start(t); o.stop(t + dur + 0.02);
-  },
-  hat(at) {
-    const c = Snd.ctx, t = c.currentTime + at, s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
-    s.buffer = Snd.noiseBuf; f.type = 'highpass'; f.frequency.value = 7000;
-    g.gain.setValueAtTime(0.04, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
-    s.connect(f); f.connect(g); g.connect(Snd.mus); s.start(t, Math.random() * 0.5); s.stop(t + 0.06);
+  loop(name, at, fadeIn) {
+    const c = Snd.ctx, X = this.X, buf = Snd.clip(name), src = c.createBufferSource(), g = c.createGain(), end = at + buf.duration;
+    src.buffer = buf; src.connect(g); g.connect(Snd.mus);
+    g.gain.setValueAtTime(0.0001, at); g.gain.linearRampToValueAtTime(1, at + fadeIn);
+    g.gain.setValueAtTime(1, end - X); g.gain.linearRampToValueAtTime(0.0001, end);
+    src.start(at); src.stop(end + 0.05);
+    const me = this.cur = { name, src, g };
+    clearTimeout(this.timer);
+    // the other tune next (the same one again if the other has not loaded)
+    const other = this.order[(this.order.indexOf(name) + 1) % this.order.length];
+    this.timer = setTimeout(() => { if (this.cur === me) this.loop(Snd.clip(other) ? other : name, Math.max(c.currentTime + 0.05, end - X), X); }, Math.max(0, (end - X - c.currentTime - 0.5) * 1000));
   },
 };

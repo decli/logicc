@@ -54,6 +54,8 @@ const Store = {
       math: { max: 20, ops: 2, mode: 'mix', count: 20 },
       log: [],               // finished math pages: [time, count, right first time, seconds, settings label]
       seen: {},              // tips already shown
+      gifts: {},             // friends from the blind box (gift.js): id -> how many
+      giftFresh: [],         // new friends not yet seen in the album
       snd: true, voi: true, mus: true,
     };
   },

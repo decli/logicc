@@ -11,14 +11,14 @@
 // Specials: s 'h' clears its row, 'v' its column, 'b' bomb (diamond of radius 2), 'c' rainbow ball (no colour).
 
 const ANIMALS = [
-  { id: 'pig', name: '小猪', fx: ['#f7a8e6', '#d977c8', '#fff0fb'] },
-  { id: 'panda', name: '熊猫', fx: ['#ffffff', '#3a3a3a', '#d9d9d9'] },
-  { id: 'hippo', name: '河马', fx: ['#5b95e2', '#2f63b3', '#cfe2ff'] },
-  { id: 'giraffe', name: '长颈鹿', fx: ['#ffd23a', '#d9a300', '#fff4c2'] },
-  { id: 'parrot', name: '鹦鹉', fx: ['#ff5a2a', '#c22a08', '#ffd2c2'] },
-  { id: 'snake', name: '小青蛇', fx: ['#7ad94a', '#3d8f17', '#e0ffcc'] },
+  { id: 'pig', name: '小猪', fx: ['#ffa3c8', '#e2668f', '#ffe0ec'] },
+  { id: 'panda', name: '熊猫', fx: ['#ffffff', '#2f3040', '#e4e6ee'] },
+  { id: 'hippo', name: '河马', fx: ['#b48cff', '#7b52e0', '#e6dbff'] },
+  { id: 'giraffe', name: '长颈鹿', fx: ['#ffc83a', '#e08e10', '#fff0b8'] },
+  { id: 'parrot', name: '鹦鹉', fx: ['#ff4a3a', '#c8231a', '#ffc0b2'] },
+  { id: 'frog', name: '小青蛙', fx: ['#6fd65a', '#2f9e3a', '#d2f8b4'] },
 ];
-const PENGUIN = 6;   // its cell in animals.png
+const PENGUIN = 6;   // the kind after the six animals (its head is FRIENDS' penguin)
 
 const PTS = { piece: 20, blast: 30, make: { h: 100, v: 100, b: 150, c: 250 }, ice: 80, box: 60, bub: 50, home: 1000, bonus: 200 };
 
@@ -586,7 +586,7 @@ function excitement(phases) {
   const made = phases.reduce((n, ph) => n + (ph.makes ? ph.makes.filter(m => m.s === 'c').length * 2 + ph.makes.length : 0), 0);
   const x = Math.max(cascades - 1, 0) * 1.0 + cleared / 9 + acts * 0.6 + made * 0.5 + big * 1.5;
   let lvl = x >= 7 ? 5 : x >= 5.2 ? 4 : x >= 3.8 ? 3 : x >= 2.6 ? 2 : x >= 1.7 ? 1 : 0;
-  // making a special piece always gets a cheer: "Great!" for a striped one, "Excellent!" for a bomb, "Amazing!" for a rainbow ball
-  for (const ph of phases) for (const m of ph.makes || []) lvl = Math.max(lvl, m.s === 'c' ? 4 : m.s === 'b' ? 3 : 2);
+  // making a special piece always gets a cheer: "Great!" for a striped one, "Excellent!" for a bomb, "Unbelievable!" for a rainbow ball
+  for (const ph of phases) for (const m of ph.makes || []) lvl = Math.max(lvl, m.s === 'c' ? 5 : m.s === 'b' ? 3 : 2);
   return lvl;
 }

@@ -10,6 +10,25 @@ function goalSay(g, lv) {
   if (g.t === 'pg') return `把${lv.penguins.total}只小企鹅送回家`;
   return '';
 }
+// Every animal in decli's pictures (heads.webp, cut by dev/heads.py), in their order. The six on the board and the penguin
+// (tier -1) are in the album from the start; the others come out of the blind box after a win (gift.js):
+// tier 0 普通, 1 稀有, 2 隐藏款.
+const FRIENDS = [
+  ['panda', '熊猫', -1], ['fox', '小狐狸', 0], ['tiger', '小老虎', 1], ['lion', '小狮子', 1], ['bear', '小棕熊', 0],
+  ['polar', '北极熊', 0], ['koala', '考拉', 1], ['bunny', '小兔子', 0], ['corgi', '柯基', 0], ['cat', '小蓝猫', 0],
+  ['frog', '小青蛙', -1], ['owl', '猫头鹰', 0], ['chick', '小黄鸡', 0], ['penguin', '小企鹅', -1], ['duck', '小白鸭', 0],
+  ['flamingo', '火烈鸟', 1], ['peacock', '孔雀', 1], ['parrot', '鹦鹉', -1], ['budgie', '虎皮鹦鹉', 0], ['pigeon', '小鸽子', 0],
+  ['pig', '小猪', -1], ['sheep', '小绵羊', 0], ['cow', '小奶牛', 0], ['horse', '小马', 0], ['deer', '小鹿', 0],
+  ['giraffe', '长颈鹿', -1], ['hippo', '河马', -1], ['elephant', '小象', 1], ['rhino', '犀牛', 0], ['croc', '鳄鱼', 0],
+  ['squirrel', '松鼠', 0], ['hamster', '仓鼠', 0], ['hedgehog', '刺猬', 0], ['raccoon', '浣熊', 0], ['skunk', '臭鼬', 0],
+  ['redpanda', '小熊猫', 1], ['sloth', '树懒', 1], ['fennec', '耳廓狐', 0], ['monkey', '小猴子', 0], ['capybara', '水豚', 0],
+  ['turtle', '小海龟', 0], ['seal', '海豹', 0], ['dolphin', '海豚', 1], ['shark', '小鲨鱼', 1], ['clownfish', '小丑鱼', 0],
+  ['octopus', '章鱼', 0], ['ladybug', '瓢虫', 0], ['bee', '小蜜蜂', 0], ['dragon', '小龙', 2], ['unicorn', '独角兽', 2],
+  ['dog', '小狗', 0], ['dalmatian', '斑点狗', 0], ['siamese', '暹罗猫', 0], ['axolotl', '六角恐龙', 1], ['bat', '小蝙蝠', 0],
+  ['alpaca', '羊驼', 1], ['bison', '野牛', 0], ['zebra', '斑马', 1], ['donkey', '小毛驴', 0], ['kangaroo', '袋鼠', 0],
+  ['rooster', '大公鸡', 0], ['goose', '大白鹅', 0], ['duckling', '小黄鸭', 0], ['cardinal', '小红鸟', 0], ['chameleon', '变色龙', 1],
+  ['puffer', '河豚', 0], ['orca', '虎鲸', 1], ['whale', '小蓝鲸', 0], ['otter', '水獭', 0], ['arcticfox', '北极狐', 0],
+].map(([id, name, tier], i) => ({ i, id, name, tier }));
 const L = {
   welcome: '欢迎来到动物消消乐！点一个关卡开始吧。',
   pick: '选一关吧！',
@@ -61,7 +80,20 @@ const L = {
     doneExtra: '做完啦！多给你5步！',
   },
   parent: '这里是给爸爸妈妈的设置哦。',
+  gift: {
+    drop: '过关礼物！是一个神秘盲盒，点它三下，打开看看！',
+    rare: '稀有款！运气真好！',
+    hidden: '天哪！是隐藏款！超级超级难得！',
+    got: FRIENDS.map(f => `哇！是${f.name}！`),
+    again: '又抽到它啦！',
+    full: '所有的动物小伙伴都集齐啦！你是收集大王！',
+    album: '这是你的动物收集册。每过一关就能拆一个盲盒，把小伙伴都集齐吧！',
+    names: FRIENDS.map(f => f.name),
+    locked: '还没抽到它呢，过关拆盲盒就有机会哦！',
+  },
 };
-// English cheers, said by a lively child voice (role p in the voice bank)
-const CHEER = ['', 'Good!', 'Great!', 'Excellent!', 'Amazing!', 'Unbelievable!'];
-const BONUS = 'Bonus time!';
+// English cheers for each step of excitement (excitement() in board.js): decli's own recordings in sound/, not the
+// voice bank. Level 0 says nothing.
+const CHEER = ['', 'Great!', 'Great!', 'Excellent!', 'Excellent!', 'Unbelievable!'];
+const CHEER_CLIP = { 'Great!': 'great', 'Excellent!': 'excellent', 'Unbelievable!': 'unbelievable' };
+const BONUS = 'Bonus time!';   // shown over the board when the moves left turn into stripes; there is no recording of it

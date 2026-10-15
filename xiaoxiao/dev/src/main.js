@@ -1,7 +1,7 @@
 // 动物消消乐 · start-up and the frame loop.
 (function boot() {
   Store.load();
-  if (/[?&]debug\b/.test(location.search)) window.XX = { Game, Board, Store, UI, Fx, Clock, MathGate, LEVELS, Snd, Voice };
+  if (/[?&]debug\b/.test(location.search)) window.XX = { Game, Board, Store, UI, Fx, Clock, MathGate, LEVELS, Snd, Voice, Music, Gift };
   Snd.on = Store.d.snd; Snd.music = Store.d.mus; Voice.on = Store.d.voi;
   Fx.init($('#fx'));
   Game.init();
@@ -9,6 +9,7 @@
   const bar = $('#ldBar');
   bar.style.width = '30%';
   Voice.load();
+  Snd.load(['bg1', 'bg2', 'great', 'excellent', 'unbelievable']);
   let last = performance.now();
   const loop = now => {
     const dt = Math.min(50, now - last); last = now;
@@ -21,7 +22,7 @@
   };
   requestAnimationFrame(loop);
   // the first touch anywhere wakes up sound (browsers keep it off until then)
-  const wake = () => { Snd.init(); Voice.unlock(); if (Snd.ctx) { Snd.setOn(Store.d.snd); } };
+  const wake = () => { Snd.init(); if (Snd.ctx) { Snd.setOn(Store.d.snd); } };
   addEventListener('pointerdown', wake, true);
   Art.load().then(() => {
     bar.style.width = '100%';

@@ -54,7 +54,7 @@ const MathGate = {
       $('#fx').style.zIndex = 46;   // sparkles and confetti over the page
       const t0 = Date.now();
       let cur = 0, first = 0, finished = false;
-      Music.stop();
+      Music.stop();   // quiet for the sums (decli); the game starts it again
       const sheet = el('div', 'sheet'), head = el('div', 'head');
       const home = UI.homeButton(); home.style.width = home.style.height = '46px'; home.style.fontSize = '22px';
       head.appendChild(home);
