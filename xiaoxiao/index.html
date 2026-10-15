@@ -1046,6 +1046,7 @@ const LEVELS = [
 
 // 动物消消乐 · everything the narrator says. dev/voice/collect.js reads this file (with levels.js and board.js) to
 // list every line for recording, so a line built from a level must be built here and nowhere else.
+const KID = '可可';   // decli's daughter, who plays this
 const NUM_ZH = n => String(n);   // the voice reads digits naturally ("18只" → 十八只)
 
 // the animals change every game (cast.js), so a line never names them: the intro says how many kinds to collect and
@@ -1118,15 +1119,17 @@ const L = {
   extraOffer: '做5道数学题，就能再多5步！',
   extraDone: '多了5步，加油！',
   allDone: '十关全部通过啦！你是消消乐大师！',
+  // decli: call her by name on the math page, every right answer is praise for 可可
   math: {
-    start: '玩之前，先做一页数学题吧！20道题都做对，就能接着玩啦。',
+    title: `${KID}，敢不敢先挑战一页数学题？`,
+    start: `${KID}，敢不敢先挑战一页数学题？20道题都做对，就能接着玩啦。`,
     extra: '做对5道题，就多给你5步！',
-    right: ['对啦！', '真棒！', '答对了！', '没错！', '好厉害！'],
+    right: [`${KID}，你答对啦！`, `${KID}真棒！`, `${KID}，完全正确！`, `${KID}，你好厉害！`, `${KID}，没错，就是这样！`],
     wrong: '再想一想。',
     show: '看看正确答案，照着写一遍。',
-    half: '已经做完一半啦！',
-    done: '全部做完啦！真厉害，去玩吧！',
-    doneExtra: '做完啦！多给你5步！',
+    half: `${KID}，已经做完一半啦！`,
+    done: `${KID}，全部做完啦！真厉害，去玩吧！`,
+    doneExtra: `${KID}，做完啦！多给你5步！`,
   },
   parent: '这里是给爸爸妈妈的设置哦。',
   gift: {
@@ -1941,12 +1944,12 @@ const MathGate = {
       const root = $('#math'); root.hidden = false; root.innerHTML = '';
       $('#fx').style.zIndex = 46;   // sparkles and confetti over the page
       const t0 = Date.now();
-      let cur = 0, first = 0, finished = false;
+      let cur = 0, first = 0, finished = false, praised = '';
       Music.stop();   // quiet for the sums (decli); the game starts it again
       const sheet = el('div', 'sheet'), head = el('div', 'head');
       const home = UI.homeButton(); home.style.width = home.style.height = '46px'; home.style.fontSize = '22px';
       head.appendChild(home);
-      head.appendChild(el('h3', null, o.extra ? '✏️ 做对 5 道题，多 5 步' : '✏️ 先做一页数学题'));
+      head.appendChild(el('h3', null, o.extra ? '✏️ 做对 5 道题，多 5 步' : '✏️ ' + L.math.title));
       const prog = el('div', 'prog', `0 / ${count}`);
       head.appendChild(prog);
       const lock = el('button', 'ibtn', '🔒'); lock.style.width = lock.style.height = '46px'; lock.style.fontSize = '22px';
@@ -2036,7 +2039,9 @@ const MathGate = {
           Fx.burst(r.left + r.width * 0.8, r.top + r.height / 2, ['#5fe0b0', '#ffd23a'], 10, 0.8, 60);
           const n = qs.filter(x => x.ok).length;
           if (n === count) { draw(); return finish(false); }
-          Voice.say(n === Math.floor(count / 2) && count >= 10 ? L.math.half : pick(L.math.right));
+          // never the same praise twice in a row
+          if (n === Math.floor(count / 2) && count >= 10) Voice.say(L.math.half);
+          else { praised = pick(L.math.right.filter(t => t !== praised)); Voice.say(praised); }
           let next = qs.findIndex((x, i) => i > cur && !x.ok);
           if (next < 0) next = qs.findIndex(x => !x.ok);
           cur = next;
