@@ -2,43 +2,46 @@
 // list every line for recording, so a line built from a level must be built here and nowhere else.
 const NUM_ZH = n => String(n);   // the voice reads digits naturally ("18只" → 十八只)
 
+// the animals change every game (cast.js), so a line never names them: the intro says how many kinds to collect and
+// their names follow as clips of their own (L.gift.names), each with its goal picture bouncing (UI.intro)
 function goalSay(g, lv) {
-  if (g.t === 'c') return `${g.n}只${ANIMALS[g.color].name}`;
   if (g.t === 'ice') return '敲碎所有冰块';
   if (g.t === 'box') return '拆开所有礼物盒';
   if (g.t === 'bub') return '戳破所有泡泡';
   if (g.t === 'pg') return `把${lv.penguins.total}只小企鹅送回家`;
   return '';
 }
-// Every animal in decli's pictures (heads.webp, cut by dev/heads.py), in their order. The six on the board and the penguin
-// (tier -1) are in the album from the start; the others come out of the blind box after a win (gift.js):
-// tier 0 普通, 1 稀有, 2 隐藏款.
+// Every animal in decli's pictures (heads.webp, cut by dev/heads.py), in their order: [id, name, tier, colour].
+// tier: -1 in the album from the start (the first six on the board and the penguin), else from the blind box after a
+// win (gift.js): 0 普通, 1 稀有, 2 隐藏款. colour: the head's main colour, so a game's six animals all look different
+// (cast.js): p pink, w white, k black and white, v purple, y yellow, o orange, r red, g green, l blue, t teal,
+// b brown, a grey. A second letter: it also looks like that colour (the pigeon is grey-purple), so it never plays next
+// to those either (decli: some animals look very much alike).
 const FRIENDS = [
-  ['panda', '熊猫', -1], ['fox', '小狐狸', 0], ['tiger', '小老虎', 1], ['lion', '小狮子', 1], ['bear', '小棕熊', 0],
-  ['polar', '北极熊', 0], ['koala', '考拉', 1], ['bunny', '小兔子', 0], ['corgi', '柯基', 0], ['cat', '小蓝猫', 0],
-  ['frog', '小青蛙', -1], ['owl', '猫头鹰', 0], ['chick', '小黄鸡', 0], ['penguin', '小企鹅', -1], ['duck', '小白鸭', 0],
-  ['flamingo', '火烈鸟', 1], ['peacock', '孔雀', 1], ['parrot', '鹦鹉', -1], ['budgie', '虎皮鹦鹉', 0], ['pigeon', '小鸽子', 0],
-  ['pig', '小猪', -1], ['sheep', '小绵羊', 0], ['cow', '小奶牛', 0], ['horse', '小马', 0], ['deer', '小鹿', 0],
-  ['giraffe', '长颈鹿', -1], ['hippo', '河马', -1], ['elephant', '小象', 1], ['rhino', '犀牛', 0], ['croc', '鳄鱼', 0],
-  ['squirrel', '松鼠', 0], ['hamster', '仓鼠', 0], ['hedgehog', '刺猬', 0], ['raccoon', '浣熊', 0], ['skunk', '臭鼬', 0],
-  ['redpanda', '小熊猫', 1], ['sloth', '树懒', 1], ['fennec', '耳廓狐', 0], ['monkey', '小猴子', 0], ['capybara', '水豚', 0],
-  ['turtle', '小海龟', 0], ['seal', '海豹', 0], ['dolphin', '海豚', 1], ['shark', '小鲨鱼', 1], ['clownfish', '小丑鱼', 0],
-  ['octopus', '章鱼', 0], ['ladybug', '瓢虫', 0], ['bee', '小蜜蜂', 0], ['dragon', '小龙', 2], ['unicorn', '独角兽', 2],
-  ['dog', '小狗', 0], ['dalmatian', '斑点狗', 0], ['siamese', '暹罗猫', 0], ['axolotl', '六角恐龙', 1], ['bat', '小蝙蝠', 0],
-  ['alpaca', '羊驼', 1], ['bison', '野牛', 0], ['zebra', '斑马', 1], ['donkey', '小毛驴', 0], ['kangaroo', '袋鼠', 0],
-  ['rooster', '大公鸡', 0], ['goose', '大白鹅', 0], ['duckling', '小黄鸭', 0], ['cardinal', '小红鸟', 0], ['chameleon', '变色龙', 1],
-  ['puffer', '河豚', 0], ['orca', '虎鲸', 1], ['whale', '小蓝鲸', 0], ['otter', '水獭', 0], ['arcticfox', '北极狐', 0],
-].map(([id, name, tier], i) => ({ i, id, name, tier }));
+  ['panda', '熊猫', -1, 'k'], ['fox', '小狐狸', 0, 'o'], ['tiger', '小老虎', 1, 'o'], ['lion', '小狮子', 1, 'o'], ['bear', '小棕熊', 0, 'b'],
+  ['polar', '北极熊', 0, 'w'], ['koala', '考拉', 1, 'a'], ['bunny', '小兔子', 0, 'p'], ['corgi', '柯基', 0, 'o'], ['cat', '小蓝猫', 0, 'l'],
+  ['frog', '小青蛙', -1, 'g'], ['owl', '猫头鹰', 0, 'v'], ['chick', '小黄鸡', 0, 'y'], ['penguin', '小企鹅', -1, 'k'], ['duck', '小白鸭', 0, 'w'],
+  ['flamingo', '火烈鸟', 1, 'p'], ['peacock', '孔雀', 1, 't'], ['parrot', '鹦鹉', -1, 'r'], ['budgie', '虎皮鹦鹉', 0, 'l'], ['pigeon', '小鸽子', 0, 'av'],
+  ['pig', '小猪', -1, 'p'], ['sheep', '小绵羊', 0, 'w'], ['cow', '小奶牛', 0, 'k'], ['horse', '小马', 0, 'b'], ['deer', '小鹿', 0, 'b'],
+  ['giraffe', '长颈鹿', -1, 'y'], ['hippo', '河马', -1, 'v'], ['elephant', '小象', 1, 'l'], ['rhino', '犀牛', 0, 't'], ['croc', '鳄鱼', 0, 'g'],
+  ['squirrel', '松鼠', 0, 'o'], ['hamster', '仓鼠', 0, 'o'], ['hedgehog', '刺猬', 0, 'b'], ['raccoon', '浣熊', 0, 'a'], ['skunk', '臭鼬', 0, 'k'],
+  ['redpanda', '小熊猫', 1, 'o'], ['sloth', '树懒', 1, 'b'], ['fennec', '耳廓狐', 0, 'o'], ['monkey', '小猴子', 0, 'b'], ['capybara', '水豚', 0, 'b'],
+  ['turtle', '小海龟', 0, 'g'], ['seal', '海豹', 0, 'a'], ['dolphin', '海豚', 1, 'l'], ['shark', '小鲨鱼', 1, 'l'], ['clownfish', '小丑鱼', 0, 'o'],
+  ['octopus', '章鱼', 0, 'p'], ['ladybug', '瓢虫', 0, 'r'], ['bee', '小蜜蜂', 0, 'y'], ['dragon', '小龙', 2, 't'], ['unicorn', '独角兽', 2, 'w'],
+  ['dog', '小狗', 0, 'o'], ['dalmatian', '斑点狗', 0, 'k'], ['siamese', '暹罗猫', 0, 'w'], ['axolotl', '六角恐龙', 1, 'p'], ['bat', '小蝙蝠', 0, 'v'],
+  ['alpaca', '羊驼', 1, 'w'], ['bison', '野牛', 0, 'b'], ['zebra', '斑马', 1, 'k'], ['donkey', '小毛驴', 0, 'a'], ['kangaroo', '袋鼠', 0, 'o'],
+  ['rooster', '大公鸡', 0, 'r'], ['goose', '大白鹅', 0, 'w'], ['duckling', '小黄鸭', 0, 'y'], ['cardinal', '小红鸟', 0, 'r'], ['chameleon', '变色龙', 1, 'g'],
+  ['puffer', '河豚', 0, 'o'], ['orca', '虎鲸', 1, 'k'], ['whale', '小蓝鲸', 0, 'l'], ['otter', '水獭', 0, 'b'], ['arcticfox', '北极狐', 0, 'w'],
+].map(([id, name, tier, fam], i) => ({ i, id, name, tier, fam }));
 const L = {
   welcome: '欢迎来到动物消消乐！点一个关卡开始吧。',
   pick: '选一关吧！',
   locked: '这一关还锁着，先把前面的关过了吧。',
   intro(lv, n) {
-    const collect = lv.goals.filter(g => g.t === 'c').map(g => goalSay(g, lv));
-    const other = lv.goals.filter(g => g.t !== 'c').map(g => goalSay(g, lv));
-    const parts = [...other];
-    if (collect.length) parts.push('收集' + collect.join('、'));
-    return `第${NUM_ZH(n)}关，${lv.name}。要${parts.join('，还要')}，一共${NUM_ZH(lv.moves)}步。`;
+    const kinds = lv.goals.filter(g => g.t === 'c').length;
+    const parts = lv.goals.filter(g => g.t !== 'c').map(g => goalSay(g, lv));
+    if (kinds) parts.push(`收集${['', '这种', '这两种', '这三种'][kinds]}小动物：`);
+    return `第${NUM_ZH(n)}关，${lv.name}，一共${NUM_ZH(lv.moves)}步。要${parts.join('，还要')}` + (kinds ? '' : '。');
   },
   tip: {
     swap: '手指按住一只小动物，往旁边一拨，三只一样的连成一排就能消掉。四只连成一排，会变出条纹小动物！',

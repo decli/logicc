@@ -10,15 +10,8 @@
 // Pieces: k 'a' animal of colour c, k 'g' penguin (cannot be matched or blown up; walks out at the bottom).
 // Specials: s 'h' clears its row, 'v' its column, 'b' bomb (diamond of radius 2), 'c' rainbow ball (no colour).
 
-const ANIMALS = [
-  { id: 'pig', name: '小猪', fx: ['#ffa3c8', '#e2668f', '#ffe0ec'] },
-  { id: 'panda', name: '熊猫', fx: ['#ffffff', '#2f3040', '#e4e6ee'] },
-  { id: 'hippo', name: '河马', fx: ['#b48cff', '#7b52e0', '#e6dbff'] },
-  { id: 'giraffe', name: '长颈鹿', fx: ['#ffc83a', '#e08e10', '#fff0b8'] },
-  { id: 'parrot', name: '鹦鹉', fx: ['#ff4a3a', '#c8231a', '#ffc0b2'] },
-  { id: 'frog', name: '小青蛙', fx: ['#6fd65a', '#2f9e3a', '#d2f8b4'] },
-];
-const PENGUIN = 6;   // the kind after the six animals (its head is FRIENDS' penguin)
+const ANIMALS = [];   // this game's six animals { id, name, fx colours, h: FRIENDS number }, filled in by cast.js
+const PENGUIN = 6;   // the kind after the six animals (always FRIENDS' penguin)
 
 const PTS = { piece: 20, blast: 30, make: { h: 100, v: 100, b: 150, c: 250 }, ice: 80, box: 60, bub: 50, home: 1000, bonus: 200 };
 

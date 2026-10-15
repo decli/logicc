@@ -2,19 +2,26 @@
 // music and English cheers). Notes come from C major pentatonic so a long cascade of pops still sounds like a melody going up.
 const Snd = {
   ctx: null, on: true, music: true, master: null, sfx: null, bus: null, mus: null, noiseBuf: null, ducked: false,
-  raw: {}, bufs: {},
+  raw: {}, bufs: {}, tries: {},
   // fetch the recorded sounds; they are decoded once sound is allowed (the first touch)
   load(names) {
     if (!window.fetch || location.protocol === 'file:') return;
-    names.forEach(n => fetch(`sound/${n}.mp3`).then(r => (r.ok ? r.arrayBuffer() : Promise.reject(r.status)))
-      .then(ab => { this.raw[n] = ab; this.decode(n); }).catch(() => { }));
+    names.forEach(n => this.get(n));
   },
+  // one sound. A download that fails (a new version still going up, a bad connection) or does not decode is tried
+  // again a few times, so a cheer is not silent until the page is opened again.
+  get(n) {
+    const k = this.tries[n] = (this.tries[n] || 0) + 1;
+    fetch(`sound/${n}.mp3`, k > 1 ? { cache: 'reload' } : undefined).then(r => (r.ok ? r.arrayBuffer() : Promise.reject(r.status)))
+      .then(ab => { this.raw[n] = ab; this.decode(n); }).catch(() => this.again(n));
+  },
+  again(n) { const k = this.tries[n]; if (k < 5) setTimeout(() => this.get(n), [2000, 5000, 10000, 20000][k - 1]); },
   decode(n) {
     const ab = this.raw[n];
     if (!this.ctx || !ab) return;
     delete this.raw[n];
     new Promise((res, rej) => { const q = this.ctx.decodeAudioData(ab, res, rej); if (q && q.catch) q.catch(rej); })
-      .then(b => { this.bufs[n] = b; Music.sync(); }).catch(() => { });
+      .then(b => { this.bufs[n] = b; Music.sync(); }).catch(() => this.again(n));
   },
   clip(n) { return this.bufs[n] || null; },
   init() {
