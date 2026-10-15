@@ -1,17 +1,23 @@
 // 思维小画本的离线缓存（service worker）
 //
-// 网络不稳也要能玩：第一次打开时，把首页、图标和三个语音包（读题 voice-zh，找规律的讲解 voice-gl，古诗小剧场 voice-shi）
-// 存进浏览器缓存，以后断网也能打开、也能出声。有网时每次打开悄悄检查新版本，下载完整了下次打开就用上。
+// 网络不稳也要能玩：第一次打开时，把首页、图标、八个闯关游戏的代码（schulte/ dots/ … 里的 game.js、game.css）和三个语音包
+// （读题 voice-zh，找规律的讲解 pattern/voice-gl，古诗小剧场 shi/voice-shi）存进浏览器缓存，以后断网也能打开、也能出声。
+// 有网时每次打开悄悄检查新版本，下载完整了下次打开就用上。
 //
-// - 首页、json 这类小文件：先走网络，最多等 4 秒；拿到就顺手存进缓存，网络断了或太慢就用缓存里的
+// - 首页、游戏代码、json 这类小文件：先走网络，最多等 4 秒；拿到就顺手存进缓存，网络断了或太慢就用缓存里的
 // - 语音包 voice-xx.bin?h=<指纹>：指纹变了就是新文件，所以缓存里有就直接用，没有才下载；旧指纹的那份删掉
 // - 语音包的索引 json 和 bin 必须配对：新 json 要等它的 bin 整个下载完、存好，才换进缓存。
 //   在那之前页面拿到的一直是旧的一对，所以下载到一半断网也不会出错
 // - 「造物」「彩虹钢琴」「动物消消乐」「魔方世界」（zaowu/、piano/、xiaoxiao/、mofang/）不预先下载（加起来四十多 MB），打开过一次就存下，之后断网也能玩
 const CACHE = 'logicc-v1';
 const SCOPE = new URL('./', self.location).href;
-const SHELL = ['./', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
-const BANKS = ['voice-zh', 'voice-gl', 'voice-shi'];
+// 首页点开游戏时才加载的代码（index.html 的 GAME_FILES），也预先存好，没玩过的游戏断网也能打开
+const GAME_FILES = ['schulte/game.js', 'dots/game.css', 'dots/game.js', 'bond/game.css', 'bond/game.js', 'shi/game.css', 'shi/game.js',
+  'mirror/game.css', 'mirror/game.js', 'pattern/game.css', 'pattern/game.js', 'fit/game.css', 'fit/game.js', 'span/game.js'];
+const SHELL = ['./', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'].concat(GAME_FILES);
+const BANKS = ['voice-zh', 'pattern/voice-gl', 'shi/voice-shi'];
+// 两个语音包原来放在根目录，搬进了各自游戏的文件夹：新的一对存好以后，旧地方的那份删掉（不然白占二十多 MB）
+const MOVED = { 'pattern/voice-gl': 'voice-gl', 'shi/voice-shi': 'voice-shi' };
 const abs = u => new URL(u, SCOPE).href;
 const wait = ms => new Promise(r => setTimeout(r, ms));
 // Cloudflare 会把 /index.html 跳转到 /。跟着跳转拿到的响应不能拿去回应页面导航（浏览器会直接报错、打不开），
@@ -52,6 +58,7 @@ function syncBank(c, name) {
     const ix = await r.clone().json();
     if (ix.h) await getBin(c, abs(name + '.bin?h=' + ix.h));
     await c.put(abs(name + '.json'), r);
+    if (MOVED[name]) for (const k of await c.keys()) { const p = new URL(k.url).pathname; if (p === new URL(abs(MOVED[name] + '.bin')).pathname || p === new URL(abs(MOVED[name] + '.json')).pathname) await c.delete(k); }
   });
 }
 function getBin(c, url) {

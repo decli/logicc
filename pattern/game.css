@@ -1,0 +1,28 @@
+/* 思维小画本 · 找规律的样式，和 game.js 一起由首页加载 */
+/* 找规律（图形推理）：--gs 题目格子、--go 选项的边长，由 Fit 量出来 */
+.glWrap{display:flex;align-items:center;justify-content:center;position:relative}
+.glQ,.glO{display:grid;flex:none}
+.glc{position:relative;background:#fff;border:calc(4px * var(--k)) solid var(--ink);border-radius:calc(14px * var(--k))}
+.glc svg,.glo svg{display:block;width:100%;height:100%;overflow:visible}
+.glc.q{background:#FFF4D6;border-style:dashed}
+.glc.hl{background:#FFF4D6;box-shadow:0 0 0 calc(7px * var(--k)) var(--yellow)}
+.glb{position:absolute;left:50%;top:100%;transform:translate(-50%,-35%);min-width:calc(var(--gs) * .3);height:calc(var(--gs) * .3);
+  padding:0 calc(var(--gs) * .07);border:calc(3px * var(--k)) solid var(--ink);border-radius:999px;background:var(--orange);color:#fff;
+  font-size:calc(var(--gs) * .2);display:flex;align-items:center;justify-content:center;animation:pp .3s;z-index:2}
+.glo{position:relative;padding:calc(var(--go) * .05)}
+.gll{position:absolute;left:0;top:0;transform:translate(-40%,-40%);width:calc(var(--go) * .28);height:calc(var(--go) * .28);
+  border:calc(3px * var(--k)) solid var(--ink);border-radius:50%;background:var(--yellow);color:var(--ink);font-size:calc(var(--go) * .16);
+  display:flex;align-items:center;justify-content:center}
+.glo.tried{opacity:.45}
+.glo.pick{background:#fff;outline:calc(9px * var(--k)) solid var(--yellow);outline-offset:calc(4px * var(--k))}
+.glo.right{background:#E6F5E3;border-color:var(--green)}
+.glLayer{position:absolute;inset:0;pointer-events:none;z-index:3}
+.glFly{position:absolute;transition:transform .85s cubic-bezier(.5,0,.3,1),opacity .4s;mix-blend-mode:multiply;opacity:.85}
+.glFly svg{display:block;width:100%;height:100%}
+.glFly.gone{opacity:0}
+.glFly rect.blink{animation:glBlink .2s 5 alternate forwards}
+@keyframes glBlink{from{opacity:1}to{opacity:0}}
+.glChip{position:absolute;left:50%;top:calc(6px * var(--k));transform:translateX(-50%);border:calc(4px * var(--k)) solid var(--ink);
+  border-radius:999px;background:#fff;box-shadow:calc(4px * var(--k)) calc(4px * var(--k)) 0 var(--ink);padding:calc(6px * var(--k)) calc(20px * var(--k));
+  font-size:calc(28px * var(--k));font-weight:700;white-space:nowrap;animation:pp .35s;z-index:4;pointer-events:none}
+.extras .sw.busy{opacity:.6}

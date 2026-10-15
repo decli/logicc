@@ -1,0 +1,13 @@
+/* 思维小画本 · 数点点的样式，和 game.js 一起由首页加载 */
+/* 点子 */
+.face{display:grid;width:100%;height:100%;place-content:center;gap:var(--dotgap,3px);overflow:hidden;
+  grid-template-columns:repeat(3,var(--dotsz,8px));grid-template-rows:repeat(3,var(--dotsz,8px))}
+.face.wide{grid-template-columns:repeat(5,var(--dotsz,8px));grid-template-rows:repeat(2,var(--dotsz,8px))}
+.face b{border-radius:50%;background:var(--ink);width:100%;height:100%;display:block}
+.face b.off{background:transparent}
+.face b.lit{background:var(--red);animation:pp .3s}
+.domino{display:flex;flex-direction:column;border:4px solid var(--ink);border-radius:16px;background:#fff;
+  box-shadow:5px 5px 0 var(--ink);overflow:hidden;flex:0 0 auto}
+.domino .half{flex:1 1 0;min-height:0;position:relative}
+.domino .half+.half{border-top:4px solid var(--ink)}
+.qm{display:flex;align-items:center;justify-content:center;height:100%;color:var(--line)}

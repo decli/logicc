@@ -1,4 +1,4 @@
-"""古诗小剧场's voice bank (voice-shi.bin|json at the site root).
+"""古诗小剧场's voice bank (shi/voice-shi.bin|json, next to the game's code).
 
 A poem is recited in ONE take, so the voice carries the melody across lines the way a person reading it aloud
 does (a comma line stays up, a full stop comes down). The take is then cut at the pauses between lines, and

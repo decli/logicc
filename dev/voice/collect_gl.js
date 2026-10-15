@@ -1,12 +1,12 @@
-// Every line 找规律 (the figure-reasoning game in ../../index.html) can say, for its own voice bank voice-gl.
+// Every line 找规律 (the figure-reasoning game in ../../pattern/game.js) can say, for its own voice bank pattern/voice-gl.
 // The question makers and every sentence of the explanations sit between /* ==GL-DATA== */ and /* ==/GL-DATA== */
-// in the page, which never touches the page there; glLines() lists the sentences. This script also makes a few
+// in pattern/game.js, which never touches the page there; glLines() lists the sentences. This script also makes a few
 // thousand questions of every kind and checks that no explanation says something glLines() forgot, and that every
 // question has four different options with the answer among them.
 //   node dev/voice/collect_gl.js   ->  dev/voice/lines-gl.json
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const ROOT = path.resolve(__dirname, '../..');
-const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+const src = ['index.html', 'pattern/game.js'].map(f => fs.readFileSync(path.join(ROOT, f), 'utf8')).join('\n');   // GAMES is in the page
 
 function skipString(s, i) { const q = s[i]; i++; while (i < s.length && s[i] !== q) { if (s[i] === '\\') i++; i++; } return i + 1; }
 function balanced(s, open) {
@@ -26,7 +26,7 @@ function grab(decl) {
   return src.slice(at, balanced(src, open));
 }
 const a = src.indexOf('/* ==GL-DATA=='), b = src.indexOf('/* ==/GL-DATA== */');
-if (a < 0 || b < a) throw new Error('GL-DATA markers not found in index.html');
+if (a < 0 || b < a) throw new Error('GL-DATA markers not found in pattern/game.js');
 
 const sandbox = {};
 vm.createContext(sandbox);
@@ -66,4 +66,4 @@ fs.writeFileSync(path.join(__dirname, 'lines-gl.json'), JSON.stringify(out, null
 console.log(`找规律: ${made} questions made, ${used.size} different sentences said; ${out.length} lines, ${all.reduce((n, t) => n + t.length, 0)} chars -> dev/voice/lines-gl.json`);
 const never = lines.filter(t => !used.has(t) && [sandbox.out.T.stuck, sandbox.out.T.why, sandbox.out.T.tapNow].indexOf(t) < 0);   // those three are said outside the steps
 if (never.length) console.log(`  listed but not said in ${made} questions (fine if rare): ` + never.join(' / '));
-if (missing.size) { console.log('NOT COVERED (add them to glLines() in index.html):'); missing.forEach((k, t) => console.log('  ' + k + ': ' + t)); process.exitCode = 1; }
+if (missing.size) { console.log('NOT COVERED (add them to glLines() in pattern/game.js):'); missing.forEach((k, t) => console.log('  ' + k + ': ' + t)); process.exitCode = 1; }

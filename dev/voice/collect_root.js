@@ -1,11 +1,13 @@
-// Every line the logic games on the home page (../../index.html) can say, as the page will look it up.
+// Every line the logic games on the home page can say, as the page will look it up: the shared part is ../../index.html,
+// each game sits in its own folder (<id>/game.js, loaded when it is opened).
 // Fixed lines are read straight out of the page; lines with numbers or names in them are expanded
 // over every value they can take. A Voice.say() this script does not know about is reported, so a new
 // line never silently falls back to the device voice.
 //   node dev/voice/collect_root.js   ->  dev/voice/lines-root.json
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const ROOT = path.resolve(__dirname, '../..');
-const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+const GAME_DIRS = ['schulte', 'dots', 'bond', 'shi', 'mirror', 'pattern', 'fit', 'span'];   // index.html's GAME_FILES
+const src = ['index.html'].concat(GAME_DIRS.map(d => d + '/game.js')).map(f => fs.readFileSync(path.join(ROOT, f), 'utf8')).join('\n');
 
 // ---- read pieces of the page source ----
 function skipString(s, i) { const q = s[i]; i++; while (i < s.length && s[i] !== q) { if (s[i] === '\\') i++; i++; } return i + 1; }
