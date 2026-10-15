@@ -7,7 +7,7 @@
 // - 语音包 voice-xx.bin?h=<指纹>：指纹变了就是新文件，所以缓存里有就直接用，没有才下载；旧指纹的那份删掉
 // - 语音包的索引 json 和 bin 必须配对：新 json 要等它的 bin 整个下载完、存好，才换进缓存。
 //   在那之前页面拿到的一直是旧的一对，所以下载到一半断网也不会出错
-// - 「造物」「彩虹钢琴」「动物消消乐」（zaowu/、piano/、xiaoxiao/）不预先下载（加起来四十多 MB），打开过一次就存下，之后断网也能玩
+// - 「造物」「彩虹钢琴」「动物消消乐」「魔方世界」（zaowu/、piano/、xiaoxiao/、mofang/）不预先下载（加起来四十多 MB），打开过一次就存下，之后断网也能玩
 const CACHE = 'logicc-v1';
 const SCOPE = new URL('./', self.location).href;
 const SHELL = ['./', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
