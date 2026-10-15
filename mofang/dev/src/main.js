@@ -55,7 +55,7 @@ requestAnimationFrame(frame);
 
 // start: the first tap also unlocks sound on tablets
 const start = () => {
-  Snd.init(); Voice.unlock(); Voice.load();
+  Snd.init(); Voice.load();
   if (Snd.music) Music.start();
   $('#loader').classList.add('out'); setTimeout(() => $('#loader').remove(), 600);
   const w = WORLDS.find(x => x.id === params.get('w'));
