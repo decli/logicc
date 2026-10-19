@@ -1,6 +1,8 @@
 // 动物消消乐 · everything the narrator says. dev/voice/collect.js reads this file (with levels.js and board.js) to
 // list every line for recording, so a line built from a level must be built here and nowhere else.
 const KID = '可可';   // decli's daughter, who plays this
+// how many sums a math page can have (家长设置; decli 2026-10-19: 20 was too many, 10 by default)
+const MATH_COUNTS = [5, 10, 15, 20];
 const NUM_ZH = n => String(n);   // the voice reads digits naturally ("18只" → 十八只)
 
 // the animals change every game (cast.js), so a line never names them: the intro says how many kinds to collect and
@@ -76,7 +78,7 @@ const L = {
   // decli: call her by name on the math page, every right answer is praise for 可可
   math: {
     title: `${KID}，敢不敢先挑战一页数学题？`,
-    start: `${KID}，敢不敢先挑战一页数学题？20道题都做对，就能接着玩啦。`,
+    start: n => `${KID}，敢不敢先挑战一页数学题？${n}道题都做对，就能接着玩啦。`,   // recorded for every MATH_COUNTS
     extra: '做对5道题，就多给你5步！',
     right: [`${KID}，你答对啦！`, `${KID}真棒！`, `${KID}，完全正确！`, `${KID}，你好厉害！`, `${KID}，没错，就是这样！`],
     wrong: '再想一想。',
