@@ -126,7 +126,7 @@ const Snd = {
       case 'lose': [4, 3, 2, 0].forEach((n, i) => this.tone(this.pent(n) / 2, 0.4, { type: 'triangle', vol: 0.14, at: i * 0.22, to: this.pent(n) / 2 * 0.97 })); break;
       case 'shuffle': for (let i = 0; i < 8; i++) this.noise(0.08, { f: 1500 + i * 300, q: 3, vol: 0.08, at: i * 0.05 }); break;
       case 'right': this.tone(this.pent(7), 0.15, { type: 'triangle', vol: 0.18 }); this.tone(this.pent(9), 0.3, { type: 'triangle', vol: 0.18, at: 0.1, verb: true }); break;
-      case 'wrong': this.tone(220, 0.25, { type: 'triangle', vol: 0.15, to: 190 }); break;
+      case 'wrong': this.tone(392, 0.14, { type: 'sine', vol: 0.13 }); this.tone(330, 0.22, { type: 'sine', vol: 0.12, at: 0.12, to: 370 }); break;   // "hmm?", not a buzz
       case 'key': this.tone(700 + k * 30, 0.05, { type: 'sine', vol: 0.1 }); break;
       // the blind box (gift.js): landing, each tap (k = 1-3, higher each time), bursting open, and a rare friend
       case 'gland': this.tone(150, 0.3, { type: 'sine', to: 70, vol: 0.35 }); this.noise(0.14, { f: 320, q: 1, vol: 0.22 }); this.tone(this.pent(4), 0.25, { type: 'triangle', vol: 0.1, at: 0.06, verb: true }); break;
@@ -139,6 +139,16 @@ const Snd = {
         this.tone(this.pent(17), 1.3, { type: 'sine', vol: 0.06, at: 0.5, verb: true }); break;
       case 'grare': [0, 2, 4, 5, 7, 9].forEach((n, i) => this.tone(this.pent(12 + n), 0.9, { type: 'sine', vol: 0.06, at: 0.55 + i * 0.07, verb: true })); break;
       case 'sparkle': for (let i = 0; i < 5; i++) this.tone(this.pent(10 + Math.floor(Math.random() * 6)), 0.15, { type: 'sine', vol: 0.05, at: i * 0.04, verb: true }); break;
+      // the wheel before a math page (wheel.js): a peg passing the pointer, and the push that starts it
+      case 'tick': this.tone(1900 + Math.random() * 200, 0.035, { type: 'square', vol: 0.05 }); this.noise(0.03, { filter: 'highpass', f: 5000, vol: 0.08 }); break;
+      case 'whirl': this.noise(0.6, { f: 400, fto: 3000, q: 0.8, vol: 0.14 }); this.tone(300, 0.5, { type: 'triangle', to: 900, vol: 0.08 }); break;
+      // 小老师 (teach.js): an animal hopping in or leaving (k: the new total; the note climbs through each ten and starts
+      // again after it, like the ones), ten tied into a bundle, a bundle untied, and the 💡
+      case 'hop': { const f = this.pent(2 + ((k + 9) % 10)); this.tone(f, 0.16, { type: 'triangle', vol: 0.16, to: f * 1.5, glide: 0.1, verb: true }); this.tone(180, 0.06, { type: 'sine', to: 90, vol: 0.06, at: 0.1 }); break; }
+      case 'bye': { const f = this.pent(2 + ((k + 10) % 10)); this.tone(f * 1.5, 0.2, { type: 'triangle', vol: 0.12, to: f, glide: 0.18 }); break; }
+      case 'tie': this.noise(0.25, { f: 900, fto: 3000, q: 1, vol: 0.12 }); [0, 2, 4, 7, 9].forEach((n, i) => this.tone(this.pent(5 + n), 0.3, { type: 'triangle', vol: 0.12, at: 0.15 + i * 0.06, verb: true })); break;
+      case 'untie': this.noise(0.3, { f: 3000, fto: 600, q: 1, vol: 0.14 }); [9, 7, 4, 2, 0].forEach((n, i) => this.tone(this.pent(5 + n), 0.25, { type: 'triangle', vol: 0.1, at: 0.1 + i * 0.05, verb: true })); break;
+      case 'idea': this.tone(this.pent(9), 0.18, { type: 'sine', vol: 0.12, verb: true }); this.tone(this.pent(12), 0.3, { type: 'sine', vol: 0.12, at: 0.09, verb: true }); break;
     }
   },
 };

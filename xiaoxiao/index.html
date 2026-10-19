@@ -187,7 +187,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .q .ans{display:inline-block;min-width:1.9em;padding:0 .15em;border-bottom:4px solid #d8c3a5;text-align:center;color:#7b4dff}
 .q.ok .ans{color:#15895f;border-color:#9fe3c4}
 .q .ans.hint{color:#c9b8dd}
-.q.bad{animation:shake .35s;border-color:var(--red);background:#fff0f0}
+.q.bad{animation:shake .35s;border-color:#ffb000;background:#fff8e6}
 @keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
 #math .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-content:center}
 #math.wide .pad{width:clamp(250px,30vw,330px)}
@@ -196,7 +196,67 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .key:active{transform:translateY(4px);box-shadow:0 1px 0 #d9c6ea;background:#f6edff}
 .key.ok{background:linear-gradient(180deg,#8ff0c6,#22c38a);color:#fff;box-shadow:0 5px 0 #15895f}
 .key.del{background:#ffe9f2;color:#c42c70}
-#math .disp{grid-column:1/-1;text-align:center;font-size:24px;font-weight:800;min-height:34px}
+#math .disp{grid-column:1/-1;text-align:center;font-size:24px;font-weight:800;min-height:58px;display:flex;align-items:center;justify-content:center;gap:10px}
+.q i.op{font-style:normal;display:inline-block}
+.q i.op.hey{animation:hey .5s ease-in-out 3;color:#ff4f8a}
+@keyframes hey{50%{transform:scale(1.7)}}
+.bulb{width:58px;height:58px;border-radius:50%;background:#fff6c8;box-shadow:0 4px 0 #e8c95a;font-size:32px;flex:none}
+.bulb:active{transform:translateY(3px);box-shadow:0 1px 0 #e8c95a}
+.bulb.new{animation:bulb .6s ease-in-out 3}
+@keyframes bulb{25%{transform:rotate(-16deg) scale(1.2)}75%{transform:rotate(16deg) scale(1.2)}}
+
+/* ---------- the wheel before a math page (wheel.js) ---------- */
+#math.spin{flex-direction:column}
+.wstage{flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:pointer}
+.wbig{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%) scale(0);font-weight:900;color:#fff;-webkit-text-stroke:.07em #7b4dff;paint-order:stroke fill;
+  text-shadow:0 .07em 0 #5328c9;pointer-events:none;font-variant-numeric:tabular-nums;line-height:1}
+.wbig.on{animation:wbig .6s cubic-bezier(.2,1.6,.4,1) forwards}
+@keyframes wbig{to{transform:translate(-50%,-50%) scale(1)}}
+.whand{position:absolute;left:50%;top:60%;font-size:64px;line-height:1;pointer-events:none;opacity:0;transition:opacity .3s;filter:drop-shadow(0 4px 4px rgba(0,0,0,.25));z-index:3}
+.whand.on{opacity:1;animation:tapme 1s ease-in-out infinite}
+@keyframes tapme{0%,100%{transform:translate(0,0)}50%{transform:translate(-6px,-16px)}}
+
+/* ---------- 小老师: the animals act a sum out (teach.js) ---------- */
+#math .sheet{position:relative}
+.teach{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;gap:6px;background:linear-gradient(170deg,#fffaf0,#fff0f8);border-radius:24px;
+  box-shadow:0 6px 0 #ecd3b0,0 10px 30px rgba(120,60,140,.15);padding:10px 14px;animation:pop .3s cubic-bezier(.2,1.4,.4,1)}
+.teach.bye{transition:opacity .3s,transform .3s;opacity:0;transform:scale(.96)}
+.thead{display:flex;align-items:center;gap:12px}
+.thead .owl{width:68px;height:68px;flex:none}
+.thead .owl.talk{animation:talk .28s ease-in-out infinite alternate}
+@keyframes talk{to{transform:translateY(-5px) rotate(-5deg)}}
+.thead .ibtn{width:52px;height:52px;font-size:24px;flex:none}
+.teq{flex:1;display:flex;align-items:center;justify-content:center;gap:.25em;font-size:46px;font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap}
+.teq .n{color:var(--c);padding:0 .14em;border-radius:.25em;transition:background .3s,box-shadow .3s}
+.teq .n.now{background:#fff2a8;box-shadow:0 0 0 4px #ffd23a}
+.teq .op{color:#a58cba}
+.tans{display:inline-block;min-width:1.9em;text-align:center;border-bottom:5px solid #d8c3a5;color:#7b4dff}
+.tans.ask{animation:ask 1s ease-in-out infinite}
+@keyframes ask{50%{scale:1.14;border-color:#ffb000}}
+.tans.bad{animation:shake .35s;color:var(--red)}
+.tstage{flex:1;min-height:0;position:relative;touch-action:none;cursor:pointer;overflow:hidden}
+.tframe{position:absolute;left:0;top:0;display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(2,1fr);background:#fff;box-shadow:0 4px 0 #ecd3b0;box-sizing:border-box}
+.tframe i{border:3px dashed #f0d9b8;border-radius:50%;margin:7%}
+.tk,.tcard{position:absolute;left:0;top:0;transform-origin:0 0;transition:transform .42s cubic-bezier(.3,1.35,.5,1),opacity .3s,filter .3s}
+.tk img{width:100%;height:100%;display:block;pointer-events:none}
+.tk.gone,.tcard.gone{filter:grayscale(.7);opacity:.45}
+.tcard{background:#f3e9ff;border:3px solid #b48cff;box-sizing:border-box;box-shadow:0 3px 0 #d6c2ff}
+.tcard img{position:absolute;pointer-events:none}
+.tcard::after{content:"";position:absolute;left:-5px;right:-5px;top:46%;height:8%;background:#ff7fb0;border-radius:4px;box-shadow:0 2px 0 #d9478d;opacity:.9}
+.tcard.new{animation:tie .5s cubic-bezier(.2,1.6,.4,1)}
+@keyframes tie{from{scale:1.35}}
+.tslot{position:absolute;left:0;top:0;border:3px dashed #c9b8dd;border-radius:50%;box-sizing:border-box;transition:opacity .3s}
+.tslot.ten{border-radius:12px}
+.tslot.dim{opacity:.35}
+.tsign{position:absolute;left:0;top:0;display:flex;align-items:center;justify-content:center;font-weight:900;opacity:0;transition:opacity .3s;line-height:1}
+.tsign.on{opacity:1}
+.tsign.add{color:#22c38a}
+.tsign.sub{color:#ff5a7a}
+.ttotal{position:absolute;left:50%;transform:translateX(-50%);font-weight:900;background:#fff;border-radius:999px;padding:0 .45em;box-shadow:0 4px 0 #ecd3b0;line-height:1.2;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.ttotal .t{color:#8f5cff}
+.ttotal .o{color:#ff8a1f}
+.ttotal.glow{animation:ask 1s ease-in-out infinite;box-shadow:0 0 0 5px #ffd23a,0 4px 0 #ecd3b0}
 
 /* ---------- parent settings ---------- */
 .set{text-align:left;max-height:calc(100vh - 80px);overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y}
@@ -288,9 +348,10 @@ const Store = {
       stars: {}, best: {},   // per level
       owed: false,           // a math page is due before the next game
       played: 0,
-      math: { max: 20, ops: 2, mode: 'mix', count: 'ramp' },   // count: 'ramp' (MATH_RAMP) or a fixed size (MATH_COUNTS), 家长设置
-      mathV: 3,              // 3: the day's ramp; 2: a fixed size (10 by default); before that always 20
+      math: { max: 20, ops: 2, mode: 'mix', count: 'wheel' },   // count: 'wheel' (MATH_WHEEL), 'ramp' (MATH_RAMP) or a fixed size (MATH_COUNTS), 家长设置
+      mathV: 4,              // 4: the wheel; 3: the day's ramp; 2: a fixed size (10 by default); before that always 20
       today: { day: '', pages: 0 },   // math pages finished today (not the 5-sum page for 5 more moves): where the ramp is
+      spin: null,            // what the wheel landed on for the page owed now, { n, p: played }, so leaving can't spin again
       log: [],               // finished math pages: [time, count, right first time, seconds, settings label]
       seen: {},              // tips already shown
       gifts: {},             // friends from the blind box (gift.js): id -> how many
@@ -307,9 +368,11 @@ const Store = {
       const raw = JSON.parse(localStorage.getItem(this.key) || 'null');
       if (raw) {
         Object.assign(this.d, raw); this.d.math = Object.assign(this.defaults().math, raw.math || {});
-        // saved before the day's ramp: the 20 was fixed in the code and 10 was the default for a few minutes, nobody
-        // picked them, so start the ramp (decli 2026-10-19)
-        if ((raw.mathV || 0) < 3) { this.d.math.count = this.defaults().math.count; this.d.mathV = 3; }
+        // saved before the wheel: the 20 was fixed in the code, 10 and then the ramp were defaults, so they become the
+        // wheel (decli 2026-10-19); a size a parent picked from the settings since the ramp (5, 10, 15, 20) stays
+        const v = raw.mathV || 0;
+        if (v < 3 || (v < 4 && this.d.math.count === 'ramp')) this.d.math.count = this.defaults().math.count;
+        this.d.mathV = 4;
       }
     } catch (e) { }
     return this.d;
@@ -1055,8 +1118,10 @@ const LEVELS = [
 // 动物消消乐 · everything the narrator says. dev/voice/collect.js reads this file (with levels.js and board.js) to
 // list every line for recording, so a line built from a level must be built here and nowhere else.
 const KID = '可可';   // decli's daughter, who plays this
-// how many sums a math page has (decli 2026-10-19): by default the day's pages grow, 2, 6, 12, then 20 every time after
-// (back to 2 the next day); a parent can pick one fixed size instead (家长设置)
+// how many sums a math page has (家长设置). By default she spins a wheel before each page and does what it lands on,
+// 2 to 10 (decli 2026-10-19, evening: sums feel like a chore, make drawing them a game). A parent can pick the day's
+// ramp instead (2, 6, 12, then 20 every time after, back to 2 the next day) or one fixed size.
+const MATH_WHEEL = [2, 3, 4, 5, 6, 7, 8, 9, 10];
 const MATH_RAMP = [2, 6, 12, 20];
 const MATH_COUNTS = [5, 10, 15, 20];
 const NUM_ZH = n => String(n);   // the voice reads digits naturally ("18只" → 十八只)
@@ -1134,14 +1199,43 @@ const L = {
   // decli: call her by name on the math page, every right answer is praise for 可可
   math: {
     title: `${KID}，敢不敢先挑战一页数学题？`,
-    start: n => `${KID}，敢不敢先挑战一页数学题？${n}道题都做对，就能接着玩啦。`,   // recorded for every MATH_RAMP and MATH_COUNTS size
+    start: n => `${KID}，敢不敢先挑战一页数学题？${n}道题都做对，就能接着玩啦。`,   // recorded for every size above
     extra: '做对5道题，就多给你5步！',
     right: [`${KID}，你答对啦！`, `${KID}真棒！`, `${KID}，完全正确！`, `${KID}，你好厉害！`, `${KID}，没错，就是这样！`],
-    wrong: '再想一想。',
+    // the first wrong answer: one short hint about what went wrong (MathGate.why), not the answer
+    why: {
+      sub: '看清楚，这道是减法，要拿走哦。',
+      add: '看清楚，这道是加法，要加上哦。',
+      sign: '看清楚每个符号，是加还是减？',
+      near: '就差一点点！再仔细数一数。',
+      swap: '两个数字写反啦，再看看。',
+      ones: '个位对啦！十位再想一想。',
+      big: '个位不够减，要拆开一捆十哦。',
+      other: '没关系，再想一想。',
+    },
     show: '看看正确答案，照着写一遍。',
     half: `${KID}，已经做完一半啦！`,
     done: `${KID}，全部做完啦！真厉害，去玩吧！`,
     doneExtra: `${KID}，做完啦！多给你5步！`,
+  },
+  // the wheel before a math page (wheel.js): every number is good news
+  wheel: {
+    ask: `${KID}，点一下转盘，看看这次做几道题！`,
+    land: n => n <= 4 ? `转到${n}道题！${KID}，热热身吧！` : n <= 7 ? `转到${n}道题！不多不少，${KID}加油！` : `哇，转到${n}道题！${KID}，接受挑战吧！`,
+  },
+  // 小老师 (teach.js): after the second wrong answer, or 💡, the animals act the sum out one tap at a time
+  teach: {
+    open: `${KID}，别着急，我们请小动物来帮忙！`,
+    add: '加几个，就请进来几个。点一点！',
+    sub: '减几个，就送走几个。点一点！',
+    tie: '满十个啦，捆成一捆！',
+    untie: '个数不够了，拆开一捆！',
+    tap: '点一点这里。',
+    end: '小动物都摆好啦！把答案写在上面吧。',
+    again: '没关系，看着小动物，再数一数。',
+    self: `${KID}，你一步一步想出来啦！真棒！`,
+    twin: '再来一道差不多的，自己试试！',
+    nums: Array.from({ length: 101 }, (_, i) => String(i)),   // every step says the new total
   },
   parent: '这里是给爸爸妈妈的设置哦。',
   gift: {
@@ -1331,7 +1425,7 @@ const Snd = {
       case 'lose': [4, 3, 2, 0].forEach((n, i) => this.tone(this.pent(n) / 2, 0.4, { type: 'triangle', vol: 0.14, at: i * 0.22, to: this.pent(n) / 2 * 0.97 })); break;
       case 'shuffle': for (let i = 0; i < 8; i++) this.noise(0.08, { f: 1500 + i * 300, q: 3, vol: 0.08, at: i * 0.05 }); break;
       case 'right': this.tone(this.pent(7), 0.15, { type: 'triangle', vol: 0.18 }); this.tone(this.pent(9), 0.3, { type: 'triangle', vol: 0.18, at: 0.1, verb: true }); break;
-      case 'wrong': this.tone(220, 0.25, { type: 'triangle', vol: 0.15, to: 190 }); break;
+      case 'wrong': this.tone(392, 0.14, { type: 'sine', vol: 0.13 }); this.tone(330, 0.22, { type: 'sine', vol: 0.12, at: 0.12, to: 370 }); break;   // "hmm?", not a buzz
       case 'key': this.tone(700 + k * 30, 0.05, { type: 'sine', vol: 0.1 }); break;
       // the blind box (gift.js): landing, each tap (k = 1-3, higher each time), bursting open, and a rare friend
       case 'gland': this.tone(150, 0.3, { type: 'sine', to: 70, vol: 0.35 }); this.noise(0.14, { f: 320, q: 1, vol: 0.22 }); this.tone(this.pent(4), 0.25, { type: 'triangle', vol: 0.1, at: 0.06, verb: true }); break;
@@ -1344,6 +1438,16 @@ const Snd = {
         this.tone(this.pent(17), 1.3, { type: 'sine', vol: 0.06, at: 0.5, verb: true }); break;
       case 'grare': [0, 2, 4, 5, 7, 9].forEach((n, i) => this.tone(this.pent(12 + n), 0.9, { type: 'sine', vol: 0.06, at: 0.55 + i * 0.07, verb: true })); break;
       case 'sparkle': for (let i = 0; i < 5; i++) this.tone(this.pent(10 + Math.floor(Math.random() * 6)), 0.15, { type: 'sine', vol: 0.05, at: i * 0.04, verb: true }); break;
+      // the wheel before a math page (wheel.js): a peg passing the pointer, and the push that starts it
+      case 'tick': this.tone(1900 + Math.random() * 200, 0.035, { type: 'square', vol: 0.05 }); this.noise(0.03, { filter: 'highpass', f: 5000, vol: 0.08 }); break;
+      case 'whirl': this.noise(0.6, { f: 400, fto: 3000, q: 0.8, vol: 0.14 }); this.tone(300, 0.5, { type: 'triangle', to: 900, vol: 0.08 }); break;
+      // 小老师 (teach.js): an animal hopping in or leaving (k: the new total; the note climbs through each ten and starts
+      // again after it, like the ones), ten tied into a bundle, a bundle untied, and the 💡
+      case 'hop': { const f = this.pent(2 + ((k + 9) % 10)); this.tone(f, 0.16, { type: 'triangle', vol: 0.16, to: f * 1.5, glide: 0.1, verb: true }); this.tone(180, 0.06, { type: 'sine', to: 90, vol: 0.06, at: 0.1 }); break; }
+      case 'bye': { const f = this.pent(2 + ((k + 10) % 10)); this.tone(f * 1.5, 0.2, { type: 'triangle', vol: 0.12, to: f, glide: 0.18 }); break; }
+      case 'tie': this.noise(0.25, { f: 900, fto: 3000, q: 1, vol: 0.12 }); [0, 2, 4, 7, 9].forEach((n, i) => this.tone(this.pent(5 + n), 0.3, { type: 'triangle', vol: 0.12, at: 0.15 + i * 0.06, verb: true })); break;
+      case 'untie': this.noise(0.3, { f: 3000, fto: 600, q: 1, vol: 0.14 }); [9, 7, 4, 2, 0].forEach((n, i) => this.tone(this.pent(5 + n), 0.25, { type: 'triangle', vol: 0.1, at: 0.1 + i * 0.05, verb: true })); break;
+      case 'idea': this.tone(this.pent(9), 0.18, { type: 'sine', vol: 0.12, verb: true }); this.tone(this.pent(12), 0.3, { type: 'sine', vol: 0.12, at: 0.09, verb: true }); break;
     }
   },
 };
@@ -1901,10 +2005,427 @@ const Fx = {
 };
 const FONT = '"Hiragino Maru Gothic ProN","Yuanti SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif';
 
+// 动物消消乐 · the wheel before a math page (decli 2026-10-19: draw how many sums like a lucky draw, 2 to 10, so the
+// page starts with a bit of fun instead of a chore). She taps it; it winds back a little and spins, slows down with a
+// tick and a flick of the pointer at every peg, and lands with lights, confetti and her number popping up. Every slice
+// is the same size and the number is drawn fairly before the spin (never steered to a near miss); every number is good
+// news, a few a warm-up and many a challenge (L.wheel.land). What it lands on is kept until the page is done, so
+// leaving and coming back can't spin again.
+const Wheel = {
+  COLS: ['#ff7fb0', '#ffa95e', '#ffd23a', '#8fdc5e', '#45d0b5', '#5fb8ff', '#8f83ff', '#c47cff', '#ff8fd0'],
+  // on the math layer; resolves with the number, 'skip' (a parent skipped the page) or 'again' (a parent changed the
+  // settings, so the page starts over the new way)
+  spin() {
+    return new Promise(resolve => {
+      const root = $('#math'); root.hidden = false; root.innerHTML = ''; root.className = 'spin';
+      $('#fx').style.zIndex = 46;
+      Music.stop();   // quiet for the sums, as on the page itself
+      const N = MATH_WHEEL.length, A = Math.PI * 2 / N, TAU = Math.PI * 2;
+      const head = el('div', 'head');
+      const home = UI.homeButton(); home.style.width = home.style.height = '46px'; home.style.fontSize = '22px';
+      head.appendChild(home);
+      head.appendChild(el('h3', null, '✏️ ' + L.math.title));
+      const lock = el('button', 'ibtn', '🔒'); lock.style.width = lock.style.height = '46px'; lock.style.fontSize = '22px';
+      lock.onclick = () => UI.parent({ fromMath: true, skip: () => end('skip'), done: () => { if (Store.d.math.count !== 'wheel' && state !== 'gone') end('again'); } });
+      head.appendChild(lock);
+      root.appendChild(head);
+      const stage = el('div', 'wstage'), cv = el('canvas'), big = el('div', 'wbig'), hand = el('div', 'whand', '👆');
+      stage.appendChild(cv); stage.appendChild(big); stage.appendChild(hand);
+      root.appendChild(stage);
+      const x = cv.getContext('2d'), panda = Art.friend(FRIENDS.findIndex(f => f.id === 'panda'), 256, 230);
+      let S = 0, dpr = 1, rot = Math.random() * TAU, state = 'idle', t = 0, from = 0, to = 0, flap = 0, peg = 0, tickAt = 0, won = -1, n = 0;
+      let last = performance.now(), raf = 0, idle = 0, asked = 1;
+      const DUR = 3000;   // short: the wheel is a moment of fun before the sums, not a show to sit through
+
+      function size() {
+        const r = stage.getBoundingClientRect();
+        S = Math.max(200, Math.min(r.width, r.height) * 0.98); dpr = Math.min(devicePixelRatio || 1, 2);
+        cv.width = Math.round(S * dpr); cv.height = Math.round(S * dpr); cv.style.width = cv.style.height = S + 'px';
+        big.style.fontSize = Math.round(S * 0.2) + 'px';
+      }
+      const circle = (cx, cy, r) => { x.beginPath(); x.arc(cx, cy, r, 0, TAU); };
+      function draw(now) {
+        x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, S, S);
+        const cx = S / 2, cy = S * 0.52, R = S * 0.39;
+        // shadow, golden rim and its light bulbs: a slow chase while waiting, a fast one while spinning, all blinking together when it lands
+        x.fillStyle = 'rgba(110,50,130,.16)'; circle(cx, cy + R * 0.06, R * 1.14); x.fill();
+        const rim = x.createLinearGradient(0, cy - R, 0, cy + R);
+        rim.addColorStop(0, '#ffe680'); rim.addColorStop(0.5, '#ffb52e'); rim.addColorStop(1, '#e58a00');
+        x.fillStyle = rim; circle(cx, cy, R * 1.12); x.fill();
+        x.lineWidth = R * 0.02; x.strokeStyle = '#fff6cf'; circle(cx, cy, R * 1.1); x.stroke();
+        const B = 18, step = state === 'spin' ? Math.floor(now / 70) : Math.floor(now / 380);
+        for (let i = 0; i < B; i++) {
+          const a = -Math.PI / 2 + i * TAU / B, bx = cx + Math.cos(a) * R * 1.055, by = cy + Math.sin(a) * R * 1.055;
+          const on = state === 'won' ? Math.floor(now / 160) % 2 === 0 : (i + step) % 3 === 0;
+          if (on) { x.fillStyle = 'rgba(255,255,255,.55)'; circle(bx, by, R * 0.06); x.fill(); }
+          x.fillStyle = on ? (i % 2 ? '#fff8c4' : '#ffe1f0') : '#c97a00'; circle(bx, by, R * 0.032); x.fill();
+        }
+        // the slices (their numbers are drawn upright afterwards, so a 6 never turns into a 9)
+        x.save(); x.translate(cx, cy); x.rotate(rot);
+        for (let i = 0; i < N; i++) {
+          const a0 = -Math.PI / 2 + i * A, g = x.createRadialGradient(0, 0, R * 0.2, 0, 0, R);
+          g.addColorStop(0, '#ffffff'); g.addColorStop(0.35, Wheel.COLS[i]); g.addColorStop(1, Wheel.COLS[i]);
+          x.fillStyle = g; x.beginPath(); x.moveTo(0, 0); x.arc(0, 0, R, a0, a0 + A); x.closePath(); x.fill();
+          if (won >= 0) {   // the winner glows, the rest step back
+            x.fillStyle = i === won ? `rgba(255,255,255,${0.15 + 0.25 * Math.sin(now / 90) ** 2})` : 'rgba(255,255,255,.5)'; x.fill();
+          }
+        }
+        x.strokeStyle = '#fff'; x.lineWidth = R * 0.018;
+        for (let i = 0; i < N; i++) { const a = -Math.PI / 2 + i * A; x.beginPath(); x.moveTo(Math.cos(a) * R * 0.24, Math.sin(a) * R * 0.24); x.lineTo(Math.cos(a) * R, Math.sin(a) * R); x.stroke(); }
+        for (let i = 0; i < N; i++) {   // the pegs that flick the pointer
+          const a = -Math.PI / 2 + i * A;
+          x.fillStyle = '#fff'; circle(Math.cos(a) * R * 0.95, Math.sin(a) * R * 0.95, R * 0.035); x.fill();
+          x.fillStyle = '#e58a00'; circle(Math.cos(a) * R * 0.95, Math.sin(a) * R * 0.95, R * 0.015); x.fill();
+        }
+        x.restore();
+        x.textAlign = 'center'; x.textBaseline = 'middle'; x.lineJoin = 'round';
+        for (let i = 0; i < N; i++) {
+          const m = -Math.PI / 2 + (i + 0.5) * A + rot, tx = cx + Math.cos(m) * R * 0.68, ty = cy + Math.sin(m) * R * 0.68;
+          x.font = `900 ${Math.round(R * (i === won ? 0.27 : 0.22))}px ${FONT}`;
+          x.lineWidth = R * 0.05; x.strokeStyle = 'rgba(80,30,90,.55)'; x.strokeText(MATH_WHEEL[i], tx, ty + R * 0.01);
+          x.fillStyle = '#fff'; x.fillText(MATH_WHEEL[i], tx, ty + R * 0.01);
+        }
+        // the hub with the panda, breathing while it waits to be tapped
+        const pulse = state === 'idle' ? 1 + 0.05 * Math.sin(now / 220) : 1, hr = R * 0.25 * pulse;
+        if (state === 'idle') { x.fillStyle = `rgba(255,255,255,${0.3 + 0.2 * Math.sin(now / 220)})`; circle(cx, cy, hr * 1.25); x.fill(); }
+        x.fillStyle = '#fff'; circle(cx, cy, hr); x.fill();
+        x.lineWidth = R * 0.03; x.strokeStyle = '#ffb52e'; x.stroke();
+        if (won < 0) x.drawImage(panda, cx - hr * 0.92, cy - hr * 0.92, hr * 1.84, hr * 1.84);   // her number takes its place
+        // the pointer at the top, flicked by each peg and springing back
+        x.save(); x.translate(cx, cy - R * 1.2); x.rotate(flap);
+        x.beginPath(); x.moveTo(-R * 0.11, 0); x.quadraticCurveTo(-R * 0.1, R * 0.16, 0, R * 0.32); x.quadraticCurveTo(R * 0.1, R * 0.16, R * 0.11, 0);
+        x.arc(0, 0, R * 0.11, 0, Math.PI, true); x.closePath();
+        x.fillStyle = '#ff4f8a'; x.fill(); x.lineWidth = R * 0.025; x.strokeStyle = '#fff'; x.stroke();
+        x.fillStyle = '#ffd23a'; circle(0, 0, R * 0.05); x.fill();
+        x.restore();
+      }
+      function frame(now) {
+        const dt = Math.min(50, now - last); last = now;
+        if (state === 'wind') {   // a little wind-up backwards before the push (anticipation)
+          t += dt; const k = Math.min(1, t / 220); rot = from - 0.22 * Math.sin(k * Math.PI / 2);
+          if (k >= 1) { state = 'spin'; t = 0; from = rot; Snd.play('whirl'); }
+        } else if (state === 'spin') {
+          t += dt; const k = Math.min(1, t / DUR); rot = from + (to - from) * (1 - Math.pow(1 - k, 4));
+          const p = Math.floor(rot / A);
+          if (p !== peg) { peg = p; flap = Math.min(flap, -0.42); if (now - tickAt > 45) { tickAt = now; Snd.play('tick'); } }
+          if (k >= 1) land();
+        } else if (state === 'idle') {
+          idle += dt;
+          hand.classList.toggle('on', idle > 2500);
+          if (idle > 15000 && asked < 2) { asked++; Voice.say(L.wheel.ask); }
+        }
+        flap *= Math.pow(0.86, dt / 16);
+        draw(now);
+        if (state !== 'gone') raf = requestAnimationFrame(frame);
+      }
+      // the number is drawn first and the wheel is sent to a spot well inside its slice, five turns on
+      function go() {
+        if (state !== 'idle') return;
+        Snd.init(); Snd.play('tap'); Voice.stop();
+        hand.classList.remove('on');
+        n = pick(MATH_WHEEL);
+        const i = MATH_WHEEL.indexOf(n), phi = (i + 0.2 + 0.6 * Math.random()) * A;
+        from = rot; t = 0; state = 'wind';
+        const turn = 5 * TAU, d = (((-phi - (rot - 0.22)) % TAU) + TAU) % TAU;
+        to = rot - 0.22 + turn + d;
+        peg = Math.floor((rot - 0.22) / A);
+      }
+      function land() {
+        state = 'won'; won = MATH_WHEEL.indexOf(n);
+        Wheel.last = { n, at: MATH_WHEEL[Math.floor((((-rot) % TAU) + TAU) % TAU / A)] };   // what the pointer shows (checked by the tests)
+        Store.d.spin = { n, p: Store.d.played }; Store.save();
+        Snd.play('win'); Fx.confetti(60);
+        const r = cv.getBoundingClientRect();
+        Fx.sparkles(r.left + r.width / 2, r.top + r.height * 0.52, 16, r.width * 0.2, '#ffd23a');
+        big.textContent = n; big.classList.add('on');
+        Voice.say(L.wheel.land(n), { onend: () => setTimeout(() => end(n), 500) });
+      }
+      function end(r) {
+        if (state === 'gone') return;
+        state = 'gone'; cancelAnimationFrame(raf);
+        removeEventListener('resize', size);
+        if (r === 'skip') { root.hidden = true; $('#fx').style.zIndex = ''; }
+        resolve(r);
+      }
+      stage.addEventListener('pointerdown', e => { e.preventDefault(); go(); });
+      addEventListener('resize', size);
+      requestAnimationFrame(now => { size(); last = now; frame(now); });
+      Voice.say(L.wheel.ask);
+    });
+  },
+};
+
+// 动物消消乐 · 小老师: when a sum is answered wrong twice (or she taps 💡), the animals act it out over the cards, one tap
+// at a time, and she writes the answer herself on the number pad, which stays beside them (decli 2026-10-19: when she
+// gets one wrong, guide her the way a teacher would, with animation and play).
+// The model is the one Chinese first grade uses with sticks (小棒): ones sit in a ten frame (2 × 5); when it is full
+// they are tied into a bundle of ten (满十捆一捆, 凑十), and when there are not enough ones to take away a bundle is
+// untied (拆一捆, 破十). A bundle is a small ten frame standing up, so ten always looks like a full frame. The first
+// number's animals are one kind and each number added is another (this game's animals), so 8 + 5 shows the 8 and the
+// 2 that make ten, then the 3 left over. Taking away sends animals into marked spots below, so how many go is seen
+// too. Every tap says the new total, and the big number above shows it with the tens and the ones in the colours of
+// the bundles and the frame.
+const Teach = {
+  on: false, s: null, imgs: {},
+  img(i) {   // a friend's head as a picture, made once
+    if (!this.imgs[i]) this.imgs[i] = Art.friend(i, 128, 120).toDataURL();
+    return this.imgs[i];
+  },
+  // q: the sum ({ nums, signs, ans, got }); host: the element it covers; o.close(): she closed it with ✕
+  open(q, host, o = {}) {
+    if (this.on) this.close();
+    this.on = true;
+    const CW = 0.96, CH = 2.3, CG = 0.24, MC = 0.43;   // a bundle (its width, height, the gap after it, one of its cells) in frame cells
+    const kinds = q.nums.map((_, j) => ANIMALS[j % ANIMALS.length].h);
+    const ov = el('div', 'teach'), top = el('div', 'thead'), stage = el('div', 'tstage');
+    const owl = el('img', 'owl'); owl.src = this.img(FRIENDS.findIndex(f => f.id === 'owl')); owl.alt = '';
+    owl.onclick = () => { Snd.play('tap'); Voice.say(this.s && this.s.line); };   // tap the teacher to hear what to do again
+    top.appendChild(owl);
+    const eq = el('div', 'teq'), parts = [];
+    q.nums.forEach((v, j) => {
+      if (j) eq.appendChild(el('b', 'op', q.signs[j - 1] === '+' ? '+' : '−'));
+      const b = el('b', 'n', v); b.style.setProperty('--c', Cast.FX[FRIENDS[kinds[j]].fam[0]][1]);
+      parts.push(b); eq.appendChild(b);
+    });
+    eq.appendChild(el('b', 'op', '='));
+    const ans = el('span', 'tans', '?'); eq.appendChild(ans);
+    top.appendChild(eq);
+    const shut = el('button', 'ibtn', '✕'); shut.onclick = () => { Snd.play('tap'); Voice.stop(); this.close(); if (o.close) o.close(); };
+    top.appendChild(shut);
+    ov.appendChild(top); ov.appendChild(stage); host.appendChild(ov);
+    const frame = el('div', 'tframe'); stage.appendChild(frame);
+    for (let i = 0; i < 10; i++) frame.appendChild(el('i'));
+    const total = el('div', 'ttotal'); stage.appendChild(total);
+    const sign = el('div', 'tsign'); stage.appendChild(sign);
+    const hand = el('div', 'whand', '👆'); stage.appendChild(hand);
+
+    // the biggest number of bundles at any time, and the widest row of things to add or take away, set the size
+    // (ones to add or take away sit in rows of five, like the frame)
+    let v = q.nums[0], maxT = Math.floor(v / 10), trayW = 0, trayH = 1.1;
+    q.signs.forEach((sg, j) => {
+      const b = q.nums[j + 1], t = Math.floor(b / 10);
+      v = sg === '+' ? v + b : v - b; maxT = Math.max(maxT, Math.floor(v / 10));
+      trayW = Math.max(trayW, 1.2 + t * (CW + CG) + Math.min(5, b % 10) * 1.08);
+      trayH = Math.max(trayH, t ? CH : 0, b % 10 > 5 ? 2.2 : 0);
+    });
+    const s = this.s = {
+      q, ov, stage, ans, hand, o, ones: [], tens: [], tray: [], away: [], slots: [], j: 0, total: q.nums[0], need: null,
+      phase: 'intro', busy: true, idle: 0, timers: [], u: 0, line: L.teach.open,
+    };
+    const later = (fn, ms) => { const id = setTimeout(() => { s.timers = s.timers.filter(x => x !== id); if (this.s === s) fn(); }, ms); s.timers.push(id); };
+    s.later = later;
+
+    // ---------- where everything goes ----------
+    const G = {};
+    function geo() {
+      const W = stage.clientWidth, H = stage.clientHeight;
+      const mainW = maxT * (CW + CG) + (maxT ? 0.4 : 0) + 5.3, wide = Math.max(mainW, trayW) + 0.4;
+      const tall = 1.25 + 0.2 + CH + 0.6 + trayH + 0.2;
+      const u = s.u = Math.max(18, Math.min(W / wide, H / tall, 92));
+      const y0 = (H - tall * u) / 2;
+      G.u = u; G.W = W;
+      G.tx = (W - mainW * u) / 2; G.ty = y0 + 1.45 * u;
+      G.fx = G.tx + (maxT * (CW + CG) + (maxT ? 0.4 : 0)) * u; G.fy = G.ty;
+      G.ry = G.ty + (CH + 0.6) * u; G.rh = trayH * u;
+      G.cy = y0;
+      Object.assign(frame.style, { width: 5.3 * u + 'px', height: CH * u + 'px', transform: `translate(${G.fx}px,${G.fy}px)`, borderRadius: 0.25 * u + 'px', padding: 0.15 * u + 'px' });
+      Object.assign(total.style, { fontSize: 1.05 * u + 'px', top: G.cy + 'px' });
+    }
+    const cell = i => [G.fx + 0.15 * G.u + (i % 5) * G.u, G.fy + 0.15 * G.u + Math.floor(i / 5) * G.u];
+    const tenAt = i => [G.tx + i * (CW + CG) * G.u, G.ty];
+    const mini = (X, Y, i) => [X + 0.03 * G.u + (i % 2) * MC * G.u, Y + 0.075 * G.u + Math.floor(i / 2) * MC * G.u];
+    // the row below: what this number adds (or the spots for what it takes away), after a big + or −
+    function rowAt(t, n1) {
+      const w = 1.2 + t * (CW + CG) + Math.min(5, n1) * 1.08, x0 = (G.W - w * G.u) / 2, oh = (n1 > 5 ? 2.08 : 1) * G.u;
+      return {
+        sx: x0, ten: i => [x0 + (1.2 + i * (CW + CG)) * G.u, G.ry + (G.rh - CH * G.u) / 2],
+        one: i => [x0 + (1.2 + t * (CW + CG) + (i % 5) * 1.08) * G.u, G.ry + (G.rh - oh) / 2 + Math.floor(i / 5) * 1.08 * G.u],
+      };
+    }
+    const put = (n, X, Y, c, quick) => {   // an animal into a cell of size c (a frame cell is G.u)
+      if (quick) n.el.style.transition = 'none';
+      n.el.style.width = n.el.style.height = 0.9 * G.u + 'px';
+      n.el.style.transform = `translate(${X + 0.05 * c}px,${Y + 0.05 * c}px) scale(${c / G.u})`;
+      if (quick) { void n.el.offsetWidth; n.el.style.transition = ''; }
+    };
+    const putTen = (n, X, Y, quick) => {
+      if (quick) n.el.style.transition = 'none';
+      Object.assign(n.el.style, { width: CW * G.u + 'px', height: CH * G.u + 'px', borderRadius: 0.2 * G.u + 'px', transform: `translate(${X}px,${Y}px)` });
+      $$('img', n.el).forEach((im, i) => { const [mx, my] = mini(0, 0, i); Object.assign(im.style, { width: MC * 0.9 * G.u + 'px', height: MC * 0.9 * G.u + 'px', left: mx + 0.02 * G.u + 'px', top: my + 0.02 * G.u + 'px' }); });
+      if (quick) { void n.el.offsetWidth; n.el.style.transition = ''; }
+    };
+    function layout(quick) {
+      s.tens.forEach((n, i) => putTen(n, ...tenAt(i), quick));
+      s.ones.forEach((n, i) => put(n, ...cell(i), G.u, quick));
+      if (s.row) {
+        s.tray.forEach(n => n.ten ? putTen(n, ...s.row.ten(n.at), quick) : put(n, ...s.row.one(n.at), G.u, quick));
+        s.slots.forEach(sl => {
+          const [X, Y] = sl.ten ? s.row.ten(sl.at) : s.row.one(sl.at);
+          Object.assign(sl.el.style, sl.ten ? { width: CW * G.u + 'px', height: CH * G.u + 'px', borderRadius: 0.2 * G.u + 'px' } : { width: 0.9 * G.u + 'px', height: 0.9 * G.u + 'px' },
+            { transform: `translate(${sl.ten ? X : X + 0.05 * G.u}px,${sl.ten ? Y : Y + 0.05 * G.u}px)` });
+          if (sl.got) sl.got.ten ? putTen(sl.got, X, Y, quick) : put(sl.got, X, Y, G.u, quick);
+        });
+        Object.assign(sign.style, { fontSize: 0.9 * G.u + 'px', transform: `translate(${s.row.sx}px,${G.ry + G.rh / 2 - 0.6 * G.u}px)`, width: G.u + 'px', height: 1.2 * G.u + 'px' });
+      }
+    }
+    // ---------- the animals ----------
+    const one = k => { const n = { k, el: el('div', 'tk') }; const im = el('img'); im.src = Teach.img(k); im.alt = ''; n.el.appendChild(im); stage.appendChild(n.el); return n; };
+    const ten = ks => {
+      const n = { ten: true, ks, el: el('div', 'tcard') };
+      ks.forEach(k => { const im = el('img'); im.src = Teach.img(k); im.alt = ''; n.el.appendChild(im); });
+      stage.appendChild(n.el); return n;
+    };
+    const pop = (n, delay) => { n.el.style.opacity = 0; later(() => { n.el.style.opacity = 1; n.el.animate([{ scale: '0.2' }, { scale: '1.15' }, { scale: '1' }], { duration: 320, easing: 'ease-out' }); }, delay); };
+    const count = () => {
+      const t = Math.floor(s.total / 10), o1 = s.total % 10;
+      total.innerHTML = (t ? `<span class="t">${t}</span>` : '') + `<span class="o">${o1}</span>`;
+      total.animate([{ transform: 'translateX(-50%) scale(1.25)' }, { transform: 'translateX(-50%) scale(1)' }], { duration: 260, easing: 'ease-out' });
+    };
+    const fxAt = (n, col) => { const r = n.el.getBoundingClientRect(); Fx.sparkles(r.left + r.width / 2, r.top + r.height / 2, 10, r.width * 0.6, col || '#ffd23a'); };
+
+    // ---------- the steps ----------
+    // the first number: its bundles and ones pop in while the teacher speaks, then its total is said
+    function intro() {
+      const v0 = q.nums[0];
+      for (let i = 0; i < Math.floor(v0 / 10); i++) s.tens.push(ten(Array(10).fill(kinds[0])));
+      for (let i = 0; i < v0 % 10; i++) s.ones.push(one(kinds[0]));
+      geo(); layout(true);
+      s.tens.forEach((n, i) => pop(n, 200 + i * 140));
+      s.ones.forEach((n, i) => pop(n, 200 + s.tens.length * 140 + i * 90));
+      count();
+      parts[0].classList.add('now');
+      // then the first number is said, then the next number's animals come (or after a while anyway, if a line is cut)
+      let went = false;
+      const go = () => { if (!went && this.s === s) { went = true; next(); } };
+      Voice.say(L.teach.open, { onend: () => { if (this.s === s) Voice.say(String(v0), { onend: () => later(go, 250) }); } });
+      later(go, 9000);
+    }
+    const next = () => {
+      parts.forEach((p, i) => p.classList.toggle('now', i === s.j + 1));
+      if (s.j >= q.signs.length) return end();
+      const sg = q.signs[s.j], b = q.nums[s.j + 1], t = Math.floor(b / 10), n1 = b % 10, k = kinds[s.j + 1];
+      s.row = rowAt(t, n1); s.tray = []; s.slots.forEach(sl => sl.el.remove()); s.slots = [];
+      sign.textContent = sg === '+' ? '+' : '−'; sign.className = 'tsign on ' + (sg === '+' ? 'add' : 'sub');
+      if (sg === '+') {
+        for (let i = 0; i < t; i++) { const n = ten(Array(10).fill(k)); n.at = i; s.tray.push(n); }
+        for (let i = 0; i < n1; i++) { const n = one(k); n.at = i; s.tray.push(n); }
+      } else {
+        s.need = { t, n1 };
+        for (let i = 0; i < t; i++) s.slots.push({ ten: true, at: i, el: stage.appendChild(el('div', 'tslot ten')) });
+        for (let i = 0; i < n1; i++) s.slots.push({ at: i, el: stage.appendChild(el('div', 'tslot')) });
+      }
+      layout(true);
+      s.tray.forEach((n, i) => pop(n, i * 70));
+      s.slots.forEach((sl, i) => sl.el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, delay: i * 50, fill: 'backwards' }));
+      Voice.say(s.line = sg === '+' ? L.teach.add : L.teach.sub);
+      s.phase = sg === '+' ? 'add' : 'sub'; s.busy = false; s.idle = 0;
+      if (sg === '-') untieIfShort();
+    };
+    // one tap: the next animal (or bundle) hops in, or one leaves
+    function step() {
+      if (s.busy || (s.phase !== 'add' && s.phase !== 'sub')) return;
+      Snd.init(); s.idle = 0; hand.classList.remove('on');
+      if (s.phase === 'add') {
+        const n = s.tray.shift();
+        if (n.ten) { s.tens.push(n); s.total += 10; } else { s.ones.push(n); s.total += 1; }
+        layout(); count(); Snd.play('hop', s.total); Voice.say(String(s.total));
+        later(() => fxAt(n, '#fff6a8'), 300);
+        if (s.ones.length === 10) { s.busy = true; later(tie, 650); }
+        else if (!s.tray.length) done();
+      } else {
+        const sl = s.slots.find(x => !x.got && (s.need.t ? x.ten : !x.ten));
+        const n = sl.ten ? s.tens.pop() : s.ones.pop();
+        sl.got = n; n.el.classList.add('gone');
+        if (sl.ten) { s.need.t--; s.total -= 10; } else { s.need.n1--; s.total -= 1; }
+        layout(); count(); Snd.play('bye', s.total); Voice.say(String(s.total));
+        if (!s.need.t && !s.need.n1) done();
+        else untieIfShort();
+      }
+    }
+    // ten in the frame: they hop into a bundle that stands next to the others
+    function tie() {
+      const at = tenAt(s.tens.length), ks = s.ones.map(n => n.k);
+      s.ones.forEach((n, i) => { const [X, Y] = mini(...at, i); n.el.style.transitionDelay = i * 25 + 'ms'; put(n, X, Y, MC * G.u); });
+      Snd.play('tie'); Voice.say(L.teach.tie);
+      later(() => {
+        const b = ten(ks); s.ones.forEach(n => n.el.remove()); s.ones = [];
+        s.tens.push(b); layout(true);
+        b.el.classList.add('new'); fxAt(b);
+        later(() => { if (s.tray.length) s.busy = false; else done(); }, 500);
+      }, 700);
+    }
+    // not enough ones to take away: a bundle is untied into the frame
+    function untieIfShort() {
+      if (!s.need || s.need.t || !s.need.n1 || s.ones.length) return;
+      s.busy = true;
+      later(() => {
+        const b = s.tens.pop(), [X, Y] = tenAt(s.tens.length);
+        b.el.animate([{ transform: b.el.style.transform }, { transform: b.el.style.transform + ' scale(1.12) rotate(-4deg)' }, { transform: b.el.style.transform }], { duration: 380 });
+        Snd.play('untie'); Voice.say(L.teach.untie);
+        later(() => {
+          s.ones = b.ks.map(k => one(k));
+          s.ones.forEach((n, i) => { const [mx, my] = mini(X, Y, i); put(n, mx, my, MC * G.u, true); });
+          b.el.remove();
+          requestAnimationFrame(() => { s.ones.forEach((n, i) => { n.el.style.transitionDelay = i * 30 + 'ms'; }); layout(); later(() => { s.ones.forEach(n => { n.el.style.transitionDelay = ''; }); s.busy = false; s.idle = 0; }, 700); });
+        }, 420);
+      }, 450);
+    }
+    function done() {
+      s.busy = true; s.phase = 'wait';
+      later(() => { s.ones.forEach(n => { n.el.style.transitionDelay = ''; }); s.j++; next(); }, 900);
+    }
+    function end() {
+      s.phase = 'end'; s.busy = true;
+      sign.className = 'tsign'; s.slots.forEach(sl => sl.el.classList.add('dim'));
+      total.classList.add('glow');
+      ans.classList.add('ask');
+      later(() => Voice.say(s.line = L.teach.end), 400);
+    }
+    // the hand shows where to tap when she waits
+    s.tick = setInterval(() => {
+      owl.classList.toggle('talk', Voice.busy);
+      if (s.busy || (s.phase !== 'add' && s.phase !== 'sub')) return;
+      s.idle += 150;
+      if (s.idle > 2600 && !hand.classList.contains('on')) {
+        const n = s.phase === 'add' ? s.tray[0] : (s.need.t ? s.tens[s.tens.length - 1] : s.ones[s.ones.length - 1]);
+        if (!n) return;
+        const r = n.el.getBoundingClientRect(), b = stage.getBoundingClientRect();
+        hand.style.left = r.left - b.left + r.width * 0.3 + 'px'; hand.style.top = r.top - b.top + r.height * 0.55 + 'px';
+        hand.classList.add('on');
+        if (s.idle < 2800) Voice.say(L.teach.tap);
+      }
+    }, 150);
+    stage.addEventListener('pointerdown', e => { e.preventDefault(); step(); });
+    s.relayout = () => { geo(); layout(true); };
+    requestAnimationFrame(() => intro.call(this));
+  },
+  sync(got) { if (this.s) this.s.ans.textContent = got || '?'; },
+  shake() {
+    const a = this.s && this.s.ans; if (!a) return;
+    a.classList.remove('bad'); void a.offsetWidth; a.classList.add('bad');
+  },
+  relayout() { if (this.s) this.s.relayout(); },
+  // right: a burst of sparkles as it goes
+  close(right) {
+    const s = this.s; if (!s) return;
+    this.s = null; this.on = false;
+    s.timers.forEach(clearTimeout); clearInterval(s.tick);
+    if (right) {
+      const r = s.ans.getBoundingClientRect();
+      Fx.burst(r.left + r.width / 2, r.top + r.height / 2, ['#5fe0b0', '#ffd23a'], 14, 1, 70);
+      s.ov.classList.add('bye'); setTimeout(() => s.ov.remove(), 350);
+    } else s.ov.remove();
+  },
+};
+
 // 动物消消乐 · the math page that stands between one game and the next (anti-addiction + learning by play).
-// A page of 20 sums with a number pad; every sum has to be answered right before the page is done. A wrong answer
-// shakes and clears; after three tries the right answer shows in grey to be copied, so she is never stuck.
-// Parents choose the range (within 20 / 50 / 100), how many numbers (2 / 3 / 4) and add / subtract / both.
+// First she spins the wheel for how many sums (wheel.js, 2 to 10), then a page of them with a number pad; every sum has
+// to be answered right before the page is done. Help comes in steps, the way a teacher would give it: the first wrong
+// answer gets one short hint about what went wrong (a sign read the wrong way, one off, digits swapped, the ones right
+// but not the tens), the second brings in 小老师 (teach.js), where the animals act the sum out a tap at a time and she
+// writes the answer herself, and 💡 brings it in any time after a wrong answer; only after that does the right
+// answer show in grey to be copied, so she is never stuck. Parents choose the range (within 20 / 50 / 100), how many
+// numbers (2 / 3 / 4), add / subtract / both, and the wheel, the day's ramp or a fixed page size.
 const MathGate = {
   // one sum: every number ≥ 1, every partial result between 0 and max
   problem(max, ops, mode, want) {
@@ -1929,9 +2450,9 @@ const MathGate = {
       if (max >= 50 && nums.some(n => n < 3) && Math.random() < 0.7) continue;   // keep the bigger ranges from being trivial
       let text = String(nums[0]);
       signs.forEach((s, i) => { text += ` ${s === '+' ? '+' : '−'} ${nums[i + 1]}`; });
-      return { text, ans: v };
+      return { text, ans: v, nums, signs };
     }
-    return { text: '1 + 1', ans: 2 };
+    return { text: '1 + 1', ans: 2, nums: [1, 1], signs: ['+'] };
   },
   page(cfg, count) {
     const out = [], seen = new Set();
@@ -1944,26 +2465,74 @@ const MathGate = {
     for (let i = out.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [out[i], out[j]] = [out[j], out[i]]; }
     return out;
   },
+  // a sum on its card, the signs in their own tags so a hint can point at them
+  html(q) { return q.nums.map((n, i) => (i ? ` <i class="op">${q.signs[i - 1] === '+' ? '+' : '−'}</i> ` : '') + n).join(''); },
+  // what the first wrong answer most likely was: { k: the hint in L.math.why, op: which sign to point at }
+  why(q, got) {
+    for (let i = 0; i < q.signs.length; i++) {   // one sign read the wrong way round
+      let v = q.nums[0];
+      q.signs.forEach((sg, j) => { const t = j === i ? (sg === '+' ? '-' : '+') : sg; v = t === '+' ? v + q.nums[j + 1] : v - q.nums[j + 1]; });
+      if (v === got) return { k: q.signs.length > 1 ? 'sign' : q.signs[0] === '-' ? 'sub' : 'add', op: i };
+    }
+    // a two-digit take-away done digit by digit, the smaller ones digit from the bigger (13 − 5 = 12, 43 − 17 = 34)
+    if (q.signs.length === 1 && q.signs[0] === '-') {
+      const [a, b] = q.nums;
+      if (a >= 10 && a % 10 < b % 10 && got === (Math.floor(a / 10) - Math.floor(b / 10)) * 10 + (b % 10 - a % 10)) return { k: 'big' };
+    }
+    if (Math.abs(got - q.ans) === 1) return { k: 'near' };
+    const a = String(q.ans);
+    if (a.length === 2 && a[0] !== a[1] && String(got) === a[1] + a[0]) return { k: 'swap' };
+    if ((q.ans >= 10 || got >= 10) && got % 10 === q.ans % 10) return { k: 'ones' };
+    return { k: 'other' };
+  },
+  // a sum like q for practice straight after 小老师 (9 + 4, then 9 + 6): the same first number and signs, the last
+  // number a little different, needing a bundle tied or untied if q did, every step still between 0 and max
+  twin(q, max, taken) {
+    const steps = n => { const out = [n[0]]; q.signs.forEach((sg, j) => out.push(sg === '+' ? out[j] + n[j + 1] : out[j] - n[j + 1])); return out; };
+    const tens = n => { const p = steps(n)[n.length - 2], b = n[n.length - 1]; return q.signs[q.signs.length - 1] === '+' ? p % 10 + b % 10 >= 10 : p % 10 < b % 10; };
+    const crosses = tens(q.nums), last = q.nums.length - 1;
+    for (const d of [1, -1, 2, -2, 3, -3, 4, -4].sort(() => Math.random() - 0.5)) {
+      const n = q.nums.slice(); n[last] += d;
+      const p = steps(n);
+      if (n[last] < 1 || p.some(v => v < 0 || v > max) || tens(n) !== crosses) continue;
+      const t = { nums: n, signs: q.signs, ans: p[p.length - 1] };
+      t.text = String(n[0]); q.signs.forEach((sg, i) => { t.text += ` ${sg === '+' ? '+' : '−'} ${n[i + 1]}`; });
+      if (!taken.includes(t.text)) return t;
+    }
+    return null;
+  },
   label(cfg) {
     return `${cfg.max} 以内 · ${['', '', '两个数', '三个数', '四个数'][cfg.ops]} · ${{ mix: '加减混合', add: '只有加法', sub: '只有减法' }[cfg.mode]}`;
   },
 
-  // sums on the next page: the parent's fixed size, or the day's ramp (today's 1st page 2, then 6, 12, 20, 20, …)
+  // sums on the next page: what the wheel landed on, the day's ramp (today's 1st page 2, then 6, 12, 20, 20, …) or
+  // the parent's fixed size
   pageSize() {
     const n = Store.d.math.count;
-    return n === 'ramp' ? MATH_RAMP[Math.min(this.pagesToday(), MATH_RAMP.length - 1)] : n || 10;
+    return n === 'wheel' ? this.spun() || 6 : n === 'ramp' ? MATH_RAMP[Math.min(this.pagesToday(), MATH_RAMP.length - 1)] : n || 10;
   },
+  // the wheel's number for the page owed now (a game played since makes it old)
+  spun() { const s = Store.d.spin; return s && s.p === Store.d.played ? s.n : 0; },
   pagesToday() { const t = Store.d.today; return t && t.day === new Date().toDateString() ? t.pages : 0; },
 
   // o.count, o.extra (the five-sums-for-five-moves page); resolves when every sum is right
   open(o = {}) {
+    // the wheel first, unless it has already landed for this page (she left half-way and came back)
+    if (!o.count && Store.d.math.count === 'wheel' && !this.spun()) {
+      return Wheel.spin().then(r => {
+        if (r === 'skip') { Store.d.owed = false; Store.d.spin = null; Store.save(); return; }
+        if (r !== 'again') this.fresh = true;
+        return MathGate.open(o);
+      });
+    }
+    const fresh = this.fresh; this.fresh = false;
     return new Promise(resolve => {
       const cfg = Store.d.math, count = o.count || MathGate.pageSize();
       const qs = this.page(cfg, count).map(q => Object.assign(q, { got: '', tries: 0, ok: false }));
-      const root = $('#math'); root.hidden = false; root.innerHTML = '';
+      const root = $('#math'); root.hidden = false; root.innerHTML = ''; root.className = '';
       $('#fx').style.zIndex = 46;   // sparkles and confetti over the page
       const t0 = Date.now();
-      let cur = 0, first = 0, finished = false, praised = '';
+      let cur = 0, first = 0, finished = false, praised = '', helpT = 0;
       Music.stop();   // quiet for the sums (decli); the game starts it again
       const sheet = el('div', 'sheet'), head = el('div', 'head');
       const home = UI.homeButton(); home.style.width = home.style.height = '46px'; home.style.fontSize = '22px';
@@ -1981,13 +2550,16 @@ const MathGate = {
       root.appendChild(sheet);
       const cards = qs.map((q, i) => {
         const c = el('button', 'q');
-        c.innerHTML = `<span>${q.text} =</span><span class="ans"></span>`;
+        c.innerHTML = `<span>${MathGate.html(q)} =</span><span class="ans"></span>`;
         c.onclick = () => { if (!q.ok && !finished) { cur = i; Snd.play('tap'); draw(); } };
         grid.appendChild(c);
         return c;
       });
       const pad = el('div', 'pad');
-      const disp = el('div', 'disp', '');
+      const disp = el('div', 'disp', ''), say = el('span'), bulb = el('button', 'bulb', '💡');
+      bulb.hidden = true;
+      disp.appendChild(say); disp.appendChild(bulb);
+      bulb.onclick = () => { Snd.init(); Snd.play('tap'); teach(); };
       pad.appendChild(disp);
       const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '⌫', '0', '✓'];
       for (const k of keys) {
@@ -2037,9 +2609,21 @@ const MathGate = {
           else if (i === cur) { a.textContent = q.got || (q.tries >= 3 ? q.ans : '?'); a.classList.toggle('hint', !q.got && q.tries >= 3); }
           else { a.textContent = q.got || ''; a.classList.remove('hint'); }
         });
-        const n = qs.filter(q => q.ok).length;
+        const n = qs.filter(q => q.ok).length, q = qs[cur];
         prog.textContent = `${n} / ${count}`;
-        disp.textContent = finished ? '' : qs[cur].tries >= 3 ? '照着灰色的答案写一遍' : qs[cur].tries ? '再想一想' : '';
+        say.textContent = finished || Teach.on ? '' : q.tries >= 3 ? '照着灰色的答案写一遍' : q.tries ? '再想一想' : '';
+        // 💡 once a sum has gone wrong, wiggling the first time it shows
+        const help = !finished && !Teach.on && !q.ok && q.tries >= 1 && q.tries < 3;
+        if (help && bulb.hidden !== false) { bulb.hidden = false; bulb.classList.remove('new'); void bulb.offsetWidth; bulb.classList.add('new'); Snd.play('idea'); }
+        bulb.hidden = !help;
+        if (Teach.on) Teach.sync(q.got);
+      }
+      // the animals act the sum out over the cards; the pad stays to write the answer
+      function teach() {
+        clearTimeout(helpT);
+        if (finished || qs[cur].ok) return;
+        Teach.open(qs[cur], sheet, { close: draw });
+        draw();
       }
       function press(k) {
         if (finished) return;
@@ -2052,31 +2636,58 @@ const MathGate = {
       }
       function check() {
         const q = qs[cur], c = cards[cur];
+        clearTimeout(helpT);
         if (+q.got === q.ans) {
           q.ok = true; if (!q.tries) first++;
-          Snd.play('right');
+          Snd.play('right'); c.classList.remove('bad');
+          const taught = Teach.on;
+          if (taught) Teach.close(true);
           const r = c.getBoundingClientRect();
           Fx.burst(r.left + r.width * 0.8, r.top + r.height / 2, ['#5fe0b0', '#ffd23a'], 10, 0.8, 60);
           const n = qs.filter(x => x.ok).length;
           if (n === count) { draw(); return finish(false); }
-          // never the same praise twice in a row
-          if (n === Math.floor(count / 2) && count >= 10) Voice.say(L.math.half);
-          else { praised = pick(L.math.right.filter(t => t !== praised)); Voice.say(praised); }
           let next = qs.findIndex((x, i) => i > cur && !x.ok);
           if (next < 0) next = qs.findIndex(x => !x.ok);
+          // worked out with the animals: praise the working out, and the next sum not yet tried becomes one just like
+          // it, to do on her own straight away; else never the same praise twice in a row
+          const slot = taught ? qs.findIndex(x => !x.ok && !x.tries && !x.twin) : -1;
+          const t = slot >= 0 && MathGate.twin(q, cfg.max, qs.map(x => x.text));
+          if (t) {
+            Object.assign(qs[slot], t, { got: '', twin: true });
+            const tc = cards[slot];
+            tc.querySelector('span').innerHTML = MathGate.html(qs[slot]) + ' =';
+            fit();
+            tc.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.12) rotate(-2deg)' }, { transform: 'scale(1)' }], { duration: 500, delay: 300 });
+            next = slot;
+            Voice.say(L.teach.self, { onend: () => { if (!finished && cur === slot) Voice.say(L.teach.twin); } });
+          } else if (taught) Voice.say(L.teach.self);
+          else if (n === Math.floor(count / 2) && count >= 10) Voice.say(L.math.half);
+          else { praised = pick(L.math.right.filter(t => t !== praised)); Voice.say(praised); }
           cur = next;
         } else {
+          const got = +q.got;
           q.tries++; q.got = '';
           Snd.play('wrong');
-          c.classList.remove('bad'); void c.offsetWidth; c.classList.add('bad');
-          Voice.say(q.tries === 3 ? L.math.show : L.math.wrong);
+          if (Teach.on) {   // still wrong with the animals: count again, and the third time the answer shows
+            if (q.tries >= 3) { Teach.close(); Voice.say(L.math.show); }
+            else { Teach.shake(); Voice.say(L.teach.again); }
+          } else {
+            c.classList.remove('bad'); void c.offsetWidth; c.classList.add('bad');
+            if (q.tries === 1) {
+              const w = MathGate.why(q, got);
+              Voice.say(L.math.why[w.k]);
+              if (w.op != null) setTimeout(() => { const o1 = $$('.op', c)[w.op]; if (o1) { o1.classList.remove('hey'); void o1.offsetWidth; o1.classList.add('hey'); } }, 350);
+            } else if (q.tries === 2) helpT = setTimeout(() => { if (qs[cur] === q) teach(); }, 700);
+            else Voice.say(L.math.show);
+          }
         }
         draw();
       }
       function cleanup() {
         finished = true;
+        clearTimeout(helpT); if (Teach.on) Teach.close();
         window.removeEventListener('keydown', onKey);
-        removeEventListener('resize', fit);
+        removeEventListener('resize', refit);
       }
       function close() { root.hidden = true; $('#fx').style.zIndex = ''; resolve(); }
       function finish(skipped) {
@@ -2087,7 +2698,7 @@ const MathGate = {
           if (Store.d.log.length > 80) Store.d.log.splice(0, Store.d.log.length - 80);
           if (!o.extra) Store.d.today = { day: new Date().toDateString(), pages: MathGate.pagesToday() + 1 };
         }
-        if (!o.extra) Store.d.owed = false;
+        if (!o.extra) { Store.d.owed = false; Store.d.spin = null; }
         Store.save();
         draw();
         if (skipped) { close(); return; }
@@ -2104,9 +2715,11 @@ const MathGate = {
         go.onclick = () => { Snd.play('tap'); m.hidden = true; m.style.zIndex = ''; close(); };
         row.appendChild(go); card.appendChild(row); m.appendChild(card);
       }
-      addEventListener('resize', fit);
+      const refit = () => { fit(); Teach.relayout(); };
+      addEventListener('resize', refit);
       requestAnimationFrame(() => { fit(); draw(); });
-      Voice.say(o.extra ? L.math.extra : L.math.start(count));
+      // straight from the wheel, which has just said the number: no need to say it again
+      if (!fresh) Voice.say(o.extra ? L.math.extra : L.math.start(count));
     });
   },
 };
@@ -3391,8 +4004,9 @@ const UI = {
         card.appendChild(s);
       };
       card.appendChild(el('p', null, '<span style="font-size:17px">每玩完一局，再玩或进下一关之前，要先做一页数学题，全部做对才能接着玩。</span>'));
-      seg('📝 每页几道题', 'count', [['ramp', '越做越多']].concat(MATH_COUNTS.map(n => [n, n + ' 道'])));
-      card.appendChild(el('p', 'note', `越做越多：当天第 1 页 ${MATH_RAMP[0]} 道、第 2 页 ${MATH_RAMP[1]} 道、第 3 页 ${MATH_RAMP[2]} 道，之后每页 ${MATH_RAMP[3]} 道，第二天重新从 ${MATH_RAMP[0]} 道开始。今天已经做完 ${MathGate.pagesToday()} 页。`));
+      seg('📝 每页几道题', 'count', [['wheel', '🎡 转盘抽']].concat([['ramp', '越做越多']], MATH_COUNTS.map(n => [n, n + ' 道'])));
+      card.appendChild(el('p', 'note', `转盘抽：每页之前孩子自己转一下转盘，转到几就做几道（${MATH_WHEEL[0]}～${MATH_WHEEL[MATH_WHEEL.length - 1]} 道，每个数机会一样）。越做越多：当天第 1 页 ${MATH_RAMP[0]} 道、第 2 页 ${MATH_RAMP[1]} 道、第 3 页 ${MATH_RAMP[2]} 道，之后每页 ${MATH_RAMP[3]} 道，第二天重新从 ${MATH_RAMP[0]} 道开始。今天已经做完 ${MathGate.pagesToday()} 页。`));
+      card.appendChild(el('p', 'note', '做错一次：语音提示错在哪（看错符号、差一点、写反了……）；错两次或点 💡：小老师用小动物一步步摆给她看（满十捆一捆、不够拆一捆），答案让她自己写；错三次才显示灰色答案照着写。'));
       seg('📏 数的范围', 'max', [[20, '20 以内'], [50, '50 以内'], [100, '100 以内']]);
       seg('🔢 几个数一起算', 'ops', [[2, '两个数'], [3, '三个数'], [4, '四个数']]);
       seg('➕ 题型', 'mode', [['mix', '加减混合'], ['add', '只有加法'], ['sub', '只有减法']]);
@@ -3442,7 +4056,7 @@ const UI = {
 // 动物消消乐 · start-up and the frame loop.
 (function boot() {
   Store.load();
-  if (/[?&]debug\b/.test(location.search)) window.XX = { Game, Board, Store, UI, Fx, Clock, MathGate, LEVELS, Snd, Voice, Music, Gift, Cast, ANIMALS, FRIENDS, Art };
+  if (/[?&]debug\b/.test(location.search)) window.XX = { Game, Board, Store, UI, Fx, Clock, MathGate, Wheel, Teach, LEVELS, Snd, Voice, Music, Gift, Cast, ANIMALS, FRIENDS, Art };
   Snd.on = Store.d.snd; Snd.music = Store.d.mus; Voice.on = Store.d.voi;
   Fx.init($('#fx'));
   Game.init();
