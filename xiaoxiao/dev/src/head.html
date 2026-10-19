@@ -187,7 +187,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .q .ans{display:inline-block;min-width:1.9em;padding:0 .15em;border-bottom:4px solid #d8c3a5;text-align:center;color:#7b4dff}
 .q.ok .ans{color:#15895f;border-color:#9fe3c4}
 .q .ans.hint{color:#c9b8dd}
-.q.bad{animation:shake .35s;border-color:var(--red);background:#fff0f0}
+.q.bad{animation:shake .35s;border-color:#ffb000;background:#fff8e6}
 @keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
 #math .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-content:center}
 #math.wide .pad{width:clamp(250px,30vw,330px)}
@@ -196,7 +196,67 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .key:active{transform:translateY(4px);box-shadow:0 1px 0 #d9c6ea;background:#f6edff}
 .key.ok{background:linear-gradient(180deg,#8ff0c6,#22c38a);color:#fff;box-shadow:0 5px 0 #15895f}
 .key.del{background:#ffe9f2;color:#c42c70}
-#math .disp{grid-column:1/-1;text-align:center;font-size:24px;font-weight:800;min-height:34px}
+#math .disp{grid-column:1/-1;text-align:center;font-size:24px;font-weight:800;min-height:58px;display:flex;align-items:center;justify-content:center;gap:10px}
+.q i.op{font-style:normal;display:inline-block}
+.q i.op.hey{animation:hey .5s ease-in-out 3;color:#ff4f8a}
+@keyframes hey{50%{transform:scale(1.7)}}
+.bulb{width:58px;height:58px;border-radius:50%;background:#fff6c8;box-shadow:0 4px 0 #e8c95a;font-size:32px;flex:none}
+.bulb:active{transform:translateY(3px);box-shadow:0 1px 0 #e8c95a}
+.bulb.new{animation:bulb .6s ease-in-out 3}
+@keyframes bulb{25%{transform:rotate(-16deg) scale(1.2)}75%{transform:rotate(16deg) scale(1.2)}}
+
+/* ---------- the wheel before a math page (wheel.js) ---------- */
+#math.spin{flex-direction:column}
+.wstage{flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:pointer}
+.wbig{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%) scale(0);font-weight:900;color:#fff;-webkit-text-stroke:.07em #7b4dff;paint-order:stroke fill;
+  text-shadow:0 .07em 0 #5328c9;pointer-events:none;font-variant-numeric:tabular-nums;line-height:1}
+.wbig.on{animation:wbig .6s cubic-bezier(.2,1.6,.4,1) forwards}
+@keyframes wbig{to{transform:translate(-50%,-50%) scale(1)}}
+.whand{position:absolute;left:50%;top:60%;font-size:64px;line-height:1;pointer-events:none;opacity:0;transition:opacity .3s;filter:drop-shadow(0 4px 4px rgba(0,0,0,.25));z-index:3}
+.whand.on{opacity:1;animation:tapme 1s ease-in-out infinite}
+@keyframes tapme{0%,100%{transform:translate(0,0)}50%{transform:translate(-6px,-16px)}}
+
+/* ---------- 小老师: the animals act a sum out (teach.js) ---------- */
+#math .sheet{position:relative}
+.teach{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;gap:6px;background:linear-gradient(170deg,#fffaf0,#fff0f8);border-radius:24px;
+  box-shadow:0 6px 0 #ecd3b0,0 10px 30px rgba(120,60,140,.15);padding:10px 14px;animation:pop .3s cubic-bezier(.2,1.4,.4,1)}
+.teach.bye{transition:opacity .3s,transform .3s;opacity:0;transform:scale(.96)}
+.thead{display:flex;align-items:center;gap:12px}
+.thead .owl{width:68px;height:68px;flex:none}
+.thead .owl.talk{animation:talk .28s ease-in-out infinite alternate}
+@keyframes talk{to{transform:translateY(-5px) rotate(-5deg)}}
+.thead .ibtn{width:52px;height:52px;font-size:24px;flex:none}
+.teq{flex:1;display:flex;align-items:center;justify-content:center;gap:.25em;font-size:46px;font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap}
+.teq .n{color:var(--c);padding:0 .14em;border-radius:.25em;transition:background .3s,box-shadow .3s}
+.teq .n.now{background:#fff2a8;box-shadow:0 0 0 4px #ffd23a}
+.teq .op{color:#a58cba}
+.tans{display:inline-block;min-width:1.9em;text-align:center;border-bottom:5px solid #d8c3a5;color:#7b4dff}
+.tans.ask{animation:ask 1s ease-in-out infinite}
+@keyframes ask{50%{scale:1.14;border-color:#ffb000}}
+.tans.bad{animation:shake .35s;color:var(--red)}
+.tstage{flex:1;min-height:0;position:relative;touch-action:none;cursor:pointer;overflow:hidden}
+.tframe{position:absolute;left:0;top:0;display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(2,1fr);background:#fff;box-shadow:0 4px 0 #ecd3b0;box-sizing:border-box}
+.tframe i{border:3px dashed #f0d9b8;border-radius:50%;margin:7%}
+.tk,.tcard{position:absolute;left:0;top:0;transform-origin:0 0;transition:transform .42s cubic-bezier(.3,1.35,.5,1),opacity .3s,filter .3s}
+.tk img{width:100%;height:100%;display:block;pointer-events:none}
+.tk.gone,.tcard.gone{filter:grayscale(.7);opacity:.45}
+.tcard{background:#f3e9ff;border:3px solid #b48cff;box-sizing:border-box;box-shadow:0 3px 0 #d6c2ff}
+.tcard img{position:absolute;pointer-events:none}
+.tcard::after{content:"";position:absolute;left:-5px;right:-5px;top:46%;height:8%;background:#ff7fb0;border-radius:4px;box-shadow:0 2px 0 #d9478d;opacity:.9}
+.tcard.new{animation:tie .5s cubic-bezier(.2,1.6,.4,1)}
+@keyframes tie{from{scale:1.35}}
+.tslot{position:absolute;left:0;top:0;border:3px dashed #c9b8dd;border-radius:50%;box-sizing:border-box;transition:opacity .3s}
+.tslot.ten{border-radius:12px}
+.tslot.dim{opacity:.35}
+.tsign{position:absolute;left:0;top:0;display:flex;align-items:center;justify-content:center;font-weight:900;opacity:0;transition:opacity .3s;line-height:1}
+.tsign.on{opacity:1}
+.tsign.add{color:#22c38a}
+.tsign.sub{color:#ff5a7a}
+.ttotal{position:absolute;left:50%;transform:translateX(-50%);font-weight:900;background:#fff;border-radius:999px;padding:0 .45em;box-shadow:0 4px 0 #ecd3b0;line-height:1.2;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.ttotal .t{color:#8f5cff}
+.ttotal .o{color:#ff8a1f}
+.ttotal.glow{animation:ask 1s ease-in-out infinite;box-shadow:0 0 0 5px #ffd23a,0 4px 0 #ecd3b0}
 
 /* ---------- parent settings ---------- */
 .set{text-align:left;max-height:calc(100vh - 80px);overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y}

@@ -1,8 +1,10 @@
 // 动物消消乐 · everything the narrator says. dev/voice/collect.js reads this file (with levels.js and board.js) to
 // list every line for recording, so a line built from a level must be built here and nowhere else.
 const KID = '可可';   // decli's daughter, who plays this
-// how many sums a math page has (decli 2026-10-19): by default the day's pages grow, 2, 6, 12, then 20 every time after
-// (back to 2 the next day); a parent can pick one fixed size instead (家长设置)
+// how many sums a math page has (家长设置). By default she spins a wheel before each page and does what it lands on,
+// 2 to 10 (decli 2026-10-19, evening: sums feel like a chore, make drawing them a game). A parent can pick the day's
+// ramp instead (2, 6, 12, then 20 every time after, back to 2 the next day) or one fixed size.
+const MATH_WHEEL = [2, 3, 4, 5, 6, 7, 8, 9, 10];
 const MATH_RAMP = [2, 6, 12, 20];
 const MATH_COUNTS = [5, 10, 15, 20];
 const NUM_ZH = n => String(n);   // the voice reads digits naturally ("18只" → 十八只)
@@ -80,14 +82,43 @@ const L = {
   // decli: call her by name on the math page, every right answer is praise for 可可
   math: {
     title: `${KID}，敢不敢先挑战一页数学题？`,
-    start: n => `${KID}，敢不敢先挑战一页数学题？${n}道题都做对，就能接着玩啦。`,   // recorded for every MATH_RAMP and MATH_COUNTS size
+    start: n => `${KID}，敢不敢先挑战一页数学题？${n}道题都做对，就能接着玩啦。`,   // recorded for every size above
     extra: '做对5道题，就多给你5步！',
     right: [`${KID}，你答对啦！`, `${KID}真棒！`, `${KID}，完全正确！`, `${KID}，你好厉害！`, `${KID}，没错，就是这样！`],
-    wrong: '再想一想。',
+    // the first wrong answer: one short hint about what went wrong (MathGate.why), not the answer
+    why: {
+      sub: '看清楚，这道是减法，要拿走哦。',
+      add: '看清楚，这道是加法，要加上哦。',
+      sign: '看清楚每个符号，是加还是减？',
+      near: '就差一点点！再仔细数一数。',
+      swap: '两个数字写反啦，再看看。',
+      ones: '个位对啦！十位再想一想。',
+      big: '个位不够减，要拆开一捆十哦。',
+      other: '没关系，再想一想。',
+    },
     show: '看看正确答案，照着写一遍。',
     half: `${KID}，已经做完一半啦！`,
     done: `${KID}，全部做完啦！真厉害，去玩吧！`,
     doneExtra: `${KID}，做完啦！多给你5步！`,
+  },
+  // the wheel before a math page (wheel.js): every number is good news
+  wheel: {
+    ask: `${KID}，点一下转盘，看看这次做几道题！`,
+    land: n => n <= 4 ? `转到${n}道题！${KID}，热热身吧！` : n <= 7 ? `转到${n}道题！不多不少，${KID}加油！` : `哇，转到${n}道题！${KID}，接受挑战吧！`,
+  },
+  // 小老师 (teach.js): after the second wrong answer, or 💡, the animals act the sum out one tap at a time
+  teach: {
+    open: `${KID}，别着急，我们请小动物来帮忙！`,
+    add: '加几个，就请进来几个。点一点！',
+    sub: '减几个，就送走几个。点一点！',
+    tie: '满十个啦，捆成一捆！',
+    untie: '个数不够了，拆开一捆！',
+    tap: '点一点这里。',
+    end: '小动物都摆好啦！把答案写在上面吧。',
+    again: '没关系，看着小动物，再数一数。',
+    self: `${KID}，你一步一步想出来啦！真棒！`,
+    twin: '再来一道差不多的，自己试试！',
+    nums: Array.from({ length: 101 }, (_, i) => String(i)),   // every step says the new total
   },
   parent: '这里是给爸爸妈妈的设置哦。',
   gift: {

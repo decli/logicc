@@ -51,9 +51,10 @@ const Store = {
       stars: {}, best: {},   // per level
       owed: false,           // a math page is due before the next game
       played: 0,
-      math: { max: 20, ops: 2, mode: 'mix', count: 'ramp' },   // count: 'ramp' (MATH_RAMP) or a fixed size (MATH_COUNTS), 家长设置
-      mathV: 3,              // 3: the day's ramp; 2: a fixed size (10 by default); before that always 20
+      math: { max: 20, ops: 2, mode: 'mix', count: 'wheel' },   // count: 'wheel' (MATH_WHEEL), 'ramp' (MATH_RAMP) or a fixed size (MATH_COUNTS), 家长设置
+      mathV: 4,              // 4: the wheel; 3: the day's ramp; 2: a fixed size (10 by default); before that always 20
       today: { day: '', pages: 0 },   // math pages finished today (not the 5-sum page for 5 more moves): where the ramp is
+      spin: null,            // what the wheel landed on for the page owed now, { n, p: played }, so leaving can't spin again
       log: [],               // finished math pages: [time, count, right first time, seconds, settings label]
       seen: {},              // tips already shown
       gifts: {},             // friends from the blind box (gift.js): id -> how many
@@ -70,9 +71,11 @@ const Store = {
       const raw = JSON.parse(localStorage.getItem(this.key) || 'null');
       if (raw) {
         Object.assign(this.d, raw); this.d.math = Object.assign(this.defaults().math, raw.math || {});
-        // saved before the day's ramp: the 20 was fixed in the code and 10 was the default for a few minutes, nobody
-        // picked them, so start the ramp (decli 2026-10-19)
-        if ((raw.mathV || 0) < 3) { this.d.math.count = this.defaults().math.count; this.d.mathV = 3; }
+        // saved before the wheel: the 20 was fixed in the code, 10 and then the ramp were defaults, so they become the
+        // wheel (decli 2026-10-19); a size a parent picked from the settings since the ramp (5, 10, 15, 20) stays
+        const v = raw.mathV || 0;
+        if (v < 3 || (v < 4 && this.d.math.count === 'ramp')) this.d.math.count = this.defaults().math.count;
+        this.d.mathV = 4;
       }
     } catch (e) { }
     return this.d;

@@ -4,7 +4,7 @@
 import pathlib
 dev = pathlib.Path(__file__).resolve().parent
 src, site = dev / 'src', dev.parent
-ORDER = ['core', 'board', 'levels', 'lines', 'cast', 'audio', 'voice', 'heads', 'art', 'fx', 'math', 'gift', 'game', 'ui', 'main']
+ORDER = ['core', 'board', 'levels', 'lines', 'cast', 'audio', 'voice', 'heads', 'art', 'fx', 'wheel', 'teach', 'math', 'gift', 'game', 'ui', 'main']
 js = '\n'.join((src / f'{n}.js').read_text(encoding='utf-8') for n in ORDER).replace("'use strict';\n", '')
 head = (src / 'head.html').read_text(encoding='utf-8')
 meta = ('<meta name="theme-color" content="#ffd9ef"><meta name="apple-mobile-web-app-capable" content="yes">'
