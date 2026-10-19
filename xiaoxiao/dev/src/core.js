@@ -51,8 +51,9 @@ const Store = {
       stars: {}, best: {},   // per level
       owed: false,           // a math page is due before the next game
       played: 0,
-      math: { max: 20, ops: 2, mode: 'mix', count: 10 },   // count: sums per page, 家长设置 (MATH_COUNTS)
-      mathV: 2,              // 2: the page size can be set; before that it was always 20
+      math: { max: 20, ops: 2, mode: 'mix', count: 'ramp' },   // count: 'ramp' (MATH_RAMP) or a fixed size (MATH_COUNTS), 家长设置
+      mathV: 3,              // 3: the day's ramp; 2: a fixed size (10 by default); before that always 20
+      today: { day: '', pages: 0 },   // math pages finished today (not the 5-sum page for 5 more moves): where the ramp is
       log: [],               // finished math pages: [time, count, right first time, seconds, settings label]
       seen: {},              // tips already shown
       gifts: {},             // friends from the blind box (gift.js): id -> how many
@@ -69,8 +70,9 @@ const Store = {
       const raw = JSON.parse(localStorage.getItem(this.key) || 'null');
       if (raw) {
         Object.assign(this.d, raw); this.d.math = Object.assign(this.defaults().math, raw.math || {});
-        // saved before the page size could be set: that 20 was nobody's choice, so take the new default (decli: 10)
-        if (!raw.mathV) { this.d.math.count = this.defaults().math.count; this.d.mathV = 2; }
+        // saved before the day's ramp: the 20 was fixed in the code and 10 was the default for a few minutes, nobody
+        // picked them, so start the ramp (decli 2026-10-19)
+        if ((raw.mathV || 0) < 3) { this.d.math.count = this.defaults().math.count; this.d.mathV = 3; }
       }
     } catch (e) { }
     return this.d;

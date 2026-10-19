@@ -45,10 +45,17 @@ const MathGate = {
     return `${cfg.max} 以内 · ${['', '', '两个数', '三个数', '四个数'][cfg.ops]} · ${{ mix: '加减混合', add: '只有加法', sub: '只有减法' }[cfg.mode]}`;
   },
 
+  // sums on the next page: the parent's fixed size, or the day's ramp (today's 1st page 2, then 6, 12, 20, 20, …)
+  pageSize() {
+    const n = Store.d.math.count;
+    return n === 'ramp' ? MATH_RAMP[Math.min(this.pagesToday(), MATH_RAMP.length - 1)] : n || 10;
+  },
+  pagesToday() { const t = Store.d.today; return t && t.day === new Date().toDateString() ? t.pages : 0; },
+
   // o.count, o.extra (the five-sums-for-five-moves page); resolves when every sum is right
   open(o = {}) {
     return new Promise(resolve => {
-      const cfg = Store.d.math, count = o.count || cfg.count || 10;
+      const cfg = Store.d.math, count = o.count || MathGate.pageSize();
       const qs = this.page(cfg, count).map(q => Object.assign(q, { got: '', tries: 0, ok: false }));
       const root = $('#math'); root.hidden = false; root.innerHTML = '';
       $('#fx').style.zIndex = 46;   // sparkles and confetti over the page
@@ -109,8 +116,9 @@ const MathGate = {
           const ch = small ? Math.min(110, (r.height - (rows - 1) * 10) / rows) : (r.height - (rows - 1) * 10) / rows;
           return Math.min(ch * 0.42, cw / em, 46);
         };
-        let cols = small ? 1 : 4;
-        if (!small && size(4) < 20) cols = [3, 2].reduce((a, c) => size(c) > size(a) + 0.5 ? c : a, 4);
+        // four across, or three when that fills every row (6 or 15 sums: no half-empty last row)
+        let cols = small ? 1 : count % 4 && count % 3 === 0 ? 3 : 4;
+        if (!small && size(cols) < 20) cols = [3, 2].reduce((a, c) => size(c) > size(a) + 0.5 ? c : a, cols);
         const rows = Math.ceil(count / cols);
         grid.style.gridTemplateColumns = `repeat(${cols},1fr)`;
         grid.style.gridTemplateRows = small ? `repeat(${rows},minmax(0,110px))` : `repeat(${rows},1fr)`;
@@ -174,6 +182,7 @@ const MathGate = {
         if (!skipped) {
           Store.d.log.push([Date.now(), count, first, secs, MathGate.label(cfg)]);
           if (Store.d.log.length > 80) Store.d.log.splice(0, Store.d.log.length - 80);
+          if (!o.extra) Store.d.today = { day: new Date().toDateString(), pages: MathGate.pagesToday() + 1 };
         }
         if (!o.extra) Store.d.owed = false;
         Store.save();

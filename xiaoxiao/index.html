@@ -207,6 +207,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .seg button{padding:10px 16px;border-radius:14px;background:#f1e8fb;font-size:19px;font-weight:800;box-shadow:0 3px 0 #d9c6ea}
 .seg button.on{background:var(--violet2);color:#fff;box-shadow:0 3px 0 #5328c9}
 .set .sample{font-size:18px;opacity:.75;margin-top:8px}
+.set .note{font-size:16px;opacity:.75;margin:8px 0 0;line-height:1.5}
 .set table{width:100%;border-collapse:collapse;font-size:16px}
 .set td{padding:5px 4px;border-bottom:1px solid #eee3f5}
 .gate .keys{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}
@@ -287,8 +288,9 @@ const Store = {
       stars: {}, best: {},   // per level
       owed: false,           // a math page is due before the next game
       played: 0,
-      math: { max: 20, ops: 2, mode: 'mix', count: 10 },   // count: sums per page, 家长设置 (MATH_COUNTS)
-      mathV: 2,              // 2: the page size can be set; before that it was always 20
+      math: { max: 20, ops: 2, mode: 'mix', count: 'ramp' },   // count: 'ramp' (MATH_RAMP) or a fixed size (MATH_COUNTS), 家长设置
+      mathV: 3,              // 3: the day's ramp; 2: a fixed size (10 by default); before that always 20
+      today: { day: '', pages: 0 },   // math pages finished today (not the 5-sum page for 5 more moves): where the ramp is
       log: [],               // finished math pages: [time, count, right first time, seconds, settings label]
       seen: {},              // tips already shown
       gifts: {},             // friends from the blind box (gift.js): id -> how many
@@ -305,8 +307,9 @@ const Store = {
       const raw = JSON.parse(localStorage.getItem(this.key) || 'null');
       if (raw) {
         Object.assign(this.d, raw); this.d.math = Object.assign(this.defaults().math, raw.math || {});
-        // saved before the page size could be set: that 20 was nobody's choice, so take the new default (decli: 10)
-        if (!raw.mathV) { this.d.math.count = this.defaults().math.count; this.d.mathV = 2; }
+        // saved before the day's ramp: the 20 was fixed in the code and 10 was the default for a few minutes, nobody
+        // picked them, so start the ramp (decli 2026-10-19)
+        if ((raw.mathV || 0) < 3) { this.d.math.count = this.defaults().math.count; this.d.mathV = 3; }
       }
     } catch (e) { }
     return this.d;
@@ -1052,7 +1055,9 @@ const LEVELS = [
 // 动物消消乐 · everything the narrator says. dev/voice/collect.js reads this file (with levels.js and board.js) to
 // list every line for recording, so a line built from a level must be built here and nowhere else.
 const KID = '可可';   // decli's daughter, who plays this
-// how many sums a math page can have (家长设置; decli 2026-10-19: 20 was too many, 10 by default)
+// how many sums a math page has (decli 2026-10-19): by default the day's pages grow, 2, 6, 12, then 20 every time after
+// (back to 2 the next day); a parent can pick one fixed size instead (家长设置)
+const MATH_RAMP = [2, 6, 12, 20];
 const MATH_COUNTS = [5, 10, 15, 20];
 const NUM_ZH = n => String(n);   // the voice reads digits naturally ("18只" → 十八只)
 
@@ -1129,7 +1134,7 @@ const L = {
   // decli: call her by name on the math page, every right answer is praise for 可可
   math: {
     title: `${KID}，敢不敢先挑战一页数学题？`,
-    start: n => `${KID}，敢不敢先挑战一页数学题？${n}道题都做对，就能接着玩啦。`,   // recorded for every MATH_COUNTS
+    start: n => `${KID}，敢不敢先挑战一页数学题？${n}道题都做对，就能接着玩啦。`,   // recorded for every MATH_RAMP and MATH_COUNTS size
     extra: '做对5道题，就多给你5步！',
     right: [`${KID}，你答对啦！`, `${KID}真棒！`, `${KID}，完全正确！`, `${KID}，你好厉害！`, `${KID}，没错，就是这样！`],
     wrong: '再想一想。',
@@ -1943,10 +1948,17 @@ const MathGate = {
     return `${cfg.max} 以内 · ${['', '', '两个数', '三个数', '四个数'][cfg.ops]} · ${{ mix: '加减混合', add: '只有加法', sub: '只有减法' }[cfg.mode]}`;
   },
 
+  // sums on the next page: the parent's fixed size, or the day's ramp (today's 1st page 2, then 6, 12, 20, 20, …)
+  pageSize() {
+    const n = Store.d.math.count;
+    return n === 'ramp' ? MATH_RAMP[Math.min(this.pagesToday(), MATH_RAMP.length - 1)] : n || 10;
+  },
+  pagesToday() { const t = Store.d.today; return t && t.day === new Date().toDateString() ? t.pages : 0; },
+
   // o.count, o.extra (the five-sums-for-five-moves page); resolves when every sum is right
   open(o = {}) {
     return new Promise(resolve => {
-      const cfg = Store.d.math, count = o.count || cfg.count || 10;
+      const cfg = Store.d.math, count = o.count || MathGate.pageSize();
       const qs = this.page(cfg, count).map(q => Object.assign(q, { got: '', tries: 0, ok: false }));
       const root = $('#math'); root.hidden = false; root.innerHTML = '';
       $('#fx').style.zIndex = 46;   // sparkles and confetti over the page
@@ -2007,8 +2019,9 @@ const MathGate = {
           const ch = small ? Math.min(110, (r.height - (rows - 1) * 10) / rows) : (r.height - (rows - 1) * 10) / rows;
           return Math.min(ch * 0.42, cw / em, 46);
         };
-        let cols = small ? 1 : 4;
-        if (!small && size(4) < 20) cols = [3, 2].reduce((a, c) => size(c) > size(a) + 0.5 ? c : a, 4);
+        // four across, or three when that fills every row (6 or 15 sums: no half-empty last row)
+        let cols = small ? 1 : count % 4 && count % 3 === 0 ? 3 : 4;
+        if (!small && size(cols) < 20) cols = [3, 2].reduce((a, c) => size(c) > size(a) + 0.5 ? c : a, cols);
         const rows = Math.ceil(count / cols);
         grid.style.gridTemplateColumns = `repeat(${cols},1fr)`;
         grid.style.gridTemplateRows = small ? `repeat(${rows},minmax(0,110px))` : `repeat(${rows},1fr)`;
@@ -2072,6 +2085,7 @@ const MathGate = {
         if (!skipped) {
           Store.d.log.push([Date.now(), count, first, secs, MathGate.label(cfg)]);
           if (Store.d.log.length > 80) Store.d.log.splice(0, Store.d.log.length - 80);
+          if (!o.extra) Store.d.today = { day: new Date().toDateString(), pages: MathGate.pagesToday() + 1 };
         }
         if (!o.extra) Store.d.owed = false;
         Store.save();
@@ -3377,7 +3391,8 @@ const UI = {
         card.appendChild(s);
       };
       card.appendChild(el('p', null, '<span style="font-size:17px">每玩完一局，再玩或进下一关之前，要先做一页数学题，全部做对才能接着玩。</span>'));
-      seg('📝 每页几道题', 'count', MATH_COUNTS.map(n => [n, n + ' 道']));
+      seg('📝 每页几道题', 'count', [['ramp', '越做越多']].concat(MATH_COUNTS.map(n => [n, n + ' 道'])));
+      card.appendChild(el('p', 'note', `越做越多：当天第 1 页 ${MATH_RAMP[0]} 道、第 2 页 ${MATH_RAMP[1]} 道、第 3 页 ${MATH_RAMP[2]} 道，之后每页 ${MATH_RAMP[3]} 道，第二天重新从 ${MATH_RAMP[0]} 道开始。今天已经做完 ${MathGate.pagesToday()} 页。`));
       seg('📏 数的范围', 'max', [[20, '20 以内'], [50, '50 以内'], [100, '100 以内']]);
       seg('🔢 几个数一起算', 'ops', [[2, '两个数'], [3, '三个数'], [4, '四个数']]);
       seg('➕ 题型', 'mode', [['mix', '加减混合'], ['add', '只有加法'], ['sub', '只有减法']]);

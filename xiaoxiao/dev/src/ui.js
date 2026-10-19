@@ -241,7 +241,8 @@ const UI = {
         card.appendChild(s);
       };
       card.appendChild(el('p', null, '<span style="font-size:17px">每玩完一局，再玩或进下一关之前，要先做一页数学题，全部做对才能接着玩。</span>'));
-      seg('📝 每页几道题', 'count', MATH_COUNTS.map(n => [n, n + ' 道']));
+      seg('📝 每页几道题', 'count', [['ramp', '越做越多']].concat(MATH_COUNTS.map(n => [n, n + ' 道'])));
+      card.appendChild(el('p', 'note', `越做越多：当天第 1 页 ${MATH_RAMP[0]} 道、第 2 页 ${MATH_RAMP[1]} 道、第 3 页 ${MATH_RAMP[2]} 道，之后每页 ${MATH_RAMP[3]} 道，第二天重新从 ${MATH_RAMP[0]} 道开始。今天已经做完 ${MathGate.pagesToday()} 页。`));
       seg('📏 数的范围', 'max', [[20, '20 以内'], [50, '50 以内'], [100, '100 以内']]);
       seg('🔢 几个数一起算', 'ops', [[2, '两个数'], [3, '三个数'], [4, '四个数']]);
       seg('➕ 题型', 'mode', [['mix', '加减混合'], ['add', '只有加法'], ['sub', '只有减法']]);
