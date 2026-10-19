@@ -51,7 +51,8 @@ const Store = {
       stars: {}, best: {},   // per level
       owed: false,           // a math page is due before the next game
       played: 0,
-      math: { max: 20, ops: 2, mode: 'mix', count: 20 },
+      math: { max: 20, ops: 2, mode: 'mix', count: 10 },   // count: sums per page, 家长设置 (MATH_COUNTS)
+      mathV: 2,              // 2: the page size can be set; before that it was always 20
       log: [],               // finished math pages: [time, count, right first time, seconds, settings label]
       seen: {},              // tips already shown
       gifts: {},             // friends from the blind box (gift.js): id -> how many
@@ -66,7 +67,11 @@ const Store = {
       const home = JSON.parse(localStorage.getItem('logicc.design.v2') || 'null');
       if (home) { if (typeof home.snd === 'boolean') this.d.snd = home.snd; if (typeof home.voi === 'boolean') this.d.voi = home.voi; if (typeof home.mus === 'boolean') this.d.mus = home.mus; }
       const raw = JSON.parse(localStorage.getItem(this.key) || 'null');
-      if (raw) { Object.assign(this.d, raw); this.d.math = Object.assign(this.defaults().math, raw.math || {}); }
+      if (raw) {
+        Object.assign(this.d, raw); this.d.math = Object.assign(this.defaults().math, raw.math || {});
+        // saved before the page size could be set: that 20 was nobody's choice, so take the new default (decli: 10)
+        if (!raw.mathV) { this.d.math.count = this.defaults().math.count; this.d.mathV = 2; }
+      }
     } catch (e) { }
     return this.d;
   },

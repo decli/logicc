@@ -48,7 +48,7 @@ const MathGate = {
   // o.count, o.extra (the five-sums-for-five-moves page); resolves when every sum is right
   open(o = {}) {
     return new Promise(resolve => {
-      const cfg = Store.d.math, count = o.count || cfg.count || 20;
+      const cfg = Store.d.math, count = o.count || cfg.count || 10;
       const qs = this.page(cfg, count).map(q => Object.assign(q, { got: '', tries: 0, ok: false }));
       const root = $('#math'); root.hidden = false; root.innerHTML = '';
       $('#fx').style.zIndex = 46;   // sparkles and confetti over the page
@@ -194,7 +194,7 @@ const MathGate = {
       }
       addEventListener('resize', fit);
       requestAnimationFrame(() => { fit(); draw(); });
-      Voice.say(o.extra ? L.math.extra : L.math.start);
+      Voice.say(o.extra ? L.math.extra : L.math.start(count));
     });
   },
 };

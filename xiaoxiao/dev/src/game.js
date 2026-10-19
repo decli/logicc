@@ -553,8 +553,9 @@ const Game = {
   tip(key) {
     if (key === 'bubStuck' && !this._bubTold) { this._bubTold = true; Voice.say(L.bubStuck); }
   },
-  // a special piece just made shows off what it will do: a glowing ring and a picture of its blast (arrows along its row
-  // or column, the bomb's diamond, a spinning rainbow). The first few times of each kind a finger also shows the swipe.
+  // a special piece just made shows off what it will do: a glowing ring, plus arrows along its row or column or a spinning
+  // rainbow (the bomb only glows: decli found its big diamond outline across the board got in the way, 2026-10-19).
+  // The first few times of each kind a finger also shows the swipe.
   // It follows the piece while it falls, ends when the piece is used, and gets out of the way when she touches the board.
   showOff(p) {
     const kind = p.s, hand = (Store.d.seen['hand_' + kind] || 0) < 3;   // counted only when a finger is really shown
@@ -592,13 +593,6 @@ const Game = {
         ctx.lineWidth = cell * 0.08; ctx.strokeStyle = col; ctx.stroke();
       }
       ctx.restore();
-    } else if (kind === 'b') {
-      const R = cell * (2.5 + 0.12 * pul);
-      ctx.setLineDash([cell * 0.22, cell * 0.16]); ctx.lineDashOffset = -t / 25;
-      ctx.beginPath(); ctx.moveTo(x, y - R); ctx.lineTo(x + R, y); ctx.lineTo(x, y + R); ctx.lineTo(x - R, y); ctx.closePath();
-      ctx.lineWidth = cell * 0.12; ctx.strokeStyle = '#fff'; ctx.stroke();
-      ctx.lineWidth = cell * 0.06; ctx.strokeStyle = '#ff9d3a'; ctx.stroke();
-      ctx.setLineDash([]);
     } else if (kind === 'c') {
       const hues = ['#ff4f6d', '#ff9d3a', '#ffd23a', '#5fe07a', '#3ac8ff', '#a77bff'];
       ctx.lineWidth = cell * 0.09;
