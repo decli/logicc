@@ -5,8 +5,8 @@ const fs = require('fs'), path = require('path'), vm = require('vm');
 const src = f => fs.readFileSync(path.join(__dirname, '..', 'src', f), 'utf8');
 const ctx = vm.createContext({ Math, console });
 vm.runInContext(src('board.js') + '\n' + src('levels.js') + '\n' + src('lines.js') +
-  '\n;this.LEVELS = LEVELS; this.L = L; this.MATH_COUNTS = MATH_COUNTS;', ctx);
-const { LEVELS, L, MATH_COUNTS } = ctx;
+  '\n;this.LEVELS = LEVELS; this.L = L; this.MATH_COUNTS = MATH_COUNTS; this.MATH_RAMP = MATH_RAMP;', ctx);
+const { LEVELS, L, MATH_COUNTS, MATH_RAMP } = ctx;
 
 const out = [], seen = new Set();
 const add = (t, role = 'n') => { if (!t || seen.has(role + '|' + t)) return; seen.add(role + '|' + t); out.push({ role, key: t, segs: [t] }); };
@@ -17,6 +17,6 @@ const walk = v => {
 };
 walk(L);
 LEVELS.forEach((lv, i) => add(L.intro(lv, i + 1)));
-MATH_COUNTS.forEach(n => add(L.math.start(n)));   // the math page's first line says how many sums (家长设置)
+MATH_RAMP.concat(MATH_COUNTS).forEach(n => add(L.math.start(n)));   // the math page's first line says how many sums
 fs.writeFileSync(path.join(__dirname, 'lines.json'), JSON.stringify(out, null, 0));
 console.log(`动物消消乐: ${out.length} lines, ${out.reduce((a, o) => a + o.key.length, 0)} chars -> xiaoxiao/dev/voice/lines.json`);
