@@ -96,7 +96,6 @@ const L = {
       big: '个位不够减，要拆开一捆十哦。',
       other: '没关系，再想一想。',
     },
-    show: '看看正确答案，照着写一遍。',
     half: `${KID}，已经做完一半啦！`,
     done: `${KID}，全部做完啦！真厉害，去玩吧！`,
     doneExtra: `${KID}，做完啦！多给你5步！`,
@@ -106,19 +105,51 @@ const L = {
     ask: `${KID}，点一下转盘，看看这次做几道题！`,
     land: n => n <= 4 ? `转到${n}道题！${KID}，热热身吧！` : n <= 7 ? `转到${n}道题！不多不少，${KID}加油！` : `哇，转到${n}道题！${KID}，接受挑战吧！`,
   },
-  // 小老师 (teach.js): after the second wrong answer, or 💡, the animals act the sum out one tap at a time
+  // 小老师 (teach.js): after the second wrong answer, or 💡. She picks one of three ways (or the parent sets one); no
+  // line ever says the answer: they count only what is added or taken away, or count along with her
   teach: {
-    open: `${KID}，别着急，我们请小动物来帮忙！`,
+    pick: `${KID}，别着急！小老师有三种办法，你想用哪一种？`,
+    pick2: '换一种办法试试吧！你想用哪一种？',
+    ways: ['摆一摆', '跳一跳', '拆一拆'],
+    // straight in (the parent chose the way), or after she picked it
+    hi: { frame: `${KID}，别着急，我们请小动物来摆一摆！`, line: `${KID}，别着急，我们请小青蛙来跳一跳！`, split: `${KID}，别着急，我们把数拆开，一步一步算！` },
+    wayHi: { frame: '好，我们请小动物来摆一摆！', line: '好，我们请小青蛙来跳一跳！', split: '好，我们把数拆开，一步一步算！' },
     add: '加几个，就请进来几个。点一点！',
     sub: '减几个，就送走几个。点一点！',
     tie: '满十个啦，捆成一捆！',
     untie: '个数不够了，拆开一捆！',
+    endAdd: '现在一共有几只？数一数，写在上面吧。',
+    endSub: '现在还剩几只？数一数，写在上面吧。',
+    hopAdd: '加几，就往前跳几格。点一点！',
+    hopSub: '减几，就往回跳几格。点一点！',
+    hopEnd: '小青蛙停在几？从起点开始数一数，写在上面吧。',
+    // 拆一拆: one line for each kind of step (Teach.plan), none with a number in it
+    step: {
+      tensAdd: '先把整十的加上，一捆就是十。数一数，是多少？',
+      tensSub: '先把整十的减掉，一捆就是十。拿走的不算，还剩多少？',
+      count: '数一数，合起来一共是多少？',
+      countSub: '拿走的不算，数一数还剩多少？',
+      ones: '先算个位上的。数一数，合起来是多少？',
+      onesSub: '先算个位上的。拿走的不算，还剩多少？',
+      join: '整十和几个合起来，数一数是多少？',
+      fill: '先凑成十！还差几个就满十？数一数空格。',
+      partAdd: '把它分成两份：一份去凑十，另一份是几？',
+      down: '先减到整十！要减掉几个，才正好剩整十？',
+      partSub: '把它分成两份：一份先减掉，另一份是几？',
+      break: '个位不够减，拆开一捆来减！拿走的不算，还剩几个？',
+      rest: '再减去剩下的几个。拿走的不算，还剩多少？',
+      next: '对啦！下一步。',
+    },
     tap: '点一点这里。',
-    end: '小动物都摆好啦！把答案写在上面吧。',
-    again: '没关系，看着小动物，再数一数。',
+    early: '先跟着小老师一步一步来，最后再写答案哦。',
+    // counting together: one tap, one thing, its number said; then she writes the last number
+    guide: '我们一起数一数！点一下，数一个。',
+    guideHop: '跟着小青蛙一起数！点一下，跳一下。',
+    recount: '没关系，我们再数一遍！',
+    counted: '数完啦！最后数到几，就写几。',
     self: `${KID}，你一步一步想出来啦！真棒！`,
     twin: '再来一道差不多的，自己试试！',
-    nums: Array.from({ length: 101 }, (_, i) => String(i)),   // every step says the new total
+    nums: Array.from({ length: 101 }, (_, i) => String(i)),   // counting: what has come or gone, or counting along
   },
   parent: '这里是给爸爸妈妈的设置哦。',
   gift: {

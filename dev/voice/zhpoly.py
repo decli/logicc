@@ -78,6 +78,9 @@ POLY = {
     '快快地': 'kuai4 kuai4 de5', '轻轻地': 'qing1 qing1 de5', '慢慢地': 'man4 man4 de5', '悄悄地': 'qiao1 qiao1 de5', '大声地': 'da4 sheng1 de5', '高高地': 'gao1 gao1 de5', '静静地': 'jing4 jing4 de5',
     # 魔方世界: 数 is counting (shǔ); 转 is turning blocks and cube layers round (zhuàn)
     '数积木': 'shu3 ji1 mu4', '数清楚': 'shu3 qing1 chu5', '数进去': 'shu3 jin4 qu4', '要数': 'yao4 shu3', '再数': 'zai4 shu3', '一起数': 'yi4 qi3 shu3', '再数一数': 'zai4 shu3 yi1 shu3', '一起数一数': 'yi4 qi3 shu3 yi1 shu3',
+    # 动物消消乐 · 小老师: 数 is counting, 还 is "still", 只 counts animals
+    '数完': 'shu3 wan2', '数到': 'shu3 dao4', '数一个': 'shu3 yi1 ge4', '还剩': 'hai2 sheng4', '几只': 'ji3 zhi1', '还剩几只': 'hai2 sheng4 ji3 zhi1',
+    '往前': 'wang3 qian2', '正好': 'zheng4 hao3', '要减掉': 'yao4 jian3 diao4', '数空格': 'shu3 kong4 ge2', '数一数空格': 'shu3 yi1 shu3 kong4 ge2',
     '转回去': 'zhuan4 hui2 qu4', '转了': 'zhuan4 le5', '转乱': 'zhuan4 luan4', '左右转': 'zuo3 you4 zhuan4', '别转': 'bie2 zhuan4', '转过去': 'zhuan4 guo4 qu4',
     '转魔方': 'zhuan4 mo2 fang1', '被转': 'bei4 zhuan4', '箭头转': 'jian4 tou2 zhuan4', '转着': 'zhuan4 zhe5', '自己转': 'zi4 ji3 zhuan4', '转两下': 'zhuan4 liang3 xia4', '跟着转': 'gen1 zhe5 zhuan4', '再转一转': 'zai4 zhuan4 yi1 zhuan4', '搭得': 'da1 de5',
     '折纸盒': 'zhe2 zhi3 he2', '折成': 'zhe2 cheng2', '折起来': 'zhe2 qi3 lai2', '折不成': 'zhe2 bu4 cheng2', '纸片': 'zhi3 pian4',
