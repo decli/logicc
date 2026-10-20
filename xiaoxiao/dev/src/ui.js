@@ -230,12 +230,12 @@ const UI = {
     this.modal(card => {
       card.classList.add('set');
       card.appendChild(el('h2', 'violet', '家长设置'));
-      const seg = (title, key, opts) => {
+      const seg = (title, key, opts, obj = cfg) => {
         card.appendChild(el('h3', null, title));
         const s = el('div', 'seg');
         opts.forEach(([v, label]) => {
-          const b = el('button', cfg[key] === v ? 'on' : '', label);
-          b.onclick = () => { cfg[key] = v; $$('button', s).forEach(x => x.classList.toggle('on', x === b)); Store.save(); Snd.play('tap'); sample(); };
+          const b = el('button', obj[key] === v ? 'on' : '', label);
+          b.onclick = () => { obj[key] = v; $$('button', s).forEach(x => x.classList.toggle('on', x === b)); Store.save(); Snd.play('tap'); sample(); };
           s.appendChild(b);
         });
         card.appendChild(s);
@@ -243,7 +243,11 @@ const UI = {
       card.appendChild(el('p', null, '<span style="font-size:17px">每玩完一局，再玩或进下一关之前，要先做一页数学题，全部做对才能接着玩。</span>'));
       seg('📝 每页几道题', 'count', [['wheel', '🎡 转盘抽']].concat([['ramp', '越做越多']], MATH_COUNTS.map(n => [n, n + ' 道'])));
       card.appendChild(el('p', 'note', `转盘抽：每页之前孩子自己转一下转盘，转到几就做几道（${MATH_WHEEL[0]}～${MATH_WHEEL[MATH_WHEEL.length - 1]} 道，每个数机会一样）。越做越多：当天第 1 页 ${MATH_RAMP[0]} 道、第 2 页 ${MATH_RAMP[1]} 道、第 3 页 ${MATH_RAMP[2]} 道，之后每页 ${MATH_RAMP[3]} 道，第二天重新从 ${MATH_RAMP[0]} 道开始。今天已经做完 ${MathGate.pagesToday()} 页。`));
-      card.appendChild(el('p', 'note', '做错一次：语音提示错在哪（看错符号、差一点、写反了……）；错两次或点 💡：小老师用小动物一步步摆给她看（满十捆一捆、不够拆一捆），答案让她自己写；错三次才显示灰色答案照着写。'));
+      card.appendChild(el('p', 'note', '做错一次：语音提示错在哪（看错符号、差一点、写反了……）；错两次或点 💡：小老师来帮忙，答案始终让她自己数、自己写，不直接给答案；看着图还是数错，小老师就带着她一个一个数。'));
+      seg('🦉 小老师怎么讲', 'way', [['pick', '她自己选'], ['random', '随机换'], ['frame', '摆一摆'], ['line', '跳一跳'], ['split', '拆一拆']], d);
+      const used = Teach.WAYS.map((w, i) => { const r = (d.ways || {})[w]; return r && r[0] ? `${L.teach.ways[i]} 用了 ${r[0]} 次，其中 ${r[1]} 次看图自己数对` : ''; }).filter(Boolean);
+      card.appendChild(el('p', 'note', '摆一摆：小动物摆进十格框，满十捆一捆、不够拆一捆。跳一跳：小青蛙在数轴上往前、往回跳，整十跳大步。拆一拆：拆成几小步自己填（凑十、平十、破十、先算整十），每步配图数一数。'
+        + (used.length ? '<br>她的记录：' + used.join('；') + (d.wayLast ? `；上次用的是${L.teach.ways[Teach.WAYS.indexOf(d.wayLast)]}。` : '。') : '')));
       seg('📏 数的范围', 'max', [[20, '20 以内'], [50, '50 以内'], [100, '100 以内']]);
       seg('🔢 几个数一起算', 'ops', [[2, '两个数'], [3, '三个数'], [4, '四个数']]);
       seg('➕ 题型', 'mode', [['mix', '加减混合'], ['add', '只有加法'], ['sub', '只有减法']]);
@@ -274,7 +278,7 @@ const UI = {
       row.appendChild(this.button('解锁全部关卡', 'ghost small', () => { d.open = LEVELS.length; Store.save(); this.toast('10 关都打开了'); }));
       row.appendChild(this.button('清空进度', 'ghost small', () => {
         if (!confirm('清空关卡、星星、收集册和做题记录？')) return;
-        const keep = { math: d.math, snd: d.snd, voi: d.voi, mus: d.mus };
+        const keep = { math: d.math, way: d.way, snd: d.snd, voi: d.voi, mus: d.mus };
         Store.d = Object.assign(Store.defaults(), keep); Store.save(); this.toast('已清空');
       }));
       card.appendChild(row);

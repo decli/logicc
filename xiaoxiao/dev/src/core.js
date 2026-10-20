@@ -56,6 +56,9 @@ const Store = {
       today: { day: '', pages: 0 },   // math pages finished today (not the 5-sum page for 5 more moves): where the ramp is
       spin: null,            // what the wheel landed on for the page owed now, { n, p: played }, so leaving can't spin again
       log: [],               // finished math pages: [time, count, right first time, seconds, settings label]
+      way: 'pick',           // 小老师 (teach.js): 'pick' (she chooses each time), 'random', or one way ('frame' 'line' 'split'), 家长设置
+      ways: {},              // how each way went: way -> [times used, then right without counting together]
+      wayLast: '',           // the way used last, which glows on the choice
       seen: {},              // tips already shown
       gifts: {},             // friends from the blind box (gift.js): id -> how many
       giftFresh: [],         // new friends not yet seen in the album

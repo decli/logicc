@@ -2,10 +2,11 @@
 // First she spins the wheel for how many sums (wheel.js, 2 to 10), then a page of them with a number pad; every sum has
 // to be answered right before the page is done. Help comes in steps, the way a teacher would give it: the first wrong
 // answer gets one short hint about what went wrong (a sign read the wrong way, one off, digits swapped, the ones right
-// but not the tens), the second brings in 小老师 (teach.js), where the animals act the sum out a tap at a time and she
-// writes the answer herself, and 💡 brings it in any time after a wrong answer; only after that does the right
-// answer show in grey to be copied, so she is never stuck. Parents choose the range (within 20 / 50 / 100), how many
-// numbers (2 / 3 / 4), add / subtract / both, and the wheel, the day's ramp or a fixed page size.
+// but not the tens), the second brings in 小老师 (teach.js), where she picks a way to work it out with pictures and
+// writes the answer herself, and 💡 brings it in any time after a wrong answer. The answer is never shown (decli
+// 2026-10-20: she would only copy it): if she still gets it wrong the teacher counts with her. Parents choose the range
+// (within 20 / 50 / 100), how many numbers (2 / 3 / 4), add / subtract / both, and the wheel, the day's ramp or a
+// fixed page size.
 const MathGate = {
   // one sum: every number ≥ 1, every partial result between 0 and max
   problem(max, ops, mode, want) {
@@ -186,19 +187,18 @@ const MathGate = {
           c.classList.toggle('cur', i === cur && !finished);
           c.classList.toggle('ok', q.ok);
           if (q.ok) a.textContent = q.ans;
-          else if (i === cur) { a.textContent = q.got || (q.tries >= 3 ? q.ans : '?'); a.classList.toggle('hint', !q.got && q.tries >= 3); }
-          else { a.textContent = q.got || ''; a.classList.remove('hint'); }
+          else a.textContent = q.got || (i === cur ? '?' : '');
         });
         const n = qs.filter(q => q.ok).length, q = qs[cur];
         prog.textContent = `${n} / ${count}`;
-        say.textContent = finished || Teach.on ? '' : q.tries >= 3 ? '照着灰色的答案写一遍' : q.tries ? '再想一想' : '';
+        say.textContent = finished || Teach.on ? '' : q.tries ? '再想一想' : '';
         // 💡 once a sum has gone wrong, wiggling the first time it shows
-        const help = !finished && !Teach.on && !q.ok && q.tries >= 1 && q.tries < 3;
+        const help = !finished && !Teach.on && !q.ok && q.tries >= 1;
         if (help && bulb.hidden !== false) { bulb.hidden = false; bulb.classList.remove('new'); void bulb.offsetWidth; bulb.classList.add('new'); Snd.play('idea'); }
         bulb.hidden = !help;
         if (Teach.on) Teach.sync(q.got);
       }
-      // the animals act the sum out over the cards; the pad stays to write the answer
+      // 小老师 over the cards; the pad stays to write the answer
       function teach() {
         clearTimeout(helpT);
         if (finished || qs[cur].ok) return;
@@ -208,6 +208,7 @@ const MathGate = {
       function press(k) {
         if (finished) return;
         Snd.init();
+        if (Teach.on && Teach.key(k)) return;   // a step of 拆一拆 takes the pad
         const q = qs[cur];
         if (k === '⌫') { q.got = q.got.slice(0, -1); Snd.play('key', 2); }
         else if (k === '✓') { if (q.got) check(); return; }
@@ -221,7 +222,7 @@ const MathGate = {
           q.ok = true; if (!q.tries) first++;
           Snd.play('right'); c.classList.remove('bad');
           const taught = Teach.on;
-          if (taught) Teach.close(true);
+          if (taught) Teach.right();
           const r = c.getBoundingClientRect();
           Fx.burst(r.left + r.width * 0.8, r.top + r.height / 2, ['#5fe0b0', '#ffd23a'], 10, 0.8, 60);
           const n = qs.filter(x => x.ok).length;
@@ -248,17 +249,14 @@ const MathGate = {
           const got = +q.got;
           q.tries++; q.got = '';
           Snd.play('wrong');
-          if (Teach.on) {   // still wrong with the animals: count again, and the third time the answer shows
-            if (q.tries >= 3) { Teach.close(); Voice.say(L.math.show); }
-            else { Teach.shake(); Voice.say(L.teach.again); }
-          } else {
+          if (Teach.on) Teach.wrong();   // the teacher finishes the picture, or counts it with her
+          else {
             c.classList.remove('bad'); void c.offsetWidth; c.classList.add('bad');
             if (q.tries === 1) {
               const w = MathGate.why(q, got);
               Voice.say(L.math.why[w.k]);
               if (w.op != null) setTimeout(() => { const o1 = $$('.op', c)[w.op]; if (o1) { o1.classList.remove('hey'); void o1.offsetWidth; o1.classList.add('hey'); } }, 350);
-            } else if (q.tries === 2) helpT = setTimeout(() => { if (qs[cur] === q) teach(); }, 700);
-            else Voice.say(L.math.show);
+            } else helpT = setTimeout(() => { if (qs[cur] === q) teach(); }, 700);
           }
         }
         draw();
