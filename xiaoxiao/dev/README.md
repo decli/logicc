@@ -9,7 +9,7 @@ python3 dev/voice/build.py xiaoxiao        # 改了台词或关卡后重录语�
 python3 xiaoxiao/dev/heads.py              # 从 art/ 里 decli 画的头像图切出 70 个头像 → ../heads.webp 和 src/heads.js
 ```
 
-地址后面加 `?go` 跳过开始按钮，加 `?debug` 会在控制台留一个 `XX`（`XX.UI.play(4)` 直接进第 5 关，`XX.Store.d.open = 10` 打开全部关卡，`XX.Store.d.owed = false` 免做下一页数学题，`XX.Teach.open({ nums: [8, 5], signs: ['+'], ans: 13 }, document.querySelector('#math .sheet'))` 在数学题页上直接看小老师讲 8+5，`XX.Store.d.way = 'split'` 先定好用哪种办法），调试用。
+地址后面加 `?go` 跳过开始按钮，加 `?debug` 会在控制台留一个 `XX`（`XX.UI.play(4)` 直接进第 5 关，`XX.Store.d.open = 10` 打开全部关卡，`XX.Store.d.owed = false` 免做下一页数学题，`XX.Teach.open({ nums: [8, 5], signs: ['+'], ans: 13 }, document.querySelector('#math .sheet'))` 在数学题页上直接看小老师讲 8+5，`XX.Store.d.way = 'split'` 先定好用哪种办法，默认 `'col'` 列竖式），调试用。
 
 | 文件 | 做什么 |
 | --- | --- |
@@ -24,9 +24,9 @@ python3 xiaoxiao/dev/heads.py              # 从 art/ 里 decli 画的头像图�
 | `src/art.js` `src/fx.js` | 从 `heads.webp` 取小动物头像，各种格子的预渲染；粒子、光束、闪电、冲击波、飞向目标的小动物、Great! … Unbelievable! 大字 |
 | `src/gift.js` | 过关拆盲盒（掉下来、点三下、蹦出小伙伴、稀有款 / 隐藏款的光）和地图上 🎁 打开的动物收集册；抽到谁的概率写在 `Gift.ODDS` |
 | `src/audio.js` `src/voice.js` | Web Audio 实时合成的音效；decli 的背景音乐和英文欢呼（`../sound/`，暂停和数学题页时音乐停）；语音包播放。下载失败（比如刚发布新版本那一会儿）会自己隔几秒再取，头像图也一样。从不用设备自带的语音：语音包里没有的句子就不出声，`?debug` 时在控制台列出来 |
-| `src/wheel.js` | 数学题页之前的转盘：她点一下，转约 3 秒停在 2～10 中的一个（先公平抽好再转，格子一样大），转到的数存在 `Store.d.spin`，这一页做完前不重转 |
-| `src/teach.js` | 小老师：答错两次或点 💡 时盖在题目上，她选一种办法（`Teach.W`：`frame` 摆一摆、`line` 跳一跳、`split` 拆一拆，`Teach.plan` 是拆一拆的步骤）；只数加进来 / 拿走的个数，从不显示或说出答案，还错就带着她一个一个数（`Teach.guide`）；键盘留在旁边让她自己写答案，拆一拆的中间步骤也用这个键盘（`Teach.key`） |
-| `src/math.js` | 数学题页：出题、数字键盘、记录；答错第一次判断错在哪说一句提示（`MathGate.why`），小老师帮完做对后把下一道换成同类题（`MathGate.twin`） |
+| `src/wheel.js` | 数学题页之前的转盘：她点一下，转约 3 秒停在 10～20 中的一个（`MATH_WHEEL`，十一个格子；先公平抽好再转，格子一样大），转到的数存在 `Store.d.spin`，这一页做完前不重转 |
+| `src/teach.js` | 小老师：订正时又错或点 💡 时盖在题目上，默认先用列竖式（`Teach.W.col`：竖式 + 十位 / 个位两栏的数位表，满十捆一捆进到十位、不够减从十位借一捆拆开，她一位一位写在横线下，最后写回横式），🔄 换成别的办法（`frame` 摆一摆、`line` 跳一跳、`split` 拆一拆，`Teach.plan` 是拆一拆的步骤）；只数加进来 / 拿走的个数，从不显示或说出答案，还错就带着她一个一个数（`Teach.guide`）；键盘留在旁边让她自己写答案，列竖式和拆一拆的中间步骤也用这个键盘（`Teach.key`） |
+| `src/math.js` | 数学题页：出题、数字键盘、记录。三段：`write` 整页写完（✓ 只跳到下一道，不判对错）→ 交卷后 `mark` 一次批改（对的打 ✓，错的圈出来）→ `fix` 订正，来到一道先说一句错在哪（`MathGate.why`），再错叫小老师，小老师帮完做对后在页尾加一道同类题（`MathGate.twin`） |
 | `src/ui.js` | 地图、关前卡片、结果卡片、暂停、家长专区 |
 | `src/main.js` | 启动和每帧循环 |
 | `sim.js` | 关卡模拟器（见下） |

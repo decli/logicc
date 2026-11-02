@@ -128,6 +128,9 @@ const Snd = {
       case 'right': this.tone(this.pent(7), 0.15, { type: 'triangle', vol: 0.18 }); this.tone(this.pent(9), 0.3, { type: 'triangle', vol: 0.18, at: 0.1, verb: true }); break;
       case 'wrong': this.tone(392, 0.14, { type: 'sine', vol: 0.13 }); this.tone(330, 0.22, { type: 'sine', vol: 0.12, at: 0.12, to: 370 }); break;   // "hmm?", not a buzz
       case 'key': this.tone(700 + k * 30, 0.05, { type: 'sine', vol: 0.1 }); break;
+      // marking a handed-in page: a pen's tick that climbs a note with every right sum, a soft low one for a ring
+      case 'mark': this.noise(0.05, { filter: 'highpass', f: 3500, vol: 0.12 }); this.tone(this.pent(5 + ((k - 1) % 10)), 0.2, { type: 'triangle', vol: 0.15, at: 0.02, verb: true }); break;
+      case 'ring': this.noise(0.16, { f: 1200, fto: 700, q: 1.2, vol: 0.08 }); this.tone(392, 0.22, { type: 'sine', vol: 0.09, to: 350 }); break;
       // the blind box (gift.js): landing, each tap (k = 1-3, higher each time), bursting open, and a rare friend
       case 'gland': this.tone(150, 0.3, { type: 'sine', to: 70, vol: 0.35 }); this.noise(0.14, { f: 320, q: 1, vol: 0.22 }); this.tone(this.pent(4), 0.25, { type: 'triangle', vol: 0.1, at: 0.06, verb: true }); break;
       case 'gtap':

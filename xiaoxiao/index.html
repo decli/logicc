@@ -187,6 +187,14 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .q .ans{display:inline-block;min-width:1.9em;padding:0 .15em;border-bottom:4px solid #d8c3a5;text-align:center;color:#7b4dff}
 .q.ok .ans{color:#15895f;border-color:#9fe3c4}
 .q.bad{animation:shake .35s;border-color:#ffb000;background:#fff8e6}
+/* writing the page: an answer written; handed in and marked: ✓ (above) or the answer ringed and ✏️ to correct it */
+.q.has .ans{border-color:#c6a6ff}
+.q.fix{background:#fff6ea}
+.q.fix::after{content:"✏️";position:absolute;right:6px;top:0;font-size:.55em}
+.q.fix.cur{border-color:#ff9d3a}
+.q .ans.was{color:#ff7a1a;border-bottom-color:transparent;border-radius:50%;box-shadow:0 0 0 .07em #ff9d3a}
+.handin{min-height:54px;font-size:24px;padding:0 24px;flex:1;max-width:280px}
+.handin.hey{animation:wayhey .6s cubic-bezier(.2,1.6,.4,1) 2}
 @keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
 #math .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-content:center}
 #math.wide .pad{width:clamp(250px,30vw,330px)}
@@ -226,6 +234,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 @keyframes talk{to{transform:translateY(-5px) rotate(-5deg)}}
 .thead .ibtn{width:52px;height:52px;font-size:24px;flex:none}
 .teq{flex:1;display:flex;align-items:center;justify-content:center;gap:.25em;font-size:46px;font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap}
+@media (max-width:520px){.teq{font-size:32px}.thead .owl{width:52px;height:52px}.thead{gap:8px}}
 .teq .n{color:var(--c);padding:0 .14em;border-radius:.25em;transition:background .3s,box-shadow .3s}
 .teq .n.now{background:#fff2a8;box-shadow:0 0 0 4px #ffd23a}
 .teq .op{color:#a58cba}
@@ -261,6 +270,8 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .tway.last{box-shadow:0 0 0 5px #ffd23a,0 6px 0 #ecd3b0}
 .tway.last::before{content:"⭐";position:absolute;top:-16px;right:-10px;font-size:34px}
 .tway.hey{animation:wayhey .6s cubic-bezier(.2,1.6,.4,1)}
+.tpick.two{flex-wrap:wrap;align-content:center;row-gap:4%}
+.tpick.two .tway{flex:0 0 44%;height:44%}
 @keyframes wayhey{40%{transform:translateY(-16px) scale(1.07)}}
 .tpic{width:100%;flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
 .tpic svg{width:100%;height:100%}
@@ -273,6 +284,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .tline .tick{stroke:#cbb9e0;stroke-width:3;stroke-linecap:round}
 .tline .tick.ten{stroke:#9c7fd0;stroke-width:4}
 .tline .hop{fill:none;stroke-width:4;stroke-linecap:round}
+.tline .tlab{fill:#9c7fd0;font-weight:900;text-anchor:middle;font-family:var(--font)}
 .tfrog{position:absolute;left:0;top:0;pointer-events:none;z-index:2}
 .tfrog img{width:100%;height:100%;display:block}
 .tstart{position:absolute;left:0;top:0;transform:translate(-50%,-50%);font-weight:900;background:#fff;border-radius:999px;padding:0 .4em;box-shadow:0 3px 0 #ecd3b0;
@@ -291,6 +303,26 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .tbox.bad{animation:shake .35s;color:var(--red)}
 .trow.ok .tbox{color:#15895f;border-color:#9fe3c4}
 .thelp{position:absolute;inset:0;pointer-events:none}
+/* 列竖式: the column form, and the place-value chart (tens | ones) with the same columns */
+.tvert{position:absolute;left:0;top:0;display:grid;align-items:end;font-weight:900;font-variant-numeric:tabular-nums;line-height:1.2;text-align:center;
+  background:#fff;border-radius:.22em;padding:.08em .22em .14em;box-shadow:0 4px 0 #ecd3b0;white-space:nowrap}
+.tvert>span{position:relative;border-radius:.14em;transition:background .3s}
+.tvert .lab{font-size:.32em;line-height:1.7;color:#b9a1d6}
+.tvert .op{color:#a58cba}
+.tvert .on{background:#fff2a8}
+.tvert .bar{grid-column:1/-1;height:.07em;background:#7a5a8e;border-radius:.04em;margin:.03em 0 .05em}
+.tvert .r{min-height:1.2em}
+.tvert .carry{position:absolute;right:-.1em;bottom:-.08em;font-size:.4em;font-style:normal;color:#ff8a1f;line-height:1}
+.tvert .dot{position:absolute;left:50%;top:.02em;width:.16em;height:.16em;margin-left:-.08em;border-radius:50%;background:#ff5a7a}
+.tvert .tbox{min-width:.72em;border-bottom-width:.06em}
+.tvert .tbox.ok{color:#15895f;border-color:transparent}
+.tvert.done .r{background:#e6fff4}
+.tcell{position:absolute;left:0;top:0;border:4px solid #e3d4f5;background:rgba(255,255,255,.75);box-sizing:border-box;transition:box-shadow .3s,background .3s}
+.tcell.one{border-color:#ffe0a8}
+.tcell.on{box-shadow:0 0 0 5px #ffd23a;background:#fffdf0}
+.tcell b{position:absolute;left:0;right:0;top:.12em;text-align:center;font-weight:900;color:#a58cba}
+.tcell.one b{color:#e0a860}
+.tcolchips{position:absolute;left:0;right:0;top:0;font-size:22px;font-weight:900;font-variant-numeric:tabular-nums}
 .tgap{position:absolute;left:0;top:0;border:4px dashed #ffb000;border-radius:50%;box-sizing:border-box;background:#fff8d6;animation:gap 1.2s ease-in-out infinite}
 @keyframes gap{50%{background:#ffe98a}}
 .tring{position:absolute;left:0;top:0;border:5px solid #d9c6ea;border-radius:50%;box-sizing:border-box;background:#fff;display:flex;align-items:center;justify-content:center;
@@ -394,12 +426,12 @@ const Store = {
       stars: {}, best: {},   // per level
       owed: false,           // a math page is due before the next game
       played: 0,
-      math: { max: 20, ops: 2, mode: 'mix', count: 'wheel' },   // count: 'wheel' (MATH_WHEEL), 'ramp' (MATH_RAMP) or a fixed size (MATH_COUNTS), 家长设置
-      mathV: 4,              // 4: the wheel; 3: the day's ramp; 2: a fixed size (10 by default); before that always 20
+      math: { max: 100, ops: 2, mode: 'mix', count: 'wheel' },  // count: 'wheel' (MATH_WHEEL), 'ramp' (MATH_RAMP) or a fixed size (MATH_COUNTS), 家长设置
+      mathV: 5,              // 5: the wheel draws 10 to 20, within 100, 列竖式 first; 4: the wheel (2 to 10); 3: the day's ramp; 2: a fixed size (10 by default); before that always 20
       today: { day: '', pages: 0 },   // math pages finished today (not the 5-sum page for 5 more moves): where the ramp is
       spin: null,            // what the wheel landed on for the page owed now, { n, p: played }, so leaving can't spin again
       log: [],               // finished math pages: [time, count, right first time, seconds, settings label]
-      way: 'pick',           // 小老师 (teach.js): 'pick' (she chooses each time), 'random', or one way ('frame' 'line' 'split'), 家长设置
+      way: 'col',            // 小老师 (teach.js) starts with: one way ('col' 'frame' 'line' 'split'), 'pick' (she chooses each time) or 'random', 家长设置
       ways: {},              // how each way went: way -> [times used, then right without counting together]
       wayLast: '',           // the way used last, which glows on the choice
       seen: {},              // tips already shown
@@ -421,7 +453,10 @@ const Store = {
         // wheel (decli 2026-10-19); a size a parent picked from the settings since the ramp (5, 10, 15, 20) stays
         const v = raw.mathV || 0;
         if (v < 3 || (v < 4 && this.d.math.count === 'ramp')) this.d.math.count = this.defaults().math.count;
-        this.d.mathV = 4;
+        // decli 2026-11-02: harder now, sums within 100 on a wheel of 10 to 20 (a spin of the old wheel is dropped, so
+        // the page owed is drawn again), and 小老师 starts with 列竖式 instead of asking her to choose
+        if (v < 5) { this.d.math.max = 100; this.d.spin = null; if (!raw.way || raw.way === 'pick') this.d.way = 'col'; }
+        this.d.mathV = 5;
       }
     } catch (e) { }
     return this.d;
@@ -1167,10 +1202,11 @@ const LEVELS = [
 // 动物消消乐 · everything the narrator says. dev/voice/collect.js reads this file (with levels.js and board.js) to
 // list every line for recording, so a line built from a level must be built here and nowhere else.
 const KID = '可可';   // decli's daughter, who plays this
-// how many sums a math page has (家长设置). By default she spins a wheel before each page and does what it lands on,
-// 2 to 10 (decli 2026-10-19, evening: sums feel like a chore, make drawing them a game). A parent can pick the day's
-// ramp instead (2, 6, 12, then 20 every time after, back to 2 the next day) or one fixed size.
-const MATH_WHEEL = [2, 3, 4, 5, 6, 7, 8, 9, 10];
+// how many sums a math page has (家长设置). By default she spins a wheel before each page and does what it lands on
+// (decli 2026-10-19, evening: sums feel like a chore, make drawing them a game), 10 to 20 since decli 2026-11-02 (she
+// is ready for more, and for sums within 100). A parent can pick the day's ramp instead (2, 6, 12, then 20 every time
+// after, back to 2 the next day) or one fixed size.
+const MATH_WHEEL = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 const MATH_RAMP = [2, 6, 12, 20];
 const MATH_COUNTS = [5, 10, 15, 20];
 const NUM_ZH = n => String(n);   // the voice reads digits naturally ("18只" → 十八只)
@@ -1263,23 +1299,54 @@ const L = {
       other: '没关系，再想一想。',
     },
     half: `${KID}，已经做完一半啦！`,
+    // decli 2026-11-02: nothing is marked while she writes, so her train of thought isn't broken; she hands the page
+    // in and the teacher marks it all at once, then she corrects what was marked (订正)
+    allIn: '都写好啦！再检查一遍，没问题就点交卷。',
+    mark: '交卷啦！小老师来批改。',
+    got: n => `做对了${n}道！`,                                  // recorded for 1 to 20
+    fix: n => `还有${n}道要再想一想，我们来订正吧！`,              // recorded for 1 to 20
     done: `${KID}，全部做完啦！真厉害，去玩吧！`,
     doneExtra: `${KID}，做完啦！多给你5步！`,
   },
   // the wheel before a math page (wheel.js): every number is good news
   wheel: {
     ask: `${KID}，点一下转盘，看看这次做几道题！`,
-    land: n => n <= 4 ? `转到${n}道题！${KID}，热热身吧！` : n <= 7 ? `转到${n}道题！不多不少，${KID}加油！` : `哇，转到${n}道题！${KID}，接受挑战吧！`,
+    land: n => n <= 13 ? `转到${n}道题！不多不少，${KID}加油！` : n <= 16 ? `哇，转到${n}道题！${KID}，接受挑战吧！` : `哇，转到${n}道题！超级大挑战，${KID}一定行！`,
   },
-  // 小老师 (teach.js): after the second wrong answer, or 💡. She picks one of three ways (or the parent sets one); no
-  // line ever says the answer: they count only what is added or taken away, or count along with her
+  // 小老师 (teach.js): when a sum she is correcting is wrong again, or 💡. 列竖式 first (decli 2026-11-02), 🔄 for the
+  // others; no line ever says the answer: they count only what is added or taken away, or count along with her
   teach: {
-    pick: `${KID}，别着急！小老师有三种办法，你想用哪一种？`,
+    pick: `${KID}，别着急！小老师有四种办法，你想用哪一种？`,
     pick2: '换一种办法试试吧！你想用哪一种？',
-    ways: ['摆一摆', '跳一跳', '拆一拆'],
+    ways: ['列竖式', '摆一摆', '跳一跳', '拆一拆'],
     // straight in (the parent chose the way), or after she picked it
-    hi: { frame: `${KID}，别着急，我们请小动物来摆一摆！`, line: `${KID}，别着急，我们请小青蛙来跳一跳！`, split: `${KID}，别着急，我们把数拆开，一步一步算！` },
-    wayHi: { frame: '好，我们请小动物来摆一摆！', line: '好，我们请小青蛙来跳一跳！', split: '好，我们把数拆开，一步一步算！' },
+    hi: { col: `${KID}，别着急，我们来列竖式，一位一位地算！`, frame: `${KID}，别着急，我们请小动物来摆一摆！`, line: `${KID}，别着急，我们请小青蛙来跳一跳！`, split: `${KID}，别着急，我们把数拆开，一步一步算！` },
+    wayHi: { col: '好，我们来列竖式，一位一位地算！', frame: '好，我们请小动物来摆一摆！', line: '好，我们请小青蛙来跳一跳！', split: '好，我们把数拆开，一步一步算！' },
+    // 列竖式: the school column method, each column with its animals (ones) and bundles of ten (tens) under it
+    col: {
+      align: '相同数位要对齐：个位对个位，十位对十位。先算个位，再算十位。',
+      onesAdd: '先算个位：个位和个位合在一起。',
+      onesSub: '先算个位：个位减个位。',
+      onesDown: '先算个位：个位上没有要加减的。',
+      carry: '满十个啦！捆成一捆，进到十位上，记一个小1。',
+      borrow: '个位不够减！从十位借一捆，拆开就是十个，十位上点一个小点。',
+      onesAsk: '个位上现在有几个？写在个位上。',
+      tensAdd: '再算十位：十位和十位合在一起。',
+      tensAddCarry: '再算十位：十位和十位合在一起，还有进上来的一捆！',
+      tensCarry: '再算十位：别忘了进上来的一捆！',
+      tensSub: '再算十位：十位减十位。',
+      tensSubBorrow: '再算十位：十位减十位，别忘了被借走的一捆！',
+      tensBorrow: '再算十位：别忘了，十位被借走了一捆！',
+      tensDown: '再算十位：十位上没有要加减的。',
+      tensAsk: '十位上现在有几捆？写在十位上。',
+      tensNone: '十位上一捆也不剩了，十位就不用写啦。',
+      zero: '一个也没有，就写0。',
+      guideTen: '我们一起数一数有几捆！点一下，数一捆。',
+      right: '对啦！',
+      part: '这一步算好啦！用它接着算。',
+      copy: '竖式算好啦！把得数写到上面的横式里。',
+      copyAgain: '照着竖式下面的得数写：先写十位，再写个位。',
+    },
     add: '加几个，就请进来几个。点一点！',
     sub: '减几个，就送走几个。点一点！',
     tie: '满十个啦，捆成一捆！',
@@ -1288,7 +1355,7 @@ const L = {
     endSub: '现在还剩几只？数一数，写在上面吧。',
     hopAdd: '加几，就往前跳几格。点一点！',
     hopSub: '减几，就往回跳几格。点一点！',
-    hopEnd: '小青蛙停在几？从起点开始数一数，写在上面吧。',
+    hopEnd: '小青蛙停在几？看看旁边的整十数，再数一数，写在上面吧。',
     // 拆一拆: one line for each kind of step (Teach.plan), none with a number in it
     step: {
       tensAdd: '先把整十的加上，一捆就是十。数一数，是多少？',
@@ -1507,6 +1574,9 @@ const Snd = {
       case 'right': this.tone(this.pent(7), 0.15, { type: 'triangle', vol: 0.18 }); this.tone(this.pent(9), 0.3, { type: 'triangle', vol: 0.18, at: 0.1, verb: true }); break;
       case 'wrong': this.tone(392, 0.14, { type: 'sine', vol: 0.13 }); this.tone(330, 0.22, { type: 'sine', vol: 0.12, at: 0.12, to: 370 }); break;   // "hmm?", not a buzz
       case 'key': this.tone(700 + k * 30, 0.05, { type: 'sine', vol: 0.1 }); break;
+      // marking a handed-in page: a pen's tick that climbs a note with every right sum, a soft low one for a ring
+      case 'mark': this.noise(0.05, { filter: 'highpass', f: 3500, vol: 0.12 }); this.tone(this.pent(5 + ((k - 1) % 10)), 0.2, { type: 'triangle', vol: 0.15, at: 0.02, verb: true }); break;
+      case 'ring': this.noise(0.16, { f: 1200, fto: 700, q: 1.2, vol: 0.08 }); this.tone(392, 0.22, { type: 'sine', vol: 0.09, to: 350 }); break;
       // the blind box (gift.js): landing, each tap (k = 1-3, higher each time), bursting open, and a rare friend
       case 'gland': this.tone(150, 0.3, { type: 'sine', to: 70, vol: 0.35 }); this.noise(0.14, { f: 320, q: 1, vol: 0.22 }); this.tone(this.pent(4), 0.25, { type: 'triangle', vol: 0.1, at: 0.06, verb: true }); break;
       case 'gtap':
@@ -2085,14 +2155,15 @@ const Fx = {
 };
 const FONT = '"Hiragino Maru Gothic ProN","Yuanti SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif';
 
-// 动物消消乐 · the wheel before a math page (decli 2026-10-19: draw how many sums like a lucky draw, 2 to 10, so the
-// page starts with a bit of fun instead of a chore). She taps it; it winds back a little and spins, slows down with a
+// 动物消消乐 · the wheel before a math page (decli 2026-10-19: draw how many sums like a lucky draw, so the page starts
+// with a bit of fun instead of a chore; 10 to 20 since decli 2026-11-02). She taps it; it winds back a little and spins, slows down with a
 // tick and a flick of the pointer at every peg, and lands with lights, confetti and her number popping up. Every slice
 // is the same size and the number is drawn fairly before the spin (never steered to a near miss); every number is good
 // news, a few a warm-up and many a challenge (L.wheel.land). What it lands on is kept until the page is done, so
 // leaving and coming back can't spin again.
 const Wheel = {
-  COLS: ['#ff7fb0', '#ffa95e', '#ffd23a', '#8fdc5e', '#45d0b5', '#5fb8ff', '#8f83ff', '#c47cff', '#ff8fd0'],
+  // one colour a slice, round the rainbow (MATH_WHEEL has 11 numbers)
+  COLS: ['#ff7fb0', '#ff8f6b', '#ffb347', '#ffd23a', '#b4e05a', '#5fd38a', '#45d0b5', '#5fc0ff', '#7d9bff', '#a283ff', '#d27cff'],
   // on the math layer; resolves with the number, 'skip' (a parent skipped the page) or 'again' (a parent changed the
   // settings, so the page starts over the new way)
   spin() {
@@ -2144,7 +2215,7 @@ const Wheel = {
         x.save(); x.translate(cx, cy); x.rotate(rot);
         for (let i = 0; i < N; i++) {
           const a0 = -Math.PI / 2 + i * A, g = x.createRadialGradient(0, 0, R * 0.2, 0, 0, R);
-          g.addColorStop(0, '#ffffff'); g.addColorStop(0.35, Wheel.COLS[i]); g.addColorStop(1, Wheel.COLS[i]);
+          g.addColorStop(0, '#ffffff'); g.addColorStop(0.35, Wheel.COLS[i % Wheel.COLS.length]); g.addColorStop(1, Wheel.COLS[i % Wheel.COLS.length]);
           x.fillStyle = g; x.beginPath(); x.moveTo(0, 0); x.arc(0, 0, R, a0, a0 + A); x.closePath(); x.fill();
           if (won >= 0) {   // the winner glows, the rest step back
             x.fillStyle = i === won ? `rgba(255,255,255,${0.15 + 0.25 * Math.sin(now / 90) ** 2})` : 'rgba(255,255,255,.5)'; x.fill();
@@ -2235,25 +2306,31 @@ const Wheel = {
   },
 };
 
-// 动物消消乐 · 小老师: when a sum is answered wrong twice (or she taps 💡) the teacher comes over the cards, and she
-// writes the answer herself on the number pad, which stays beside it (decli 2026-10-19: when she gets one wrong, guide
-// her the way a teacher would, with animation and play).
-// decli 2026-10-20: nobody knows which way of explaining suits which child, so there are three and she picks one each
-// time (the one she used last glows), or the parent sets random or one of them; and the answer is never shown or said.
-// She counts it herself from the picture; if she still gets it wrong the teacher counts with her, one tap for each
-// thing, a number on each, and she writes the last number counted.
+// 动物消消乐 · 小老师: when a sum she is correcting is wrong again (or she taps 💡) the teacher comes over the cards,
+// and she writes the answer herself on the number pad, which stays beside it (decli 2026-10-19: when she gets one
+// wrong, guide her the way a teacher would, with animation and play).
+// decli 2026-10-20: nobody knows which way of explaining suits which child, so there are several, and the answer is
+// never shown or said. She counts it herself from the picture; if she still gets it wrong the teacher counts with her,
+// one tap for each thing, a number on each, and she writes the last number counted.
+// decli 2026-11-02: the ways were not easy enough to follow, and school does it in columns, so 列竖式 comes first;
+// 🔄 always brings up the four cards to try another (the parent can also start with another, her choice or random).
+//  · 列竖式 (col): the column form with a place-value chart under the same two columns, 个位对个位、十位对十位: the ones
+//    are added (满十 a bundle goes up to the tens with a small 1) or taken away (不够减 a bundle comes down and is
+//    untied, a dot over the tens), she counts and writes that digit under the line, then the tens; then the answer
+//    into the sum at the top.
 //  · 摆一摆 (frame): the ones sit in a ten frame (2 × 5); ten of them are tied into a bundle (满十捆一捆, 凑十), and when
 //    there are not enough ones to take away a bundle is untied (拆一捆, 破十), as first grade does with sticks (小棒).
 //    The first number's animals are one kind and each number added another; taking away sends them to marked spots.
-//  · 跳一跳 (line): a frog hops along a number line from the first number (the only number on it), a big hop for each
-//    ten and a small one for each one, forward to add and back to take away (counting on and back).
+//  · 跳一跳 (line): a frog hops along a number line from the first number, a big hop for each ten and a small one for
+//    each one, forward to add and back to take away (counting on and back). The whole tens are numbered (decli
+//    2026-11-02: counting every tick from the start was too hard) so she reads where it lands from the nearest ten.
 //  · 拆一拆 (split): the sum is broken into small steps she fills in, the ways first grade is taught them: tens first,
 //    凑十 to add past ten (8 + 5: 8 + ? = 10, 5 = 2 + ?, 10 + 3 = ?), 平十 / 破十 to take away past ten, each step
 //    with a picture to count.
 // While a sum is acted out the voice counts only what is being added or taken away (1, 2, 3 …), never the total.
 const Teach = {
   on: false, s: null, imgs: {}, W: {},
-  WAYS: ['frame', 'line', 'split'],
+  WAYS: ['col', 'frame', 'line', 'split'],
   CW: 0.96, CH: 2.3, CG: 0.24, MC: 0.43,   // a bundle (its width, height, the gap after it, one of its cells) in frame cells
   img(i) {   // a friend's head as a picture, made once
     if (!this.imgs[i]) this.imgs[i] = Art.friend(i, 128, 120).toDataURL();
@@ -2311,11 +2388,11 @@ const Teach = {
       if (s.cnt && !s.cnt.fin) this.countStep();
       else if (s.w && s.w.tap) s.w.tap();
     });
-    const mode = Store.d.way || 'pick';
+    const mode = Store.d.way || 'col';
     requestAnimationFrame(() => {
       if (this.s !== s) return;
       if (mode === 'pick') this.pick(true);
-      else this.use(mode === 'random' ? pick(this.WAYS.filter(w => w !== Store.d.wayLast)) : mode, true);
+      else this.use(mode === 'random' ? pick(this.WAYS.filter(w => w !== Store.d.wayLast)) : this.WAYS.includes(mode) ? mode : 'col', true);
     });
   },
 
@@ -2365,11 +2442,12 @@ const Teach = {
     s.ans.classList.remove('ask'); s.parts.forEach(p => p.classList.remove('now'));
     s.hand.classList.remove('on');
   },
-  // the three ways as big cards, read out one by one, each bouncing as it is named
+  // the ways as big cards, read out one by one, each bouncing as it is named (two by two when the stage is narrow)
   pick(first) {
     const s = this.s; this.clear();
     s.swap.hidden = true;
     const box = s.pickEl = el('div', 'tpick');
+    box.classList.toggle('two', s.stage.clientWidth < 640);
     const cards = this.WAYS.map((w, i) => {
       const c = el('button', 'tway' + (Store.d.wayLast === w ? ' last' : ''));
       c.appendChild(this.pic(w)); c.appendChild(el('b', null, L.teach.ways[i]));
@@ -2389,7 +2467,15 @@ const Teach = {
   // a small picture of each way for its card
   pic(w) {
     const s = this.s, p = el('div', 'tpic ' + w);
-    if (w === 'frame') {
+    if (w === 'col') {   // 27 + 15 in columns, the tens tinted like the bundles' side of the chart, the ones like the animals'
+      const T = (x, y, t, fill, size = 30) => `<text x="${x}" y="${y}" font-size="${size}" font-weight="900" text-anchor="middle" fill="${fill}">${t}</text>`;
+      p.innerHTML = `<svg viewBox="0 0 200 140"><rect x="80" y="4" width="42" height="132" rx="10" fill="#f3e9ff"/><rect x="126" y="4" width="42" height="132" rx="10" fill="#fff1d6"/>`
+        + T(101, 30, '十', '#b9a1d6', 15) + T(147, 30, '个', '#e0a860', 15)
+        + T(101, 62, '2', '#7b4dff') + T(147, 62, '7', '#7b4dff') + T(50, 98, '+', '#a58cba') + T(101, 98, '1', '#ff8a1f') + T(147, 98, '5', '#ff8a1f')
+        + `<line x1="32" y1="108" x2="170" y2="108" stroke="#7a5a8e" stroke-width="4" stroke-linecap="round"/>` + T(116, 106, '1', '#ff8a1f', 15)
+        + `<rect x="89" y="113" width="24" height="20" rx="5" fill="#fff" stroke="#ffb000" stroke-width="3" stroke-dasharray="5 4"/>`
+        + `<rect x="135" y="113" width="24" height="20" rx="5" fill="#fff" stroke="#ffb000" stroke-width="3" stroke-dasharray="5 4"/></svg>`;
+    } else if (w === 'frame') {
       const g = el('div', 'tframe');
       for (let i = 0; i < 10; i++) {
         const c = el('i');
@@ -2416,7 +2502,7 @@ const Teach = {
   use(w, first) {
     const s = this.s; this.clear();
     s.way = w;
-    s.swap.hidden = !['pick', 'random'].includes(Store.d.way || 'pick');
+    s.swap.hidden = false;   // 🔄: the cards, to try another way
     this.stat(w)[0]++; Store.d.wayLast = w; Store.save();
     const root = el('div', 'troot'); s.stage.appendChild(root);
     s.w = this.W[w](this.ctx(root), first ? L.teach.hi[w] : L.teach.wayHi[w]);
@@ -2502,6 +2588,7 @@ const Teach = {
     this.shake();
     if (!s.w) s.say(s.line || L.teach.pick);
     else if (!s.w.ready()) s.say(L.teach.early);
+    else if (s.w.wrongMain) s.w.wrongMain();   // 列竖式: the answer is under the line already, she copied it wrong
     else this.guide(s.w.items());
   },
   right() {
@@ -2510,7 +2597,9 @@ const Teach = {
     this.close(true);
   },
   relayout() {
-    const s = this.s; if (!s || !s.w) return;
+    const s = this.s; if (!s) return;
+    if (s.pickEl) s.pickEl.classList.toggle('two', s.stage.clientWidth < 640);
+    if (!s.w) return;
     s.w.relayout();
     s.badges.forEach(x => this.place(x.b, x.it));
   },
@@ -2572,6 +2661,272 @@ const Teach = {
     }
     return R;
   },
+};
+
+// ---------- 列竖式: the column form, a place-value chart under the same columns ----------
+// The column form (竖式) on one side, a chart (数位表) with the same two columns on the other: the tens as bundles, the
+// ones as animals in ten frames, the top number's above the second number's, as in the form. A column is acted out —
+// the ones come together and ten are tied into a bundle that goes up to the tens, a small 1 written over the line
+// (满十进一); or, not enough ones to take away, a bundle comes down and is untied, a dot over the tens (退位), and
+// what is taken away comes out of that ten first (破十) — then she counts what is in the column and writes that digit
+// under the line herself: the ones first, then the tens. Last she copies the answer into the sum at the top, as school
+// asks. A sum of three or four numbers is one column sum after another, each done one folding into a chip at the top.
+Teach.W.col = (c, first) => {
+  const { q, root, later, kinds } = c, s = c.s, { CW, CH, MC } = Teach, C = L.teach.col;
+  const parts = [], ends = [q.nums[0]];
+  q.signs.forEach((sg, j) => {
+    const a = ends[j], b = q.nums[j + 1], r = sg === '+' ? a + b : a - b;
+    const a1 = a % 10, a10 = Math.floor(a / 10), b1 = b % 10, b10 = Math.floor(b / 10);
+    const carry = sg === '+' && a1 + b1 >= 10, borrow = sg === '-' && a1 < b1;
+    parts.push({
+      j, sg, a, b, r, a1, a10, b1, b10, carry, borrow,
+      d1: r % 10, t: Math.floor(r / 10),                    // the digits she writes: the ones, then the tens (10 for 100)
+      nc: String(Math.max(a, b, r)).length,                 // columns in the form: 个, 十, 百 (only for 100)
+    });
+    ends.push(r);
+  });
+  const chips = el('div', 'tchips tcolchips'); root.appendChild(chips);
+  // stage: 'intro' 'ones' 'tens' 'done' 'main'; step: the digit asked for now { bx, ans }
+  const f = { pi: -1, p: null, stage: 'intro', step: null, busy: true, got: '', main: false, layer: null, V: null,
+    tens: [], tensB: [], f1: [], f2: [], boxT: null, boxO: null, fr1: null, fr2: null };
+  const G = {};
+  const PAD = 0.3, LH = 0.9, GAPC = 0.4, ROW = CH + 0.3, TW = 2 * PAD + 5 * (CW + Teach.CG) - Teach.CG, OW = 2 * PAD + 5.3;
+  const once = fn => { let done = false; return () => { if (!done) { done = true; fn(); } }; };
+  // say a line, then go on (also when the line is cut short or missing)
+  const sayThen = (line, fn, max) => { const go = once(fn); c.say(line, { onend: () => later(go, 250) }); later(go, max || 6000); };
+  const seq = (n, gap, fn, done) => { let i = 0; const go = () => { if (i >= n) { later(done, 350); return; } fn(i++); later(go, gap); }; go(); };
+
+  // the column form: a grid of an op column and one column a digit, rows: column names, the numbers, the line, the answer
+  function form(p) {
+    const v = el('div', 'tvert'), nc = p.nc, cell = (t, cls) => { const e = el('span', cls, t); v.appendChild(e); return e; };
+    v.style.gridTemplateColumns = `.8em repeat(${nc},.78em)`;
+    const digits = n => { const d = String(n).split(''); return Array(nc - d.length).fill('').concat(d); };
+    const row = (op, ds, cls) => { cell(op, 'op'); return ds.map(d => cell(d, cls)); };
+    const lab = row('', ['百', '十', '个'].slice(3 - nc), 'lab');
+    const A = row('', digits(p.a), 'a'), B = row(p.sg === '+' ? '+' : '−', digits(p.b), 'b');
+    A.forEach(e => { e.style.color = c.col(0); }); B.forEach(e => { e.style.color = c.col(p.j + 1); });
+    v.appendChild(el('i', 'bar'));
+    cell('', 'op');
+    const R = [];
+    for (let i = 0; i < nc; i++) {
+      if (nc === 3 && i === 0 && p.t >= 10) { const e = cell('', 'r'); e.style.gridColumn = 'span 2'; R.push(e, e); i++; }   // 100: "10" across 百 and 十
+      else R.push(cell('', 'r'));
+    }
+    return { el: v, lab, A, B, R, nc };
+  }
+  // light up a column in the form and the chart: 'one', 'ten' or none
+  function hiCol(w) {
+    const V = f.V, cols = w === 'one' ? [V.nc - 1] : w === 'ten' ? [V.nc - 2, V.nc - 3] : [];
+    [V.lab, V.A, V.B, V.R].forEach(r => r.forEach((e, i) => e.classList.toggle('on', cols.includes(i))));
+    f.boxO.classList.toggle('on', w === 'one');
+    if (f.boxT) f.boxT.classList.toggle('on', w === 'ten');
+  }
+  // one part of the sum: its form, its chart and the things in it
+  function build(p) {
+    const layer = f.layer = el('div', 'thelp'); root.appendChild(layer);
+    f.V = form(p); layer.appendChild(f.V.el);
+    const hasT = p.nc >= 2;
+    f.boxT = hasT ? layer.appendChild(el('div', 'tcell ten', '<b>十位</b>')) : null;
+    f.boxO = layer.appendChild(el('div', 'tcell one', '<b>个位</b>'));
+    const frame = () => { const fr = layer.appendChild(el('div', 'tframe')); for (let i = 0; i < 10; i++) fr.appendChild(el('i')); return fr; };
+    f.fr1 = frame(); f.fr2 = frame();
+    f.fr2.hidden = !(p.sg === '+' && p.b1);   // the second number's ones; taking away, the ten that comes down
+    const kA = kinds[0], kB = kinds[p.j + 1];
+    f.tens = Array.from({ length: p.a10 }, () => c.ten(Array(10).fill(kA), layer));
+    f.tensB = p.sg === '+' ? Array.from({ length: p.b10 }, () => c.ten(Array(10).fill(kB), layer)) : [];
+    f.f1 = Array.from({ length: p.a1 }, () => c.one(kA, layer));
+    f.f2 = p.sg === '+' ? Array.from({ length: p.b1 }, () => c.one(kB, layer)) : [];
+    // rows of bundles: the top number's (with room for a ten carried up), then the second number's
+    G.ra = Math.ceil((p.a10 + (p.carry ? 1 : 0)) / 5);
+    G.rows = Math.max(1, G.ra + Math.ceil((p.sg === '+' ? p.b10 : 0) / 5));
+    G.hasT = hasT; G.two = p.sg === '+' ? p.b1 > 0 : p.borrow;
+  }
+  // sizes in u (a frame cell): the chart's and the form's; the form beside the chart when that is bigger, else above it
+  function geo() {
+    const W = root.clientWidth, top = chips.childElementCount ? chips.offsetHeight + 6 : 0, H = root.clientHeight - top;
+    const V = f.V.el; V.style.fontSize = '100px';
+    const vw = V.offsetWidth / 100, vh = V.offsetHeight / 100, K = 1.5;
+    const inner = Math.max(G.hasT ? G.rows * ROW - 0.3 : 0, G.two ? 2 * CH + 0.3 : CH);
+    const cw = (G.hasT ? TW + GAPC : 0) + OW, ch = LH + 2 * PAD + inner;
+    const wideU = Math.min(W / (vw * K + 1.2 + cw), H / Math.max(vh * K, ch));
+    const tallU = Math.min(W / Math.max(vw * K, cw), H / (vh * K + 0.8 + ch));
+    const u = G.u = clamp(Math.max(wideU, tallU) * 0.95, 12, 64), wide = wideU >= tallU;
+    const fs = K * u, VW = vw * fs, VH = vh * fs;
+    V.style.fontSize = fs + 'px';
+    let vx, vy;
+    if (wide) { const x0 = (W - VW - 1.2 * u - cw * u) / 2; vx = x0; vy = top + (H - VH) / 2; G.cx = x0 + VW + 1.2 * u; G.cy = top + (H - ch * u) / 2; }
+    else { const y0 = top + (H - VH - 0.8 * u - ch * u) / 2; vx = (W - VW) / 2; vy = y0; G.cx = (W - cw * u) / 2; G.cy = y0 + VH + 0.8 * u; }
+    V.style.transform = `translate(${vx}px,${vy}px)`;
+    const box = (b, x, w) => Object.assign(b.style, { width: w * u + 'px', height: ch * u + 'px', transform: `translate(${x}px,${G.cy}px)`, fontSize: 0.55 * u + 'px', borderRadius: 0.35 * u + 'px' });
+    if (f.boxT) box(f.boxT, G.cx, TW);
+    G.ox = G.cx + (G.hasT ? (TW + GAPC) * u : 0);
+    box(f.boxO, G.ox, OW);
+    G.f1 = [G.ox + PAD * u, G.cy + (LH + PAD) * u]; G.f2 = [G.f1[0], G.f1[1] + ROW * u];
+    [[f.fr1, G.f1], [f.fr2, G.f2]].forEach(([fr, [X, Y]]) => Object.assign(fr.style, { width: 5.3 * u + 'px', height: CH * u + 'px', transform: `translate(${X}px,${Y}px)`, borderRadius: 0.25 * u + 'px', padding: 0.15 * u + 'px' }));
+  }
+  const tenAt = (row0, i) => [G.cx + (PAD + (i % 5) * (CW + Teach.CG)) * G.u, G.cy + (LH + PAD + (row0 + Math.floor(i / 5)) * ROW) * G.u];
+  const cellAt = (F, i) => [F[0] + 0.15 * G.u + (i % 5) * G.u, F[1] + 0.15 * G.u + Math.floor(i / 5) * G.u];
+  const put = (n, X, Y, cs, quick) => c.put(n, X, Y, G.u, cs, quick);
+  const putTen = (n, X, Y, quick) => c.putTen(n, X, Y, G.u, quick);
+  function layout(quick) {
+    f.tens.forEach((n, i) => putTen(n, ...tenAt(0, i), quick));
+    f.tensB.forEach((n, i) => putTen(n, ...tenAt(G.ra, i), quick));
+    f.f1.forEach((n, i) => put(n, ...cellAt(G.f1, i), G.u, quick));
+    f.f2.forEach((n, i) => { if (n) put(n, ...cellAt(G.f2, i), G.u, quick); });
+  }
+  const mark = (cell, cls, txt) => { const m = el('i', cls, txt || ''); cell.appendChild(m); m.animate([{ scale: '0' }, { scale: '1.6' }, { scale: '1' }], { duration: 450, easing: 'ease-out' }); };
+
+  function start(pi) {
+    const p = f.p = parts[pi]; f.pi = pi; f.stage = 'intro'; f.busy = true;
+    build(p); geo(); layout(true);
+    [...f.tens, ...f.f1, ...f.tensB, ...f.f2].forEach((n, i) => c.pop(n, 150 + i * 50));
+    c.hi(p.j + 1);
+    const go = once(ones);
+    if (pi) { sayThen(C.part, go, 4500); return; }
+    // the first time: how the form lines up, each column lighting as it is named
+    c.say(first, {
+      onend: () => {
+        c.say(C.align, { onend: () => later(go, 300) });
+        later(() => { if (f.stage === 'intro') hiCol('one'); }, 1500);
+        later(() => { if (f.stage === 'intro') hiCol(G.hasT ? 'ten' : 'one'); }, 2700);
+        later(() => { if (f.stage === 'intro') hiCol(null); }, 4200);
+      },
+    });
+    later(go, 15000);
+  }
+  // ---- the ones ----
+  function ones() {
+    const p = f.p; f.stage = 'ones'; hiCol('one');
+    if (!p.b1) sayThen(C.onesDown, askOnes, 4000);
+    else if (p.sg === '+') sayThen(C.onesAdd, mergeOnes, 4500);
+    else sayThen(C.onesSub, p.borrow ? borrowTen : () => takeOnes(askOnes), 4500);
+  }
+  // the second number's ones hop into the top frame one by one; when it is full they are tied up
+  function mergeOnes() {
+    const i = f.f2.findIndex(n => n);
+    if (i < 0) { later(askOnes, 200); return; }
+    const n = f.f2[i]; f.f2[i] = null; f.f1.push(n);
+    layout(); Snd.play('hop', f.f1.length);
+    if (f.f1.length === 10) later(tieUp, 500); else later(mergeOnes, 280);
+  }
+  // 满十进一: the ten fly into a bundle next to the tens, and a small 1 is written in the tens column
+  function tieUp() {
+    const at = tenAt(0, f.tens.length), ks = f.f1.map(n => n.k);
+    f.f1.forEach((n, i) => { const [X, Y] = c.mini(at[0], at[1], i, G.u); n.el.style.transitionDelay = i * 25 + 'ms'; put(n, X, Y, MC * G.u); });
+    Snd.play('tie');
+    later(() => {
+      const b = c.ten(ks, f.layer); f.f1.forEach(n => n.el.remove()); f.f1 = [];
+      f.tens.push(b); layout(true); b.el.classList.add('new'); c.fxAt(b);
+      mark(f.V.B[f.V.nc - 2], 'carry', '1');
+      sayThen(C.carry, mergeOnes, 6000);
+    }, 750);
+  }
+  // 退位: the top number's last bundle comes down into the second frame and is untied; a dot over the tens
+  function borrowTen() {
+    const b = f.tens.pop(), X = G.f2[0] + 2.17 * G.u, Y = G.f2[1];
+    const both = once(() => takeOnes(askOnes));
+    let n = 2; const join = () => { if (--n === 0) both(); };
+    f.fr2.hidden = false; f.fr2.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300 });
+    putTen(b, X, Y); Snd.play('swap');
+    mark(f.V.A[f.V.nc - 2], 'dot');
+    if (f.p.a >= 100) mark(f.V.A[f.V.nc - 3], 'dot');   // 100: borrowed through the hundreds
+    later(() => {
+      Snd.play('untie');
+      b.el.animate([{ scale: '1' }, { scale: '1.15', rotate: '-5deg' }, { scale: '1' }], { duration: 380 });
+      later(() => {
+        f.f2 = b.ks.map(k => c.one(k, f.layer));
+        f.f2.forEach((m, i) => { const [mx, my] = c.mini(X, Y, i, G.u); put(m, mx, my, MC * G.u, true); });
+        b.el.remove();
+        requestAnimationFrame(() => {
+          f.f2.forEach((m, i) => { m.el.style.transitionDelay = i * 30 + 'ms'; });
+          layout();
+          later(() => { f.f2.forEach(m => { m.el.style.transitionDelay = ''; }); join(); }, 800);
+        });
+      }, 400);
+    }, 550);
+    sayThen(C.borrow, join, 8000);
+  }
+  // taking away: from the ten that came down if there is one (破十), else from the ones there were
+  function takeOnes(done) {
+    const pool = f.p.borrow ? f.f2 : f.f1, live = pool.filter(n => n && !n.x), go = live.slice(live.length - f.p.b1).reverse();
+    seq(go.length, 320, i => { go[i].x = true; go[i].el.classList.add('x'); Snd.play('bye', i + 1); }, done);
+  }
+  function askOnes() { ask(f.V.R[f.V.nc - 1], f.p.d1, C.onesAsk, L.teach.guide); }
+  // ---- the tens ----
+  function tens() {
+    const p = f.p; f.stage = 'tens'; hiCol('ten');
+    if (p.sg === '+') sayThen(p.b10 ? (p.carry ? C.tensAddCarry : C.tensAdd) : (p.carry ? C.tensCarry : C.tensDown), () => mergeTens(askTens), 5500);
+    else sayThen(p.b10 ? (p.borrow ? C.tensSubBorrow : C.tensSub) : (p.borrow ? C.tensBorrow : C.tensDown), () => takeTens(() => (p.t ? askTens() : sayThen(C.tensNone, done, 4500))), 5500);
+  }
+  function mergeTens(next) { seq(f.tensB.length, 340, () => { f.tens.push(f.tensB.shift()); layout(); Snd.play('hop', f.tens.length); }, next); }
+  function takeTens(next) {
+    const live = f.tens.filter(n => !n.x), go = live.slice(live.length - f.p.b10).reverse();
+    seq(go.length, 380, i => { go[i].x = true; go[i].el.classList.add('x'); Snd.play('bye', i + 1); }, next);
+  }
+  function askTens() { ask(f.V.R[f.V.nc - 2], f.p.t, C.tensAsk, C.guideTen); }
+  // ---- a digit to write under the line ----
+  function ask(cell, ans, line, guide) {
+    const bx = el('span', 'tbox ask', '?'); cell.appendChild(bx);
+    bx.animate([{ opacity: 0, transform: 'translateY(-8px)' }, { opacity: 1, transform: 'none' }], { duration: 300 });
+    f.step = { bx, ans }; f.got = ''; f.busy = false; api.guideLine = guide; s.idle = 0;
+    c.say(line);
+  }
+  function check() {
+    const st = f.step;
+    if (+f.got === st.ans) {
+      Snd.play('right'); f.busy = true; f.step = null;
+      Teach.unbadge(); s.cnt = null;
+      st.bx.classList.remove('ask'); st.bx.classList.add('ok'); st.bx.textContent = st.ans;
+      const r = st.bx.getBoundingClientRect();
+      Fx.burst(r.left + r.width / 2, r.top + r.height / 2, ['#5fe0b0', '#ffd23a'], 8, 0.7, 50);
+      c.say(C.right);
+      later(f.stage === 'ones' && f.p.nc >= 2 ? tens : done, 1000);
+    } else {
+      Snd.play('wrong'); f.got = ''; st.bx.textContent = '?';
+      st.bx.classList.remove('bad'); void st.bx.offsetWidth; st.bx.classList.add('bad');
+      const items = api.items();
+      if (items.length) Teach.guide(items); else c.say(C.zero);
+    }
+  }
+  // this part done: the next one, or the answer into the sum at the top
+  function done() {
+    f.stage = 'done'; hiCol(null);
+    const p = f.p;
+    if (f.pi < parts.length - 1) {
+      later(() => {
+        chips.appendChild(el('span', null, `${p.a} ${p.sg === '+' ? '+' : '−'} ${p.b} = ${p.r}`));
+        f.layer.remove();
+        start(f.pi + 1);
+      }, 700);
+      return;
+    }
+    f.stage = 'main'; f.main = true; f.busy = false;
+    f.V.el.classList.add('done');
+    s.ans.classList.add('ask');
+    c.say(C.copy);
+  }
+
+  const api = {
+    guideLine: L.teach.guide,
+    // the pad writes a digit under the line; the sum's own answer at the end is math.js's
+    key(k) {
+      if (f.main) return false;
+      if (f.busy || !f.step) return true;
+      if (k === '✓') { if (f.got) check(); return true; }
+      if (k === '⌫') { f.got = f.got.slice(0, -1); Snd.play('key', 2); }
+      else if (f.got.length < 2) { f.got = (f.got === '0' ? '' : f.got) + k; Snd.play('key', +k); }
+      f.step.bx.textContent = f.got || '?'; f.step.bx.classList.remove('bad');
+      return true;
+    },
+    box: () => (f.step ? f.step.bx : null),
+    ready: () => f.main,
+    // counted together: the bundles one by one (that is the tens digit), or the animals left in the ones
+    items: () => (f.stage === 'tens' ? f.tens : [...f.f1, ...f.f2]).filter(n => n && !n.x).map((n, i) => ({ el: n.el, v: i + 1 })),
+    wrongMain() { c.say(C.copyAgain); f.V.R.forEach(e => e.animate([{ background: '#fff2a8' }, { background: '#ffe066' }, { background: '#fff2a8' }], { duration: 900 })); },
+    relayout: () => { geo(); layout(true); },
+  };
+  start(0);
+  return api;
 };
 
 // ---------- 摆一摆: the animals in a ten frame, bundles of ten beside it ----------
@@ -2749,7 +3104,7 @@ Teach.W.line = (c, first) => {
     for (let i = 0; i < Math.floor(b / 10); i++) { hops.push({ j: j + 1, from: v, to: v + 10 * d, n: 10 }); v += 10 * d; }
     for (let i = 0; i < b % 10; i++) { hops.push({ j: j + 1, from: v, to: v + d, n: 1 }); v += d; }
   });
-  // the line runs between whole tens around every stop, 20 long at least; only the start has a number
+  // the line runs between whole tens around every stop, 20 long at least; the start and the whole tens have numbers
   const all = [q.nums[0]].concat(hops.map(h => h.to));
   let lo = Math.floor(Math.min(...all) / 10) * 10, hi = Math.ceil(Math.max(...all) / 10) * 10;
   if (hi - lo < 20) { if (lo + 20 <= 100) hi = lo + 20; else lo = hi - 20; }
@@ -2771,12 +3126,18 @@ Teach.W.line = (c, first) => {
     svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
     ticks.innerHTML = '';
     ticks.appendChild(c.sv('line', { x1: X(lo) - 16, y1: G.Y, x2: X(hi) + 16, y2: G.Y, class: 'axis' }));
+    const lab = clamp(H * 0.045, 13, 22), sfs = clamp(H * 0.06, 20, 36);
     for (let x = lo; x <= hi; x++) {
       const len = H * (x % 10 === 0 ? 0.07 : x % 5 === 0 ? 0.05 : 0.032);
       ticks.appendChild(c.sv('line', { x1: X(x), y1: G.Y, x2: X(x), y2: G.Y + len, class: x % 10 === 0 ? 'tick ten' : 'tick' }));
+      // a whole ten's number under its tick, unless the start's own label is right there
+      if (x % 10 === 0 && Math.abs(X(x) - X(q.nums[0])) > sfs * 1.5) {
+        const t = c.sv('text', { x: X(x), y: G.Y + H * 0.07 + lab * 1.05, class: 'tlab', 'font-size': lab });
+        t.textContent = x; ticks.appendChild(t);
+      }
     }
     ticks.appendChild(c.sv('circle', { cx: X(q.nums[0]), cy: G.Y, r: 7, fill: c.col(0) }));
-    Object.assign(start.style, { left: X(q.nums[0]) + 'px', top: G.Y + H * 0.12 + 'px', fontSize: clamp(H * 0.06, 20, 36) + 'px' });
+    Object.assign(start.style, { left: X(q.nums[0]) + 'px', top: G.Y + H * 0.12 + 'px', fontSize: sfs + 'px' });
     frog.style.width = frog.style.height = G.fs + 'px';
     arcs.innerHTML = ''; f.drawn.forEach(h => arc(h));
     seat(f.at);
@@ -2996,14 +3357,16 @@ Teach.W.split = (c, first) => {
 };
 
 // 动物消消乐 · the math page that stands between one game and the next (anti-addiction + learning by play).
-// First she spins the wheel for how many sums (wheel.js, 2 to 10), then a page of them with a number pad; every sum has
-// to be answered right before the page is done. Help comes in steps, the way a teacher would give it: the first wrong
-// answer gets one short hint about what went wrong (a sign read the wrong way, one off, digits swapped, the ones right
-// but not the tens), the second brings in 小老师 (teach.js), where she picks a way to work it out with pictures and
-// writes the answer herself, and 💡 brings it in any time after a wrong answer. The answer is never shown (decli
-// 2026-10-20: she would only copy it): if she still gets it wrong the teacher counts with her. Parents choose the range
-// (within 20 / 50 / 100), how many numbers (2 / 3 / 4), add / subtract / both, and the wheel, the day's ramp or a
-// fixed page size.
+// First she spins the wheel for how many sums (wheel.js, 10 to 20), then a page of them with a number pad.
+// decli 2026-11-02: nothing is marked while she writes, so her train of thought is never broken: ✓ just moves on to
+// the next sum (one she can't do yet can wait), and when every sum has an answer she hands the page in (交卷). The
+// teacher marks it all at once, a tick or a ring card by card, says how many were right, and she corrects the ringed
+// ones (订正) one at a time with help in steps, the way a teacher would give it: arriving at one she hears one short
+// hint about what went wrong (a sign read the wrong way, one off, digits swapped, the ones right but not the tens) and
+// 💡 appears; wrong again brings in 小老师 (teach.js), who starts with 列竖式, and she writes the answer herself. The
+// answer is never shown (decli 2026-10-20: she would only copy it): if she still gets it wrong the teacher counts with
+// her. Every sum has to be right before the page is done. Parents choose the range (within 20 / 50 / 100), how many
+// numbers (2 / 3 / 4), add / subtract / both, and the wheel, the day's ramp or a fixed page size.
 const MathGate = {
   // one sum: every number ≥ 1, every partial result between 0 and max
   problem(max, ops, mode, want) {
@@ -3063,8 +3426,9 @@ const MathGate = {
     if ((q.ans >= 10 || got >= 10) && got % 10 === q.ans % 10) return { k: 'ones' };
     return { k: 'other' };
   },
-  // a sum like q for practice straight after 小老师 (9 + 4, then 9 + 6): the same first number and signs, the last
-  // number a little different, needing a bundle tied or untied if q did, every step still between 0 and max
+  // a sum like q for practice straight after 小老师 (9 + 4, then 9 + 6), added at the end of the page: the same first
+  // number and signs, the last number a little different, needing a bundle tied or untied if q did, every step still
+  // between 0 and max
   twin(q, max, taken) {
     const steps = n => { const out = [n[0]]; q.signs.forEach((sg, j) => out.push(sg === '+' ? out[j] + n[j + 1] : out[j] - n[j + 1])); return out; };
     const tens = n => { const p = steps(n)[n.length - 2], b = n[n.length - 1]; return q.signs[q.signs.length - 1] === '+' ? p % 10 + b % 10 >= 10 : p % 10 < b % 10; };
@@ -3087,11 +3451,12 @@ const MathGate = {
   // the parent's fixed size
   pageSize() {
     const n = Store.d.math.count;
-    return n === 'wheel' ? this.spun() || 6 : n === 'ramp' ? MATH_RAMP[Math.min(this.pagesToday(), MATH_RAMP.length - 1)] : n || 10;
+    return n === 'wheel' ? this.spun() || MATH_WHEEL[0] : n === 'ramp' ? MATH_RAMP[Math.min(this.pagesToday(), MATH_RAMP.length - 1)] : n || 10;
   },
   // the wheel's number for the page owed now (a game played since makes it old)
   spun() { const s = Store.d.spin; return s && s.p === Store.d.played ? s.n : 0; },
   pagesToday() { const t = Store.d.today; return t && t.day === new Date().toDateString() ? t.pages : 0; },
+
 
   // o.count, o.extra (the five-sums-for-five-moves page); resolves when every sum is right
   open(o = {}) {
@@ -3105,18 +3470,22 @@ const MathGate = {
     }
     const fresh = this.fresh; this.fresh = false;
     return new Promise(resolve => {
-      const cfg = Store.d.math, count = o.count || MathGate.pageSize();
-      const qs = this.page(cfg, count).map(q => Object.assign(q, { got: '', tries: 0, ok: false }));
+      const cfg = Store.d.math, total = o.count || MathGate.pageSize();
+      // was: the answer last marked wrong (ringed on the card until she writes another); ringed: wrong when handed in
+      const qs = this.page(cfg, total).map(q => Object.assign(q, { got: '', tries: 0, ok: false, was: null }));
       const root = $('#math'); root.hidden = false; root.innerHTML = ''; root.className = '';
       $('#fx').style.zIndex = 46;   // sparkles and confetti over the page
       const t0 = Date.now();
-      let cur = 0, first = 0, finished = false, praised = '', helpT = 0;
+      // phase: 'write' (she writes every answer, nothing is judged), 'mark' (handed in, the teacher is marking),
+      // 'fix' (correcting the ringed ones, one at a time, with help)
+      let phase = 'write', cur = 0, first = 0, finished = false, praised = '', helpT = 0, markT = 0, twins = 0, halfSaid = false;
+      const hinted = new Set();   // sums whose hint has been said
       Music.stop();   // quiet for the sums (decli); the game starts it again
       const sheet = el('div', 'sheet'), head = el('div', 'head');
       const home = UI.homeButton(); home.style.width = home.style.height = '46px'; home.style.fontSize = '22px';
       head.appendChild(home);
       head.appendChild(el('h3', null, o.extra ? '✏️ 做对 5 道题，多 5 步' : '✏️ ' + L.math.title));
-      const prog = el('div', 'prog', `0 / ${count}`);
+      const prog = el('div', 'prog', `✏️ 0 / ${total}`);
       head.appendChild(prog);
       const lock = el('button', 'ibtn', '🔒'); lock.style.width = lock.style.height = '46px'; lock.style.fontSize = '22px';
       // a parent can skip the page, or change the settings, which starts a new page with the new kind of sums
@@ -3126,18 +3495,20 @@ const MathGate = {
       sheet.appendChild(head);
       const grid = el('div', 'grid'); sheet.appendChild(grid);
       root.appendChild(sheet);
-      const cards = qs.map((q, i) => {
+      function card(q) {
         const c = el('button', 'q');
         c.innerHTML = `<span>${MathGate.html(q)} =</span><span class="ans"></span>`;
-        c.onclick = () => { if (!q.ok && !finished) { cur = i; Snd.play('tap'); draw(); } };
+        c.onclick = () => choose(qs.indexOf(q));
         grid.appendChild(c);
         return c;
-      });
+      }
+      const cards = qs.map(card);
       const pad = el('div', 'pad');
-      const disp = el('div', 'disp', ''), say = el('span'), bulb = el('button', 'bulb', '💡');
-      bulb.hidden = true;
-      disp.appendChild(say); disp.appendChild(bulb);
+      const disp = el('div', 'disp', ''), turnIn = el('button', 'btn green handin', '交卷 ✓'), bulb = el('button', 'bulb', '💡');
+      bulb.hidden = true; turnIn.hidden = true;
+      disp.appendChild(turnIn); disp.appendChild(bulb);
       bulb.onclick = () => { Snd.init(); Snd.play('tap'); teach(); };
+      turnIn.onclick = () => { Snd.init(); handIn(); };
       pad.appendChild(disp);
       const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '⌫', '0', '✓'];
       for (const k of keys) {
@@ -3154,13 +3525,13 @@ const MathGate = {
       window.addEventListener('keydown', onKey);
 
       function fit() {
-        const wide = innerWidth >= innerHeight * 1.05;
+        const wide = innerWidth >= innerHeight * 1.05, count = qs.length;
         root.className = wide ? 'wide' : 'tall';
         // a full page fills the screen four across; when four across would make the sums small (a phone, or four
         // numbers in a sum) it takes the column count that gives the biggest sums, so none is cut off at the edges
         // (a clipped "14 + 11" reads as "4 + 11"). The five-sum page is one tidy column.
         const small = count <= 5;
-        Object.assign(grid.style, small ? { alignContent: 'center', width: '100%', maxWidth: '600px', margin: '0 auto' } : {});
+        Object.assign(grid.style, small ? { alignContent: 'center', width: '100%', maxWidth: '600px', margin: '0 auto' } : { alignContent: '', width: '', maxWidth: '', margin: '' });
         const r = grid.getBoundingClientRect();
         cards.forEach(c => { c.style.fontSize = '100px'; });   // the widest sum in em: its two halves, the gap between them and a little air
         const em = Math.max(...cards.map(c => [...c.children].reduce((w, s) => w + s.offsetWidth, 0))) / 100 + 0.25 + 0.2;
@@ -3181,86 +3552,158 @@ const MathGate = {
       function draw() {
         cards.forEach((c, i) => {
           const q = qs[i], a = c.querySelector('.ans');
-          c.classList.toggle('cur', i === cur && !finished);
+          const was = !q.ok && q.was != null && !q.got;   // her marked answer stays ringed until she writes another
+          c.classList.toggle('cur', i === cur && !finished && phase !== 'mark');
           c.classList.toggle('ok', q.ok);
-          if (q.ok) a.textContent = q.ans;
-          else a.textContent = q.got || (i === cur ? '?' : '');
+          c.classList.toggle('fix', !q.ok && !!q.ringed);
+          c.classList.toggle('has', phase === 'write' && !!q.got);
+          a.classList.toggle('was', was);
+          a.textContent = q.ok ? q.ans : q.got || (was ? q.was : i === cur && phase !== 'mark' ? '?' : '');
         });
-        const n = qs.filter(q => q.ok).length, q = qs[cur];
-        prog.textContent = `${n} / ${count}`;
-        say.textContent = finished || Teach.on ? '' : q.tries ? '再想一想' : '';
-        // 💡 once a sum has gone wrong, wiggling the first time it shows
-        const help = !finished && !Teach.on && !q.ok && q.tries >= 1;
+        const n = qs.length, q = qs[cur], filled = qs.filter(x => x.got).length;
+        prog.textContent = phase === 'write' ? `✏️ ${filled} / ${n}` : `✓ ${qs.filter(x => x.ok).length} / ${n}`;
+        turnIn.hidden = !(phase === 'write' && filled === n);
+        // 💡 on a sum being corrected, wiggling the first time it shows
+        const help = phase === 'fix' && !finished && !Teach.on && !q.ok && q.tries >= 1;
         if (help && bulb.hidden !== false) { bulb.hidden = false; bulb.classList.remove('new'); void bulb.offsetWidth; bulb.classList.add('new'); Snd.play('idea'); }
         bulb.hidden = !help;
         if (Teach.on) Teach.sync(q.got);
       }
+      // she taps a sum: any while writing, one still to correct while correcting
+      function choose(i) {
+        const q = qs[i];
+        if (finished || phase === 'mark' || !q || q.ok || i === cur || Teach.on) return;
+        cur = i; Snd.play('tap');
+        clearTimeout(helpT);
+        draw();
+        if (phase === 'fix') hint();
+      }
       // 小老师 over the cards; the pad stays to write the answer
       function teach() {
         clearTimeout(helpT);
-        if (finished || qs[cur].ok) return;
+        if (finished || phase !== 'fix' || qs[cur].ok) return;
         Teach.open(qs[cur], sheet, { close: draw });
         draw();
       }
       function press(k) {
-        if (finished) return;
+        if (finished || phase === 'mark') return;
         Snd.init();
-        if (Teach.on && Teach.key(k)) return;   // a step of 拆一拆 takes the pad
+        if (Teach.on && Teach.key(k)) return;   // a step of 拆一拆 or 列竖式 takes the pad
         const q = qs[cur];
+        if (q.ok) return;
         if (k === '⌫') { q.got = q.got.slice(0, -1); Snd.play('key', 2); }
-        else if (k === '✓') { if (q.got) check(); return; }
+        else if (k === '✓') { if (phase === 'write') onward(); else if (q.got) check(); return; }
         else if (q.got.length < 3) { q.got = (q.got === '0' ? '' : q.got) + k; Snd.play('key', +k); }
         draw();
       }
+      // ✓ while writing: on to the next sum still blank, nothing said about this one (a blank one can wait); with
+      // every sum written, 交卷 bounces
+      function onward() {
+        const n = qs.length;
+        let next = -1;
+        for (let d = 1; d < n && next < 0; d++) if (!qs[(cur + d) % n].got) next = (cur + d) % n;
+        if (next >= 0) {
+          cur = next; Snd.play('select'); draw();
+          if (!halfSaid && n >= 10 && qs.filter(x => x.got).length >= Math.ceil(n / 2)) { halfSaid = true; Voice.say(L.math.half); }
+          return;
+        }
+        if (!qs[cur].got) return;   // the only blank one is this
+        draw();
+        turnIn.classList.remove('hey'); void turnIn.offsetWidth; turnIn.classList.add('hey');
+        Snd.play('idea');
+        Voice.say(L.math.allIn);
+      }
+      // 交卷: the teacher marks the whole page at once, a tick or a ring one sum after another
+      function handIn() {
+        if (phase !== 'write' || qs.some(x => !x.got)) return;
+        phase = 'mark'; Snd.play('tap'); Voice.say(L.math.mark);
+        draw();
+        const n = qs.length, gap = clamp(4200 / n, 180, 380);
+        let i = 0;
+        const step = () => {
+          if (finished) return;
+          if (i >= n) { markT = setTimeout(marked, 600); return; }
+          const q = qs[i], c = cards[i];
+          if (+q.got === q.ans) {
+            q.ok = true; first++;
+            Snd.play('mark', first);
+            const r = c.getBoundingClientRect();
+            Fx.burst(r.left + r.width * 0.8, r.top + r.height / 2, ['#5fe0b0', '#ffd23a'], 6, 0.6, 40);
+          } else { q.was = +q.got; q.got = ''; q.tries = 1; q.ringed = true; Snd.play('ring'); }
+          c.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.08)' }, { transform: 'scale(1)' }], { duration: 260 });
+          i++; draw();
+          markT = setTimeout(step, gap);
+        };
+        markT = setTimeout(step, 700);
+      }
+      // marked: every sum right ends the page; else how many were right and how many to correct, then the first one
+      function marked() {
+        if (finished) return;
+        const left = qs.filter(x => !x.ok);
+        if (!left.length) { draw(); finish(false); return; }
+        phase = 'fix'; cur = qs.indexOf(left[0]);
+        draw();
+        const go = () => { if (!finished && phase === 'fix') hint(); };
+        const fixLine = () => Voice.say(L.math.fix(left.length), { onend: go });
+        if (first) Voice.say(L.math.got(first), { onend: fixLine }); else fixLine();
+      }
+      // at a sum to correct: one short hint about what went wrong (MathGate.why), the sign it is about jumping
+      function hint() {
+        const q = qs[cur], c = cards[cur];
+        if (finished || q.ok || q.was == null || hinted.has(q) || Teach.on) return;
+        hinted.add(q);
+        const w = MathGate.why(q, q.was);
+        Voice.say(L.math.why[w.k]);
+        if (w.op != null) setTimeout(() => { const o1 = $$('.op', c)[w.op]; if (o1) { o1.classList.remove('hey'); void o1.offsetWidth; o1.classList.add('hey'); } }, 350);
+      }
+      const nextToFix = () => { const i = qs.findIndex((x, j) => j > cur && !x.ok); return i >= 0 ? i : qs.findIndex(x => !x.ok); };
+      // correcting: each answer is checked as she gives it
       function check() {
         const q = qs[cur], c = cards[cur];
         clearTimeout(helpT);
         if (+q.got === q.ans) {
-          q.ok = true; if (!q.tries) first++;
+          q.ok = true;
           Snd.play('right'); c.classList.remove('bad');
           const taught = Teach.on;
           if (taught) Teach.right();
           const r = c.getBoundingClientRect();
           Fx.burst(r.left + r.width * 0.8, r.top + r.height / 2, ['#5fe0b0', '#ffd23a'], 10, 0.8, 60);
-          const n = qs.filter(x => x.ok).length;
-          if (n === count) { draw(); return finish(false); }
-          let next = qs.findIndex((x, i) => i > cur && !x.ok);
-          if (next < 0) next = qs.findIndex(x => !x.ok);
-          // worked out with the animals: praise the working out, and the next sum not yet tried becomes one just like
-          // it, to do on her own straight away; else never the same praise twice in a row
-          const slot = taught ? qs.findIndex(x => !x.ok && !x.tries && !x.twin) : -1;
-          const t = slot >= 0 && MathGate.twin(q, cfg.max, qs.map(x => x.text));
+          // worked out with 小老师: praise the working out, and a sum just like it joins the end of the page, to do on
+          // her own straight away (twice a page at most)
+          const t = taught && twins < 2 && MathGate.twin(q, cfg.max, qs.map(x => x.text));
           if (t) {
-            Object.assign(qs[slot], t, { got: '', twin: true });
-            const tc = cards[slot];
-            tc.querySelector('span').innerHTML = MathGate.html(qs[slot]) + ' =';
-            fit();
-            tc.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.12) rotate(-2deg)' }, { transform: 'scale(1)' }], { duration: 500, delay: 300 });
-            next = slot;
-            Voice.say(L.teach.self, { onend: () => { if (!finished && cur === slot) Voice.say(L.teach.twin); } });
-          } else if (taught) Voice.say(L.teach.self);
-          else if (n === Math.floor(count / 2) && count >= 10) Voice.say(L.math.half);
-          else { praised = pick(L.math.right.filter(t => t !== praised)); Voice.say(praised); }
-          cur = next;
+            twins++;
+            const nq = Object.assign(t, { got: '', tries: 0, ok: false, was: null, twin: true });
+            qs.push(nq); const tc = card(nq); cards.push(tc);
+            cur = qs.length - 1;
+            fit(); draw();
+            tc.animate([{ transform: 'scale(.3)', opacity: 0 }, { transform: 'scale(1.12) rotate(-2deg)', opacity: 1 }, { transform: 'scale(1)' }], { duration: 500, delay: 300, fill: 'backwards' });
+            Voice.say(L.teach.self, { onend: () => { if (!finished && qs[cur] === nq) Voice.say(L.teach.twin); } });
+            return;
+          }
+          const next = nextToFix();
+          if (next < 0) { draw(); finish(false); return; }
+          cur = next; draw();
+          const then = () => { if (!finished && cur === next) hint(); };
+          if (taught) Voice.say(L.teach.self, { onend: then });
+          else { praised = pick(L.math.right.filter(x => x !== praised)); Voice.say(praised, { onend: then }); }
         } else {
           const got = +q.got;
-          q.tries++; q.got = '';
+          q.tries++; q.got = ''; q.was = got;
           Snd.play('wrong');
           if (Teach.on) Teach.wrong();   // the teacher finishes the picture, or counts it with her
           else {
             c.classList.remove('bad'); void c.offsetWidth; c.classList.add('bad');
-            if (q.tries === 1) {
-              const w = MathGate.why(q, got);
-              Voice.say(L.math.why[w.k]);
-              if (w.op != null) setTimeout(() => { const o1 = $$('.op', c)[w.op]; if (o1) { o1.classList.remove('hey'); void o1.offsetWidth; o1.classList.add('hey'); } }, 350);
-            } else helpT = setTimeout(() => { if (qs[cur] === q) teach(); }, 700);
+            // the hint first if she hasn't had it (a new sum like one 小老师 helped with); after it, 小老师
+            if (!hinted.has(q)) hint();
+            else helpT = setTimeout(() => { if (qs[cur] === q) teach(); }, 700);
           }
+          draw();
         }
-        draw();
       }
       function cleanup() {
         finished = true;
-        clearTimeout(helpT); if (Teach.on) Teach.close();
+        clearTimeout(helpT); clearTimeout(markT); if (Teach.on) Teach.close();
         window.removeEventListener('keydown', onKey);
         removeEventListener('resize', refit);
       }
@@ -3269,7 +3712,7 @@ const MathGate = {
         cleanup();
         const secs = Math.round((Date.now() - t0) / 1000);
         if (!skipped) {
-          Store.d.log.push([Date.now(), count, first, secs, MathGate.label(cfg)]);
+          Store.d.log.push([Date.now(), total, first, secs, MathGate.label(cfg)]);
           if (Store.d.log.length > 80) Store.d.log.splice(0, Store.d.log.length - 80);
           if (!o.extra) Store.d.today = { day: new Date().toDateString(), pages: MathGate.pagesToday() + 1 };
         }
@@ -3280,21 +3723,21 @@ const MathGate = {
         Snd.play('win'); Fx.confetti(70);
         Voice.say(o.extra ? L.math.doneExtra : L.math.done);
         const m = $('#modal'); m.hidden = false; m.style.zIndex = 45; m.innerHTML = '';
-        const card = el('div', 'card');
-        card.appendChild(el('h2', 'green', o.extra ? '多 5 步！' : '全部做对啦！'));
-        card.appendChild(el('div', 'bigstars', '🎉'));
+        const box = el('div', 'card');
+        box.appendChild(el('h2', 'green', o.extra ? '多 5 步！' : '全部做对啦！'));
+        box.appendChild(el('div', 'bigstars', '🎉'));
         const mins = Math.floor(secs / 60), s = secs % 60;
-        card.appendChild(el('p', null, `${count} 道题，第一次就做对 <b>${first}</b> 道<br>用了 ${mins ? mins + ' 分 ' : ''}${s} 秒`));
+        box.appendChild(el('p', null, `${total} 道题，第一次就做对 <b>${first}</b> 道<br>用了 ${mins ? mins + ' 分 ' : ''}${s} 秒`));
         const row = el('div', 'row');
         const go = el('button', 'btn green', o.extra ? '接着玩 ▶' : '开始玩 ▶');
         go.onclick = () => { Snd.play('tap'); m.hidden = true; m.style.zIndex = ''; close(); };
-        row.appendChild(go); card.appendChild(row); m.appendChild(card);
+        row.appendChild(go); box.appendChild(row); m.appendChild(box);
       }
       const refit = () => { fit(); Teach.relayout(); };
       addEventListener('resize', refit);
       requestAnimationFrame(() => { fit(); draw(); });
       // straight from the wheel, which has just said the number: no need to say it again
-      if (!fresh) Voice.say(o.extra ? L.math.extra : L.math.start(count));
+      if (!fresh) Voice.say(o.extra ? L.math.extra : L.math.start(total));
     });
   },
 };
@@ -4581,10 +5024,10 @@ const UI = {
       card.appendChild(el('p', null, '<span style="font-size:17px">每玩完一局，再玩或进下一关之前，要先做一页数学题，全部做对才能接着玩。</span>'));
       seg('📝 每页几道题', 'count', [['wheel', '🎡 转盘抽']].concat([['ramp', '越做越多']], MATH_COUNTS.map(n => [n, n + ' 道'])));
       card.appendChild(el('p', 'note', `转盘抽：每页之前孩子自己转一下转盘，转到几就做几道（${MATH_WHEEL[0]}～${MATH_WHEEL[MATH_WHEEL.length - 1]} 道，每个数机会一样）。越做越多：当天第 1 页 ${MATH_RAMP[0]} 道、第 2 页 ${MATH_RAMP[1]} 道、第 3 页 ${MATH_RAMP[2]} 道，之后每页 ${MATH_RAMP[3]} 道，第二天重新从 ${MATH_RAMP[0]} 道开始。今天已经做完 ${MathGate.pagesToday()} 页。`));
-      card.appendChild(el('p', 'note', '做错一次：语音提示错在哪（看错符号、差一点、写反了……）；错两次或点 💡：小老师来帮忙，答案始终让她自己数、自己写，不直接给答案；看着图还是数错，小老师就带着她一个一个数。'));
-      seg('🦉 小老师怎么讲', 'way', [['pick', '她自己选'], ['random', '随机换'], ['frame', '摆一摆'], ['line', '跳一跳'], ['split', '拆一拆']], d);
+      card.appendChild(el('p', 'note', '做题时不逐题判对错，免得打断她的思路：✓ 只是跳到下一道，整页都写好了点「交卷」，小老师一次批改完，对的打 ✓，错的圈出来让她订正。订正时先语音提示错在哪（看错符号、差一点、写反了……）并出现 💡；再错或点 💡，小老师来帮忙，答案始终让她自己数、自己写，不直接给答案；看着图还是数错，小老师就带着她一个一个数。'));
+      seg('🦉 小老师先用哪种办法', 'way', [['col', '列竖式'], ['pick', '她自己选'], ['random', '随机换'], ['frame', '摆一摆'], ['line', '跳一跳'], ['split', '拆一拆']], d);
       const used = Teach.WAYS.map((w, i) => { const r = (d.ways || {})[w]; return r && r[0] ? `${L.teach.ways[i]} 用了 ${r[0]} 次，其中 ${r[1]} 次看图自己数对` : ''; }).filter(Boolean);
-      card.appendChild(el('p', 'note', '摆一摆：小动物摆进十格框，满十捆一捆、不够拆一捆。跳一跳：小青蛙在数轴上往前、往回跳，整十跳大步。拆一拆：拆成几小步自己填（凑十、平十、破十、先算整十），每步配图数一数。'
+      card.appendChild(el('p', 'note', '列竖式（默认）：学校里的竖式，个位对个位、十位对十位，旁边的数位表里个位是小动物、十位是一捆捆；满十捆一捆进到十位（记小 1），不够减从十位借一捆拆开（点退位点），她一位一位数、一位一位写，最后把得数写回横式。摆一摆：小动物摆进十格框，满十捆一捆、不够拆一捆。跳一跳：小青蛙在数轴上往前、往回跳，整十跳大步，数轴上标着整十。拆一拆：拆成几小步自己填（凑十、平十、破十、先算整十），每步配图数一数。小老师里点 🔄 随时换一种。'
         + (used.length ? '<br>她的记录：' + used.join('；') + (d.wayLast ? `；上次用的是${L.teach.ways[Teach.WAYS.indexOf(d.wayLast)]}。` : '。') : '')));
       seg('📏 数的范围', 'max', [[20, '20 以内'], [50, '50 以内'], [100, '100 以内']]);
       seg('🔢 几个数一起算', 'ops', [[2, '两个数'], [3, '三个数'], [4, '四个数']]);

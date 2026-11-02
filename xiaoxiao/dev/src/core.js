@@ -51,12 +51,12 @@ const Store = {
       stars: {}, best: {},   // per level
       owed: false,           // a math page is due before the next game
       played: 0,
-      math: { max: 20, ops: 2, mode: 'mix', count: 'wheel' },   // count: 'wheel' (MATH_WHEEL), 'ramp' (MATH_RAMP) or a fixed size (MATH_COUNTS), 家长设置
-      mathV: 4,              // 4: the wheel; 3: the day's ramp; 2: a fixed size (10 by default); before that always 20
+      math: { max: 100, ops: 2, mode: 'mix', count: 'wheel' },  // count: 'wheel' (MATH_WHEEL), 'ramp' (MATH_RAMP) or a fixed size (MATH_COUNTS), 家长设置
+      mathV: 5,              // 5: the wheel draws 10 to 20, within 100, 列竖式 first; 4: the wheel (2 to 10); 3: the day's ramp; 2: a fixed size (10 by default); before that always 20
       today: { day: '', pages: 0 },   // math pages finished today (not the 5-sum page for 5 more moves): where the ramp is
       spin: null,            // what the wheel landed on for the page owed now, { n, p: played }, so leaving can't spin again
       log: [],               // finished math pages: [time, count, right first time, seconds, settings label]
-      way: 'pick',           // 小老师 (teach.js): 'pick' (she chooses each time), 'random', or one way ('frame' 'line' 'split'), 家长设置
+      way: 'col',            // 小老师 (teach.js) starts with: one way ('col' 'frame' 'line' 'split'), 'pick' (she chooses each time) or 'random', 家长设置
       ways: {},              // how each way went: way -> [times used, then right without counting together]
       wayLast: '',           // the way used last, which glows on the choice
       seen: {},              // tips already shown
@@ -78,7 +78,10 @@ const Store = {
         // wheel (decli 2026-10-19); a size a parent picked from the settings since the ramp (5, 10, 15, 20) stays
         const v = raw.mathV || 0;
         if (v < 3 || (v < 4 && this.d.math.count === 'ramp')) this.d.math.count = this.defaults().math.count;
-        this.d.mathV = 4;
+        // decli 2026-11-02: harder now, sums within 100 on a wheel of 10 to 20 (a spin of the old wheel is dropped, so
+        // the page owed is drawn again), and 小老师 starts with 列竖式 instead of asking her to choose
+        if (v < 5) { this.d.math.max = 100; this.d.spin = null; if (!raw.way || raw.way === 'pick') this.d.way = 'col'; }
+        this.d.mathV = 5;
       }
     } catch (e) { }
     return this.d;

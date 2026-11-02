@@ -1,11 +1,12 @@
-// 动物消消乐 · the wheel before a math page (decli 2026-10-19: draw how many sums like a lucky draw, 2 to 10, so the
-// page starts with a bit of fun instead of a chore). She taps it; it winds back a little and spins, slows down with a
+// 动物消消乐 · the wheel before a math page (decli 2026-10-19: draw how many sums like a lucky draw, so the page starts
+// with a bit of fun instead of a chore; 10 to 20 since decli 2026-11-02). She taps it; it winds back a little and spins, slows down with a
 // tick and a flick of the pointer at every peg, and lands with lights, confetti and her number popping up. Every slice
 // is the same size and the number is drawn fairly before the spin (never steered to a near miss); every number is good
 // news, a few a warm-up and many a challenge (L.wheel.land). What it lands on is kept until the page is done, so
 // leaving and coming back can't spin again.
 const Wheel = {
-  COLS: ['#ff7fb0', '#ffa95e', '#ffd23a', '#8fdc5e', '#45d0b5', '#5fb8ff', '#8f83ff', '#c47cff', '#ff8fd0'],
+  // one colour a slice, round the rainbow (MATH_WHEEL has 11 numbers)
+  COLS: ['#ff7fb0', '#ff8f6b', '#ffb347', '#ffd23a', '#b4e05a', '#5fd38a', '#45d0b5', '#5fc0ff', '#7d9bff', '#a283ff', '#d27cff'],
   // on the math layer; resolves with the number, 'skip' (a parent skipped the page) or 'again' (a parent changed the
   // settings, so the page starts over the new way)
   spin() {
@@ -57,7 +58,7 @@ const Wheel = {
         x.save(); x.translate(cx, cy); x.rotate(rot);
         for (let i = 0; i < N; i++) {
           const a0 = -Math.PI / 2 + i * A, g = x.createRadialGradient(0, 0, R * 0.2, 0, 0, R);
-          g.addColorStop(0, '#ffffff'); g.addColorStop(0.35, Wheel.COLS[i]); g.addColorStop(1, Wheel.COLS[i]);
+          g.addColorStop(0, '#ffffff'); g.addColorStop(0.35, Wheel.COLS[i % Wheel.COLS.length]); g.addColorStop(1, Wheel.COLS[i % Wheel.COLS.length]);
           x.fillStyle = g; x.beginPath(); x.moveTo(0, 0); x.arc(0, 0, R, a0, a0 + A); x.closePath(); x.fill();
           if (won >= 0) {   // the winner glows, the rest step back
             x.fillStyle = i === won ? `rgba(255,255,255,${0.15 + 0.25 * Math.sin(now / 90) ** 2})` : 'rgba(255,255,255,.5)'; x.fill();

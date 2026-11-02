@@ -1,10 +1,11 @@
 // 动物消消乐 · everything the narrator says. dev/voice/collect.js reads this file (with levels.js and board.js) to
 // list every line for recording, so a line built from a level must be built here and nowhere else.
 const KID = '可可';   // decli's daughter, who plays this
-// how many sums a math page has (家长设置). By default she spins a wheel before each page and does what it lands on,
-// 2 to 10 (decli 2026-10-19, evening: sums feel like a chore, make drawing them a game). A parent can pick the day's
-// ramp instead (2, 6, 12, then 20 every time after, back to 2 the next day) or one fixed size.
-const MATH_WHEEL = [2, 3, 4, 5, 6, 7, 8, 9, 10];
+// how many sums a math page has (家长设置). By default she spins a wheel before each page and does what it lands on
+// (decli 2026-10-19, evening: sums feel like a chore, make drawing them a game), 10 to 20 since decli 2026-11-02 (she
+// is ready for more, and for sums within 100). A parent can pick the day's ramp instead (2, 6, 12, then 20 every time
+// after, back to 2 the next day) or one fixed size.
+const MATH_WHEEL = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 const MATH_RAMP = [2, 6, 12, 20];
 const MATH_COUNTS = [5, 10, 15, 20];
 const NUM_ZH = n => String(n);   // the voice reads digits naturally ("18只" → 十八只)
@@ -97,23 +98,54 @@ const L = {
       other: '没关系，再想一想。',
     },
     half: `${KID}，已经做完一半啦！`,
+    // decli 2026-11-02: nothing is marked while she writes, so her train of thought isn't broken; she hands the page
+    // in and the teacher marks it all at once, then she corrects what was marked (订正)
+    allIn: '都写好啦！再检查一遍，没问题就点交卷。',
+    mark: '交卷啦！小老师来批改。',
+    got: n => `做对了${n}道！`,                                  // recorded for 1 to 20
+    fix: n => `还有${n}道要再想一想，我们来订正吧！`,              // recorded for 1 to 20
     done: `${KID}，全部做完啦！真厉害，去玩吧！`,
     doneExtra: `${KID}，做完啦！多给你5步！`,
   },
   // the wheel before a math page (wheel.js): every number is good news
   wheel: {
     ask: `${KID}，点一下转盘，看看这次做几道题！`,
-    land: n => n <= 4 ? `转到${n}道题！${KID}，热热身吧！` : n <= 7 ? `转到${n}道题！不多不少，${KID}加油！` : `哇，转到${n}道题！${KID}，接受挑战吧！`,
+    land: n => n <= 13 ? `转到${n}道题！不多不少，${KID}加油！` : n <= 16 ? `哇，转到${n}道题！${KID}，接受挑战吧！` : `哇，转到${n}道题！超级大挑战，${KID}一定行！`,
   },
-  // 小老师 (teach.js): after the second wrong answer, or 💡. She picks one of three ways (or the parent sets one); no
-  // line ever says the answer: they count only what is added or taken away, or count along with her
+  // 小老师 (teach.js): when a sum she is correcting is wrong again, or 💡. 列竖式 first (decli 2026-11-02), 🔄 for the
+  // others; no line ever says the answer: they count only what is added or taken away, or count along with her
   teach: {
-    pick: `${KID}，别着急！小老师有三种办法，你想用哪一种？`,
+    pick: `${KID}，别着急！小老师有四种办法，你想用哪一种？`,
     pick2: '换一种办法试试吧！你想用哪一种？',
-    ways: ['摆一摆', '跳一跳', '拆一拆'],
+    ways: ['列竖式', '摆一摆', '跳一跳', '拆一拆'],
     // straight in (the parent chose the way), or after she picked it
-    hi: { frame: `${KID}，别着急，我们请小动物来摆一摆！`, line: `${KID}，别着急，我们请小青蛙来跳一跳！`, split: `${KID}，别着急，我们把数拆开，一步一步算！` },
-    wayHi: { frame: '好，我们请小动物来摆一摆！', line: '好，我们请小青蛙来跳一跳！', split: '好，我们把数拆开，一步一步算！' },
+    hi: { col: `${KID}，别着急，我们来列竖式，一位一位地算！`, frame: `${KID}，别着急，我们请小动物来摆一摆！`, line: `${KID}，别着急，我们请小青蛙来跳一跳！`, split: `${KID}，别着急，我们把数拆开，一步一步算！` },
+    wayHi: { col: '好，我们来列竖式，一位一位地算！', frame: '好，我们请小动物来摆一摆！', line: '好，我们请小青蛙来跳一跳！', split: '好，我们把数拆开，一步一步算！' },
+    // 列竖式: the school column method, each column with its animals (ones) and bundles of ten (tens) under it
+    col: {
+      align: '相同数位要对齐：个位对个位，十位对十位。先算个位，再算十位。',
+      onesAdd: '先算个位：个位和个位合在一起。',
+      onesSub: '先算个位：个位减个位。',
+      onesDown: '先算个位：个位上没有要加减的。',
+      carry: '满十个啦！捆成一捆，进到十位上，记一个小1。',
+      borrow: '个位不够减！从十位借一捆，拆开就是十个，十位上点一个小点。',
+      onesAsk: '个位上现在有几个？写在个位上。',
+      tensAdd: '再算十位：十位和十位合在一起。',
+      tensAddCarry: '再算十位：十位和十位合在一起，还有进上来的一捆！',
+      tensCarry: '再算十位：别忘了进上来的一捆！',
+      tensSub: '再算十位：十位减十位。',
+      tensSubBorrow: '再算十位：十位减十位，别忘了被借走的一捆！',
+      tensBorrow: '再算十位：别忘了，十位被借走了一捆！',
+      tensDown: '再算十位：十位上没有要加减的。',
+      tensAsk: '十位上现在有几捆？写在十位上。',
+      tensNone: '十位上一捆也不剩了，十位就不用写啦。',
+      zero: '一个也没有，就写0。',
+      guideTen: '我们一起数一数有几捆！点一下，数一捆。',
+      right: '对啦！',
+      part: '这一步算好啦！用它接着算。',
+      copy: '竖式算好啦！把得数写到上面的横式里。',
+      copyAgain: '照着竖式下面的得数写：先写十位，再写个位。',
+    },
     add: '加几个，就请进来几个。点一点！',
     sub: '减几个，就送走几个。点一点！',
     tie: '满十个啦，捆成一捆！',
@@ -122,7 +154,7 @@ const L = {
     endSub: '现在还剩几只？数一数，写在上面吧。',
     hopAdd: '加几，就往前跳几格。点一点！',
     hopSub: '减几，就往回跳几格。点一点！',
-    hopEnd: '小青蛙停在几？从起点开始数一数，写在上面吧。',
+    hopEnd: '小青蛙停在几？看看旁边的整十数，再数一数，写在上面吧。',
     // 拆一拆: one line for each kind of step (Teach.plan), none with a number in it
     step: {
       tensAdd: '先把整十的加上，一捆就是十。数一数，是多少？',

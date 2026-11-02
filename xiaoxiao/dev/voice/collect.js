@@ -19,5 +19,8 @@ walk(L);
 LEVELS.forEach((lv, i) => add(L.intro(lv, i + 1)));
 MATH_WHEEL.concat(MATH_RAMP, MATH_COUNTS).forEach(n => add(L.math.start(n)));   // the math page's first line says how many sums
 MATH_WHEEL.forEach(n => add(L.wheel.land(n)));
+// marking a page: how many were right and how many to correct, for every page size up to the biggest
+const most = Math.max(...MATH_WHEEL, ...MATH_RAMP, ...MATH_COUNTS);
+for (let n = 1; n <= most; n++) { add(L.math.got(n)); add(L.math.fix(n)); }
 fs.writeFileSync(path.join(__dirname, 'lines.json'), JSON.stringify(out, null, 0));
 console.log(`动物消消乐: ${out.length} lines, ${out.reduce((a, o) => a + o.key.length, 0)} chars -> xiaoxiao/dev/voice/lines.json`);

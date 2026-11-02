@@ -187,6 +187,14 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .q .ans{display:inline-block;min-width:1.9em;padding:0 .15em;border-bottom:4px solid #d8c3a5;text-align:center;color:#7b4dff}
 .q.ok .ans{color:#15895f;border-color:#9fe3c4}
 .q.bad{animation:shake .35s;border-color:#ffb000;background:#fff8e6}
+/* writing the page: an answer written; handed in and marked: ✓ (above) or the answer ringed and ✏️ to correct it */
+.q.has .ans{border-color:#c6a6ff}
+.q.fix{background:#fff6ea}
+.q.fix::after{content:"✏️";position:absolute;right:6px;top:0;font-size:.55em}
+.q.fix.cur{border-color:#ff9d3a}
+.q .ans.was{color:#ff7a1a;border-bottom-color:transparent;border-radius:50%;box-shadow:0 0 0 .07em #ff9d3a}
+.handin{min-height:54px;font-size:24px;padding:0 24px;flex:1;max-width:280px}
+.handin.hey{animation:wayhey .6s cubic-bezier(.2,1.6,.4,1) 2}
 @keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
 #math .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-content:center}
 #math.wide .pad{width:clamp(250px,30vw,330px)}
@@ -226,6 +234,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 @keyframes talk{to{transform:translateY(-5px) rotate(-5deg)}}
 .thead .ibtn{width:52px;height:52px;font-size:24px;flex:none}
 .teq{flex:1;display:flex;align-items:center;justify-content:center;gap:.25em;font-size:46px;font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap}
+@media (max-width:520px){.teq{font-size:32px}.thead .owl{width:52px;height:52px}.thead{gap:8px}}
 .teq .n{color:var(--c);padding:0 .14em;border-radius:.25em;transition:background .3s,box-shadow .3s}
 .teq .n.now{background:#fff2a8;box-shadow:0 0 0 4px #ffd23a}
 .teq .op{color:#a58cba}
@@ -261,6 +270,8 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .tway.last{box-shadow:0 0 0 5px #ffd23a,0 6px 0 #ecd3b0}
 .tway.last::before{content:"⭐";position:absolute;top:-16px;right:-10px;font-size:34px}
 .tway.hey{animation:wayhey .6s cubic-bezier(.2,1.6,.4,1)}
+.tpick.two{flex-wrap:wrap;align-content:center;row-gap:4%}
+.tpick.two .tway{flex:0 0 44%;height:44%}
 @keyframes wayhey{40%{transform:translateY(-16px) scale(1.07)}}
 .tpic{width:100%;flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
 .tpic svg{width:100%;height:100%}
@@ -273,6 +284,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .tline .tick{stroke:#cbb9e0;stroke-width:3;stroke-linecap:round}
 .tline .tick.ten{stroke:#9c7fd0;stroke-width:4}
 .tline .hop{fill:none;stroke-width:4;stroke-linecap:round}
+.tline .tlab{fill:#9c7fd0;font-weight:900;text-anchor:middle;font-family:var(--font)}
 .tfrog{position:absolute;left:0;top:0;pointer-events:none;z-index:2}
 .tfrog img{width:100%;height:100%;display:block}
 .tstart{position:absolute;left:0;top:0;transform:translate(-50%,-50%);font-weight:900;background:#fff;border-radius:999px;padding:0 .4em;box-shadow:0 3px 0 #ecd3b0;
@@ -291,6 +303,26 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .tbox.bad{animation:shake .35s;color:var(--red)}
 .trow.ok .tbox{color:#15895f;border-color:#9fe3c4}
 .thelp{position:absolute;inset:0;pointer-events:none}
+/* 列竖式: the column form, and the place-value chart (tens | ones) with the same columns */
+.tvert{position:absolute;left:0;top:0;display:grid;align-items:end;font-weight:900;font-variant-numeric:tabular-nums;line-height:1.2;text-align:center;
+  background:#fff;border-radius:.22em;padding:.08em .22em .14em;box-shadow:0 4px 0 #ecd3b0;white-space:nowrap}
+.tvert>span{position:relative;border-radius:.14em;transition:background .3s}
+.tvert .lab{font-size:.32em;line-height:1.7;color:#b9a1d6}
+.tvert .op{color:#a58cba}
+.tvert .on{background:#fff2a8}
+.tvert .bar{grid-column:1/-1;height:.07em;background:#7a5a8e;border-radius:.04em;margin:.03em 0 .05em}
+.tvert .r{min-height:1.2em}
+.tvert .carry{position:absolute;right:-.1em;bottom:-.08em;font-size:.4em;font-style:normal;color:#ff8a1f;line-height:1}
+.tvert .dot{position:absolute;left:50%;top:.02em;width:.16em;height:.16em;margin-left:-.08em;border-radius:50%;background:#ff5a7a}
+.tvert .tbox{min-width:.72em;border-bottom-width:.06em}
+.tvert .tbox.ok{color:#15895f;border-color:transparent}
+.tvert.done .r{background:#e6fff4}
+.tcell{position:absolute;left:0;top:0;border:4px solid #e3d4f5;background:rgba(255,255,255,.75);box-sizing:border-box;transition:box-shadow .3s,background .3s}
+.tcell.one{border-color:#ffe0a8}
+.tcell.on{box-shadow:0 0 0 5px #ffd23a;background:#fffdf0}
+.tcell b{position:absolute;left:0;right:0;top:.12em;text-align:center;font-weight:900;color:#a58cba}
+.tcell.one b{color:#e0a860}
+.tcolchips{position:absolute;left:0;right:0;top:0;font-size:22px;font-weight:900;font-variant-numeric:tabular-nums}
 .tgap{position:absolute;left:0;top:0;border:4px dashed #ffb000;border-radius:50%;box-sizing:border-box;background:#fff8d6;animation:gap 1.2s ease-in-out infinite}
 @keyframes gap{50%{background:#ffe98a}}
 .tring{position:absolute;left:0;top:0;border:5px solid #d9c6ea;border-radius:50%;box-sizing:border-box;background:#fff;display:flex;align-items:center;justify-content:center;

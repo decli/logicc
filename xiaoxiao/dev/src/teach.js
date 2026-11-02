@@ -1,22 +1,28 @@
-// 动物消消乐 · 小老师: when a sum is answered wrong twice (or she taps 💡) the teacher comes over the cards, and she
-// writes the answer herself on the number pad, which stays beside it (decli 2026-10-19: when she gets one wrong, guide
-// her the way a teacher would, with animation and play).
-// decli 2026-10-20: nobody knows which way of explaining suits which child, so there are three and she picks one each
-// time (the one she used last glows), or the parent sets random or one of them; and the answer is never shown or said.
-// She counts it herself from the picture; if she still gets it wrong the teacher counts with her, one tap for each
-// thing, a number on each, and she writes the last number counted.
+// 动物消消乐 · 小老师: when a sum she is correcting is wrong again (or she taps 💡) the teacher comes over the cards,
+// and she writes the answer herself on the number pad, which stays beside it (decli 2026-10-19: when she gets one
+// wrong, guide her the way a teacher would, with animation and play).
+// decli 2026-10-20: nobody knows which way of explaining suits which child, so there are several, and the answer is
+// never shown or said. She counts it herself from the picture; if she still gets it wrong the teacher counts with her,
+// one tap for each thing, a number on each, and she writes the last number counted.
+// decli 2026-11-02: the ways were not easy enough to follow, and school does it in columns, so 列竖式 comes first;
+// 🔄 always brings up the four cards to try another (the parent can also start with another, her choice or random).
+//  · 列竖式 (col): the column form with a place-value chart under the same two columns, 个位对个位、十位对十位: the ones
+//    are added (满十 a bundle goes up to the tens with a small 1) or taken away (不够减 a bundle comes down and is
+//    untied, a dot over the tens), she counts and writes that digit under the line, then the tens; then the answer
+//    into the sum at the top.
 //  · 摆一摆 (frame): the ones sit in a ten frame (2 × 5); ten of them are tied into a bundle (满十捆一捆, 凑十), and when
 //    there are not enough ones to take away a bundle is untied (拆一捆, 破十), as first grade does with sticks (小棒).
 //    The first number's animals are one kind and each number added another; taking away sends them to marked spots.
-//  · 跳一跳 (line): a frog hops along a number line from the first number (the only number on it), a big hop for each
-//    ten and a small one for each one, forward to add and back to take away (counting on and back).
+//  · 跳一跳 (line): a frog hops along a number line from the first number, a big hop for each ten and a small one for
+//    each one, forward to add and back to take away (counting on and back). The whole tens are numbered (decli
+//    2026-11-02: counting every tick from the start was too hard) so she reads where it lands from the nearest ten.
 //  · 拆一拆 (split): the sum is broken into small steps she fills in, the ways first grade is taught them: tens first,
 //    凑十 to add past ten (8 + 5: 8 + ? = 10, 5 = 2 + ?, 10 + 3 = ?), 平十 / 破十 to take away past ten, each step
 //    with a picture to count.
 // While a sum is acted out the voice counts only what is being added or taken away (1, 2, 3 …), never the total.
 const Teach = {
   on: false, s: null, imgs: {}, W: {},
-  WAYS: ['frame', 'line', 'split'],
+  WAYS: ['col', 'frame', 'line', 'split'],
   CW: 0.96, CH: 2.3, CG: 0.24, MC: 0.43,   // a bundle (its width, height, the gap after it, one of its cells) in frame cells
   img(i) {   // a friend's head as a picture, made once
     if (!this.imgs[i]) this.imgs[i] = Art.friend(i, 128, 120).toDataURL();
@@ -74,11 +80,11 @@ const Teach = {
       if (s.cnt && !s.cnt.fin) this.countStep();
       else if (s.w && s.w.tap) s.w.tap();
     });
-    const mode = Store.d.way || 'pick';
+    const mode = Store.d.way || 'col';
     requestAnimationFrame(() => {
       if (this.s !== s) return;
       if (mode === 'pick') this.pick(true);
-      else this.use(mode === 'random' ? pick(this.WAYS.filter(w => w !== Store.d.wayLast)) : mode, true);
+      else this.use(mode === 'random' ? pick(this.WAYS.filter(w => w !== Store.d.wayLast)) : this.WAYS.includes(mode) ? mode : 'col', true);
     });
   },
 
@@ -128,11 +134,12 @@ const Teach = {
     s.ans.classList.remove('ask'); s.parts.forEach(p => p.classList.remove('now'));
     s.hand.classList.remove('on');
   },
-  // the three ways as big cards, read out one by one, each bouncing as it is named
+  // the ways as big cards, read out one by one, each bouncing as it is named (two by two when the stage is narrow)
   pick(first) {
     const s = this.s; this.clear();
     s.swap.hidden = true;
     const box = s.pickEl = el('div', 'tpick');
+    box.classList.toggle('two', s.stage.clientWidth < 640);
     const cards = this.WAYS.map((w, i) => {
       const c = el('button', 'tway' + (Store.d.wayLast === w ? ' last' : ''));
       c.appendChild(this.pic(w)); c.appendChild(el('b', null, L.teach.ways[i]));
@@ -152,7 +159,15 @@ const Teach = {
   // a small picture of each way for its card
   pic(w) {
     const s = this.s, p = el('div', 'tpic ' + w);
-    if (w === 'frame') {
+    if (w === 'col') {   // 27 + 15 in columns, the tens tinted like the bundles' side of the chart, the ones like the animals'
+      const T = (x, y, t, fill, size = 30) => `<text x="${x}" y="${y}" font-size="${size}" font-weight="900" text-anchor="middle" fill="${fill}">${t}</text>`;
+      p.innerHTML = `<svg viewBox="0 0 200 140"><rect x="80" y="4" width="42" height="132" rx="10" fill="#f3e9ff"/><rect x="126" y="4" width="42" height="132" rx="10" fill="#fff1d6"/>`
+        + T(101, 30, '十', '#b9a1d6', 15) + T(147, 30, '个', '#e0a860', 15)
+        + T(101, 62, '2', '#7b4dff') + T(147, 62, '7', '#7b4dff') + T(50, 98, '+', '#a58cba') + T(101, 98, '1', '#ff8a1f') + T(147, 98, '5', '#ff8a1f')
+        + `<line x1="32" y1="108" x2="170" y2="108" stroke="#7a5a8e" stroke-width="4" stroke-linecap="round"/>` + T(116, 106, '1', '#ff8a1f', 15)
+        + `<rect x="89" y="113" width="24" height="20" rx="5" fill="#fff" stroke="#ffb000" stroke-width="3" stroke-dasharray="5 4"/>`
+        + `<rect x="135" y="113" width="24" height="20" rx="5" fill="#fff" stroke="#ffb000" stroke-width="3" stroke-dasharray="5 4"/></svg>`;
+    } else if (w === 'frame') {
       const g = el('div', 'tframe');
       for (let i = 0; i < 10; i++) {
         const c = el('i');
@@ -179,7 +194,7 @@ const Teach = {
   use(w, first) {
     const s = this.s; this.clear();
     s.way = w;
-    s.swap.hidden = !['pick', 'random'].includes(Store.d.way || 'pick');
+    s.swap.hidden = false;   // 🔄: the cards, to try another way
     this.stat(w)[0]++; Store.d.wayLast = w; Store.save();
     const root = el('div', 'troot'); s.stage.appendChild(root);
     s.w = this.W[w](this.ctx(root), first ? L.teach.hi[w] : L.teach.wayHi[w]);
@@ -265,6 +280,7 @@ const Teach = {
     this.shake();
     if (!s.w) s.say(s.line || L.teach.pick);
     else if (!s.w.ready()) s.say(L.teach.early);
+    else if (s.w.wrongMain) s.w.wrongMain();   // 列竖式: the answer is under the line already, she copied it wrong
     else this.guide(s.w.items());
   },
   right() {
@@ -273,7 +289,9 @@ const Teach = {
     this.close(true);
   },
   relayout() {
-    const s = this.s; if (!s || !s.w) return;
+    const s = this.s; if (!s) return;
+    if (s.pickEl) s.pickEl.classList.toggle('two', s.stage.clientWidth < 640);
+    if (!s.w) return;
     s.w.relayout();
     s.badges.forEach(x => this.place(x.b, x.it));
   },
@@ -335,6 +353,272 @@ const Teach = {
     }
     return R;
   },
+};
+
+// ---------- 列竖式: the column form, a place-value chart under the same columns ----------
+// The column form (竖式) on one side, a chart (数位表) with the same two columns on the other: the tens as bundles, the
+// ones as animals in ten frames, the top number's above the second number's, as in the form. A column is acted out —
+// the ones come together and ten are tied into a bundle that goes up to the tens, a small 1 written over the line
+// (满十进一); or, not enough ones to take away, a bundle comes down and is untied, a dot over the tens (退位), and
+// what is taken away comes out of that ten first (破十) — then she counts what is in the column and writes that digit
+// under the line herself: the ones first, then the tens. Last she copies the answer into the sum at the top, as school
+// asks. A sum of three or four numbers is one column sum after another, each done one folding into a chip at the top.
+Teach.W.col = (c, first) => {
+  const { q, root, later, kinds } = c, s = c.s, { CW, CH, MC } = Teach, C = L.teach.col;
+  const parts = [], ends = [q.nums[0]];
+  q.signs.forEach((sg, j) => {
+    const a = ends[j], b = q.nums[j + 1], r = sg === '+' ? a + b : a - b;
+    const a1 = a % 10, a10 = Math.floor(a / 10), b1 = b % 10, b10 = Math.floor(b / 10);
+    const carry = sg === '+' && a1 + b1 >= 10, borrow = sg === '-' && a1 < b1;
+    parts.push({
+      j, sg, a, b, r, a1, a10, b1, b10, carry, borrow,
+      d1: r % 10, t: Math.floor(r / 10),                    // the digits she writes: the ones, then the tens (10 for 100)
+      nc: String(Math.max(a, b, r)).length,                 // columns in the form: 个, 十, 百 (only for 100)
+    });
+    ends.push(r);
+  });
+  const chips = el('div', 'tchips tcolchips'); root.appendChild(chips);
+  // stage: 'intro' 'ones' 'tens' 'done' 'main'; step: the digit asked for now { bx, ans }
+  const f = { pi: -1, p: null, stage: 'intro', step: null, busy: true, got: '', main: false, layer: null, V: null,
+    tens: [], tensB: [], f1: [], f2: [], boxT: null, boxO: null, fr1: null, fr2: null };
+  const G = {};
+  const PAD = 0.3, LH = 0.9, GAPC = 0.4, ROW = CH + 0.3, TW = 2 * PAD + 5 * (CW + Teach.CG) - Teach.CG, OW = 2 * PAD + 5.3;
+  const once = fn => { let done = false; return () => { if (!done) { done = true; fn(); } }; };
+  // say a line, then go on (also when the line is cut short or missing)
+  const sayThen = (line, fn, max) => { const go = once(fn); c.say(line, { onend: () => later(go, 250) }); later(go, max || 6000); };
+  const seq = (n, gap, fn, done) => { let i = 0; const go = () => { if (i >= n) { later(done, 350); return; } fn(i++); later(go, gap); }; go(); };
+
+  // the column form: a grid of an op column and one column a digit, rows: column names, the numbers, the line, the answer
+  function form(p) {
+    const v = el('div', 'tvert'), nc = p.nc, cell = (t, cls) => { const e = el('span', cls, t); v.appendChild(e); return e; };
+    v.style.gridTemplateColumns = `.8em repeat(${nc},.78em)`;
+    const digits = n => { const d = String(n).split(''); return Array(nc - d.length).fill('').concat(d); };
+    const row = (op, ds, cls) => { cell(op, 'op'); return ds.map(d => cell(d, cls)); };
+    const lab = row('', ['百', '十', '个'].slice(3 - nc), 'lab');
+    const A = row('', digits(p.a), 'a'), B = row(p.sg === '+' ? '+' : '−', digits(p.b), 'b');
+    A.forEach(e => { e.style.color = c.col(0); }); B.forEach(e => { e.style.color = c.col(p.j + 1); });
+    v.appendChild(el('i', 'bar'));
+    cell('', 'op');
+    const R = [];
+    for (let i = 0; i < nc; i++) {
+      if (nc === 3 && i === 0 && p.t >= 10) { const e = cell('', 'r'); e.style.gridColumn = 'span 2'; R.push(e, e); i++; }   // 100: "10" across 百 and 十
+      else R.push(cell('', 'r'));
+    }
+    return { el: v, lab, A, B, R, nc };
+  }
+  // light up a column in the form and the chart: 'one', 'ten' or none
+  function hiCol(w) {
+    const V = f.V, cols = w === 'one' ? [V.nc - 1] : w === 'ten' ? [V.nc - 2, V.nc - 3] : [];
+    [V.lab, V.A, V.B, V.R].forEach(r => r.forEach((e, i) => e.classList.toggle('on', cols.includes(i))));
+    f.boxO.classList.toggle('on', w === 'one');
+    if (f.boxT) f.boxT.classList.toggle('on', w === 'ten');
+  }
+  // one part of the sum: its form, its chart and the things in it
+  function build(p) {
+    const layer = f.layer = el('div', 'thelp'); root.appendChild(layer);
+    f.V = form(p); layer.appendChild(f.V.el);
+    const hasT = p.nc >= 2;
+    f.boxT = hasT ? layer.appendChild(el('div', 'tcell ten', '<b>十位</b>')) : null;
+    f.boxO = layer.appendChild(el('div', 'tcell one', '<b>个位</b>'));
+    const frame = () => { const fr = layer.appendChild(el('div', 'tframe')); for (let i = 0; i < 10; i++) fr.appendChild(el('i')); return fr; };
+    f.fr1 = frame(); f.fr2 = frame();
+    f.fr2.hidden = !(p.sg === '+' && p.b1);   // the second number's ones; taking away, the ten that comes down
+    const kA = kinds[0], kB = kinds[p.j + 1];
+    f.tens = Array.from({ length: p.a10 }, () => c.ten(Array(10).fill(kA), layer));
+    f.tensB = p.sg === '+' ? Array.from({ length: p.b10 }, () => c.ten(Array(10).fill(kB), layer)) : [];
+    f.f1 = Array.from({ length: p.a1 }, () => c.one(kA, layer));
+    f.f2 = p.sg === '+' ? Array.from({ length: p.b1 }, () => c.one(kB, layer)) : [];
+    // rows of bundles: the top number's (with room for a ten carried up), then the second number's
+    G.ra = Math.ceil((p.a10 + (p.carry ? 1 : 0)) / 5);
+    G.rows = Math.max(1, G.ra + Math.ceil((p.sg === '+' ? p.b10 : 0) / 5));
+    G.hasT = hasT; G.two = p.sg === '+' ? p.b1 > 0 : p.borrow;
+  }
+  // sizes in u (a frame cell): the chart's and the form's; the form beside the chart when that is bigger, else above it
+  function geo() {
+    const W = root.clientWidth, top = chips.childElementCount ? chips.offsetHeight + 6 : 0, H = root.clientHeight - top;
+    const V = f.V.el; V.style.fontSize = '100px';
+    const vw = V.offsetWidth / 100, vh = V.offsetHeight / 100, K = 1.5;
+    const inner = Math.max(G.hasT ? G.rows * ROW - 0.3 : 0, G.two ? 2 * CH + 0.3 : CH);
+    const cw = (G.hasT ? TW + GAPC : 0) + OW, ch = LH + 2 * PAD + inner;
+    const wideU = Math.min(W / (vw * K + 1.2 + cw), H / Math.max(vh * K, ch));
+    const tallU = Math.min(W / Math.max(vw * K, cw), H / (vh * K + 0.8 + ch));
+    const u = G.u = clamp(Math.max(wideU, tallU) * 0.95, 12, 64), wide = wideU >= tallU;
+    const fs = K * u, VW = vw * fs, VH = vh * fs;
+    V.style.fontSize = fs + 'px';
+    let vx, vy;
+    if (wide) { const x0 = (W - VW - 1.2 * u - cw * u) / 2; vx = x0; vy = top + (H - VH) / 2; G.cx = x0 + VW + 1.2 * u; G.cy = top + (H - ch * u) / 2; }
+    else { const y0 = top + (H - VH - 0.8 * u - ch * u) / 2; vx = (W - VW) / 2; vy = y0; G.cx = (W - cw * u) / 2; G.cy = y0 + VH + 0.8 * u; }
+    V.style.transform = `translate(${vx}px,${vy}px)`;
+    const box = (b, x, w) => Object.assign(b.style, { width: w * u + 'px', height: ch * u + 'px', transform: `translate(${x}px,${G.cy}px)`, fontSize: 0.55 * u + 'px', borderRadius: 0.35 * u + 'px' });
+    if (f.boxT) box(f.boxT, G.cx, TW);
+    G.ox = G.cx + (G.hasT ? (TW + GAPC) * u : 0);
+    box(f.boxO, G.ox, OW);
+    G.f1 = [G.ox + PAD * u, G.cy + (LH + PAD) * u]; G.f2 = [G.f1[0], G.f1[1] + ROW * u];
+    [[f.fr1, G.f1], [f.fr2, G.f2]].forEach(([fr, [X, Y]]) => Object.assign(fr.style, { width: 5.3 * u + 'px', height: CH * u + 'px', transform: `translate(${X}px,${Y}px)`, borderRadius: 0.25 * u + 'px', padding: 0.15 * u + 'px' }));
+  }
+  const tenAt = (row0, i) => [G.cx + (PAD + (i % 5) * (CW + Teach.CG)) * G.u, G.cy + (LH + PAD + (row0 + Math.floor(i / 5)) * ROW) * G.u];
+  const cellAt = (F, i) => [F[0] + 0.15 * G.u + (i % 5) * G.u, F[1] + 0.15 * G.u + Math.floor(i / 5) * G.u];
+  const put = (n, X, Y, cs, quick) => c.put(n, X, Y, G.u, cs, quick);
+  const putTen = (n, X, Y, quick) => c.putTen(n, X, Y, G.u, quick);
+  function layout(quick) {
+    f.tens.forEach((n, i) => putTen(n, ...tenAt(0, i), quick));
+    f.tensB.forEach((n, i) => putTen(n, ...tenAt(G.ra, i), quick));
+    f.f1.forEach((n, i) => put(n, ...cellAt(G.f1, i), G.u, quick));
+    f.f2.forEach((n, i) => { if (n) put(n, ...cellAt(G.f2, i), G.u, quick); });
+  }
+  const mark = (cell, cls, txt) => { const m = el('i', cls, txt || ''); cell.appendChild(m); m.animate([{ scale: '0' }, { scale: '1.6' }, { scale: '1' }], { duration: 450, easing: 'ease-out' }); };
+
+  function start(pi) {
+    const p = f.p = parts[pi]; f.pi = pi; f.stage = 'intro'; f.busy = true;
+    build(p); geo(); layout(true);
+    [...f.tens, ...f.f1, ...f.tensB, ...f.f2].forEach((n, i) => c.pop(n, 150 + i * 50));
+    c.hi(p.j + 1);
+    const go = once(ones);
+    if (pi) { sayThen(C.part, go, 4500); return; }
+    // the first time: how the form lines up, each column lighting as it is named
+    c.say(first, {
+      onend: () => {
+        c.say(C.align, { onend: () => later(go, 300) });
+        later(() => { if (f.stage === 'intro') hiCol('one'); }, 1500);
+        later(() => { if (f.stage === 'intro') hiCol(G.hasT ? 'ten' : 'one'); }, 2700);
+        later(() => { if (f.stage === 'intro') hiCol(null); }, 4200);
+      },
+    });
+    later(go, 15000);
+  }
+  // ---- the ones ----
+  function ones() {
+    const p = f.p; f.stage = 'ones'; hiCol('one');
+    if (!p.b1) sayThen(C.onesDown, askOnes, 4000);
+    else if (p.sg === '+') sayThen(C.onesAdd, mergeOnes, 4500);
+    else sayThen(C.onesSub, p.borrow ? borrowTen : () => takeOnes(askOnes), 4500);
+  }
+  // the second number's ones hop into the top frame one by one; when it is full they are tied up
+  function mergeOnes() {
+    const i = f.f2.findIndex(n => n);
+    if (i < 0) { later(askOnes, 200); return; }
+    const n = f.f2[i]; f.f2[i] = null; f.f1.push(n);
+    layout(); Snd.play('hop', f.f1.length);
+    if (f.f1.length === 10) later(tieUp, 500); else later(mergeOnes, 280);
+  }
+  // 满十进一: the ten fly into a bundle next to the tens, and a small 1 is written in the tens column
+  function tieUp() {
+    const at = tenAt(0, f.tens.length), ks = f.f1.map(n => n.k);
+    f.f1.forEach((n, i) => { const [X, Y] = c.mini(at[0], at[1], i, G.u); n.el.style.transitionDelay = i * 25 + 'ms'; put(n, X, Y, MC * G.u); });
+    Snd.play('tie');
+    later(() => {
+      const b = c.ten(ks, f.layer); f.f1.forEach(n => n.el.remove()); f.f1 = [];
+      f.tens.push(b); layout(true); b.el.classList.add('new'); c.fxAt(b);
+      mark(f.V.B[f.V.nc - 2], 'carry', '1');
+      sayThen(C.carry, mergeOnes, 6000);
+    }, 750);
+  }
+  // 退位: the top number's last bundle comes down into the second frame and is untied; a dot over the tens
+  function borrowTen() {
+    const b = f.tens.pop(), X = G.f2[0] + 2.17 * G.u, Y = G.f2[1];
+    const both = once(() => takeOnes(askOnes));
+    let n = 2; const join = () => { if (--n === 0) both(); };
+    f.fr2.hidden = false; f.fr2.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300 });
+    putTen(b, X, Y); Snd.play('swap');
+    mark(f.V.A[f.V.nc - 2], 'dot');
+    if (f.p.a >= 100) mark(f.V.A[f.V.nc - 3], 'dot');   // 100: borrowed through the hundreds
+    later(() => {
+      Snd.play('untie');
+      b.el.animate([{ scale: '1' }, { scale: '1.15', rotate: '-5deg' }, { scale: '1' }], { duration: 380 });
+      later(() => {
+        f.f2 = b.ks.map(k => c.one(k, f.layer));
+        f.f2.forEach((m, i) => { const [mx, my] = c.mini(X, Y, i, G.u); put(m, mx, my, MC * G.u, true); });
+        b.el.remove();
+        requestAnimationFrame(() => {
+          f.f2.forEach((m, i) => { m.el.style.transitionDelay = i * 30 + 'ms'; });
+          layout();
+          later(() => { f.f2.forEach(m => { m.el.style.transitionDelay = ''; }); join(); }, 800);
+        });
+      }, 400);
+    }, 550);
+    sayThen(C.borrow, join, 8000);
+  }
+  // taking away: from the ten that came down if there is one (破十), else from the ones there were
+  function takeOnes(done) {
+    const pool = f.p.borrow ? f.f2 : f.f1, live = pool.filter(n => n && !n.x), go = live.slice(live.length - f.p.b1).reverse();
+    seq(go.length, 320, i => { go[i].x = true; go[i].el.classList.add('x'); Snd.play('bye', i + 1); }, done);
+  }
+  function askOnes() { ask(f.V.R[f.V.nc - 1], f.p.d1, C.onesAsk, L.teach.guide); }
+  // ---- the tens ----
+  function tens() {
+    const p = f.p; f.stage = 'tens'; hiCol('ten');
+    if (p.sg === '+') sayThen(p.b10 ? (p.carry ? C.tensAddCarry : C.tensAdd) : (p.carry ? C.tensCarry : C.tensDown), () => mergeTens(askTens), 5500);
+    else sayThen(p.b10 ? (p.borrow ? C.tensSubBorrow : C.tensSub) : (p.borrow ? C.tensBorrow : C.tensDown), () => takeTens(() => (p.t ? askTens() : sayThen(C.tensNone, done, 4500))), 5500);
+  }
+  function mergeTens(next) { seq(f.tensB.length, 340, () => { f.tens.push(f.tensB.shift()); layout(); Snd.play('hop', f.tens.length); }, next); }
+  function takeTens(next) {
+    const live = f.tens.filter(n => !n.x), go = live.slice(live.length - f.p.b10).reverse();
+    seq(go.length, 380, i => { go[i].x = true; go[i].el.classList.add('x'); Snd.play('bye', i + 1); }, next);
+  }
+  function askTens() { ask(f.V.R[f.V.nc - 2], f.p.t, C.tensAsk, C.guideTen); }
+  // ---- a digit to write under the line ----
+  function ask(cell, ans, line, guide) {
+    const bx = el('span', 'tbox ask', '?'); cell.appendChild(bx);
+    bx.animate([{ opacity: 0, transform: 'translateY(-8px)' }, { opacity: 1, transform: 'none' }], { duration: 300 });
+    f.step = { bx, ans }; f.got = ''; f.busy = false; api.guideLine = guide; s.idle = 0;
+    c.say(line);
+  }
+  function check() {
+    const st = f.step;
+    if (+f.got === st.ans) {
+      Snd.play('right'); f.busy = true; f.step = null;
+      Teach.unbadge(); s.cnt = null;
+      st.bx.classList.remove('ask'); st.bx.classList.add('ok'); st.bx.textContent = st.ans;
+      const r = st.bx.getBoundingClientRect();
+      Fx.burst(r.left + r.width / 2, r.top + r.height / 2, ['#5fe0b0', '#ffd23a'], 8, 0.7, 50);
+      c.say(C.right);
+      later(f.stage === 'ones' && f.p.nc >= 2 ? tens : done, 1000);
+    } else {
+      Snd.play('wrong'); f.got = ''; st.bx.textContent = '?';
+      st.bx.classList.remove('bad'); void st.bx.offsetWidth; st.bx.classList.add('bad');
+      const items = api.items();
+      if (items.length) Teach.guide(items); else c.say(C.zero);
+    }
+  }
+  // this part done: the next one, or the answer into the sum at the top
+  function done() {
+    f.stage = 'done'; hiCol(null);
+    const p = f.p;
+    if (f.pi < parts.length - 1) {
+      later(() => {
+        chips.appendChild(el('span', null, `${p.a} ${p.sg === '+' ? '+' : '−'} ${p.b} = ${p.r}`));
+        f.layer.remove();
+        start(f.pi + 1);
+      }, 700);
+      return;
+    }
+    f.stage = 'main'; f.main = true; f.busy = false;
+    f.V.el.classList.add('done');
+    s.ans.classList.add('ask');
+    c.say(C.copy);
+  }
+
+  const api = {
+    guideLine: L.teach.guide,
+    // the pad writes a digit under the line; the sum's own answer at the end is math.js's
+    key(k) {
+      if (f.main) return false;
+      if (f.busy || !f.step) return true;
+      if (k === '✓') { if (f.got) check(); return true; }
+      if (k === '⌫') { f.got = f.got.slice(0, -1); Snd.play('key', 2); }
+      else if (f.got.length < 2) { f.got = (f.got === '0' ? '' : f.got) + k; Snd.play('key', +k); }
+      f.step.bx.textContent = f.got || '?'; f.step.bx.classList.remove('bad');
+      return true;
+    },
+    box: () => (f.step ? f.step.bx : null),
+    ready: () => f.main,
+    // counted together: the bundles one by one (that is the tens digit), or the animals left in the ones
+    items: () => (f.stage === 'tens' ? f.tens : [...f.f1, ...f.f2]).filter(n => n && !n.x).map((n, i) => ({ el: n.el, v: i + 1 })),
+    wrongMain() { c.say(C.copyAgain); f.V.R.forEach(e => e.animate([{ background: '#fff2a8' }, { background: '#ffe066' }, { background: '#fff2a8' }], { duration: 900 })); },
+    relayout: () => { geo(); layout(true); },
+  };
+  start(0);
+  return api;
 };
 
 // ---------- 摆一摆: the animals in a ten frame, bundles of ten beside it ----------
@@ -512,7 +796,7 @@ Teach.W.line = (c, first) => {
     for (let i = 0; i < Math.floor(b / 10); i++) { hops.push({ j: j + 1, from: v, to: v + 10 * d, n: 10 }); v += 10 * d; }
     for (let i = 0; i < b % 10; i++) { hops.push({ j: j + 1, from: v, to: v + d, n: 1 }); v += d; }
   });
-  // the line runs between whole tens around every stop, 20 long at least; only the start has a number
+  // the line runs between whole tens around every stop, 20 long at least; the start and the whole tens have numbers
   const all = [q.nums[0]].concat(hops.map(h => h.to));
   let lo = Math.floor(Math.min(...all) / 10) * 10, hi = Math.ceil(Math.max(...all) / 10) * 10;
   if (hi - lo < 20) { if (lo + 20 <= 100) hi = lo + 20; else lo = hi - 20; }
@@ -534,12 +818,18 @@ Teach.W.line = (c, first) => {
     svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
     ticks.innerHTML = '';
     ticks.appendChild(c.sv('line', { x1: X(lo) - 16, y1: G.Y, x2: X(hi) + 16, y2: G.Y, class: 'axis' }));
+    const lab = clamp(H * 0.045, 13, 22), sfs = clamp(H * 0.06, 20, 36);
     for (let x = lo; x <= hi; x++) {
       const len = H * (x % 10 === 0 ? 0.07 : x % 5 === 0 ? 0.05 : 0.032);
       ticks.appendChild(c.sv('line', { x1: X(x), y1: G.Y, x2: X(x), y2: G.Y + len, class: x % 10 === 0 ? 'tick ten' : 'tick' }));
+      // a whole ten's number under its tick, unless the start's own label is right there
+      if (x % 10 === 0 && Math.abs(X(x) - X(q.nums[0])) > sfs * 1.5) {
+        const t = c.sv('text', { x: X(x), y: G.Y + H * 0.07 + lab * 1.05, class: 'tlab', 'font-size': lab });
+        t.textContent = x; ticks.appendChild(t);
+      }
     }
     ticks.appendChild(c.sv('circle', { cx: X(q.nums[0]), cy: G.Y, r: 7, fill: c.col(0) }));
-    Object.assign(start.style, { left: X(q.nums[0]) + 'px', top: G.Y + H * 0.12 + 'px', fontSize: clamp(H * 0.06, 20, 36) + 'px' });
+    Object.assign(start.style, { left: X(q.nums[0]) + 'px', top: G.Y + H * 0.12 + 'px', fontSize: sfs + 'px' });
     frog.style.width = frog.style.height = G.fs + 'px';
     arcs.innerHTML = ''; f.drawn.forEach(h => arc(h));
     seat(f.at);
