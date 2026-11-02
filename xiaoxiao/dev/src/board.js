@@ -6,14 +6,20 @@
 //
 // Cells: v (void, not part of the board), ice (0-2 layers under the piece), box (0-2 layers, a gift box that takes the
 // whole cell), bub (a bubble around the piece: it cannot be moved or fall, a match or a blast pops the bubble and the
-// piece stays), p (the piece).
-// Pieces: k 'a' animal of colour c, k 'g' penguin (cannot be matched or blown up; walks out at the bottom).
+// piece stays), p (the piece). Season two (decli 2026-11-02, after she won all ten levels): dirt (bare soil: anything
+// cleared in it grows grass, 种草地), cage (-1, or the kind of the animal locked in it: it cannot move or fall, and only
+// a match of that kind in it or next to it opens it — blasts pass it by, 彩色笼子).
+// Pieces: k 'a' animal of colour c, k 'g' penguin (cannot be matched or blown up; walks out at the bottom),
+// k 'e' egg (hp 2, 蛋宝宝: falls like an animal but is never matched; a match next to it or a blast cracks it, the
+// second time a chick hatches), k 'l' balloon (气球: never moves or falls on its own; a match next to it or a blast
+// lifts it one row, swapping with what is above, and once it is in the top row it flies away).
 // Specials: s 'h' clears its row, 'v' its column, 'b' bomb (diamond of radius 2), 'c' rainbow ball (no colour).
 
 const ANIMALS = [];   // this game's six animals { id, name, fx colours, h: FRIENDS number }, filled in by cast.js
 const PENGUIN = 6;   // the kind after the six animals (always FRIENDS' penguin)
 
-const PTS = { piece: 20, blast: 30, make: { h: 100, v: 100, b: 150, c: 250 }, ice: 80, box: 60, bub: 50, home: 1000, bonus: 200 };
+const PTS = { piece: 20, blast: 30, make: { h: 100, v: 100, b: 150, c: 250 }, ice: 80, box: 60, bub: 50, home: 1000, bonus: 200,
+  crack: 40, egg: 150, grass: 40, balloon: 600, cage: 120 };
 
 function mulberry32(a) {
   return function () {
@@ -46,6 +52,8 @@ Heap.prototype.pop = function () {
 Heap.lt = (x, y) => x.t < y.t || (x.t === y.t && x.q < y.q);
 
 // layout characters: . cell  _ void  i/I ice 1/2  b/B gift box 1/2  o bubble  q bubble on ice  g penguin  k ice under a penguin
+// e egg  l balloon  d dirt  0-5 a cage with an animal of that kind in it; lv.soil (optional, the same shape as layout):
+// 'd' marks dirt under whatever the layout puts there
 function Board(lv, rng) {
   this.lv = lv;
   this.rng = rng || Math.random;
@@ -57,15 +65,19 @@ function Board(lv, rng) {
   this.moves = lv.moves; this.score = 0;
   this.pg = { total: lv.penguins ? lv.penguins.total : 0, max: lv.penguins ? lv.penguins.max : 0, made: 0, home: 0, gap: 0 };
   const preset = [];
+  this.lift = new Set();   // balloons (piece ids) a clearing phase lifted, moved up by rise()
   for (let r = 0; r < this.R; r++) for (let c = 0; c < this.C; c++) {
     const ch = lay[r][c] || '_';
-    const cell = { v: ch === '_' || ch === ' ', ice: 0, box: 0, bub: false, p: null };
+    const cell = { v: ch === '_' || ch === ' ', ice: 0, box: 0, bub: false, p: null, dirt: false, grass: false, cage: -1 };
     if (ch === 'i' || ch === 'q' || ch === 'k') cell.ice = 1;
     if (ch === 'I') cell.ice = 2;
     if (ch === 'b') cell.box = 1;
     if (ch === 'B') cell.box = 2;
     if (ch === 'o' || ch === 'q') cell.bub = true;
-    if (ch === 'g' || ch === 'k') preset.push(this.cells.length);
+    if (ch === 'g' || ch === 'k') preset.push({ i: this.cells.length, k: 'g' });
+    if (ch === 'e' || ch === 'l') preset.push({ i: this.cells.length, k: ch });
+    if (ch === 'd' || (!cell.v && lv.soil && (lv.soil[r] || '')[c] === 'd')) cell.dirt = true;
+    if (ch >= '0' && ch <= '5') cell.cage = +ch;
     this.cells.push(cell);
   }
   // new pieces drop in at the top cell of each column; penguins leave from the bottom cell
@@ -76,7 +88,11 @@ function Board(lv, rng) {
       : g.t === 'ice' ? this.cells.filter(x => x.ice > 0).length
       : g.t === 'box' ? this.cells.filter(x => x.box > 0).length
       : g.t === 'bub' ? this.cells.filter(x => x.bub).length
-      : g.t === 'pg' ? this.pg.total : 0;
+      : g.t === 'pg' ? this.pg.total
+      : g.t === 'egg' ? preset.filter(x => x.k === 'e').length
+      : g.t === 'bl' ? preset.filter(x => x.k === 'l').length
+      : g.t === 'grass' ? this.cells.filter(x => x.dirt && !x.grass).length
+      : g.t === 'cage' ? this.cells.filter(x => x.cage >= 0).length : 0;
     return Object.assign({}, g, { n, left: n });
   });
   this.fillInitial(preset);
@@ -87,7 +103,7 @@ Board.prototype.idx = function (r, c) { return r < 0 || c < 0 || r >= this.R || 
 Board.prototype.on = function (i) { return i >= 0 && !this.cells[i].v; };
 Board.prototype.newPiece = function (c, s) { return { id: this.nextId++, k: 'a', c, s: s || null }; };
 Board.prototype.randColor = function () { return this.colors[Math.floor(this.rng() * this.colors.length)]; };
-Board.prototype.movable = function (i) { const x = this.cells[i]; return i >= 0 && !x.v && !x.box && !x.bub && !!x.p; };
+Board.prototype.movable = function (i) { const x = this.cells[i]; return i >= 0 && !x.v && !x.box && !x.bub && x.cage < 0 && !!x.p && x.p.k !== 'l'; };
 Board.prototype.colorAt = function (i) {
   if (i < 0) return -1;
   const x = this.cells[i];
@@ -101,20 +117,21 @@ Board.prototype.neighbors = function (i) {
 };
 
 Board.prototype.fillInitial = function (preset) {
+  // would colour col at i make three in a row with what is already placed (either side, or both)?
+  const run = (i, col) => {
+    const [r, c] = this.rc(i), n = (dr, dc) => { let k = 1; while (this.colorAt(this.idx(r + dr * k, c + dc * k)) === col) k++; return k - 1; };
+    return 1 + n(0, -1) + n(0, 1) >= 3 || 1 + n(-1, 0) + n(1, 0) >= 3;
+  };
   for (let tries = 0; tries < 200; tries++) {
     this.cells.forEach(x => { x.p = null; });
-    preset.forEach(i => { this.cells[i].p = { id: this.nextId++, k: 'g' }; });
-    this.pg.made = preset.length;
+    preset.forEach(({ i, k }) => { this.cells[i].p = k === 'e' ? { id: this.nextId++, k, hp: 2 } : { id: this.nextId++, k }; });
+    this.pg.made = preset.filter(x => x.k === 'g').length;
+    this.cells.forEach(x => { if (x.cage >= 0) x.p = this.newPiece(x.cage); });   // a caged animal is of the cage's kind
     for (let i = 0; i < this.cells.length; i++) {
       const x = this.cells[i];
       if (x.v || x.box || x.p) continue;
-      const [r, c] = this.rc(i);
       let col, guard = 0;
-      do {
-        col = this.randColor();
-        guard++;
-      } while (guard < 50 && ((this.colorAt(this.idx(r, c - 1)) === col && this.colorAt(this.idx(r, c - 2)) === col) ||
-        (this.colorAt(this.idx(r - 1, c)) === col && this.colorAt(this.idx(r - 2, c)) === col)));
+      do { col = this.randColor(); guard++; } while (guard < 50 && run(i, col));
       x.p = this.newPiece(col);
     }
     if (!this.findMatches().length && this.hasMove()) return;
@@ -162,7 +179,7 @@ Board.prototype.specialFor = function (g) {
   return null;
 };
 Board.prototype.pickSpawn = function (g, type, prefer) {
-  const ok = i => !this.cells[i].bub && this.cells[i].p && !this.cells[i].p.s;
+  const ok = i => !this.cells[i].bub && this.cells[i].cage < 0 && this.cells[i].p && !this.cells[i].p.s;
   for (const i of prefer) if (g.cells.has(i) && ok(i)) return i;
   if (type === 'b') {
     const h = new Set(), both = [];
@@ -180,7 +197,7 @@ Board.prototype.pickSpawn = function (g, type, prefer) {
 // ---------- clearing ----------
 // ctx: one clearing phase. ev = what the page will animate, t in ms from the start of the phase.
 Board.prototype.newCtx = function (cascade) {
-  return { cascade, heap: new Heap(), ev: [], done: new Set(), boxHit: new Set(), protect: new Set(), acts: 0, cleared: 0, big: 0 };
+  return { cascade, heap: new Heap(), ev: [], done: new Set(), boxHit: new Set(), eggHit: new Set(), liftHit: new Set(), protect: new Set(), acts: 0, cleared: 0, big: 0 };
 };
 Board.prototype.goal = function (t, c, amount) {
   for (const g of this.goals) if (g.t === t && (t !== 'c' || g.color === c) && g.left > 0) { g.left = Math.max(0, g.left - (amount || 1)); return g; }
@@ -193,6 +210,41 @@ Board.prototype.hitBox = function (i, t, ctx) {
   this.score += PTS.box;
   const g = x.box === 0 ? this.goal('box') : null;
   ctx.ev.push({ t, k: 'box', i, left: x.box, goal: !!g, pts: PTS.box });
+  if (!x.box) this.grow(i, t, ctx);
+};
+// 种草地: whatever is cleared in a dirt cell (an animal, a bubble, a gift box, a hatched egg) leaves grass behind
+Board.prototype.grow = function (i, t, ctx) {
+  const x = this.cells[i];
+  if (!x.dirt || x.grass) return;
+  x.grass = true; this.score += PTS.grass;
+  const g = this.goal('grass');
+  ctx.ev.push({ t: t + 30, k: 'grass', i, goal: !!g, pts: PTS.grass });
+};
+// 蛋宝宝: once per phase; the first crack, then the chick
+Board.prototype.hitEgg = function (i, t, ctx) {
+  const x = this.cells[i], p = x.p;
+  if (!p || p.k !== 'e' || ctx.eggHit.has(i)) return;
+  ctx.eggHit.add(i); p.hp--;
+  if (p.hp > 0) { this.score += PTS.crack; ctx.ev.push({ t, k: 'crack', i, p, left: p.hp, pts: PTS.crack }); return; }
+  x.p = null; ctx.done.add(i); this.score += PTS.egg;
+  const g = this.goal('egg');
+  ctx.ev.push({ t, k: 'hatch', i, p, goal: !!g, pts: PTS.egg });
+  this.grow(i, t + 60, ctx);
+};
+// 气球: tugged now (once per phase), moved up a row by rise() when the board has settled
+Board.prototype.liftAt = function (i, t, ctx) {
+  const p = this.cells[i].p;
+  if (!p || p.k !== 'l' || ctx.liftHit.has(i)) return;
+  ctx.liftHit.add(i); this.lift.add(p.id);
+  ctx.ev.push({ t, k: 'tug', i, p });
+};
+// 彩色笼子: a match of the caged animal's kind in it or next to it; the animal stays where it is, free
+Board.prototype.openCage = function (i, t, ctx) {
+  const x = this.cells[i];
+  if (x.cage < 0) return;
+  const c = x.cage; x.cage = -1; this.score += PTS.cage;
+  const g = this.goal('cage');
+  ctx.ev.push({ t, k: 'free', i, c, p: x.p, goal: !!g, pts: PTS.cage });
 };
 Board.prototype.clearCell = function (i, t, by, ctx, to) {
   const x = this.cells[i];
@@ -200,19 +252,24 @@ Board.prototype.clearCell = function (i, t, by, ctx, to) {
   if (x.box) { if (by !== 'match') this.hitBox(i, t, ctx); return; }
   const p = x.p;
   if (!p) return;
+  if (x.cage >= 0) return;   // only a match of its own kind opens a cage (matchPhase); blasts pass it by
   if (x.bub) {
     x.bub = false; ctx.done.add(i);
     this.score += PTS.bub;
     const g = this.goal('bub');
     ctx.ev.push({ t, k: 'bub', i, goal: !!g, pts: PTS.bub });
+    this.grow(i, t, ctx);
     return;
   }
   if (p.k === 'g') return;
+  if (p.k === 'e') { if (by !== 'match') this.hitEgg(i, t, ctx); return; }
+  if (p.k === 'l') { if (by !== 'match') this.liftAt(i, t, ctx); return; }
   ctx.done.add(i); x.p = null; ctx.cleared++;
   const pts = by === 'match' ? PTS.piece * Math.min(ctx.cascade, 6) : PTS.blast;
   this.score += pts;
   const g = p.s !== 'c' ? this.goal('c', p.c) : null;
   ctx.ev.push({ t, k: 'pop', i, p, by, to, goal: !!g, pts });
+  this.grow(i, t, ctx);
   if (x.ice > 0) {
     x.ice--; this.score += PTS.ice;
     const gi = x.ice === 0 ? this.goal('ice') : null;
@@ -236,12 +293,12 @@ Board.prototype.line = function (i, dir) {
 };
 Board.prototype.piecesOf = function (col, ctx) {
   const out = [];
-  this.cells.forEach((x, j) => { if (!x.v && !x.box && x.p && x.p.k === 'a' && x.p.s !== 'c' && x.p.c === col && !ctx.done.has(j)) out.push(j); });
+  this.cells.forEach((x, j) => { if (!x.v && !x.box && x.cage < 0 && x.p && x.p.k === 'a' && x.p.s !== 'c' && x.p.c === col && !ctx.done.has(j)) out.push(j); });
   return out;
 };
 Board.prototype.commonColor = function (ctx) {
   const n = {};
-  this.cells.forEach((x, j) => { if (!x.v && !x.box && x.p && x.p.k === 'a' && x.p.s !== 'c' && !ctx.done.has(j)) n[x.p.c] = (n[x.p.c] || 0) + 1; });
+  this.cells.forEach((x, j) => { if (!x.v && !x.box && x.cage < 0 && x.p && x.p.k === 'a' && x.p.s !== 'c' && !ctx.done.has(j)) n[x.p.c] = (n[x.p.c] || 0) + 1; });
   let best = -1, bn = 0;
   for (const k in n) if (n[k] > bn) { bn = n[k]; best = +k; }
   return best;
@@ -268,6 +325,9 @@ Board.prototype.run = function (ctx) {
     if (e.k === 'clear') this.clearCell(e.i, e.t, e.by, ctx, e.to);
     else if (e.k === 'act') this.activate(e, ctx);
     else if (e.k === 'box') this.hitBox(e.i, e.t, ctx);
+    else if (e.k === 'egg') this.hitEgg(e.i, e.t, ctx);
+    else if (e.k === 'lift') this.liftAt(e.i, e.t, ctx);
+    else if (e.k === 'cage') this.openCage(e.i, e.t, ctx);
     else if (e.k === 'fn') e.fn(e.t);
   }
   const end = ctx.ev.reduce((m, e) => Math.max(m, e.t), 0);
@@ -281,11 +341,19 @@ Board.prototype.matchPhase = function (groups, cascade, prefer) {
   for (const g of groups) {
     const s = this.specialFor(g);
     const at = s ? this.pickSpawn(g, s, prefer) : -1;
-    if (at >= 0) { ctx.protect.add(at); makes.push({ i: at, s, c: g.color }); }
+    if (at >= 0) { ctx.protect.add(at); makes.push({ i: at, s, c: g.color }); this.grow(at, 0, ctx); }
     for (const i of g.cells) if (i !== at) ctx.heap.push({ t: 0, k: 'clear', i, by: 'match', to: at >= 0 ? at : undefined });
+    // next to the match: gift boxes and eggs take a knock, balloons a tug, cages of this kind open (and so do caged
+    // animals in the match itself)
     const near = new Set();
-    for (const i of g.cells) for (const j of this.neighbors(i)) if (this.cells[j].box) near.add(j);
-    near.forEach(j => ctx.heap.push({ t: 40, k: 'box', i: j }));
+    for (const i of g.cells) { for (const j of this.neighbors(i)) near.add(j); if (this.cells[i].cage >= 0) ctx.heap.push({ t: 40, k: 'cage', i }); }
+    near.forEach(j => {
+      const x = this.cells[j];
+      if (x.box) ctx.heap.push({ t: 40, k: 'box', i: j });
+      else if (x.p && x.p.k === 'e') ctx.heap.push({ t: 40, k: 'egg', i: j });
+      else if (x.p && x.p.k === 'l') ctx.heap.push({ t: 40, k: 'lift', i: j });
+      if (x.cage >= 0 && x.cage === g.color) ctx.heap.push({ t: 40, k: 'cage', i: j });
+    });
   }
   const ph = this.run(ctx);
   for (const m of makes) {
@@ -306,7 +374,7 @@ Board.prototype.matchPhase = function (groups, cascade, prefer) {
 Board.prototype.settle = function () {
   const paths = new Map(), landed = new Set(), news = [];
   const empty = i => this.on(i) && !this.cells[i].box && !this.cells[i].p;
-  const canFall = i => this.on(i) && !this.cells[i].box && !this.cells[i].bub && !!this.cells[i].p;
+  const canFall = i => this.on(i) && !this.cells[i].box && !this.cells[i].bub && this.cells[i].cage < 0 && !!this.cells[i].p && this.cells[i].p.k !== 'l';
   const rec = (p, from, to, s) => {
     if (!paths.has(p.id)) paths.set(p.id, { p, pts: [{ s: s - 1, r: from[0], c: from[1] }] });
     paths.get(p.id).pts.push({ s, r: to[0], c: to[1] });
@@ -362,6 +430,28 @@ Board.prototype.exits = function () {
   });
   return out.length ? { type: 'exit', out, pts: PTS.home } : null;
 };
+// the balloons lifted since the board last settled go up a row each (the top ones first), swapping places with what is
+// above them; one that reaches the top row flies away. Something that cannot move (a gift box, a bubble, a cage,
+// another balloon) holds it where it is.
+Board.prototype.rise = function () {
+  if (!this.lift.size) return null;
+  const at = new Map(), moves = [], away = [], landed = [];
+  this.cells.forEach((x, i) => { if (x.p && x.p.k === 'l') at.set(x.p.id, i); });
+  const ids = [...this.lift].filter(id => at.has(id)).sort((a, b) => at.get(a) - at.get(b));
+  this.lift.clear();
+  const fly = i => { const x = this.cells[i]; away.push({ i, p: x.p }); x.p = null; this.score += PTS.balloon; this.goal('bl'); };
+  for (const id of ids) {
+    const i = at.get(id);
+    if (this.spawn[i]) { fly(i); continue; }
+    const j = i - this.C, x = this.cells[i], y = this.cells[j];
+    if (y.box || y.bub || y.cage >= 0 || !y.p || y.p.k === 'l') continue;
+    const p = x.p; x.p = y.p; y.p = p;
+    moves.push({ id: p.id, from: i, to: j }, { id: x.p.id, from: j, to: i });
+    landed.push(i);
+    if (this.spawn[j]) fly(j);
+  }
+  return moves.length || away.length ? { type: 'rise', moves, away, landed, pts: PTS.balloon } : null;
+};
 
 // after the first clearing phase: fall, penguins out, match again, until the board is still
 Board.prototype.cascade = function (phases, first, prefer) {
@@ -371,6 +461,8 @@ Board.prototype.cascade = function (phases, first, prefer) {
     if (fall.paths.length) phases.push(fall);
     const ex = this.exits();
     if (ex) { phases.push(ex); const f2 = this.settle(); if (f2.paths.length) phases.push(f2); fall.landed.push(...f2.landed); }
+    const up = this.rise();
+    if (up) { phases.push(up); const f3 = this.settle(); if (f3.paths.length) phases.push(f3); fall.landed.push(...up.landed, ...f3.landed); }
     const groups = this.findMatches();
     if (!groups.length) break;
     cascade++;
@@ -418,6 +510,7 @@ Board.prototype.comboPhase = function (b, pa, a, pb) {
     const g = p.s !== 'c' ? this.goal('c', p.c) : null;
     ctx.ev.push({ t, k: 'pop', i, p, by: 'combo', goal: !!g, pts: 0 });
     if (x.ice > 0) { x.ice--; const gi = x.ice === 0 ? this.goal('ice') : null; ctx.ev.push({ t, k: 'ice', i, left: x.ice, goal: !!gi, pts: PTS.ice }); }
+    this.grow(i, t, ctx);
   };
   ctx.big = 1;
   if (S.has('c')) {
@@ -444,7 +537,7 @@ Board.prototype.comboPhase = function (b, pa, a, pb) {
         targets.forEach((j, n) => {
           const x = this.cells[j];
           const s = other.s === 'b' ? 'b' : (this.rng() < 0.5 ? 'h' : 'v');
-          if (j !== oi && !x.bub) { const old = x.p.id; x.p = this.newPiece(col, s); ctx.ev.push({ t: 200 + n * 30, k: 'make', i: j, p: x.p, old, quiet: true }); }
+          if (j !== oi && !x.bub && x.cage < 0) { const old = x.p.id; x.p = this.newPiece(col, s); ctx.ev.push({ t: 200 + n * 30, k: 'make', i: j, p: x.p, old, quiet: true }); }
           ctx.heap.push({ t: 700 + n * 110, k: 'clear', i: j, by: 'blast' });
         });
       }
@@ -488,7 +581,7 @@ Board.prototype.bonus = function () {
     const left = this.moves;
     if (left > 0) {
       const pool = [];
-      this.cells.forEach((x, i) => { if (!x.v && !x.box && !x.bub && x.p && x.p.k === 'a' && !x.p.s) pool.push(i); });
+      this.cells.forEach((x, i) => { if (!x.v && !x.box && !x.bub && x.cage < 0 && x.p && x.p.k === 'a' && !x.p.s) pool.push(i); });
       for (let n = 0; n < left && pool.length; n++) {
         const i = pool.splice(Math.floor(this.rng() * pool.length), 1)[0];
         const x = this.cells[i], old = x.p.id;
@@ -553,7 +646,7 @@ Board.prototype.hint = function () {
 // shuffle the plain animals among their cells until there is a move and no ready-made match
 Board.prototype.shuffle = function () {
   const cells = [];
-  this.cells.forEach((x, i) => { if (!x.v && !x.box && !x.bub && x.p && x.p.k === 'a' && !x.p.s) cells.push(i); });
+  this.cells.forEach((x, i) => { if (!x.v && !x.box && !x.bub && x.cage < 0 && x.p && x.p.k === 'a' && !x.p.s) cells.push(i); });
   const before = new Map(cells.map(i => [this.cells[i].p.id, i]));
   const pieces = cells.map(i => this.cells[i].p);
   for (let tries = 0; tries < 300; tries++) {
@@ -565,6 +658,18 @@ Board.prototype.shuffle = function () {
   return { type: 'shuffle', moves: cells.map(i => ({ id: this.cells[i].p.id, from: before.get(this.cells[i].p.id), to: i, c: this.cells[i].p.c })) };
 };
 
+// 小帮手 (decli 2026-11-02): after two lost games in a row the next one starts with a special or two already on the
+// board (kinds: their s, 'h' 'v' or 'b'); returns where they are
+Board.prototype.helper = function (kinds) {
+  const pool = [], out = [];
+  this.cells.forEach((x, i) => { if (!x.v && !x.box && !x.bub && x.cage < 0 && x.p && x.p.k === 'a' && !x.p.s) pool.push(i); });
+  for (const s of kinds) {
+    if (!pool.length) break;
+    const i = pool.splice(Math.floor(this.rng() * pool.length), 1)[0], x = this.cells[i];
+    x.p = this.newPiece(x.p.c, s); out.push(i);
+  }
+  return out;
+};
 Board.prototype.won = function () { return this.goals.every(g => g.left <= 0); };
 Board.prototype.stars = function () {
   if (!this.won()) return 0;

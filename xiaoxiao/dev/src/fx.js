@@ -24,6 +24,14 @@ const Fx = {
     x.closePath(); x.fillStyle = color; x.fill(); x.lineWidth = 3; x.strokeStyle = '#fff'; x.stroke();
     return (this.stars[color] = c);
   },
+  heart(color) {   // for an animal let out of its cage
+    const key = 'h' + color;
+    if (this.stars[key]) return this.stars[key];
+    const c = Art.canvas(48, 48), x = c.getContext('2d');
+    x.beginPath(); x.moveTo(24, 40); x.bezierCurveTo(4, 26, 6, 8, 24, 16); x.bezierCurveTo(42, 8, 44, 26, 24, 40); x.closePath();
+    x.fillStyle = color; x.fill(); x.lineWidth = 3; x.strokeStyle = '#fff'; x.stroke();
+    return (this.stars[key] = c);
+  },
   drawStar(ctx, x, y, r, color) {   // a four-point twinkle
     ctx.fillStyle = color; ctx.beginPath();
     ctx.moveTo(x, y - r); ctx.quadraticCurveTo(x, y, x + r, y); ctx.quadraticCurveTo(x, y, x, y + r);

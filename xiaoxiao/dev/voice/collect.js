@@ -4,7 +4,7 @@
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const src = f => fs.readFileSync(path.join(__dirname, '..', 'src', f), 'utf8');
 const ctx = vm.createContext({ Math, console });
-vm.runInContext(src('board.js') + '\n' + src('levels.js') + '\n' + src('lines.js') +
+vm.runInContext(src('board.js') + '\n' + src('levels.js') + '\n' + src('levels2.js') + '\n' + src('lines.js') +
   '\n;this.LEVELS = LEVELS; this.L = L; this.MATH_COUNTS = MATH_COUNTS; this.MATH_RAMP = MATH_RAMP; this.MATH_WHEEL = MATH_WHEEL;', ctx);
 const { LEVELS, L, MATH_COUNTS, MATH_RAMP, MATH_WHEEL } = ctx;
 

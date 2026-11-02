@@ -20,36 +20,58 @@ const UI = {
     return b;
   },
 
-  // ---------- the level map ----------
-  map() {
+  // ---------- the level map: one island at a time ----------
+  // 第二季 (decli 2026-11-02): the levels are islands (ISLANDS in levels.js); ◀ ▶, a swipe or the row of islands at the
+  // bottom goes to another one. An island she can't play yet can be looked at, its levels locked. The first time she
+  // arrives on a new island it is welcomed by name.
+  isleOpen(k) { return Store.d.open > ISLANDS[k].from; },
+  isleStars(k) { const s = ISLANDS[k]; let n = 0; for (let i = s.from; i < s.from + s.n; i++) n += Store.d.stars[i] || 0; return n; },
+  map(k) {
     Game.stop(); this.closeModal(); $('#album').hidden = true;
     Music.start();
+    const d = Store.d, cur = Math.min(d.open, LEVELS.length) - 1;
+    if (k == null) k = d.isle >= 0 && d.isle < ISLANDS.length ? d.isle : isleOf(cur);
+    if (k !== d.isle) { d.isle = k; Store.save(); }
+    const isle = ISLANDS[k], open = this.isleOpen(k);
     const map = $('#map'); map.hidden = false; map.innerHTML = '';
-    const d = Store.d;
+    // the island's own picture when decli's is in, else its colours and things growing round the edges
+    const bg = Art2.img['island-' + (k + 1) + '-bg'];
+    map.style.background = bg ? `center/cover no-repeat url(${bg.src})` : `radial-gradient(ellipse at 50% 58%,${isle.land} 0 34%,transparent 62%),linear-gradient(170deg,${isle.sky.join(',')})`;
+    if (!bg) {
+      const deco = el('div', 'deco');
+      for (let i = 0; i < 14; i++) {
+        const a = i / 14 * Math.PI * 2 + 0.3, e = el('span', null, isle.deco[i % isle.deco.length]);
+        Object.assign(e.style, { left: 50 + Math.cos(a) * 47 + '%', top: 54 + Math.sin(a) * 44 + '%', fontSize: 34 + (i * 7) % 22 + 'px', animationDelay: -i * 0.7 + 's' });
+        deco.appendChild(e);
+      }
+      map.appendChild(deco);
+    }
     const top = el('div', 'top');
     top.appendChild(this.homeButton());
-    top.appendChild(el('h1', null, '动物消消乐'));
-    const total = LEVELS.reduce((n, _, i) => n + (d.stars[i] || 0), 0);
-    top.appendChild(el('div', 'pill', `⭐ ${total} / ${LEVELS.length * 3}`));
+    const title = el('h1', null, `<span class="ic">${isle.icon} </span>${isle.name}`);
+    top.appendChild(title);
+    top.appendChild(el('div', 'pill stars', `⭐ ${this.isleStars(k)} / ${isle.n * 3}`));
     const book = el('button', 'pill book' + ((d.giftFresh || []).length ? ' new' : ''), `🎁 ${Gift.count()} / ${FRIENDS.length}`);
     book.onclick = () => { Snd.init(); Snd.play('select'); Gift.album(); };
     top.appendChild(book);
     const gear = el('button', 'ibtn', '⚙️'); gear.onclick = () => { Snd.play('tap'); this.parent({}); };
     top.appendChild(gear);
     map.appendChild(top);
+    if (!open) map.appendChild(el('div', 'isle-lock', '🔒'));   // behind the path and the levels
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.id = 'path';
     map.appendChild(svg);
-    const nodes = LEVELS.map((lv, i) => {
-      const n = el('button', 'node');
-      const open = i < d.open, st = d.stars[i] || 0;
-      if (!open) { n.classList.add('lock'); n.innerHTML = '🔒'; }
+    const idx = Array.from({ length: isle.n }, (_, j) => isle.from + j);
+    const nodes = idx.map(i => {
+      const lv = LEVELS[i], n = el('button', 'node' + (i === isle.from + isle.n - 1 ? ' boss' : ''));
+      const on = i < d.open, st = d.stars[i] || 0;
+      if (!on) { n.classList.add('lock'); n.innerHTML = '🔒'; }
       else { n.textContent = i + 1; if (st) n.classList.add('done'); }
-      if (open && i === d.open - 1 && !st) n.classList.add('cur');
-      n.appendChild(el('span', 'st', open ? '⭐'.repeat(st) + '<span style="opacity:.3">' + '⭐'.repeat(3 - st) + '</span>' : ''));
-      if (open) n.appendChild(el('span', 'nm', lv.name));
+      if (on && i === d.open - 1 && !st) n.classList.add('cur');
+      n.appendChild(el('span', 'st', on ? '⭐'.repeat(st) + '<span style="opacity:.3">' + '⭐'.repeat(3 - st) + '</span>' : ''));
+      if (on) n.appendChild(el('span', 'nm', lv.name));
       n.onclick = () => {
         Snd.init();
-        if (!open) { Snd.play('bad'); Voice.say(L.locked); n.animate([{ transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'none' }], 250); return; }
+        if (!on) { Snd.play('bad'); Voice.say(open ? L.locked : L.isle.locked); n.animate([{ transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'none' }], 250); return; }
         Snd.play('select'); this.intro(i);
       };
       map.appendChild(n);
@@ -57,21 +79,43 @@ const UI = {
     });
     const av = el('canvas', 'avatar'); av.width = av.height = 152;
     const head = Art.friend(FRIENDS.findIndex(f => f.id === 'panda'), 152, 120); av.getContext('2d').drawImage(head, 0, 0);
+    av.hidden = !idx.includes(cur);
     map.appendChild(av);
+    // travelling between islands
+    const go = j => { if (j < 0 || j >= ISLANDS.length || j === k) return; Snd.init(); Snd.play('swap'); this.map(j); };
+    const prev = el('button', 'isle-arrow prev', '◀'), next = el('button', 'isle-arrow next' + (k + 1 < ISLANDS.length && !this.isleOpen(k + 1) ? ' shut' : ''), '▶');
+    prev.hidden = k === 0; next.hidden = k === ISLANDS.length - 1;
+    prev.onclick = () => go(k - 1); next.onclick = () => go(k + 1);
+    map.appendChild(prev); map.appendChild(next);
+    const row = el('div', 'isles');
+    ISLANDS.forEach((s, j) => {
+      const b = el('button', 'isle' + (j === k ? ' on' : '') + (this.isleOpen(j) ? '' : ' shut'));
+      const pic = Art2.img['island-' + (j + 1)];
+      if (pic) { const im = el('img'); im.src = pic.src; im.alt = ''; b.appendChild(im); } else b.textContent = s.icon;
+      if (this.isleStars(j) >= s.n * 3) b.classList.add('full');
+      b.onclick = () => go(j);
+      row.appendChild(b);
+    });
+    map.appendChild(row);
+    let sx = null;
+    map.onpointerdown = e => { sx = e.target === map || e.target === svg || e.target.closest('.deco') ? e.clientX : null; };
+    map.onpointerup = e => { if (sx == null) return; const dx = e.clientX - sx; sx = null; if (Math.abs(dx) > 70) go(k + (dx < 0 ? 1 : -1)); };
     const place = () => {
       const W = innerWidth, H = innerHeight, wide = W >= H;
-      const cols = wide ? 5 : 3, rows = Math.ceil(LEVELS.length / cols);
-      const topH = top.getBoundingClientRect().bottom + 40, bottom = 40;
-      const x0 = W * (wide ? 0.12 : 0.17), x1 = W * (wide ? 0.88 : 0.83);
-      const pts = LEVELS.map((_, i) => {
-        const row = Math.floor(i / cols), k = i % cols, col = row % 2 ? cols - 1 - k : k;
-        const y = topH + (H - bottom - topH) * (row + 0.5) / rows;
-        return [x0 + (x1 - x0) * col / (cols - 1), y + Math.sin(i * 1.7) * 10];
+      const cols = wide ? 5 : 3, rows = Math.ceil(isle.n / cols);
+      const topH = top.getBoundingClientRect().bottom + (H < 500 ? 24 : 40), bottom = row.getBoundingClientRect().height + (H < 500 ? 34 : 50);
+      const x0 = W * (wide ? 0.14 : 0.19), x1 = W * (wide ? 0.86 : 0.81);
+      const pts = idx.map((_, j) => {
+        const r = Math.floor(j / cols), c = j % cols, col = r % 2 ? cols - 1 - c : c;
+        const y = topH + (H - bottom - topH) * (r + 0.5) / rows;
+        return [x0 + (x1 - x0) * col / (cols - 1), y + Math.sin(j * 1.7) * 10];
       });
-      const sz = clamp(Math.min(W / (cols * 2.4), (H - topH - bottom) / (rows * 1.9)), 64, 110);
-      nodes.forEach((n, i) => {
-        n.style.left = pts[i][0] + 'px'; n.style.top = pts[i][1] + 'px';
-        n.style.width = n.style.height = sz + 'px'; n.style.margin = `${-sz / 2}px 0 0 ${-sz / 2}px`; n.style.fontSize = sz * 0.42 + 'px';
+      const sz = clamp(Math.min(W / (cols * 2.5), (H - topH - bottom) / (rows * 1.95)), 44, 104);
+      map.classList.toggle('tight', sz < 62);   // a short screen: the stars stay, the names go
+      nodes.forEach((n, j) => {
+        const big = j === isle.n - 1 ? 1.18 : 1;
+        n.style.left = pts[j][0] + 'px'; n.style.top = pts[j][1] + 'px';
+        n.style.width = n.style.height = sz * big + 'px'; n.style.margin = `${-sz * big / 2}px 0 0 ${-sz * big / 2}px`; n.style.fontSize = sz * 0.4 + 'px';
       });
       let dd = `M${pts[0][0]},${pts[0][1]}`;
       for (let i = 1; i < pts.length; i++) {
@@ -81,14 +125,34 @@ const UI = {
       svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
       svg.innerHTML = `<path d="${dd}" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="${sz * 0.42}" stroke-linecap="round"/>` +
         `<path d="${dd}" fill="none" stroke="#ffb3d6" stroke-width="${sz * 0.12}" stroke-dasharray="${sz * 0.05} ${sz * 0.28}" stroke-linecap="round"/>`;
-      const cur = Math.min(d.open, LEVELS.length) - 1;
-      av.style.left = pts[cur][0] + 'px'; av.style.top = pts[cur][1] + 'px';
-      av.style.width = av.style.height = sz * 0.75 + 'px'; av.style.margin = `${-sz * 1.15}px 0 0 ${sz * 0.05}px`;
+      const at = idx.indexOf(cur);
+      if (at >= 0) { av.style.left = pts[at][0] + 'px'; av.style.top = pts[at][1] + 'px'; av.style.width = av.style.height = sz * 0.75 + 'px'; av.style.margin = `${-sz * 1.15}px 0 0 ${sz * 0.05}px`; }
     };
     place();
     this._mapResize && removeEventListener('resize', this._mapResize);
     this._mapResize = () => { if (!map.hidden) place(); };
     addEventListener('resize', this._mapResize);
+    // a new island, the first time she gets there
+    if (open && k > 0 && !d.seen['isle_' + k]) { d.seen['isle_' + k] = 1; Store.save(); Voice.say(L.isle.hi[k]); title.animate([{ transform: 'scale(.6)' }, { transform: 'scale(1.15)' }, { transform: 'scale(1)' }], { duration: 600, easing: 'ease-out' }); Fx.confetti(50); }
+  },
+  // the last level of an island won for the first time: a card for the island and a blind box that is always 稀有 or
+  // better
+  async isleDone(k) {
+    const isle = ISLANDS[k];
+    Snd.play('win'); Fx.confetti(120);
+    Voice.say(L.isle.done[k]);
+    await new Promise(res => {
+      this.modal(card => {
+        card.appendChild(el('h2', 'green', `${isle.icon} ${isle.name}`));
+        const pic = Art2.img['island-' + (k + 1)];
+        if (pic) { const im = el('img', 'isle-pic'); im.src = pic.src; im.alt = ''; card.appendChild(im); } else card.appendChild(el('div', 'bigstars', '🏝️'));
+        card.appendChild(el('p', null, `<span class="big">${isle.n} / ${isle.n}</span> 关 · ⭐ ${this.isleStars(k)}`));
+        const row = el('div', 'row');
+        row.appendChild(this.button('🎁 打开', 'sun', () => { this.closeModal(); res(); }));
+        card.appendChild(row);
+      });
+    });
+    await Gift.open(3, { rare: true });
   },
 
   // ---------- before a level ----------
@@ -142,13 +206,14 @@ const UI = {
         card.appendChild(st);
         [...st.children].forEach((s, i) => { if (i < o.stars) setTimeout(() => { s.classList.add('on'); Snd.play('star', i); Fx.sparkles(s.getBoundingClientRect().left + 30, s.getBoundingClientRect().top + 30, 8, 30, '#ffd23a'); }, 300 + i * 380); });
         card.appendChild(el('p', null, `<span class="big">${o.score.toLocaleString('en-US')}</span> 分`));
-        if (last) card.appendChild(el('p', null, '🏆 十关全部通过啦！'));
+        if (last) card.appendChild(el('p', null, '🏆 所有小岛全部通关啦！'));
         const row = el('div', 'row');
         row.appendChild(this.button('🗺️', 'ghost', () => this.map()));
         row.appendChild(this.button('↻ 再玩一次', 'violet', () => this.play(o.li)));
         if (!last) row.appendChild(this.button('下一关 ▶', 'green', () => this.play(o.li + 1)));
         card.appendChild(row);
-        setTimeout(() => Voice.say(last ? L.allDone : L.stars[o.stars]), 1500);
+        // a replay that opened no box: she hears that three stars still would (if she hasn't had them)
+        setTimeout(() => Voice.say(last ? L.allDone : !o.box && o.stars < 3 && (Store.d.stars[o.li] || 0) < 3 ? L.gift.more : L.stars[o.stars]), 1500);
         if (last) setTimeout(() => Fx.confetti(120), 600);
       } else {
         card.appendChild(el('h2', 'violet', '差一点点！'));
@@ -275,7 +340,7 @@ const UI = {
       const row = el('div', 'row'); row.style.justifyContent = 'flex-start'; row.style.marginTop = '4px';
       if (o.fromMath && o.skip) row.appendChild(this.button('跳过这一页', 'sun small', () => { m.style.zIndex = ''; this.closeModal(); o.skip(); }));
       else row.appendChild(this.button(d.owed ? '免做下一页数学题' : '下一局不用做题 ✓', 'sun small', () => { d.owed = false; Store.save(); this.toast('好的，下一局不用先做题'); }));
-      row.appendChild(this.button('解锁全部关卡', 'ghost small', () => { d.open = LEVELS.length; Store.save(); this.toast('10 关都打开了'); }));
+      row.appendChild(this.button('解锁全部关卡', 'ghost small', () => { d.open = LEVELS.length; Store.save(); this.toast(`${LEVELS.length} 关都打开了`); }));
       row.appendChild(this.button('清空进度', 'ghost small', () => {
         if (!confirm('清空关卡、星星、收集册和做题记录？')) return;
         const keep = { math: d.math, way: d.way, snd: d.snd, voi: d.voi, mus: d.mus };

@@ -60,6 +60,9 @@ const Store = {
       ways: {},              // how each way went: way -> [times used, then right without counting together]
       wayLast: '',           // the way used last, which glows on the choice
       seen: {},              // tips already shown
+      isle: -1,              // the island the map showed last (ISLANDS)
+      fails: {},             // level -> games lost in a row (two or more: the next starts with a 小帮手)
+      s2: 1,                 // season two: progress made in season one has been carried over
       gifts: {},             // friends from the blind box (gift.js): id -> how many
       giftFresh: [],         // new friends not yet seen in the album
       snd: true, voi: true, mus: true,
@@ -82,6 +85,13 @@ const Store = {
         // the page owed is drawn again), and 小老师 starts with 列竖式 instead of asking her to choose
         if (v < 5) { this.d.math.max = 100; this.d.spin = null; if (!raw.way || raw.way === 'pick') this.d.way = 'col'; }
         this.d.mathV = 5;
+        // season two: a level won in season one now opens the next (the eleventh after the tenth); the map starts on
+        // the island she is up to
+        if (!raw.s2) {
+          let last = -1; for (const i in this.d.stars) if (this.d.stars[i] > 0) last = Math.max(last, +i);
+          this.d.open = Math.max(this.d.open, Math.min(LEVELS.length, last + 2));
+          this.d.isle = -1; this.d.s2 = 1;
+        }
       }
     } catch (e) { }
     return this.d;

@@ -22,12 +22,15 @@ const Game = {
     Cast.take(li);
     this.li = li; this.lv = LEVELS[li];
     this.b = new Board(this.lv);
+    // 小帮手: two lost games in a row on this level start the next with a striped animal already made (four: and a bomb)
+    const streak = (Store.d.fails || {})[li] || 0;
+    this.helped = streak >= 2 ? this.b.helper(streak >= 4 ? [pick(['h', 'v']), 'b'] : [pick(['h', 'v'])]) : [];
     this.active = true; this.busy = false; this.over = false; this.sel = -1; this.hint = null; this.extraUsed = false; this.saidLow = false;
     this.cheered = 0; this.hudScore = 0;
     this.hintAfter = Store.d.seen.swipe ? 7000 : 1500;   // the very first game: the finger shows how to swipe straight away
     Fx.clear(); Clock.clear();
     this.sprites.clear();
-    this.vis = this.b.cells.map(x => ({ ice: x.ice, box: x.box, bub: x.bub, hit: -1e9 }));
+    this.vis = this.b.cells.map(x => ({ ice: x.ice, box: x.box, bub: x.bub, dirt: x.dirt, grass: x.grass, cage: x.cage, hit: -1e9, grew: -1e9 }));
     this.b.cells.forEach((x, i) => { if (x.p) this.addSprite(x.p, i); });
     this.hudGoals = this.b.goals.map(g => g.left);
     this.buildHud();
@@ -43,12 +46,20 @@ const Game = {
         const kk = clamp((t - s.delay) / 420, 0, 1);
         s.r = s.r0 - (1 - Ease.back(kk)) * (this.b.R + 1);
       }
-    }).then(() => { for (const s of this.sprites.values()) { if (s.r0 != null) s.r = s.r0; s.r0 = null; } this.busy = false; this.lastAct = Clock.now; });
+    }).then(() => {
+      for (const s of this.sprites.values()) { if (s.r0 != null) s.r = s.r0; s.r0 = null; }
+      this.busy = false; this.lastAct = Clock.now;
+      if (this.helped.length) {   // the helping hand shows itself
+        Voice.say(L.helper);
+        this.helped.forEach(i => { const [r, c] = this.b.rc(i), [x, y] = this.cellXY(r, c); Fx.ring(x, y, '#ffd23a', this.G.cell * 0.2, this.G.cell, 600, 8); Fx.sparkles(x, y, 12, this.G.cell * 0.6, '#ffd23a'); const p = this.b.cells[i].p; if (p) this.showOff(p); });
+        Snd.play('make');
+      }
+    });
     Music.start();
   },
   addSprite(p, i) {
     const [r, c] = this.b.rc(i);
-    const s = { id: p.id, p, r, c, sc: 1, sx: 1, sy: 1, flash: 0, land: -1e9, born: Clock.now, wig: 0 };
+    const s = { id: p.id, p, r, c, sc: 1, sx: 1, sy: 1, flash: 0, land: -1e9, born: Clock.now, wig: 0, hp: p.hp };
     this.sprites.set(p.id, s);
     return s;
   },
@@ -130,6 +141,12 @@ const Game = {
     const [sx, sy] = Fx.shakeOffset();
     ctx.setTransform(d, 0, 0, d, sx * d, sy * d);
     ctx.drawImage(this.base.c, G.ox - this.base.pad, G.oy - this.base.pad, this.base.c.width / d, this.base.c.height / d);
+    this.vis.forEach((v, i) => {   // 种草地: bare soil, or the grass that grew there (popping up when it has just grown)
+      if (!v.dirt) return;
+      const [r, c] = b.rc(i), k = clamp((t - v.grew) / 380, 0, 1);
+      if (!v.grass || k < 1) ctx.drawImage(Art.cache.dirt, G.ox + c * cell, G.oy + r * cell, cell, cell);
+      if (v.grass) { const sc = Ease.back(k); ctx.globalAlpha = Math.min(1, k * 2); ctx.drawImage(Art.cache.grass, G.ox + (c + 0.5 - sc / 2) * cell, G.oy + (r + 0.5 - sc / 2) * cell, cell * sc, cell * sc); ctx.globalAlpha = 1; }
+    });
     this.vis.forEach((v, i) => {
       if (!v.ice) return;
       const [r, c] = b.rc(i);
@@ -149,16 +166,17 @@ const Game = {
       if (since < 260) { const k = since / 260, a = Math.sin(k * Math.PI) * (1 - k) * 0.22; syy *= 1 - a; sxx *= 1 + a; y += a * cell * 0.25; }
       if (this.sel >= 0 && this.b.cells[this.sel].p === s.p && !this.busy) { const k = Math.abs(Math.sin(t / 180)); y -= k * cell * 0.08; syy *= 1 + k * 0.04; }
       if (s.wig) { const k = Math.sin(t / 90) * s.wig; x += k * cell * 0.08 * (s.wdx || 0); y += k * cell * 0.08 * (s.wdy || 0); }
-      if (s.p.k === 'g') y += Math.sin(t / 300 + s.c) * cell * 0.03;
+      if (s.p.k === 'g' || s.p.k === 'l') y += Math.sin(t / 300 + s.c) * cell * 0.03;
       ctx.globalAlpha = s.a == null ? 1 : s.a;
-      Art.piece(ctx, s.p, x, y, sc, t, s.flash, sxx, syy);
+      Art.piece(ctx, s.p, x, y, sc, t, s.flash, sxx, syy, s.hp);
       ctx.globalAlpha = 1;
     }
     ctx.restore();
     this.vis.forEach((v, i) => {
-      if (!v.bub && !v.box) return;
+      if (!v.bub && !v.box && v.cage < 0) return;
       const [r, c] = b.rc(i), [x, y] = this.cellXY(r, c);
       const hk = clamp((t - v.hit) / 260, 0, 1), hit = hk < 1 ? Math.sin(hk * Math.PI) * 0.12 : 0;
+      if (v.cage >= 0) Art.cageAt(ctx, v.cage, x, y, cell * (1.04 + hit * 0.5));
       if (v.box) { const s = cell * (1 - hit); ctx.drawImage(Art.cache['box' + v.box], x - s / 2, y - s / 2, s, s); }
       if (v.bub) { const w = 1 + Math.sin(t / 400 + i) * 0.03, s = Art.T / d * w; ctx.drawImage(Art.cache.bub, x - s / 2, y - s / 2, s, s); }
     });
@@ -237,6 +255,8 @@ const Game = {
     if (this.sel === i) { this.sel = -1; return; }
     const x = this.b.cells[i];
     if (x.bub && x.p) { this.nudge(i); this.tip('bubStuck'); return; }
+    if (x.cage >= 0) { this.nudge(i); this.tip('cageStuck'); return; }
+    if (x.p && x.p.k === 'l') { this.nudge(i); this.tip('balloonStuck'); return; }
     if (!this.b.movable(i)) return;
     this.sel = i; Snd.play('select'); this.clearHint();
   },
@@ -250,7 +270,15 @@ const Game = {
     if (this.busy || this.over) return;
     this.clearHint();
     const B = this.b;
-    if (!B.movable(a) || !B.movable(b)) { if (B.cells[a].bub || B.cells[b].bub) { this.nudge(B.cells[a].bub ? a : b); this.tip('bubStuck'); } return; }
+    if (!B.movable(a) || !B.movable(b)) {
+      for (const i of [a, b]) {
+        const x = B.cells[i];
+        if (x.bub) { this.nudge(i); this.tip('bubStuck'); return; }
+        if (x.cage >= 0) { this.nudge(i); this.tip('cageStuck'); return; }
+        if (x.p && x.p.k === 'l') { this.nudge(i); this.tip('balloonStuck'); return; }
+      }
+      return;
+    }
     this.busy = true;
     const res = B.swap(a, b);
     if (!res.ok) {
@@ -276,6 +304,7 @@ const Game = {
       else if (ph.type === 'clear') { await this.animClear(ph); this.maybeCheer(done); }
       else if (ph.type === 'fall') await this.animFall(ph);
       else if (ph.type === 'exit') await this.animExit(ph);
+      else if (ph.type === 'rise') await this.animRise(ph);
     }
   },
   maybeCheer(done) {
@@ -415,6 +444,48 @@ const Game = {
         if (e.goal) this.flyGoal(this.goalIndex('bub'), Art.cache.bub, x, y);
         break;
       }
+      case 'grass': {   // 种草地
+        const v = this.vis[e.i]; v.grass = true; v.grew = Clock.now;
+        Fx.burst(x, y, ['#8edb6b', '#fff27a', '#ffffff'], 6, 0.7, cell);
+        if (Clock.now - (this.growSnd || 0) > 60) { this.growSnd = Clock.now; Snd.play('grow', e.i); }
+        if (e.goal) this.flyGoal(this.goalIndex('grass'), Art.cache.grass, x, y);
+        break;
+      }
+      case 'crack': {   // 蛋宝宝, the first knock
+        const s = this.sprites.get(e.p.id);
+        if (s) { s.hp = e.left; Clock.tween(320, k => { s.sx = 1 + Math.sin(k * Math.PI * 4) * 0.1 * (1 - k); }); }
+        Fx.burst(x, y, ['#fffdf6', '#ffd23a', '#ffb3cf'], 8, 0.8, cell);
+        Snd.play('crack');
+        break;
+      }
+      case 'hatch': {   // the second: the shell bursts and a chick hops out and flies to the goal
+        const s = this.sprites.get(e.p.id);
+        if (s) { s.hp = 0; s.z = 3; Clock.tween(160, k => { s.sc = 1 + k * 0.3; s.a = 1 - k; }).then(() => this.sprites.delete(e.p.id)); }
+        Fx.burst(x, y, ['#fffdf6', '#fbefd8', '#ffd23a'], 14, 1.2, cell);
+        Fx.sparkles(x, y, 8, cell * 0.5, '#ffd23a');
+        Snd.play('hatch');
+        const chick = Art.friend(FRIENDS.findIndex(f => f.id === 'chick'), 128, 112);
+        this.flyGoal(this.goalIndex('egg'), chick, x, y - cell * 0.2, true, !e.goal);
+        break;
+      }
+      case 'tug': {   // 气球: a match next to it gives it a tug; it goes up when the board has settled (animRise)
+        const s = this.sprites.get(e.p.id);
+        if (s) Clock.tween(300, k => { s.sy = 1 + Math.sin(k * Math.PI) * 0.14; s.sx = 1 - Math.sin(k * Math.PI) * 0.06; });
+        Fx.sparkles(x, y - cell * 0.3, 5, cell * 0.4, '#ffffff');
+        break;
+      }
+      case 'free': {   // 彩色笼子 opens: the bars spring away and the animal inside jumps for joy
+        const v = this.vis[e.i]; v.cage = -1; v.hit = Clock.now;
+        Fx.ring(x, y, '#ffd56b', cell * 0.3, cell * 1.1, 420, 10);
+        Fx.burst(x, y, ['#ffd56b', '#fff3cf', ANIMALS[e.c].fx[0]], 14, 1.2, cell);
+        for (let k = 0; k < 4; k++) Fx.part({ kind: 'img', img: Fx.heart('#ff6fae'), x, y, vx: rnd(-0.12, 0.12), vy: rnd(-0.32, -0.18), g: 0.0006, life: 700, size: cell * 0.32 });
+        const s = e.p && this.sprites.get(e.p.id);
+        if (s) Clock.tween(420, k => { s.sy = 1 + Math.sin(k * Math.PI * 2) * 0.12 * (1 - k); s.land = Clock.now - 300; });
+        Snd.play('free');
+        const cg = Art.canvas(cell * 1.2, cell * 1.2); Art.cageAt(cg.getContext('2d'), e.c, cell * 0.6, cell * 0.6, cell * 1.1);
+        if (e.goal) this.flyGoal(this.goalIndex('cage'), cg, x, y);
+        break;
+      }
     }
   },
   // pieces fall: logic already moved them; follow each one's path, faster and faster, with a little squash on landing
@@ -460,6 +531,31 @@ const Game = {
     this.sayOnce('penguinHome', L.penguinHome);
     await Clock.wait(350);
   },
+  // 气球: the lifted ones swap places with what is above them; one that reached the top floats off to the goal
+  async animRise(ph) {
+    const from = new Map();
+    for (const m of ph.moves) { const s = this.sprites.get(m.id); if (s) from.set(m.id, [s, s.r, s.c]); }
+    if (ph.moves.length) {
+      Snd.play('rise');
+      await Clock.tween(300, k => {
+        for (const m of ph.moves) {
+          const f = from.get(m.id); if (!f) continue;
+          const [s] = f, [r1, c1] = this.b.rc(m.to);
+          s.r = lerp(f[1], r1, k); s.c = lerp(f[2], c1, k);
+        }
+      }, Ease.inOut);
+      for (const m of ph.moves) { const f = from.get(m.id); if (f) { const [r1, c1] = this.b.rc(m.to); f[0].r = r1; f[0].c = c1; f[0].land = Clock.now; } }
+    }
+    for (const o of ph.away) {
+      const s = this.sprites.get(o.p.id), [r, c] = this.b.rc(o.i), [x, y] = this.cellXY(r, c);
+      Snd.play('balloon');
+      Fx.sparkles(x, y, 10, this.G.cell * 0.6, '#ffd0e4');
+      Fx.text(x, y, '+' + ph.pts, this.G.cell * 0.45, '#ff4f9a');
+      if (s) { s.z = 3; await Clock.tween(260, k => { s.r = r - k * 0.8; s.a = 1 - k; }); this.sprites.delete(o.p.id); }
+      this.flyGoal(this.goalIndex('bl'), Art.cache.balloon, x, y - this.G.cell * 0.8, true);
+    }
+    if (ph.away.length) this.sayOnce('balloonAway', L.balloonAway);
+  },
   // sprites and board must agree after a turn (a safety net: an animation that was cut short leaves nothing behind)
   reconcile() {
     const live = new Set();
@@ -469,10 +565,10 @@ const Game = {
       const [r, c] = this.b.rc(i);
       let s = this.sprites.get(x.p.id);
       if (!s) s = this.addSprite(x.p, i);
-      s.p = x.p; s.r = r; s.c = c; s.sc = 1; s.sx = 1; s.sy = 1; s.flash = 0; s.holdFlash = false; s.z = 0; s.a = 1;
+      s.p = x.p; s.r = r; s.c = c; s.sc = 1; s.sx = 1; s.sy = 1; s.flash = 0; s.holdFlash = false; s.z = 0; s.a = 1; s.hp = x.p.hp;
     });
     for (const id of [...this.sprites.keys()]) if (!live.has(id)) this.sprites.delete(id);
-    this.b.cells.forEach((x, i) => { const v = this.vis[i]; v.ice = x.ice; v.box = x.box; v.bub = x.bub; });
+    this.b.cells.forEach((x, i) => { const v = this.vis[i]; v.ice = x.ice; v.box = x.box; v.bub = x.bub; v.grass = x.grass; v.cage = x.cage; });
   },
   async afterTurn() {
     this.reconcile();
@@ -519,15 +615,25 @@ const Game = {
     }
     this.syncHud();
     await Clock.wait(500);
-    const stars = B.stars(), li = this.li, d = Store.d;
-    d.stars[li] = Math.max(d.stars[li] || 0, stars);
+    const stars = B.stars(), li = this.li, d = Store.d, before = d.stars[li] || 0;
+    d.stars[li] = Math.max(before, stars);
     d.best[li] = Math.max(d.best[li] || 0, B.score);
     d.open = Math.max(d.open, Math.min(LEVELS.length, li + 2));
+    if (d.fails) delete d.fails[li];
+    // the last level of an island won for the first time: the map goes on to the next island
+    const k = isleOf(li), isle = ISLANDS[k];
+    const isleDone = !before && isle && li === isle.from + isle.n - 1;
+    if (isleDone && k + 1 < ISLANDS.length) d.isle = k + 1;
     Store.save();
-    await Gift.open(stars);   // the blind box first, then the stars card
-    UI.result({ win: true, stars, score: B.score, li });
+    // the blind box first, then the stars card (decli 2026-11-02, with so many levels: a box the first time a level is
+    // won, and a better one the first time it gets three stars; replays only for the stars)
+    const box = !before || (stars === 3 && before < 3);
+    if (box) await Gift.open(stars);
+    if (isleDone) await UI.isleDone(k);
+    UI.result({ win: true, stars, score: B.score, li, box });
   },
   async fail() {
+    const d = Store.d; d.fails = d.fails || {}; d.fails[this.li] = (d.fails[this.li] || 0) + 1; Store.save();   // for the 小帮手
     await Clock.wait(400);
     Snd.play('lose');
     Voice.say(L.fail);
@@ -550,8 +656,10 @@ const Game = {
     Store.d.seen[key] = 1; Store.save();
     setTimeout(() => Voice.say(line), 700);
   },
+  // what can't be moved says why, once a game
   tip(key) {
-    if (key === 'bubStuck' && !this._bubTold) { this._bubTold = true; Voice.say(L.bubStuck); }
+    this._told = this._told || {};
+    if (L[key] && !this._told[key]) { this._told[key] = true; Voice.say(L[key]); }
   },
   // a special piece just made shows off what it will do: a glowing ring, plus arrows along its row or column or a spinning
   // rainbow (the bomb only glows: decli found its big diamond outline across the board got in the way, 2026-10-19).
@@ -658,8 +766,8 @@ const Game = {
     m.style.transform = 'scale(1.15)'; setTimeout(() => { m.style.transform = ''; }, 150);
   },
   goalIndex(t, c) { return this.b.goals.findIndex(g => g.t === t && (t !== 'c' || g.color === c)); },
-  flyGoal(gi, img, x, y, big) {
-    if (gi < 0) return;
+  flyGoal(gi, img, x, y, big, quiet) {
+    if (gi < 0 || quiet) return;
     const node = $$('#hud .goal')[gi]; if (!node) return;
     const r = node.getBoundingClientRect(), cell = this.G.cell;
     Fx.fly({ x0: x, y0: y, x1: r.left + r.width / 2, y1: r.top + r.height / 2, s0: cell * (big ? 1.1 : 0.9), s1: r.width * 0.8, dur: 520 + Math.random() * 160, lift: 60 + Math.random() * 60, img, trail: '#ffffff',

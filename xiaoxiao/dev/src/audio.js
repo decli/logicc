@@ -128,6 +128,13 @@ const Snd = {
       case 'right': this.tone(this.pent(7), 0.15, { type: 'triangle', vol: 0.18 }); this.tone(this.pent(9), 0.3, { type: 'triangle', vol: 0.18, at: 0.1, verb: true }); break;
       case 'wrong': this.tone(392, 0.14, { type: 'sine', vol: 0.13 }); this.tone(330, 0.22, { type: 'sine', vol: 0.12, at: 0.12, to: 370 }); break;   // "hmm?", not a buzz
       case 'key': this.tone(700 + k * 30, 0.05, { type: 'sine', vol: 0.1 }); break;
+      // season two: an egg cracking and a chick peeping out, grass growing, a balloon going up and away, a cage opening
+      case 'crack': this.noise(0.07, { filter: 'highpass', f: 2600, vol: 0.2 }); this.tone(620, 0.08, { type: 'triangle', to: 420, vol: 0.12 }); break;
+      case 'hatch': this.noise(0.1, { filter: 'highpass', f: 2200, vol: 0.18 }); [0, 0.13].forEach(at => this.tone(2100, 0.07, { type: 'sine', to: 2900, vol: 0.12, at: at + 0.08 })); this.tone(this.pent(12), 0.3, { type: 'triangle', vol: 0.1, at: 0.3, verb: true }); break;
+      case 'grow': this.tone(this.pent(7 + (k % 5)), 0.12, { type: 'sine', vol: 0.06, to: this.pent(9 + (k % 5)), verb: true }); break;
+      case 'rise': this.tone(330, 0.25, { type: 'sine', to: 520, vol: 0.08 }); break;
+      case 'balloon': this.noise(0.4, { f: 500, fto: 2500, q: 0.7, vol: 0.08 }); this.tone(440, 0.5, { type: 'sine', to: 1100, vol: 0.1, verb: true }); break;
+      case 'free': this.noise(0.05, { filter: 'highpass', f: 4000, vol: 0.15 }); [0, 2, 4, 7].forEach((n, i) => this.tone(this.pent(7 + n), 0.3, { type: 'triangle', vol: 0.12, at: 0.05 + i * 0.07, verb: true })); break;
       // marking a handed-in page: a pen's tick that climbs a note with every right sum, a soft low one for a ring
       case 'mark': this.noise(0.05, { filter: 'highpass', f: 3500, vol: 0.12 }); this.tone(this.pent(5 + ((k - 1) % 10)), 0.2, { type: 'triangle', vol: 0.15, at: 0.02, verb: true }); break;
       case 'ring': this.noise(0.16, { f: 1200, fto: 700, q: 1.2, vol: 0.08 }); this.tone(392, 0.22, { type: 'sine', vol: 0.09, to: 350 }); break;

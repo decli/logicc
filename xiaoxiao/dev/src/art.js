@@ -61,6 +61,106 @@ const Art = {
     this.cache.ice1 = this.iceTile(D, 1); this.cache.ice2 = this.iceTile(D, 2);
     this.cache.box1 = this.boxTile(D, 1); this.cache.box2 = this.boxTile(D, 2);
     this.cache.bub = this.bubbleTile(T, D);
+    // season two: an egg whole and cracked, a balloon, a cage, bare soil and grass (decli's pictures when they are in)
+    this.cache.egg2 = this.eggTile(T, D, 2); this.cache.egg1 = this.eggTile(T, D, 1);
+    this.cache.balloon = this.balloonTile(T, D);
+    this.cache.cage = this.cageTile(T, D);
+    this.cache.dirt = this.dirtTile(D); this.cache.grass = this.grassTile(D);
+  },
+  // a picture of decli's (Art2, art2.js) drawn to fill a T x T tile, if it has loaded
+  pic(name, T, fit) {
+    const im = Art2.img[name];
+    if (!im) return null;
+    const c = this.canvas(T, T), x = c.getContext('2d'), f = fit * T / Math.max(im.width, im.height);
+    x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high';
+    x.drawImage(im, (T - im.width * f) / 2, (T - im.height * f) / 2, im.width * f, im.height * f);
+    return c;
+  },
+  // 蛋宝宝: cream with pastel spots; cracked: a zigzag and a bit of yellow fluff
+  eggTile(T, D, hp) {
+    const own = this.pic(hp === 2 ? 'egg' : 'egg-crack', T, D * 0.92 / T * 1.0);
+    if (own) return own;
+    const c = this.canvas(T, T), x = c.getContext('2d'), m = T / 2, w = D * 0.36, h = D * 0.44;
+    const shape = () => { x.beginPath(); x.moveTo(m, m - h); x.bezierCurveTo(m + w * 1.05, m - h, m + w * 1.1, m + h * 0.75, m, m + h * 0.92); x.bezierCurveTo(m - w * 1.1, m + h * 0.75, m - w * 1.05, m - h, m, m - h); x.closePath(); };
+    const g = x.createRadialGradient(m - w * 0.35, m - h * 0.35, D * 0.04, m, m, h * 1.2);
+    g.addColorStop(0, '#fffdf6'); g.addColorStop(0.65, '#fbefd8'); g.addColorStop(1, '#e9cfa6');
+    shape(); x.fillStyle = g; x.fill();
+    x.save(); shape(); x.clip();
+    [['#ffb3cf', -0.45, -0.1, 0.11], ['#a9e8c8', 0.4, 0.15, 0.1], ['#ffb3cf', 0.15, 0.55, 0.09], ['#a9e8c8', -0.3, 0.55, 0.07], ['#ffd27a', 0.1, -0.5, 0.08]]
+      .forEach(([col, dx, dy, r]) => { x.fillStyle = col; x.beginPath(); x.arc(m + dx * w * 1.6, m + dy * h, D * r, 0, 7); x.fill(); });
+    if (hp === 1) {
+      const zig = [[-1.05, 0.02], [-0.6, -0.14], [-0.25, 0.1], [0.12, -0.16], [0.5, 0.08], [1.05, -0.08]];
+      x.fillStyle = '#ffd23a'; x.beginPath(); zig.forEach(([zx, zy], k) => x[k ? 'lineTo' : 'moveTo'](m + zx * w, m + zy * h + h * 0.06)); zig.slice().reverse().forEach(([zx, zy]) => x.lineTo(m + zx * w, m + zy * h - h * 0.05)); x.closePath(); x.fill();
+      x.strokeStyle = '#8a6a48'; x.lineWidth = D * 0.035; x.lineJoin = 'round'; x.beginPath(); zig.forEach(([zx, zy], k) => x[k ? 'lineTo' : 'moveTo'](m + zx * w, m + zy * h)); x.stroke();
+    }
+    x.restore();
+    x.fillStyle = 'rgba(255,255,255,0.85)'; x.beginPath(); x.ellipse(m - w * 0.42, m - h * 0.45, w * 0.16, h * 0.12, -0.5, 0, 7); x.fill();
+    shape(); x.lineWidth = D * 0.03; x.strokeStyle = 'rgba(160,120,80,0.55)'; x.stroke();
+    return c;
+  },
+  // 气球: glossy pink, a knot and a curly string
+  balloonTile(T, D) {
+    const own = this.pic('balloon', T, D * 0.98 / T);
+    if (own) return own;
+    const c = this.canvas(T, T), x = c.getContext('2d'), m = T / 2, r = D * 0.33, cy = m - D * 0.1;
+    x.strokeStyle = '#ffffff'; x.lineWidth = D * 0.03; x.lineCap = 'round';
+    x.beginPath(); x.moveTo(m, cy + r * 1.15); x.bezierCurveTo(m - D * 0.08, cy + r * 1.5, m + D * 0.08, cy + r * 1.75, m - D * 0.02, m + D * 0.47); x.stroke();
+    const g = x.createRadialGradient(m - r * 0.35, cy - r * 0.4, r * 0.1, m, cy, r * 1.2);
+    g.addColorStop(0, '#ffd0e4'); g.addColorStop(0.5, '#ff7fb3'); g.addColorStop(1, '#e8457f');
+    x.fillStyle = g; x.beginPath(); x.ellipse(m, cy, r, r * 1.12, 0, 0, 7); x.fill();
+    x.fillStyle = '#e8457f'; x.beginPath(); x.moveTo(m - D * 0.05, cy + r * 1.2); x.lineTo(m + D * 0.05, cy + r * 1.2); x.lineTo(m, cy + r * 1.06); x.closePath(); x.fill();
+    x.fillStyle = 'rgba(255,255,255,0.85)'; x.beginPath(); x.ellipse(m - r * 0.4, cy - r * 0.5, r * 0.2, r * 0.32, -0.5, 0, 7); x.fill();
+    return c;
+  },
+  // 彩色笼子: a rounded frame and bars; the badge at the bottom gets the caged animal's head when drawn (cageAt)
+  cageTile(T, D) {
+    const own = this.pic('cage', T, D * 1.04 / T);
+    if (own) return own;
+    const c = this.canvas(T, T), x = c.getContext('2d'), m = T / 2, w = D * 0.98, top = m - w / 2;
+    x.lineCap = 'round';
+    const bar = (x0, y0, x1, y1, wd) => { x.lineWidth = wd * 1.6; x.strokeStyle = 'rgba(122,82,30,0.55)'; x.beginPath(); x.moveTo(x0, y0); x.lineTo(x1, y1); x.stroke(); x.lineWidth = wd; x.strokeStyle = '#fff3cf'; x.stroke(); };
+    for (const k of [-0.3, -0.1, 0.1, 0.3]) bar(m + k * w, top + w * 0.08, m + k * w, top + w * 0.92, D * 0.05);
+    this.rr(x, top + w * 0.04, top + w * 0.04, w * 0.92, w * 0.92, w * 0.18);
+    x.lineWidth = D * 0.1; x.strokeStyle = 'rgba(122,82,30,0.5)'; x.stroke(); x.lineWidth = D * 0.065; x.strokeStyle = '#ffd56b'; x.stroke();
+    return c;
+  },
+  dirtTile(D) {
+    const own = Art2.img.dirt && this.pic('dirt', D, 1);
+    if (own) return own;
+    const c = this.canvas(D, D), x = c.getContext('2d'), p = D * 0.05;
+    const g = x.createLinearGradient(0, 0, 0, D); g.addColorStop(0, '#e9c79c'); g.addColorStop(1, '#d6a874');
+    this.rr(x, p, p, D - 2 * p, D - 2 * p, D * 0.2); x.fillStyle = g; x.fill();
+    x.fillStyle = 'rgba(140,90,45,0.35)';
+    [[0.25, 0.3, 0.05], [0.7, 0.22, 0.04], [0.55, 0.7, 0.06], [0.2, 0.75, 0.035], [0.82, 0.62, 0.04]].forEach(([a, b, r]) => { x.beginPath(); x.arc(a * D, b * D, r * D, 0, 7); x.fill(); });
+    return c;
+  },
+  grassTile(D) {
+    const c = this.canvas(D, D), x = c.getContext('2d'), p = D * 0.05;
+    const own = Art2.img.grass;
+    this.rr(x, p, p, D - 2 * p, D - 2 * p, D * 0.2);
+    if (own) { x.save(); x.clip(); x.drawImage(own, 0, 0, D, D); x.restore(); return c; }
+    const g = x.createLinearGradient(0, 0, 0, D); g.addColorStop(0, '#b8ee8f'); g.addColorStop(1, '#8edb6b');
+    x.fillStyle = g; x.fill();
+    x.save(); x.clip(); x.strokeStyle = 'rgba(70,160,60,0.45)'; x.lineWidth = D * 0.03; x.lineCap = 'round';
+    for (let k = 0; k < 14; k++) { const a = ((k * 37) % 100) / 100, b = ((k * 61) % 100) / 100; x.beginPath(); x.moveTo(a * D, b * D + D * 0.08); x.lineTo(a * D + D * 0.03, b * D); x.stroke(); }
+    [[0.22, 0.25, '#ffffff'], [0.74, 0.7, '#fff27a']].forEach(([a, b, col]) => { x.fillStyle = col; for (let k = 0; k < 5; k++) { x.beginPath(); x.arc(a * D + Math.cos(k * 1.26) * D * 0.035, b * D + Math.sin(k * 1.26) * D * 0.035, D * 0.025, 0, 7); x.fill(); } x.fillStyle = '#ffb000'; x.beginPath(); x.arc(a * D, b * D, D * 0.02, 0, 7); x.fill(); });
+    x.restore();
+    return c;
+  },
+  // a cage over the animal in it, with that animal's little head on its badge (decli's blank badge when her picture
+  // is in, a drawn one before that)
+  cageAt(ctx, k, x, y, size) {
+    ctx.drawImage(this.cache.cage, x - size / 2, y - size / 2, size, size);
+    const im = Art2.img.cage, B = Art2.badge;
+    let bx = x, by = y + size * 0.36, br = size * 0.15;
+    if (im && B) {   // where cageTile put her picture: its longer side 1.04 cells, in a tile 1.3 cells wide
+      const f = 1.04 / 1.3 * size / Math.max(im.width, im.height), w = im.width * f, h = im.height * f;
+      bx = x - w / 2 + B[0] * w; by = y - h / 2 + B[1] * h; br = B[2] * h * 0.86;
+    } else {
+      ctx.fillStyle = '#ffd56b'; ctx.strokeStyle = 'rgba(122,82,30,0.6)'; ctx.lineWidth = size * 0.025;
+      ctx.beginPath(); ctx.arc(bx, by, br, 0, 7); ctx.fill(); ctx.stroke();
+    }
+    ctx.drawImage(this.tiles[k], bx - br * 1.05, by - br * 1.05, br * 2.1, br * 2.1);
   },
   stripes(T, D, dir) {
     const c = this.canvas(T, T), x = c.getContext('2d'), m = T / 2, r = D * 0.42;
@@ -156,10 +256,12 @@ const Art = {
 
   // ---------- drawing on the board (ctx in CSS pixels) ----------
   // p: piece, (x, y) centre, sc scale, t clock ms, flash 0..1 white
-  piece(ctx, p, x, y, sc, t, flash, sx, sy) {
+  piece(ctx, p, x, y, sc, t, flash, sx, sy, hp) {
     const s = this.T / this.dpr * sc, cell = this.cell;
     const w = s * (sx || 1), h = s * (sy || 1);
     if (p.k === 'g') { ctx.drawImage(this.tiles[PENGUIN], x - w / 2, y - h / 2, w, h); return; }
+    if (p.k === 'e') { ctx.drawImage(this.cache[(hp != null ? hp : p.hp) === 2 ? 'egg2' : 'egg1'], x - w / 2, y - h / 2, w, h); if (flash > 0) { ctx.globalAlpha = Math.min(1, flash) * 0.7; ctx.drawImage(Fx.dot('#ffffff'), x - w / 2, y - h / 2, w, h); ctx.globalAlpha = 1; } return; }
+    if (p.k === 'l') { ctx.save(); ctx.translate(x, y + cell * 0.04); ctx.rotate(Math.sin(t / 520 + p.id) * 0.08); ctx.drawImage(this.cache.balloon, -w / 2, -h / 2, w, h); ctx.restore(); return; }
     if (p.s === 'c') {
       const pul = 1 + Math.sin(t / 180) * 0.04;
       ctx.save(); ctx.globalCompositeOperation = 'lighter'; const gl = Fx.dot('#ffffff');
@@ -198,6 +300,10 @@ const Art = {
     } else if (g.t === 'ice') x.drawImage(this.iceTile(px, 1), 0, 0);
     else if (g.t === 'box') x.drawImage(this.boxTile(px, 1), 0, 0);
     else if (g.t === 'bub') { x.drawImage(this.head(1, px, px * 0.8), 0, 0); x.drawImage(this.bubbleTile(px, px * 0.86), 0, 0); }
+    else if (g.t === 'egg') x.drawImage(this.eggTile(px, px * 1.05, 2), 0, 0);
+    else if (g.t === 'bl') x.drawImage(this.balloonTile(px, px * 0.95), 0, 0);
+    else if (g.t === 'grass') { x.drawImage(this.grassTile(px), 0, 0); x.font = `${px * 0.5}px ${FONT}`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('🌱', px / 2, px * 0.52); }
+    else if (g.t === 'cage') { x.drawImage(this.head(g.k != null ? g.k : 0, px, px * 0.8), 0, 0); x.drawImage(this.cageTile(px, px * 0.95), 0, 0); }
     return c;
   },
 };

@@ -13,10 +13,16 @@ const NUM_ZH = n => String(n);   // the voice reads digits naturally ("18只" �
 // the animals change every game (cast.js), so a line never names them: the intro says how many kinds to collect and
 // their names follow as clips of their own (L.gift.names), each with its goal picture bouncing (UI.intro)
 function goalSay(g, lv) {
+  const count = chs => (lv.layout || []).join('').split('').filter(ch => chs.includes(ch)).length;
   if (g.t === 'ice') return '敲碎所有冰块';
   if (g.t === 'box') return '拆开所有礼物盒';
   if (g.t === 'bub') return '戳破所有泡泡';
   if (g.t === 'pg') return `把${lv.penguins.total}只小企鹅送回家`;
+  // season two
+  if (g.t === 'egg') return `把${count('e')}个蛋宝宝都孵出来`;
+  if (g.t === 'grass') return '把土地都种上小草';
+  if (g.t === 'bl') return `把${count('l')}个气球都送上天`;
+  if (g.t === 'cage') return `把笼子里的${count('012345')}个小伙伴都救出来`;
   return '';
 }
 // Every animal in decli's pictures (heads.webp, cut by dev/heads.py), in their order: [id, name, tier, colour].
@@ -61,6 +67,22 @@ const L = {
     box2: '紫色的大礼物盒有两层，要拆两次。小企鹅被挡住了，先把礼物盒拆开！',
     six: '这一关有六种小动物，不容易连上，多想一想再动手。',
     final: '最后一关啦！冰块、礼物盒和小企鹅都在，加油！',
+    // season two: each island's new thing, said before its first level
+    egg: '蛋宝宝来啦！在蛋旁边消两次，小鸡就破壳出来了。',
+    grass: '在土地上消一消，那里就长出小草。把土地都种绿吧！',
+    bl: '在气球旁边消一消，气球就往上飘一格。飘到最上面，它就飞上天啦！',
+    cage: '小伙伴被关在笼子里了！在笼子旁边消和它一样的小动物，笼子就打开啦。',
+    castle: '彩虹城堡里，蛋宝宝、小草、气球和笼子都在，加油！',
+  },
+  cageStuck: '笼子里的小动物拨不动。在旁边消和它一样的小动物，笼子才会打开。',
+  balloonStuck: '气球拨不动。在它旁边消一消，它就往上飘！',
+  balloonAway: '气球飞上天啦！',
+  helper: '别灰心！送你一个小帮手。',
+  // the islands (ISLANDS in levels.js): arriving on one, winning all of it, trying one that is still locked
+  isle: {
+    hi: ISLANDS.map(s => `欢迎来到${s.name}！`),
+    done: ISLANDS.map(s => `${s.name}全部通关啦！送你一个稀有盲盒！`),
+    locked: '这座小岛还锁着，先把前面的关都过了吧！',
   },
   // said once, the first time she makes each special piece; the piece itself shows what it does (Game.showOff)
   made: {
@@ -79,7 +101,7 @@ const L = {
   fail: '步数用完啦，就差一点点！',
   extraOffer: '做5道数学题，就能再多5步！',
   extraDone: '多了5步，加油！',
-  allDone: '十关全部通过啦！你是消消乐大师！',
+  allDone: '所有小岛全部通关啦！你是消消乐大师！',
   // decli: call her by name on the math page, every right answer is praise for 可可
   math: {
     title: `${KID}，敢不敢先挑战一页数学题？`,
@@ -194,6 +216,8 @@ const L = {
     album: '这是你的动物收集册。每过一关就能拆一个盲盒，把小伙伴都集齐吧！',
     names: FRIENDS.map(f => f.name),
     locked: '还没抽到它呢，过关拆盲盒就有机会哦！',
+    more: '拿到三颗星，还能再拆一个盲盒哦！',
+    shiny: '又抽到它啦！它变成闪光版啦！',   // a replay: boxes come the first time a level is won, and with its first three stars
   },
 };
 // English cheers for each step of excitement (excitement() in board.js): decli's own recordings in sound/, not the

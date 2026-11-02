@@ -19,8 +19,9 @@ const Cast = {
   // six new animals for level li: they show at once everywhere (intro card, pieces, goals, effects) and are kept for
   // Game.start(li)
   pick(li) {
-    const lv = LEVELS[li], penguins = lv.goals.some(g => g.t === 'pg');
-    const pool = FRIENDS.filter(f => f.tier <= 1 && f.id !== 'penguin' && !(penguins && this.near(f.fam, 'k')));
+    const lv = LEVELS[li], penguins = lv.goals.some(g => g.t === 'pg'), eggs = lv.goals.some(g => g.t === 'egg');
+    // the chicks that hatch from eggs are their own surprise, not one of the six
+    const pool = FRIENDS.filter(f => f.tier <= 1 && f.id !== 'penguin' && !(penguins && this.near(f.fam, 'k')) && !(eggs && f.id === 'chick'));
     let got = [];
     for (let tries = 0; got.length < 6 && tries < 50; tries++) {   // an unlucky early pick can leave fewer than six colours: draw again
       for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }

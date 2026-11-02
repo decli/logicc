@@ -12,8 +12,9 @@ const Gift = {
 
   owned(i) { return FRIENDS[i].tier < 0 || (Store.d.gifts[FRIENDS[i].id] || 0) > 0; },
   count() { return FRIENDS.filter(f => this.owned(f.i)).length; },
-  roll(stars) {
-    const [pr, ph] = this.ODDS[stars] || this.ODDS[1], r = Math.random();
+  // rare: the box for a whole island won, always 稀有 or 隐藏款
+  roll(stars, rare) {
+    const [pr, ph] = rare ? [0.75, 0.25] : this.ODDS[stars] || this.ODDS[1], r = Math.random();
     const tier = r < ph ? 2 : r < ph + pr ? 1 : 0;
     const of = t => FRIENDS.filter(f => f.tier === t), fresh = l => l.filter(f => !this.owned(f.i));
     let pool = fresh(of(tier));
@@ -24,9 +25,9 @@ const Gift = {
   },
 
   // ---------- opening a box: resolves when she has taken the friend ----------
-  open(stars) {
+  open(stars, o = {}) {
     return new Promise(resolve => {
-      const d = Store.d, f = this.roll(stars), fresh = !this.owned(f.i);
+      const d = Store.d, f = this.roll(stars, o.rare), fresh = !this.owned(f.i);
       d.gifts[f.id] = (d.gifts[f.id] || 0) + 1;
       if (fresh) d.giftFresh = [...(d.giftFresh || []), f.id];
       d.seen.boxes = (d.seen.boxes || 0) + 1;
@@ -76,12 +77,13 @@ const Gift = {
     const s = this.s, g = this.geo(), f = s.f;
     s.phase = 'open'; s.openT = 0;
     Voice.stop();
-    Snd.play('gopen'); if (f.tier > 0) Snd.play('grare');
+    Snd.play('gopen'); if (f.tier > 0 || s.n === 2) Snd.play('grare');
     Fx.flash(0.75, '#fff');
     Fx.confetti(f.tier > 0 ? 140 : 90);
     Fx.burst(g.bx, g.by - g.S * 0.4, ['#ffd23a', '#ffffff'], 30, 2.2, g.S * 0.5);
     // what the narrator says: the kind of friend, its name, and whether it is a new one
-    const lines = [f.tier === 2 ? L.gift.hidden : f.tier === 1 ? L.gift.rare : null, L.gift.got[f.i], s.fresh ? null : L.gift.again, s.all ? L.gift.full : null].filter(Boolean);
+    // a friend's second copy makes it 闪光版 (season two: more levels than friends, so the album goes on)
+    const lines = [f.tier === 2 ? L.gift.hidden : f.tier === 1 ? L.gift.rare : null, L.gift.got[f.i], s.fresh ? null : s.n === 2 ? L.gift.shiny : L.gift.again, s.all ? L.gift.full : null].filter(Boolean);
     const tok = s.token;
     const next = () => { const t = lines.shift(); if (t && this.on && this.s.token === tok) Voice.say(t, { onend: () => setTimeout(next, 150) }); };
     setTimeout(next, 650);
@@ -310,9 +312,9 @@ const Gift = {
     root.appendChild(top);
     const grid = el('div', 'agrid'); root.appendChild(grid);
     const slots = FRIENDS.map(f => {
-      const b = el('button', 'aslot t' + Math.max(0, f.tier) + (this.owned(f.i) ? '' : ' no'));
-      if (fresh.has(f.id)) b.appendChild(el('i', 'anew', 'NEW'));
       const n = d.gifts[f.id] || 0;
+      const b = el('button', 'aslot t' + Math.max(0, f.tier) + (this.owned(f.i) ? '' : ' no') + (n >= 2 ? ' shiny' : ''));
+      if (fresh.has(f.id)) b.appendChild(el('i', 'anew', 'NEW'));
       if (n > 1) b.appendChild(el('b', null, '×' + n));
       b.onclick = () => {
         if (this.owned(f.i)) { Snd.play('select'); Voice.say(L.gift.names[f.i]); b.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.18)' }, { transform: 'scale(1)' }], 380); }

@@ -58,6 +58,40 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 @keyframes bob{50%{transform:translateY(-6px)}}
 @keyframes hop{50%{transform:translateY(-12px) rotate(-4deg)}}
 
+/* season two: islands */
+#map .deco{position:absolute;inset:0;pointer-events:none}
+#map .deco span{position:absolute;transform:translate(-50%,-50%);opacity:.85;animation:sway 4s ease-in-out infinite;filter:drop-shadow(0 4px 4px rgba(74,43,94,.15))}
+@keyframes sway{50%{transform:translate(-50%,-58%) rotate(4deg)}}
+.node.boss{background:radial-gradient(circle at 35% 30%,#fff 0 18%,#c6a6ff 19% 100%);box-shadow:0 6px 0 #5328c9,0 12px 20px rgba(83,40,201,.35);-webkit-text-stroke-color:#5328c9}
+.node.boss::before{content:"👑";position:absolute;top:-.62em;font-size:.6em;-webkit-text-stroke:0}
+.node.boss.done{background:radial-gradient(circle at 35% 30%,#fff 0 18%,#ffd84d 19% 100%);box-shadow:0 6px 0 #d19a00,0 12px 20px rgba(209,154,0,.35);-webkit-text-stroke-color:#a86b00}
+.isle-arrow{position:absolute;top:52%;width:62px;height:62px;margin-top:-31px;border-radius:50%;background:#fff;box-shadow:0 5px 0 #d9c6ea,0 10px 18px rgba(74,43,94,.18);
+  font-size:30px;color:var(--violet2);display:flex;align-items:center;justify-content:center;z-index:2}
+.isle-arrow.prev{left:max(10px,env(safe-area-inset-left))}
+.isle-arrow.next{right:max(10px,env(safe-area-inset-right))}
+.isle-arrow.shut{color:#b9aecb}
+.isle-arrow:active{transform:translateY(3px)}
+#map .isles{position:absolute;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;gap:10px;padding:8px 12px;background:rgba(255,255,255,.7);border-radius:999px;box-shadow:0 4px 0 rgba(217,198,234,.8)}
+.isle{width:50px;height:50px;border-radius:50%;background:#fff;font-size:28px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 0 #d9c6ea;position:relative}
+.isle img{width:118%;height:118%;object-fit:contain;pointer-events:none}
+.isle.on{box-shadow:0 0 0 4px #ffd23a,0 3px 0 #d9c6ea;transform:scale(1.14)}
+.isle.shut{filter:grayscale(1);opacity:.55}
+.isle.full::after{content:"⭐";position:absolute;right:-8px;top:-10px;font-size:18px}
+.isle-lock{position:absolute;left:50%;top:54%;transform:translate(-50%,-50%);font-size:120px;opacity:.35;pointer-events:none}
+.card .isle-pic{width:220px;height:220px;object-fit:contain;display:block;margin:4px auto}
+#map.tight .node .nm{display:none}
+#map.tight .node .st{bottom:-22px;font-size:16px}
+@media (max-width:600px),(max-height:500px){
+  #map h1{font-size:24px;letter-spacing:0;-webkit-text-stroke-width:1.5px;text-shadow:0 3px 0 var(--ink)}
+  #map .pill{font-size:16px;padding:6px 10px}
+  #map .top{gap:8px}
+  #map .isles{gap:6px;padding:5px 8px}
+  .isle{width:38px;height:38px;font-size:21px}
+}
+@media (max-width:600px){.isle-arrow{display:none}}
+#map .top .pill{white-space:nowrap;flex:none}
+#map h1{min-width:0;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:440px){#map .top .pill.stars{display:none}#map h1{font-size:20px}#map h1 .ic{display:none}#map .top{gap:6px}}
 #map .pill.book{cursor:pointer}
 #map .pill.book.new{animation:wig 1.1s ease-in-out infinite;box-shadow:0 4px 0 #d9c6ea,0 0 0 4px #ff4f6d}
 @keyframes wig{0%,60%,100%{transform:none}70%{transform:rotate(-6deg) scale(1.08)}80%{transform:rotate(6deg) scale(1.08)}90%{transform:rotate(-3deg)}}
@@ -82,6 +116,9 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .aslot.no.t1{background:#fbf3d6;box-shadow:0 4px 0 #ecd9a0}
 .aslot.no.t2{background:conic-gradient(#f6e3ee,#f8efdc,#f7f4dc,#e3f4e7,#e2eff8,#ece4f8,#f6e3ee);box-shadow:0 4px 0 #d3c4ef}
 .aslot canvas{display:block;pointer-events:none}
+.aslot.shiny{box-shadow:0 4px 0 #e0a800,0 0 0 3px #ffd23a,0 0 14px 4px rgba(255,210,58,.75);animation:shine 1.6s ease-in-out infinite}
+.aslot.shiny::before{content:"✨";position:absolute;left:-8px;top:-10px;font-size:20px}
+@keyframes shine{50%{box-shadow:0 4px 0 #e0a800,0 0 0 3px #fff3a6,0 0 22px 8px rgba(255,210,58,.9)}}
 .aslot b{position:absolute;right:-5px;bottom:-5px;min-width:30px;height:26px;padding:0 6px;border-radius:999px;background:var(--violet2);color:#fff;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;border:3px solid #fff}
 .aslot .anew{position:absolute;left:-6px;top:-6px;background:#ff4f6d;color:#fff;font-size:13px;font-weight:900;font-style:normal;padding:2px 7px;border-radius:999px;border:2px solid #fff;animation:pulse .8s ease-in-out infinite}
 

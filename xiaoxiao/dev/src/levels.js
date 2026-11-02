@@ -146,3 +146,18 @@ const LEVELS = [
     stars: [1, 17500, 20500], tip: 'final',
   },
 ];
+
+// 第二季 · 动物环游世界 (decli 2026-11-02, after she won all ten): the levels go on in islands of fifteen, the ten above
+// being the first. Each island brings one new thing (mech), taught in its first two levels and then mixed with what
+// came before, the difficulty going up and down, and a big challenge (岛主大挑战) as its last level; the last island
+// mixes everything. Level numbers go on across the islands. Their levels are made by dev/gen.js (levels2.js).
+//   sky, land: the map's colours; deco: what grows round the edge of the map (until decli's pictures are in)
+const ISLANDS = [
+  { id: 'park', name: '动物乐园', from: 0, n: 10, icon: '🎠', sky: ['#ffd9ef', '#e9d9ff', '#c9ecff'], land: '#d9f5c4', deco: ['🍭', '🌳', '🎈', '🌸', '🍄'] },
+  { id: 'farm', name: '蛋蛋农场', from: 10, n: 15, mech: 'egg', icon: '🥚', sky: ['#fff1c9', '#ffe2b8', '#ffd0d6'], land: '#e8f3c0', deco: ['🌻', '🌾', '🏡', '🐣', '🌽'] },
+  { id: 'meadow', name: '花花草原', from: 25, n: 15, mech: 'grass', icon: '🌼', sky: ['#e2fbe0', '#d2f3ff', '#fff5c9'], land: '#c9f0b0', deco: ['🌷', '🌼', '🦋', '🌿', '🌺'] },
+  { id: 'sky', name: '云朵气球岛', from: 40, n: 15, mech: 'bl', icon: '🎈', sky: ['#d6efff', '#e9e1ff', '#fff0f6'], land: '#ffffff', deco: ['☁️', '🎈', '🌈', '⭐', '🪁'] },
+  { id: 'jungle', name: '森林营救', from: 55, n: 15, mech: 'cage', icon: '🌴', sky: ['#d9f7e4', '#c7ecd6', '#fff3d1'], land: '#bfe6a6', deco: ['🌴', '🍄', '🌿', '🦜', '🍌'] },
+  { id: 'castle', name: '彩虹城堡', from: 70, n: 15, mech: 'all', icon: '🏰', sky: ['#ffe0f0', '#e4ddff', '#d6f4ff'], land: '#f4e9ff', deco: ['🏰', '🌈', '🎁', '❄️', '👑'] },
+];
+const isleOf = li => ISLANDS.findIndex(s => li >= s.from && li < s.from + s.n);

@@ -5,6 +5,9 @@ python3 xiaoxiao/dev/build.py              # src/* → ../index.html（一个文
 python3 -m http.server 8000                # 在仓库根目录；打开 http://localhost:8000/xiaoxiao/
 node xiaoxiao/dev/sim.js                   # 每关让两个机器人各玩 200 局，看胜率、步数、分数
 node xiaoxiao/dev/sim.js 3 500             # 只跑第 3 关，500 局
+node xiaoxiao/dev/gen.js                   # 重新生成第二季的 75 关（五座岛并行，约 6 分钟）→ src/levels2.js
+node xiaoxiao/dev/gen.js 2                 # 只重做第 2 座岛（ISLANDS[2] 花花草原）
+python3 xiaoxiao/dev/art2.py               # decli 画的第二季素材 art/season2/*.webp|png → ../s2/*.webp，并登记到 src/art2.js（含笼子锁牌的位置）
 python3 dev/voice/build.py xiaoxiao        # 改了台词或关卡后重录语音包 ../voice.bin|json（只录新句子）
 python3 xiaoxiao/dev/heads.py              # 从 art/ 里 decli 画的头像图切出 70 个头像 → ../heads.webp 和 src/heads.js
 ```
@@ -16,11 +19,13 @@ python3 xiaoxiao/dev/heads.py              # 从 art/ 里 decli 画的头像图�
 | `src/head.html` | 页面骨架和全部样式（糖果按钮、地图、侧栏 / 顶栏、卡片、数学题页、家长设置） |
 | `src/core.js` | 小工具、缓动、`Clock`（只在画面刷新时走的游戏时钟，暂停和切到后台时所有动画一起停）、`Store`（存进度和设置） |
 | `src/board.js` | 规则本身，不碰画面：交换、找连线、特别的小动物和组合、冰块 / 礼物盒 / 泡泡 / 小企鹅、掉落（含斜着滑）、洗牌、加分。一步要发生的事一次算完，按时间排成「阶段」交给画面去演；`excitement` 算这一步值得喊哪个词 |
-| `src/levels.js` | 十关的设定，格式写在文件开头 |
+| `src/levels.js` | 第一季十关的设定（格式写在文件开头），和 `ISLANDS`：第二季「动物环游世界」的六座岛，每座岛从第几关开始、几关、新玩法、地图颜色 |
+| `src/levels2.js` | 第二季 75 关，**由 `gen.js` 生成**，不要手改；每关带着 `sim`：机器人的胜率和它在难度曲线上的位置 |
 | `src/lines.js` | 旁白说的每一句话、英文欢呼用哪段录音、`FRIENDS`（70 个动物的名字、稀有程度和主色，和头像图同一个顺序）。录音脚本 `voice/collect.js` 也从这里读 |
 | `src/cast.js` | 每局（每次打开关前卡片、重玩、下一关）从 `FRIENDS` 里随机抽 6 个动物上棋盘：颜色各不相同，长得像的（同一种主色，或 `Cast.NEAR` 里写的相近颜色）不会同局出现；有小企鹅的关不抽黑白和灰色的 |
 | `src/game.js` | 一关在玩的时候：画棋盘、手指拨动、把 board.js 算好的阶段一段段演出来、侧栏的步数 / 目标 / 分数、过关和失败 |
 | `src/heads.js` | `heads.py` 生成的：每个头像在 `heads.webp` 里的大小 |
+| `src/art2.js` | 第二季的图片（蛋、气球、笼子、草地、六座岛和岛屿地图）：`art2.py` 处理好放在 `../s2/`，并把有哪些写进 `Art2.names`；还没有的，`art.js` 和地图用代码画的代替 |
 | `src/art.js` `src/fx.js` | 从 `heads.webp` 取小动物头像，各种格子的预渲染；粒子、光束、闪电、冲击波、飞向目标的小动物、Great! … Unbelievable! 大字 |
 | `src/gift.js` | 过关拆盲盒（掉下来、点三下、蹦出小伙伴、稀有款 / 隐藏款的光）和地图上 🎁 打开的动物收集册；抽到谁的概率写在 `Gift.ODDS` |
 | `src/audio.js` `src/voice.js` | Web Audio 实时合成的音效；decli 的背景音乐和英文欢呼（`../sound/`，暂停和数学题页时音乐停）；语音包播放。下载失败（比如刚发布新版本那一会儿）会自己隔几秒再取，头像图也一样。从不用设备自带的语音：语音包里没有的句子就不出声，`?debug` 时在控制台列出来 |
@@ -30,6 +35,9 @@ python3 xiaoxiao/dev/heads.py              # 从 art/ 里 decli 画的头像图�
 | `src/ui.js` | 地图、关前卡片、结果卡片、暂停、家长专区 |
 | `src/main.js` | 启动和每帧循环 |
 | `sim.js` | 关卡模拟器（见下） |
+| `bots.js` | 两个机器人（随便玩的 random、认真但不往后想的 greedy），`sim.js` 和 `gen.js` 共用 |
+| `gen.js` | 第二季的关卡生成器（见下「第二季」） |
+| `art2.py` `art/PROMPTS.md` `art/season2/` | 第二季素材的要求和提示词、decli 画的 16 张原图（WebP）和她实际用的提示词，和把它们处理成页面用的图的脚本 |
 | `heads.py` `art/` | decli 画的头像图（`heads-sheet-1.png` 前 50 个大一点，`heads-sheet-2.png` 全部 70 个）；每个头像取最清楚的那一份，打包成 `heads.webp`。以后有更大的同样排版的图，加进 `SHEETS` 就行；某一个单独有图时放 `art/heads/<id>.png` |
 | `voice/collect.js` | 列出要录的每一句话 → `voice/lines.json` |
 
@@ -44,3 +52,12 @@ python3 xiaoxiao/dev/heads.py              # 从 art/ 里 decli 画的头像图�
 - 模拟器每一步都检查：走完棋盘上没有空格、没有留下没消的三连。礼物盒摆法要小心：盒子下面的格子只能靠旁边的小动物斜着滑进来补，三个盒子连成一排、或贴边两个挨着，下面就会留下补不上的空格
 
 改了 `levels.js`、`lines.js` 之后记得重新 `build.py`；关卡介绍是旁白念的，也要重录语音包，不然新句子不出声。
+
+## 第二季：动物环游世界（关卡生成器）
+
+decli 2026-11-02：十关都过完了，学开心消消乐那样一直有新关可玩。做法是「配方 + 机器人试玩」：
+
+- **六座岛**（`ISLANDS`）：第一季十关是第一座岛，后面五座岛各 15 关，每座岛多一样新东西——🥚 蛋宝宝（在旁边消两次孵出小鸡）、🌱 种草地（在土地上消就长草）、🎈 气球（在旁边消一次往上飘一格，飘到顶飞走）、🔒 彩色笼子（只有同一种小动物在旁边消才打开），最后的彩虹城堡什么都有。规则在 `board.js`，画在 `art.js` / `game.js`
+- **一关怎么来**：`gen.js` 按关卡在岛上的位置定配方——难度曲线 `SAW`（易、易、中、中、难、易……第 15 关岛主大挑战），这座岛的新东西加上几样旧的；从 `SHAPES`（爱心、钻石、城堡、蘑菇……）挑棋盘形状，所有东西左右对称地摆；然后两个机器人来玩：步数取「认真的机器人赢够多」的最少步数（`TIER` 里每档的胜率区间），随便玩的机器人太难赢就再多给几步，步数限在 15～38；星星分数取认真机器人得分的 25%、65% 分位。留下空格补不上、机器人赢不了的摆法扔掉重来，连着失败就把配方放轻一点
+- 每座岛有自己的随机种子，重跑会得到一样的摆法（步数可能差一两步，因为随便玩的机器人每次不一样）。想调整：改 `SAW` / `TIER` / `SHAPES` / `NAMES` 后重跑 `gen.js`，然后重录语音（关卡介绍是旁白念的）
+- 加第七座岛：在 `ISLANDS` 加一条（`from` 接着上一座），在 `gen.js` 的 `NAMES` 加 15 个名字、`POOL` 写它用哪些旧东西，跑 `gen.js`

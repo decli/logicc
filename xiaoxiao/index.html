@@ -58,6 +58,40 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 @keyframes bob{50%{transform:translateY(-6px)}}
 @keyframes hop{50%{transform:translateY(-12px) rotate(-4deg)}}
 
+/* season two: islands */
+#map .deco{position:absolute;inset:0;pointer-events:none}
+#map .deco span{position:absolute;transform:translate(-50%,-50%);opacity:.85;animation:sway 4s ease-in-out infinite;filter:drop-shadow(0 4px 4px rgba(74,43,94,.15))}
+@keyframes sway{50%{transform:translate(-50%,-58%) rotate(4deg)}}
+.node.boss{background:radial-gradient(circle at 35% 30%,#fff 0 18%,#c6a6ff 19% 100%);box-shadow:0 6px 0 #5328c9,0 12px 20px rgba(83,40,201,.35);-webkit-text-stroke-color:#5328c9}
+.node.boss::before{content:"👑";position:absolute;top:-.62em;font-size:.6em;-webkit-text-stroke:0}
+.node.boss.done{background:radial-gradient(circle at 35% 30%,#fff 0 18%,#ffd84d 19% 100%);box-shadow:0 6px 0 #d19a00,0 12px 20px rgba(209,154,0,.35);-webkit-text-stroke-color:#a86b00}
+.isle-arrow{position:absolute;top:52%;width:62px;height:62px;margin-top:-31px;border-radius:50%;background:#fff;box-shadow:0 5px 0 #d9c6ea,0 10px 18px rgba(74,43,94,.18);
+  font-size:30px;color:var(--violet2);display:flex;align-items:center;justify-content:center;z-index:2}
+.isle-arrow.prev{left:max(10px,env(safe-area-inset-left))}
+.isle-arrow.next{right:max(10px,env(safe-area-inset-right))}
+.isle-arrow.shut{color:#b9aecb}
+.isle-arrow:active{transform:translateY(3px)}
+#map .isles{position:absolute;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;gap:10px;padding:8px 12px;background:rgba(255,255,255,.7);border-radius:999px;box-shadow:0 4px 0 rgba(217,198,234,.8)}
+.isle{width:50px;height:50px;border-radius:50%;background:#fff;font-size:28px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 0 #d9c6ea;position:relative}
+.isle img{width:118%;height:118%;object-fit:contain;pointer-events:none}
+.isle.on{box-shadow:0 0 0 4px #ffd23a,0 3px 0 #d9c6ea;transform:scale(1.14)}
+.isle.shut{filter:grayscale(1);opacity:.55}
+.isle.full::after{content:"⭐";position:absolute;right:-8px;top:-10px;font-size:18px}
+.isle-lock{position:absolute;left:50%;top:54%;transform:translate(-50%,-50%);font-size:120px;opacity:.35;pointer-events:none}
+.card .isle-pic{width:220px;height:220px;object-fit:contain;display:block;margin:4px auto}
+#map.tight .node .nm{display:none}
+#map.tight .node .st{bottom:-22px;font-size:16px}
+@media (max-width:600px),(max-height:500px){
+  #map h1{font-size:24px;letter-spacing:0;-webkit-text-stroke-width:1.5px;text-shadow:0 3px 0 var(--ink)}
+  #map .pill{font-size:16px;padding:6px 10px}
+  #map .top{gap:8px}
+  #map .isles{gap:6px;padding:5px 8px}
+  .isle{width:38px;height:38px;font-size:21px}
+}
+@media (max-width:600px){.isle-arrow{display:none}}
+#map .top .pill{white-space:nowrap;flex:none}
+#map h1{min-width:0;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:440px){#map .top .pill.stars{display:none}#map h1{font-size:20px}#map h1 .ic{display:none}#map .top{gap:6px}}
 #map .pill.book{cursor:pointer}
 #map .pill.book.new{animation:wig 1.1s ease-in-out infinite;box-shadow:0 4px 0 #d9c6ea,0 0 0 4px #ff4f6d}
 @keyframes wig{0%,60%,100%{transform:none}70%{transform:rotate(-6deg) scale(1.08)}80%{transform:rotate(6deg) scale(1.08)}90%{transform:rotate(-3deg)}}
@@ -82,6 +116,9 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .aslot.no.t1{background:#fbf3d6;box-shadow:0 4px 0 #ecd9a0}
 .aslot.no.t2{background:conic-gradient(#f6e3ee,#f8efdc,#f7f4dc,#e3f4e7,#e2eff8,#ece4f8,#f6e3ee);box-shadow:0 4px 0 #d3c4ef}
 .aslot canvas{display:block;pointer-events:none}
+.aslot.shiny{box-shadow:0 4px 0 #e0a800,0 0 0 3px #ffd23a,0 0 14px 4px rgba(255,210,58,.75);animation:shine 1.6s ease-in-out infinite}
+.aslot.shiny::before{content:"✨";position:absolute;left:-8px;top:-10px;font-size:20px}
+@keyframes shine{50%{box-shadow:0 4px 0 #e0a800,0 0 0 3px #fff3a6,0 0 22px 8px rgba(255,210,58,.9)}}
 .aslot b{position:absolute;right:-5px;bottom:-5px;min-width:30px;height:26px;padding:0 6px;border-radius:999px;background:var(--violet2);color:#fff;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;border:3px solid #fff}
 .aslot .anew{position:absolute;left:-6px;top:-6px;background:#ff4f6d;color:#fff;font-size:13px;font-weight:900;font-style:normal;padding:2px 7px;border-radius:999px;border:2px solid #fff;animation:pulse .8s ease-in-out infinite}
 
@@ -435,6 +472,9 @@ const Store = {
       ways: {},              // how each way went: way -> [times used, then right without counting together]
       wayLast: '',           // the way used last, which glows on the choice
       seen: {},              // tips already shown
+      isle: -1,              // the island the map showed last (ISLANDS)
+      fails: {},             // level -> games lost in a row (two or more: the next starts with a 小帮手)
+      s2: 1,                 // season two: progress made in season one has been carried over
       gifts: {},             // friends from the blind box (gift.js): id -> how many
       giftFresh: [],         // new friends not yet seen in the album
       snd: true, voi: true, mus: true,
@@ -457,6 +497,13 @@ const Store = {
         // the page owed is drawn again), and 小老师 starts with 列竖式 instead of asking her to choose
         if (v < 5) { this.d.math.max = 100; this.d.spin = null; if (!raw.way || raw.way === 'pick') this.d.way = 'col'; }
         this.d.mathV = 5;
+        // season two: a level won in season one now opens the next (the eleventh after the tenth); the map starts on
+        // the island she is up to
+        if (!raw.s2) {
+          let last = -1; for (const i in this.d.stars) if (this.d.stars[i] > 0) last = Math.max(last, +i);
+          this.d.open = Math.max(this.d.open, Math.min(LEVELS.length, last + 2));
+          this.d.isle = -1; this.d.s2 = 1;
+        }
       }
     } catch (e) { }
     return this.d;
@@ -472,14 +519,20 @@ const Store = {
 //
 // Cells: v (void, not part of the board), ice (0-2 layers under the piece), box (0-2 layers, a gift box that takes the
 // whole cell), bub (a bubble around the piece: it cannot be moved or fall, a match or a blast pops the bubble and the
-// piece stays), p (the piece).
-// Pieces: k 'a' animal of colour c, k 'g' penguin (cannot be matched or blown up; walks out at the bottom).
+// piece stays), p (the piece). Season two (decli 2026-11-02, after she won all ten levels): dirt (bare soil: anything
+// cleared in it grows grass, 种草地), cage (-1, or the kind of the animal locked in it: it cannot move or fall, and only
+// a match of that kind in it or next to it opens it — blasts pass it by, 彩色笼子).
+// Pieces: k 'a' animal of colour c, k 'g' penguin (cannot be matched or blown up; walks out at the bottom),
+// k 'e' egg (hp 2, 蛋宝宝: falls like an animal but is never matched; a match next to it or a blast cracks it, the
+// second time a chick hatches), k 'l' balloon (气球: never moves or falls on its own; a match next to it or a blast
+// lifts it one row, swapping with what is above, and once it is in the top row it flies away).
 // Specials: s 'h' clears its row, 'v' its column, 'b' bomb (diamond of radius 2), 'c' rainbow ball (no colour).
 
 const ANIMALS = [];   // this game's six animals { id, name, fx colours, h: FRIENDS number }, filled in by cast.js
 const PENGUIN = 6;   // the kind after the six animals (always FRIENDS' penguin)
 
-const PTS = { piece: 20, blast: 30, make: { h: 100, v: 100, b: 150, c: 250 }, ice: 80, box: 60, bub: 50, home: 1000, bonus: 200 };
+const PTS = { piece: 20, blast: 30, make: { h: 100, v: 100, b: 150, c: 250 }, ice: 80, box: 60, bub: 50, home: 1000, bonus: 200,
+  crack: 40, egg: 150, grass: 40, balloon: 600, cage: 120 };
 
 function mulberry32(a) {
   return function () {
@@ -512,6 +565,8 @@ Heap.prototype.pop = function () {
 Heap.lt = (x, y) => x.t < y.t || (x.t === y.t && x.q < y.q);
 
 // layout characters: . cell  _ void  i/I ice 1/2  b/B gift box 1/2  o bubble  q bubble on ice  g penguin  k ice under a penguin
+// e egg  l balloon  d dirt  0-5 a cage with an animal of that kind in it; lv.soil (optional, the same shape as layout):
+// 'd' marks dirt under whatever the layout puts there
 function Board(lv, rng) {
   this.lv = lv;
   this.rng = rng || Math.random;
@@ -523,15 +578,19 @@ function Board(lv, rng) {
   this.moves = lv.moves; this.score = 0;
   this.pg = { total: lv.penguins ? lv.penguins.total : 0, max: lv.penguins ? lv.penguins.max : 0, made: 0, home: 0, gap: 0 };
   const preset = [];
+  this.lift = new Set();   // balloons (piece ids) a clearing phase lifted, moved up by rise()
   for (let r = 0; r < this.R; r++) for (let c = 0; c < this.C; c++) {
     const ch = lay[r][c] || '_';
-    const cell = { v: ch === '_' || ch === ' ', ice: 0, box: 0, bub: false, p: null };
+    const cell = { v: ch === '_' || ch === ' ', ice: 0, box: 0, bub: false, p: null, dirt: false, grass: false, cage: -1 };
     if (ch === 'i' || ch === 'q' || ch === 'k') cell.ice = 1;
     if (ch === 'I') cell.ice = 2;
     if (ch === 'b') cell.box = 1;
     if (ch === 'B') cell.box = 2;
     if (ch === 'o' || ch === 'q') cell.bub = true;
-    if (ch === 'g' || ch === 'k') preset.push(this.cells.length);
+    if (ch === 'g' || ch === 'k') preset.push({ i: this.cells.length, k: 'g' });
+    if (ch === 'e' || ch === 'l') preset.push({ i: this.cells.length, k: ch });
+    if (ch === 'd' || (!cell.v && lv.soil && (lv.soil[r] || '')[c] === 'd')) cell.dirt = true;
+    if (ch >= '0' && ch <= '5') cell.cage = +ch;
     this.cells.push(cell);
   }
   // new pieces drop in at the top cell of each column; penguins leave from the bottom cell
@@ -542,7 +601,11 @@ function Board(lv, rng) {
       : g.t === 'ice' ? this.cells.filter(x => x.ice > 0).length
       : g.t === 'box' ? this.cells.filter(x => x.box > 0).length
       : g.t === 'bub' ? this.cells.filter(x => x.bub).length
-      : g.t === 'pg' ? this.pg.total : 0;
+      : g.t === 'pg' ? this.pg.total
+      : g.t === 'egg' ? preset.filter(x => x.k === 'e').length
+      : g.t === 'bl' ? preset.filter(x => x.k === 'l').length
+      : g.t === 'grass' ? this.cells.filter(x => x.dirt && !x.grass).length
+      : g.t === 'cage' ? this.cells.filter(x => x.cage >= 0).length : 0;
     return Object.assign({}, g, { n, left: n });
   });
   this.fillInitial(preset);
@@ -553,7 +616,7 @@ Board.prototype.idx = function (r, c) { return r < 0 || c < 0 || r >= this.R || 
 Board.prototype.on = function (i) { return i >= 0 && !this.cells[i].v; };
 Board.prototype.newPiece = function (c, s) { return { id: this.nextId++, k: 'a', c, s: s || null }; };
 Board.prototype.randColor = function () { return this.colors[Math.floor(this.rng() * this.colors.length)]; };
-Board.prototype.movable = function (i) { const x = this.cells[i]; return i >= 0 && !x.v && !x.box && !x.bub && !!x.p; };
+Board.prototype.movable = function (i) { const x = this.cells[i]; return i >= 0 && !x.v && !x.box && !x.bub && x.cage < 0 && !!x.p && x.p.k !== 'l'; };
 Board.prototype.colorAt = function (i) {
   if (i < 0) return -1;
   const x = this.cells[i];
@@ -567,20 +630,21 @@ Board.prototype.neighbors = function (i) {
 };
 
 Board.prototype.fillInitial = function (preset) {
+  // would colour col at i make three in a row with what is already placed (either side, or both)?
+  const run = (i, col) => {
+    const [r, c] = this.rc(i), n = (dr, dc) => { let k = 1; while (this.colorAt(this.idx(r + dr * k, c + dc * k)) === col) k++; return k - 1; };
+    return 1 + n(0, -1) + n(0, 1) >= 3 || 1 + n(-1, 0) + n(1, 0) >= 3;
+  };
   for (let tries = 0; tries < 200; tries++) {
     this.cells.forEach(x => { x.p = null; });
-    preset.forEach(i => { this.cells[i].p = { id: this.nextId++, k: 'g' }; });
-    this.pg.made = preset.length;
+    preset.forEach(({ i, k }) => { this.cells[i].p = k === 'e' ? { id: this.nextId++, k, hp: 2 } : { id: this.nextId++, k }; });
+    this.pg.made = preset.filter(x => x.k === 'g').length;
+    this.cells.forEach(x => { if (x.cage >= 0) x.p = this.newPiece(x.cage); });   // a caged animal is of the cage's kind
     for (let i = 0; i < this.cells.length; i++) {
       const x = this.cells[i];
       if (x.v || x.box || x.p) continue;
-      const [r, c] = this.rc(i);
       let col, guard = 0;
-      do {
-        col = this.randColor();
-        guard++;
-      } while (guard < 50 && ((this.colorAt(this.idx(r, c - 1)) === col && this.colorAt(this.idx(r, c - 2)) === col) ||
-        (this.colorAt(this.idx(r - 1, c)) === col && this.colorAt(this.idx(r - 2, c)) === col)));
+      do { col = this.randColor(); guard++; } while (guard < 50 && run(i, col));
       x.p = this.newPiece(col);
     }
     if (!this.findMatches().length && this.hasMove()) return;
@@ -628,7 +692,7 @@ Board.prototype.specialFor = function (g) {
   return null;
 };
 Board.prototype.pickSpawn = function (g, type, prefer) {
-  const ok = i => !this.cells[i].bub && this.cells[i].p && !this.cells[i].p.s;
+  const ok = i => !this.cells[i].bub && this.cells[i].cage < 0 && this.cells[i].p && !this.cells[i].p.s;
   for (const i of prefer) if (g.cells.has(i) && ok(i)) return i;
   if (type === 'b') {
     const h = new Set(), both = [];
@@ -646,7 +710,7 @@ Board.prototype.pickSpawn = function (g, type, prefer) {
 // ---------- clearing ----------
 // ctx: one clearing phase. ev = what the page will animate, t in ms from the start of the phase.
 Board.prototype.newCtx = function (cascade) {
-  return { cascade, heap: new Heap(), ev: [], done: new Set(), boxHit: new Set(), protect: new Set(), acts: 0, cleared: 0, big: 0 };
+  return { cascade, heap: new Heap(), ev: [], done: new Set(), boxHit: new Set(), eggHit: new Set(), liftHit: new Set(), protect: new Set(), acts: 0, cleared: 0, big: 0 };
 };
 Board.prototype.goal = function (t, c, amount) {
   for (const g of this.goals) if (g.t === t && (t !== 'c' || g.color === c) && g.left > 0) { g.left = Math.max(0, g.left - (amount || 1)); return g; }
@@ -659,6 +723,41 @@ Board.prototype.hitBox = function (i, t, ctx) {
   this.score += PTS.box;
   const g = x.box === 0 ? this.goal('box') : null;
   ctx.ev.push({ t, k: 'box', i, left: x.box, goal: !!g, pts: PTS.box });
+  if (!x.box) this.grow(i, t, ctx);
+};
+// 种草地: whatever is cleared in a dirt cell (an animal, a bubble, a gift box, a hatched egg) leaves grass behind
+Board.prototype.grow = function (i, t, ctx) {
+  const x = this.cells[i];
+  if (!x.dirt || x.grass) return;
+  x.grass = true; this.score += PTS.grass;
+  const g = this.goal('grass');
+  ctx.ev.push({ t: t + 30, k: 'grass', i, goal: !!g, pts: PTS.grass });
+};
+// 蛋宝宝: once per phase; the first crack, then the chick
+Board.prototype.hitEgg = function (i, t, ctx) {
+  const x = this.cells[i], p = x.p;
+  if (!p || p.k !== 'e' || ctx.eggHit.has(i)) return;
+  ctx.eggHit.add(i); p.hp--;
+  if (p.hp > 0) { this.score += PTS.crack; ctx.ev.push({ t, k: 'crack', i, p, left: p.hp, pts: PTS.crack }); return; }
+  x.p = null; ctx.done.add(i); this.score += PTS.egg;
+  const g = this.goal('egg');
+  ctx.ev.push({ t, k: 'hatch', i, p, goal: !!g, pts: PTS.egg });
+  this.grow(i, t + 60, ctx);
+};
+// 气球: tugged now (once per phase), moved up a row by rise() when the board has settled
+Board.prototype.liftAt = function (i, t, ctx) {
+  const p = this.cells[i].p;
+  if (!p || p.k !== 'l' || ctx.liftHit.has(i)) return;
+  ctx.liftHit.add(i); this.lift.add(p.id);
+  ctx.ev.push({ t, k: 'tug', i, p });
+};
+// 彩色笼子: a match of the caged animal's kind in it or next to it; the animal stays where it is, free
+Board.prototype.openCage = function (i, t, ctx) {
+  const x = this.cells[i];
+  if (x.cage < 0) return;
+  const c = x.cage; x.cage = -1; this.score += PTS.cage;
+  const g = this.goal('cage');
+  ctx.ev.push({ t, k: 'free', i, c, p: x.p, goal: !!g, pts: PTS.cage });
 };
 Board.prototype.clearCell = function (i, t, by, ctx, to) {
   const x = this.cells[i];
@@ -666,19 +765,24 @@ Board.prototype.clearCell = function (i, t, by, ctx, to) {
   if (x.box) { if (by !== 'match') this.hitBox(i, t, ctx); return; }
   const p = x.p;
   if (!p) return;
+  if (x.cage >= 0) return;   // only a match of its own kind opens a cage (matchPhase); blasts pass it by
   if (x.bub) {
     x.bub = false; ctx.done.add(i);
     this.score += PTS.bub;
     const g = this.goal('bub');
     ctx.ev.push({ t, k: 'bub', i, goal: !!g, pts: PTS.bub });
+    this.grow(i, t, ctx);
     return;
   }
   if (p.k === 'g') return;
+  if (p.k === 'e') { if (by !== 'match') this.hitEgg(i, t, ctx); return; }
+  if (p.k === 'l') { if (by !== 'match') this.liftAt(i, t, ctx); return; }
   ctx.done.add(i); x.p = null; ctx.cleared++;
   const pts = by === 'match' ? PTS.piece * Math.min(ctx.cascade, 6) : PTS.blast;
   this.score += pts;
   const g = p.s !== 'c' ? this.goal('c', p.c) : null;
   ctx.ev.push({ t, k: 'pop', i, p, by, to, goal: !!g, pts });
+  this.grow(i, t, ctx);
   if (x.ice > 0) {
     x.ice--; this.score += PTS.ice;
     const gi = x.ice === 0 ? this.goal('ice') : null;
@@ -702,12 +806,12 @@ Board.prototype.line = function (i, dir) {
 };
 Board.prototype.piecesOf = function (col, ctx) {
   const out = [];
-  this.cells.forEach((x, j) => { if (!x.v && !x.box && x.p && x.p.k === 'a' && x.p.s !== 'c' && x.p.c === col && !ctx.done.has(j)) out.push(j); });
+  this.cells.forEach((x, j) => { if (!x.v && !x.box && x.cage < 0 && x.p && x.p.k === 'a' && x.p.s !== 'c' && x.p.c === col && !ctx.done.has(j)) out.push(j); });
   return out;
 };
 Board.prototype.commonColor = function (ctx) {
   const n = {};
-  this.cells.forEach((x, j) => { if (!x.v && !x.box && x.p && x.p.k === 'a' && x.p.s !== 'c' && !ctx.done.has(j)) n[x.p.c] = (n[x.p.c] || 0) + 1; });
+  this.cells.forEach((x, j) => { if (!x.v && !x.box && x.cage < 0 && x.p && x.p.k === 'a' && x.p.s !== 'c' && !ctx.done.has(j)) n[x.p.c] = (n[x.p.c] || 0) + 1; });
   let best = -1, bn = 0;
   for (const k in n) if (n[k] > bn) { bn = n[k]; best = +k; }
   return best;
@@ -734,6 +838,9 @@ Board.prototype.run = function (ctx) {
     if (e.k === 'clear') this.clearCell(e.i, e.t, e.by, ctx, e.to);
     else if (e.k === 'act') this.activate(e, ctx);
     else if (e.k === 'box') this.hitBox(e.i, e.t, ctx);
+    else if (e.k === 'egg') this.hitEgg(e.i, e.t, ctx);
+    else if (e.k === 'lift') this.liftAt(e.i, e.t, ctx);
+    else if (e.k === 'cage') this.openCage(e.i, e.t, ctx);
     else if (e.k === 'fn') e.fn(e.t);
   }
   const end = ctx.ev.reduce((m, e) => Math.max(m, e.t), 0);
@@ -747,11 +854,19 @@ Board.prototype.matchPhase = function (groups, cascade, prefer) {
   for (const g of groups) {
     const s = this.specialFor(g);
     const at = s ? this.pickSpawn(g, s, prefer) : -1;
-    if (at >= 0) { ctx.protect.add(at); makes.push({ i: at, s, c: g.color }); }
+    if (at >= 0) { ctx.protect.add(at); makes.push({ i: at, s, c: g.color }); this.grow(at, 0, ctx); }
     for (const i of g.cells) if (i !== at) ctx.heap.push({ t: 0, k: 'clear', i, by: 'match', to: at >= 0 ? at : undefined });
+    // next to the match: gift boxes and eggs take a knock, balloons a tug, cages of this kind open (and so do caged
+    // animals in the match itself)
     const near = new Set();
-    for (const i of g.cells) for (const j of this.neighbors(i)) if (this.cells[j].box) near.add(j);
-    near.forEach(j => ctx.heap.push({ t: 40, k: 'box', i: j }));
+    for (const i of g.cells) { for (const j of this.neighbors(i)) near.add(j); if (this.cells[i].cage >= 0) ctx.heap.push({ t: 40, k: 'cage', i }); }
+    near.forEach(j => {
+      const x = this.cells[j];
+      if (x.box) ctx.heap.push({ t: 40, k: 'box', i: j });
+      else if (x.p && x.p.k === 'e') ctx.heap.push({ t: 40, k: 'egg', i: j });
+      else if (x.p && x.p.k === 'l') ctx.heap.push({ t: 40, k: 'lift', i: j });
+      if (x.cage >= 0 && x.cage === g.color) ctx.heap.push({ t: 40, k: 'cage', i: j });
+    });
   }
   const ph = this.run(ctx);
   for (const m of makes) {
@@ -772,7 +887,7 @@ Board.prototype.matchPhase = function (groups, cascade, prefer) {
 Board.prototype.settle = function () {
   const paths = new Map(), landed = new Set(), news = [];
   const empty = i => this.on(i) && !this.cells[i].box && !this.cells[i].p;
-  const canFall = i => this.on(i) && !this.cells[i].box && !this.cells[i].bub && !!this.cells[i].p;
+  const canFall = i => this.on(i) && !this.cells[i].box && !this.cells[i].bub && this.cells[i].cage < 0 && !!this.cells[i].p && this.cells[i].p.k !== 'l';
   const rec = (p, from, to, s) => {
     if (!paths.has(p.id)) paths.set(p.id, { p, pts: [{ s: s - 1, r: from[0], c: from[1] }] });
     paths.get(p.id).pts.push({ s, r: to[0], c: to[1] });
@@ -828,6 +943,28 @@ Board.prototype.exits = function () {
   });
   return out.length ? { type: 'exit', out, pts: PTS.home } : null;
 };
+// the balloons lifted since the board last settled go up a row each (the top ones first), swapping places with what is
+// above them; one that reaches the top row flies away. Something that cannot move (a gift box, a bubble, a cage,
+// another balloon) holds it where it is.
+Board.prototype.rise = function () {
+  if (!this.lift.size) return null;
+  const at = new Map(), moves = [], away = [], landed = [];
+  this.cells.forEach((x, i) => { if (x.p && x.p.k === 'l') at.set(x.p.id, i); });
+  const ids = [...this.lift].filter(id => at.has(id)).sort((a, b) => at.get(a) - at.get(b));
+  this.lift.clear();
+  const fly = i => { const x = this.cells[i]; away.push({ i, p: x.p }); x.p = null; this.score += PTS.balloon; this.goal('bl'); };
+  for (const id of ids) {
+    const i = at.get(id);
+    if (this.spawn[i]) { fly(i); continue; }
+    const j = i - this.C, x = this.cells[i], y = this.cells[j];
+    if (y.box || y.bub || y.cage >= 0 || !y.p || y.p.k === 'l') continue;
+    const p = x.p; x.p = y.p; y.p = p;
+    moves.push({ id: p.id, from: i, to: j }, { id: x.p.id, from: j, to: i });
+    landed.push(i);
+    if (this.spawn[j]) fly(j);
+  }
+  return moves.length || away.length ? { type: 'rise', moves, away, landed, pts: PTS.balloon } : null;
+};
 
 // after the first clearing phase: fall, penguins out, match again, until the board is still
 Board.prototype.cascade = function (phases, first, prefer) {
@@ -837,6 +974,8 @@ Board.prototype.cascade = function (phases, first, prefer) {
     if (fall.paths.length) phases.push(fall);
     const ex = this.exits();
     if (ex) { phases.push(ex); const f2 = this.settle(); if (f2.paths.length) phases.push(f2); fall.landed.push(...f2.landed); }
+    const up = this.rise();
+    if (up) { phases.push(up); const f3 = this.settle(); if (f3.paths.length) phases.push(f3); fall.landed.push(...up.landed, ...f3.landed); }
     const groups = this.findMatches();
     if (!groups.length) break;
     cascade++;
@@ -884,6 +1023,7 @@ Board.prototype.comboPhase = function (b, pa, a, pb) {
     const g = p.s !== 'c' ? this.goal('c', p.c) : null;
     ctx.ev.push({ t, k: 'pop', i, p, by: 'combo', goal: !!g, pts: 0 });
     if (x.ice > 0) { x.ice--; const gi = x.ice === 0 ? this.goal('ice') : null; ctx.ev.push({ t, k: 'ice', i, left: x.ice, goal: !!gi, pts: PTS.ice }); }
+    this.grow(i, t, ctx);
   };
   ctx.big = 1;
   if (S.has('c')) {
@@ -910,7 +1050,7 @@ Board.prototype.comboPhase = function (b, pa, a, pb) {
         targets.forEach((j, n) => {
           const x = this.cells[j];
           const s = other.s === 'b' ? 'b' : (this.rng() < 0.5 ? 'h' : 'v');
-          if (j !== oi && !x.bub) { const old = x.p.id; x.p = this.newPiece(col, s); ctx.ev.push({ t: 200 + n * 30, k: 'make', i: j, p: x.p, old, quiet: true }); }
+          if (j !== oi && !x.bub && x.cage < 0) { const old = x.p.id; x.p = this.newPiece(col, s); ctx.ev.push({ t: 200 + n * 30, k: 'make', i: j, p: x.p, old, quiet: true }); }
           ctx.heap.push({ t: 700 + n * 110, k: 'clear', i: j, by: 'blast' });
         });
       }
@@ -954,7 +1094,7 @@ Board.prototype.bonus = function () {
     const left = this.moves;
     if (left > 0) {
       const pool = [];
-      this.cells.forEach((x, i) => { if (!x.v && !x.box && !x.bub && x.p && x.p.k === 'a' && !x.p.s) pool.push(i); });
+      this.cells.forEach((x, i) => { if (!x.v && !x.box && !x.bub && x.cage < 0 && x.p && x.p.k === 'a' && !x.p.s) pool.push(i); });
       for (let n = 0; n < left && pool.length; n++) {
         const i = pool.splice(Math.floor(this.rng() * pool.length), 1)[0];
         const x = this.cells[i], old = x.p.id;
@@ -1019,7 +1159,7 @@ Board.prototype.hint = function () {
 // shuffle the plain animals among their cells until there is a move and no ready-made match
 Board.prototype.shuffle = function () {
   const cells = [];
-  this.cells.forEach((x, i) => { if (!x.v && !x.box && !x.bub && x.p && x.p.k === 'a' && !x.p.s) cells.push(i); });
+  this.cells.forEach((x, i) => { if (!x.v && !x.box && !x.bub && x.cage < 0 && x.p && x.p.k === 'a' && !x.p.s) cells.push(i); });
   const before = new Map(cells.map(i => [this.cells[i].p.id, i]));
   const pieces = cells.map(i => this.cells[i].p);
   for (let tries = 0; tries < 300; tries++) {
@@ -1031,6 +1171,18 @@ Board.prototype.shuffle = function () {
   return { type: 'shuffle', moves: cells.map(i => ({ id: this.cells[i].p.id, from: before.get(this.cells[i].p.id), to: i, c: this.cells[i].p.c })) };
 };
 
+// 小帮手 (decli 2026-11-02): after two lost games in a row the next one starts with a special or two already on the
+// board (kinds: their s, 'h' 'v' or 'b'); returns where they are
+Board.prototype.helper = function (kinds) {
+  const pool = [], out = [];
+  this.cells.forEach((x, i) => { if (!x.v && !x.box && !x.bub && x.cage < 0 && x.p && x.p.k === 'a' && !x.p.s) pool.push(i); });
+  for (const s of kinds) {
+    if (!pool.length) break;
+    const i = pool.splice(Math.floor(this.rng() * pool.length), 1)[0], x = this.cells[i];
+    x.p = this.newPiece(x.p.c, s); out.push(i);
+  }
+  return out;
+};
 Board.prototype.won = function () { return this.goals.every(g => g.left <= 0); };
 Board.prototype.stars = function () {
   if (!this.won()) return 0;
@@ -1199,6 +1351,106 @@ const LEVELS = [
   },
 ];
 
+// 第二季 · 动物环游世界 (decli 2026-11-02, after she won all ten): the levels go on in islands of fifteen, the ten above
+// being the first. Each island brings one new thing (mech), taught in its first two levels and then mixed with what
+// came before, the difficulty going up and down, and a big challenge (岛主大挑战) as its last level; the last island
+// mixes everything. Level numbers go on across the islands. Their levels are made by dev/gen.js (levels2.js).
+//   sky, land: the map's colours; deco: what grows round the edge of the map (until decli's pictures are in)
+const ISLANDS = [
+  { id: 'park', name: '动物乐园', from: 0, n: 10, icon: '🎠', sky: ['#ffd9ef', '#e9d9ff', '#c9ecff'], land: '#d9f5c4', deco: ['🍭', '🌳', '🎈', '🌸', '🍄'] },
+  { id: 'farm', name: '蛋蛋农场', from: 10, n: 15, mech: 'egg', icon: '🥚', sky: ['#fff1c9', '#ffe2b8', '#ffd0d6'], land: '#e8f3c0', deco: ['🌻', '🌾', '🏡', '🐣', '🌽'] },
+  { id: 'meadow', name: '花花草原', from: 25, n: 15, mech: 'grass', icon: '🌼', sky: ['#e2fbe0', '#d2f3ff', '#fff5c9'], land: '#c9f0b0', deco: ['🌷', '🌼', '🦋', '🌿', '🌺'] },
+  { id: 'sky', name: '云朵气球岛', from: 40, n: 15, mech: 'bl', icon: '🎈', sky: ['#d6efff', '#e9e1ff', '#fff0f6'], land: '#ffffff', deco: ['☁️', '🎈', '🌈', '⭐', '🪁'] },
+  { id: 'jungle', name: '森林营救', from: 55, n: 15, mech: 'cage', icon: '🌴', sky: ['#d9f7e4', '#c7ecd6', '#fff3d1'], land: '#bfe6a6', deco: ['🌴', '🍄', '🌿', '🦜', '🍌'] },
+  { id: 'castle', name: '彩虹城堡', from: 70, n: 15, mech: 'all', icon: '🏰', sky: ['#ffe0f0', '#e4ddff', '#d6f4ff'], land: '#f4e9ff', deco: ['🏰', '🌈', '🎁', '❄️', '👑'] },
+];
+const isleOf = li => ISLANDS.findIndex(s => li >= s.from && li < s.from + s.n);
+
+// 动物消消乐 · 第二季的关卡 (ISLANDS in levels.js). Made by dev/gen.js — change gen.js and run it again rather than
+// editing this file. sim: how often the careful and the random robot won it, and its place on the curve (tier 0-3).
+LEVELS.push(
+  // ---- 蛋蛋农场: levels 11-25 ----
+  {name: "蛋宝宝来啦", colors: [0,1,2,3,4], moves: 17, goals: [{t: "egg"}], stars: [1,8500,11500], tip: "egg", sim: {greedy: 100, random: 47, tier: 0}, layout: ['........', '........', '.e....e.', '........', '...ee...', '.e....e.', '........', '........'] },
+  {name: "小鸡破壳", colors: [0,1,2,3,4], moves: 20, goals: [{t: "egg"}], stars: [1,10000,12000], sim: {greedy: 100, random: 47, tier: 0}, layout: ['e......e', '........', '........', '........', '.e.ee.e.', '........', '........', '........'] },
+  {name: "暖暖的鸡窝", colors: [0,1,2,3,4], moves: 36, goals: [{t: "egg"},{t: "pg"}], stars: [1,16500,19500], penguins: {total: 2, max: 2}, sim: {greedy: 97, random: 24, tier: 1}, layout: ['e..gg..e', '........', '........', '_..ee.._', '_......_', 'e......e', '........', '........'] },
+  {name: "篱笆小院", colors: [0,1,2,3,4], moves: 23, goals: [{t: "egg"},{t: "bub"}], stars: [1,11000,14000], sim: {greedy: 100, random: 30, tier: 1}, layout: ['._e_.e._', '...oo...', 'e......e', '.o....o.', 'e......e', 'o......o', '........', '........'] },
+  {name: "红色谷仓", colors: [0,1,2,3,4], moves: 32, goals: [{t: "egg"},{t: "bub"},{t: "pg"},{t: "c", color: 2, n: 20}], stars: [1,21000,25500], penguins: {total: 2, max: 2}, sim: {greedy: 92, random: 9, tier: 2}, layout: ['..e.g.e..', 'oe.....eo', '...e.e...', '_.o...o._', '_..e.e.._', '_.o...o._', 'o.......o', '.........', '.........'] },
+  {name: "晒太阳", colors: [0,1,2,3,4], moves: 23, goals: [{t: "egg"}], stars: [1,10000,12500], sim: {greedy: 100, random: 63, tier: 0}, layout: ['e_._._.e', '.e....e.', '...ee...', '........', '........', '........', '........', '........'] },
+  {name: "向日葵田", colors: [0,1,2,3,4], moves: 24, goals: [{t: "egg"},{t: "bub"}], stars: [1,9500,11500], sim: {greedy: 93, random: 26, tier: 1}, layout: ['__....__', '__e..e__', 'e.o..o.e', '........', '.e....e.', '.o....o.', '__.oo.__', '__....__'] },
+  {name: "玉米地", colors: [0,1,2,3,4], moves: 18, goals: [{t: "egg"},{t: "box"},{t: "c", color: 0, n: 18}], stars: [1,10500,14500], sim: {greedy: 92, random: 30, tier: 1}, layout: ['e......e', '........', '.be..eb.', 'e......e', '........', 'b......b', '........', '........'] },
+  {name: "草垛迷宫", colors: [0,1,2,3,4], moves: 33, goals: [{t: "egg"},{t: "pg"}], stars: [1,15000,17000], penguins: {total: 2, max: 2}, sim: {greedy: 87, random: 28, tier: 2}, layout: ['__.gg.__', '_..ee.._', '.e....e.', 'e......e', '........', '...ee...', '_......_', '__....__'] },
+  {name: "小水车", colors: [0,1,2,3,4], moves: 31, goals: [{t: "egg"},{t: "pg"}], stars: [1,14000,17000], penguins: {total: 2, max: 2}, sim: {greedy: 95, random: 24, tier: 1}, layout: ['...gg...', '.e....e.', '........', '_e....e_', '_......_', '...ee...', '........', '........'] },
+  {name: "早起的公鸡", colors: [0,1,2,3,4], moves: 21, goals: [{t: "egg"},{t: "c", color: 2, n: 18}], stars: [1,10500,13500], sim: {greedy: 98, random: 48, tier: 0}, layout: ['........', '..e..e..', '........', '..e..e..', '........', 'e......e', '........', '........'] },
+  {name: "拖拉机", colors: [0,1,2,3,4], moves: 26, goals: [{t: "egg"},{t: "ice"}], stars: [1,14000,17500], sim: {greedy: 98, random: 27, tier: 1}, layout: ['........', '........', 'i.e..e.i', '.i.II.i.', 'e.I..I.e', '.ieIIei.', '........', '........'] },
+  {name: "菜园子", colors: [0,1,2,3,4], moves: 31, goals: [{t: "egg"},{t: "box"},{t: "bub"}], stars: [1,11500,13000], sim: {greedy: 88, random: 18, tier: 2}, layout: ['...__...', 'o..__..o', '.e.ee.e.', 'B.B..B.B', 'o.oeeo.o', 'e.BooB.e', '...__...', '...__...'] },
+  {name: "农场的晚上", colors: [0,1,2,3,4], moves: 28, goals: [{t: "egg"},{t: "ice"},{t: "c", color: 2, n: 18}], stars: [1,20000,23500], sim: {greedy: 93, random: 9, tier: 2}, layout: ['..e.i.e..', '...eie...', '....I....', 'iiiIIIiii', 'ieIIIIIei', 'iiiIIIiii', 'e...I...e', '...___...', '...___...'] },
+  {name: "蛋蛋农场大挑战", colors: [0,1,2,3,4], moves: 38, goals: [{t: "egg"},{t: "box"},{t: "pg"},{t: "c", color: 0, n: 22}], stars: [1,17500,21000], penguins: {total: 3, max: 2}, sim: {greedy: 83, random: 4, tier: 3}, layout: ['__.g_g.__', '_......._', '.e.b.b.e.', 'ebe.e.ebe', 'b.......b', '_..e.e.._', '__.b.b.__', '___...___', '____.____'] },
+  // ---- 花花草原: levels 26-40 ----
+  {name: "种下小草", colors: [0,1,2,3,4], moves: 36, goals: [{t: "grass"}], stars: [1,17000,21000], tip: "grass", sim: {greedy: 100, random: 38, tier: 0}, layout: ['........', '........', '........', '........', '........', '........', '........', '........'], soil: ['________', '________', '________', 'dddddddd', '________', 'dddddddd', '________', 'dddddddd'] },
+  {name: "绿油油", colors: [0,1,2,3,4], moves: 31, goals: [{t: "grass"}], stars: [1,15500,19000], sim: {greedy: 100, random: 33, tier: 0}, layout: ['........', '........', '........', '........', '........', '........', '........', '........'], soil: ['________', '_d_dd_d_', 'd_d__d_d', '_d_dd_d_', 'd_d__d_d', '_d_dd_d_', 'd_d__d_d', '________'] },
+  {name: "蒲公英", colors: [0,1,2,3,4], moves: 22, goals: [{t: "grass"},{t: "box"}], stars: [1,10500,12500], sim: {greedy: 93, random: 20, tier: 1}, layout: ['__....__', '_......_', '........', 'b......b', '.b....b.', '........', '_......_', '__....__'], soil: ['___dd___', '___dd___', '___dd___', 'dddddddd', 'dddddddd', '___dd___', '___dd___', '___dd___'] },
+  {name: "小风车", colors: [0,1,2,3,4], moves: 36, goals: [{t: "grass"},{t: "box"}], stars: [1,13000,15500], sim: {greedy: 97, random: 23, tier: 1}, layout: ['___..___', '__....__', '_......_', '.b....b.', '........', '_.b..b._', '__....__', '___..___'], soil: ['________', '________', '_dddddd_', 'dddddddd', 'dddddddd', '_dddddd_', '__dddd__', '___dd___'] },
+  {name: "蝴蝶飞呀", colors: [0,1,2,3,4], moves: 23, goals: [{t: "grass"},{t: "box"}], stars: [1,11000,14500], sim: {greedy: 92, random: 9, tier: 2}, layout: ['........', '........', '........', '.b....b.', 'b.b..b.b', '__....__', '__....__', '__....__'], soil: ['________', 'dddddddd', 'dddddddd', 'dddddddd', 'dddddddd', '__dddd__', '__dddd__', '________'] },
+  {name: "野餐垫", colors: [0,1,2,3,4], moves: 28, goals: [{t: "grass"},{t: "bub"}], stars: [1,9500,11500], sim: {greedy: 97, random: 43, tier: 0}, layout: ['___..___', '__.oo.__', '_......_', '........', 'o......o', '_......_', '__....__', '___..___'], soil: ['________', '___dd___', '__dddd__', '_dddddd_', '_dddddd_', '__dddd__', '___dd___', '________'] },
+  {name: "编花环", colors: [0,1,2,3,4], moves: 24, goals: [{t: "grass"},{t: "egg"}], stars: [1,11000,13500], sim: {greedy: 95, random: 24, tier: 1}, layout: ['__....__', '__....__', 'e......e', '........', '........', 'e..ee..e', '__....__', '__....__'], soil: ['________', '___dd___', '__dddd__', '_dddddd_', '_dddddd_', '__dddd__', '___dd___', '________'] },
+  {name: "彩虹花田", colors: [0,1,2,3,4], moves: 33, goals: [{t: "grass"},{t: "bub"}], stars: [1,16500,20000], sim: {greedy: 98, random: 22, tier: 1}, layout: ['........', '...oo...', '.o....o.', '_..oo.._', '_......_', '........', '........', '........'], soil: ['d_d__d_d', '_d_dd_d_', 'd_d__d_d', '_d_dd_d_', '__d__d__', '_d_dd_d_', 'd_d__d_d', '_d_dd_d_'] },
+  {name: "小溪边", colors: [0,1,2,3,4], moves: 27, goals: [{t: "grass"},{t: "ice"},{t: "box"},{t: "c", color: 1, n: 22}], stars: [1,17500,20000], sim: {greedy: 87, random: 9, tier: 2}, layout: ['__.._..__', '_...i..._', '.b.bIb.b.', 'iiiIIIiii', 'iiIIIIIii', '_iiIIIii_', '__.bIb.__', '___.i.___', '____i____'], soil: ['_________', '___ddd___', '__ddddd__', '_ddddddd_', 'ddddddddd', '_ddddddd_', '__ddddd__', '___ddd___', '____d____'] },
+  {name: "蜜蜂嗡嗡", colors: [0,1,2,3,4], moves: 22, goals: [{t: "grass"},{t: "box"}], stars: [1,12500,16000], sim: {greedy: 100, random: 18, tier: 1}, layout: ['........', '........', '........', '..b..b..', 'b......b', '........', '........', '........'], soil: ['________', '________', 'dddddddd', 'dddddddd', 'dddddddd', 'dddddddd', '________', '________'] },
+  {name: "三叶草", colors: [0,1,2,3,4], moves: 26, goals: [{t: "grass"},{t: "c", color: 4, n: 16}], stars: [1,9000,11500], sim: {greedy: 100, random: 40, tier: 0}, layout: ['...__...', '...__...', '........', '........', '........', '........', '...__...', '...__...'], soil: ['________', '________', '___dd___', 'dddddddd', 'dddddddd', '___dd___', '________', '________'] },
+  {name: "放风筝", colors: [0,1,2,3,4], moves: 33, goals: [{t: "grass"},{t: "box"}], stars: [1,13000,16000], sim: {greedy: 97, random: 21, tier: 1}, layout: ['........', '........', 'b......b', '........', '.b....b.', '__....__', '__....__', '__....__'], soil: ['________', 'dddddddd', '________', 'dddddddd', '________', '__dddd__', '________', '__dddd__'] },
+  {name: "花的海洋", colors: [0,1,2,3,4], moves: 25, goals: [{t: "grass"},{t: "egg"},{t: "ice"}], stars: [1,19500,25000], sim: {greedy: 90, random: 9, tier: 2}, layout: ['._._e_._.', '.........', '....e....', 'iiieieiii', 'iiiiiiiii', 'ieiiiiiei', '.........', '.........', '.........'], soil: ['____d____', '___ddd___', '__ddddd__', '_ddddddd_', 'ddddddddd', '_ddddddd_', '__ddddd__', '___ddd___', '____d____'] },
+  {name: "星星草地", colors: [0,1,2,3,4], moves: 29, goals: [{t: "grass"},{t: "bub"},{t: "pg"}], stars: [1,15500,18000], penguins: {total: 2, max: 2}, sim: {greedy: 92, random: 15, tier: 2}, layout: ['...gg...', '........', '.o....o.', '_.o..o._', '_.o..o._', '........', '.o....o.', '........'], soil: ['___dd___', '___dd___', '___dd___', '_dddddd_', '_dddddd_', '___dd___', '___dd___', '___dd___'] },
+  {name: "花花草原大挑战", colors: [0,1,2,3,4], moves: 20, goals: [{t: "grass"},{t: "box"},{t: "bub"}], stars: [1,17000,21000], sim: {greedy: 83, random: 7, tier: 3}, layout: ['.........', '.o.....o.', '.B.....B.', '...B.B...', 'B.B...B.B', '...o.o...', '.o.o.o.o.', '...o.o...', '.........'], soil: ['____d____', '___ddd___', '__ddddd__', '_ddddddd_', 'ddddddddd', '_ddddddd_', '__ddddd__', '___ddd___', '____d____'] },
+  // ---- 云朵气球岛: levels 41-55 ----
+  {name: "飞起来啦", colors: [0,1,2,3,4], moves: 15, goals: [{t: "bl"}], stars: [1,9500,12500], tip: "bl", sim: {greedy: 98, random: 59, tier: 0}, layout: ['........', '........', '........', '.l.ll.l.', '........', '........', '........', '........'] },
+  {name: "棉花糖云", colors: [0,1,2,3,4], moves: 18, goals: [{t: "bl"},{t: "c", color: 4, n: 18}], stars: [1,11000,14000], sim: {greedy: 100, random: 48, tier: 0}, layout: ['........', '........', '........', '........', '.l.ll.l.', '........', '........', '........'] },
+  {name: "热气球", colors: [0,1,2,3,4], moves: 26, goals: [{t: "bl"},{t: "c", color: 4, n: 16}], stars: [1,10000,11000], sim: {greedy: 98, random: 69, tier: 1}, layout: ['___..___', '__....__', '_......_', '...ll...', '........', '_......_', '__.ll.__', '___..___'] },
+  {name: "彩虹桥", colors: [0,1,2,3,4], moves: 33, goals: [{t: "bl"},{t: "ice"}], stars: [1,18000,21000], sim: {greedy: 97, random: 23, tier: 1}, layout: ['__.ii.__', '_..ii.._', '...II...', 'iiIIIIii', 'iiIIIIii', '..lIIl..', '_..ii.._', '__liil__'] },
+  {name: "风车云", colors: [0,1,2,3,4,5], moves: 25, goals: [{t: "bl"},{t: "c", color: 1, n: 20}], stars: [1,9500,11000], sim: {greedy: 93, random: 32, tier: 2}, layout: ['........', '........', '........', '_......_', '_l.ll.l_', '........', '........', '........'] },
+  {name: "小鸟的家", colors: [0,1,2,3,4], moves: 21, goals: [{t: "bl"},{t: "c", color: 4, n: 14}], stars: [1,8500,10500], sim: {greedy: 98, random: 60, tier: 0}, layout: ['_..__.._', '........', '........', '..l..l..', '........', '_.l..l._', '__....__', '___..___'] },
+  {name: "雨后天晴", colors: [0,1,2,3,4], moves: 33, goals: [{t: "bl"},{t: "grass"},{t: "c", color: 3, n: 16}], stars: [1,13000,15000], sim: {greedy: 92, random: 30, tier: 1}, layout: ['___..___', '__....__', '_......_', '...ll...', '........', '_..ll.._', '__....__', '___..___'], soil: ['________', '________', '_dddddd_', 'dddddddd', 'dddddddd', '_dddddd_', '________', '________'] },
+  {name: "云朵滑梯", colors: [0,1,2,3,4], moves: 30, goals: [{t: "bl"},{t: "bub"},{t: "c", color: 0, n: 16}], stars: [1,16500,20000], sim: {greedy: 100, random: 25, tier: 1}, layout: ['........', '........', '........', '..l..l..', '...oo...', 'l......l', '.oo..oo.', '........'] },
+  {name: "星星灯", colors: [0,1,2,3,4], moves: 33, goals: [{t: "bl"},{t: "grass"},{t: "c", color: 4, n: 22}], stars: [1,12500,15500], sim: {greedy: 87, random: 17, tier: 2}, layout: ['___..___', '__....__', '_......_', '........', '........', '_..ll.._', '__....__', '___..___'], soil: ['___dd___', '__dddd__', '_dddddd_', 'dddddddd', 'dddddddd', '_dddddd_', '__dddd__', '___dd___'] },
+  {name: "月亮船", colors: [0,1,2,3,4], moves: 29, goals: [{t: "bl"},{t: "grass"},{t: "c", color: 2, n: 16}], stars: [1,16500,20000], sim: {greedy: 98, random: 23, tier: 1}, layout: ['_......_', '........', '........', '..l..l..', '........', '........', '.l....l.', '_......_'], soil: ['________', '________', 'dddddddd', 'dddddddd', 'dddddddd', 'dddddddd', '________', '________'] },
+  {name: "气球派对", colors: [0,1,2,3,4], moves: 20, goals: [{t: "bl"},{t: "c", color: 0, n: 18}], stars: [1,9500,11000], sim: {greedy: 97, random: 48, tier: 0}, layout: ['_..__.._', '........', '........', '.l....l.', '........', '_.l..l._', '__....__', '___..___'] },
+  {name: "天空花园", colors: [0,1,2,3,4], moves: 31, goals: [{t: "bl"},{t: "c", color: 4, n: 18}], stars: [1,15500,20000], sim: {greedy: 100, random: 18, tier: 1}, layout: ['._._._._', '........', '........', '........', '..l..l..', '........', 'l......l', '........'] },
+  {name: "流星雨", colors: [0,1,2,3,4], moves: 23, goals: [{t: "bl"}], stars: [1,11500,14500], sim: {greedy: 90, random: 13, tier: 2}, layout: ['........', '........', '........', '........', '........', 'l..ll..l', '...__...', '...__...'] },
+  {name: "晚霞", colors: [0,1,2,3,4], moves: 29, goals: [{t: "bl"},{t: "ice"}], stars: [1,16500,20000], sim: {greedy: 92, random: 12, tier: 2}, layout: ['........', '........', '........', '_......_', '_l....l_', 'iiiIIiii', '...ll...', 'iiiiiiii'] },
+  {name: "云朵气球岛大挑战", colors: [0,1,2,3,4], moves: 32, goals: [{t: "bl"},{t: "ice"}], stars: [1,26500,32500], sim: {greedy: 88, random: 2, tier: 3}, layout: ['_......._', '.........', 'i.i.I.i.i', '.i.I.I.i.', 'ilI.I.Ili', '.i.I.I.i.', 'i.ilIli.i', '.........', '_l.....l_'] },
+  // ---- 森林营救: levels 56-70 ----
+  {name: "救救小伙伴", colors: [0,1,2,3,4], moves: 32, goals: [{t: "cage"}], stars: [1,13000,18000], tip: "cage", sim: {greedy: 98, random: 41, tier: 0}, layout: ['........', '........', '........', '........', '........', '...40...', '4......4', '........'] },
+  {name: "大蘑菇", colors: [0,1,2,3,4], moves: 21, goals: [{t: "cage"}], stars: [1,9000,13000], sim: {greedy: 100, random: 43, tier: 0}, layout: ['........', '........', '2......2', '........', '........', '........', '..1..1..', '........'] },
+  {name: "小瀑布", colors: [0,1,2,3,4], moves: 35, goals: [{t: "cage"},{t: "ice"}], stars: [1,14500,17500], sim: {greedy: 92, random: 23, tier: 1}, layout: ['...__...', '1.1__1.1', '.iiIIii.', '.iIIIIi.', '.iIIIIi.', '.iiIIii.', '1..__..1', '...__...'] },
+  {name: "藤蔓桥", colors: [0,1,2,3,4], moves: 25, goals: [{t: "cage"},{t: "egg"}], stars: [1,13000,17000], sim: {greedy: 95, random: 30, tier: 1}, layout: ['........', '2.e..e.2', 'e......e', '........', '........', '.1.ee.1.', '..3..3..', '........'] },
+  {name: "树屋", colors: [0,1,2,3,4], moves: 27, goals: [{t: "cage"},{t: "pg"},{t: "c", color: 1, n: 22}], stars: [1,17000,21000], penguins: {total: 2, max: 2}, sim: {greedy: 92, random: 8, tier: 2}, layout: ['.g.....g.', '.........', '.........', '..3...3..', '.4.....4.', '.........', '__.2.2.__', '__.....__', '__.....__'] },
+  {name: "萤火虫", colors: [0,1,2,3,4], moves: 26, goals: [{t: "cage"},{t: "bub"}], stars: [1,10000,12000], sim: {greedy: 98, random: 42, tier: 0}, layout: ['__....__', '__....__', '.o....o.', '.o....o.', '..1..1..', '.4....4.', '__....__', '__....__'] },
+  {name: "香蕉林", colors: [0,1,2,3,4], moves: 28, goals: [{t: "cage"},{t: "egg"}], stars: [1,10500,13000], sim: {greedy: 100, random: 34, tier: 1}, layout: ['e......e', '..3..3..', '..e..e..', '...34...', 'e......e', '__.01.__', '__....__', '__....__'] },
+  {name: "青苔石头", colors: [0,1,2,3,4], moves: 16, goals: [{t: "cage"},{t: "box"},{t: "c", color: 0, n: 20}], stars: [1,8500,11000], sim: {greedy: 95, random: 28, tier: 1}, layout: ['........', '........', '........', 'b..01..b', '..0..0..', 'b..34..b', '........', '........'] },
+  {name: "竹林", colors: [0,1,2,3,4], moves: 32, goals: [{t: "cage"},{t: "grass"}], stars: [1,20000,25000], sim: {greedy: 92, random: 16, tier: 2}, layout: ['__.....__', '__.....__', '...2.2...', '.........', '.........', '..4...4..', '.........', '__..2..__', '__.....__'], soil: ['__ddddd__', '__ddddd__', 'dd_____dd', 'dd_____dd', 'dd_____dd', 'dd_____dd', 'dd_____dd', '__ddddd__', '__ddddd__'] },
+  {name: "小木屋", colors: [0,1,2,3,4], moves: 30, goals: [{t: "cage"},{t: "ice"}], stars: [1,14500,17000], sim: {greedy: 92, random: 22, tier: 1}, layout: ['........', '1i.ii.i1', 'i.i12i.i', '.i.ii.i.', 'i.i..i.i', '__.ii.__', '__i34i__', '__....__'] },
+  {name: "鹦鹉山谷", colors: [0,1,2,3,4], moves: 35, goals: [{t: "cage"},{t: "egg"},{t: "c", color: 4, n: 16}], stars: [1,12500,15500], sim: {greedy: 100, random: 68, tier: 0}, layout: ['__....__', '_......_', '...ee...', '..e12e..', '4......4', '........', '_......_', '__....__'] },
+  {name: "森林小路", colors: [0,1,2,3,4], moves: 29, goals: [{t: "cage"},{t: "ice"}], stars: [1,11500,15500], sim: {greedy: 95, random: 20, tier: 1}, layout: ['__....__', '__....__', '........', '..4..4..', '.3.40.3.', 'iiiIIiii', '__iiii__', '__iiii__'] },
+  {name: "魔法树", colors: [0,1,2,3,4], moves: 29, goals: [{t: "cage"},{t: "egg"},{t: "pg"}], stars: [1,17000,19000], penguins: {total: 2, max: 2}, sim: {greedy: 88, random: 10, tier: 2}, layout: ['...gg...', 'e.0..0.e', '........', '........', '...23...', 'e.e..e.e', '..2..2..', '........'] },
+  {name: "月光森林", colors: [0,1,2,3,4], moves: 38, goals: [{t: "cage"},{t: "ice"},{t: "pg"}], stars: [1,21000,24500], penguins: {total: 2, max: 2}, sim: {greedy: 87, random: 8, tier: 2}, layout: ['...gg...', '.i.ii.i.', 'i.i..i.i', '_i0II0i_', '_.I34I._', '1i.II.i1', 'i.i..i.i', '........'] },
+  {name: "森林营救大挑战", colors: [0,1,2,3,4], moves: 15, goals: [{t: "cage"},{t: "egg"}], stars: [1,9500,11500], sim: {greedy: 95, random: 7, tier: 3}, layout: ['__.....__', '__.0.0.__', '.........', 'e.e...e.e', '.........', '...1.1...', '..e...e..', '__..2..__', '__.....__'] },
+  // ---- 彩虹城堡: levels 71-85 ----
+  {name: "城堡大门", colors: [0,1,2,3,4], moves: 16, goals: [{t: "egg"}], stars: [1,8000,11500], tip: "castle", sim: {greedy: 98, random: 55, tier: 0}, layout: ['.e....e.', '........', '........', '.e....e.', '........', '...ee...', '........', '........'] },
+  {name: "彩虹长廊", colors: [0,1,2,3,4], moves: 35, goals: [{t: "grass"}], stars: [1,16500,19500], sim: {greedy: 100, random: 33, tier: 0}, layout: ['........', '........', '........', '........', '........', '........', '........', '........'], soil: ['________', '________', '________', 'dddddddd', '________', 'dddddddd', '________', 'dddddddd'] },
+  {name: "冰雪塔", colors: [0,1,2,3,4], moves: 21, goals: [{t: "bl"},{t: "grass"}], stars: [1,14000,16500], sim: {greedy: 93, random: 21, tier: 1}, layout: ['........', '........', '........', '_......_', '_..ll.._', '.l....l.', '........', '........'], soil: ['________', '___dd___', '__dddd__', '_dddddd_', '_dddddd_', '__dddd__', '___dd___', '________'] },
+  {name: "礼物房", colors: [0,1,2,3,4], moves: 18, goals: [{t: "cage"},{t: "egg"}], stars: [1,9000,12500], sim: {greedy: 97, random: 28, tier: 1}, layout: ['........', '.e....e.', '..e40e..', '........', '4......4', '........', '........', '........'] },
+  {name: "公主花园", colors: [0,1,2,3,4,5], moves: 29, goals: [{t: "egg"},{t: "grass"},{t: "c", color: 1, n: 18}], stars: [1,9000,10500], sim: {greedy: 90, random: 27, tier: 2}, layout: ['_..__.._', '........', 'e......e', '.e....e.', '........', '_e....e_', '__....__', '___..___'], soil: ['________', '________', '_dddddd_', '_dddddd_', '_dddddd_', '_dddddd_', '________', '________'] },
+  {name: "旋转楼梯", colors: [0,1,2,3,4], moves: 34, goals: [{t: "grass"},{t: "cage"}], stars: [1,13000,16000], sim: {greedy: 100, random: 38, tier: 0}, layout: ['........', '0......0', '........', '........', '........', '__....__', '__....__', '__....__'], soil: ['________', '________', 'dddddddd', 'dddddddd', 'dddddddd', '__dddd__', '________', '________'] },
+  {name: "宝石屋", colors: [0,1,2,3,4], moves: 22, goals: [{t: "bl"}], stars: [1,8500,10500], sim: {greedy: 93, random: 24, tier: 1}, layout: ['___..___', '__....__', '_......_', '...ll...', '........', '_......_', '__....__', '___ll___'] },
+  {name: "城堡厨房", colors: [0,1,2,3,4], moves: 37, goals: [{t: "cage"},{t: "ice"},{t: "pg"},{t: "c", color: 2, n: 16}], stars: [1,20000,23000], penguins: {total: 2, max: 2}, sim: {greedy: 100, random: 18, tier: 1}, layout: ['__....__', '_g4..4g_', '2iiIIii2', '.iIIIIi.', '3iIIIIi3', '.iiIIii.', '_......_', '__....__'] },
+  {name: "音乐厅", colors: [0,1,2,3,4], moves: 31, goals: [{t: "egg"},{t: "bl"},{t: "ice"},{t: "bub"},{t: "c", color: 4, n: 22}], stars: [1,17500,22000], sim: {greedy: 90, random: 8, tier: 2}, layout: ['_e....e_', '.o....o.', '...ee...', 'ieiiiiei', 'qiiiiiiq', 'eo....oe', 'o.l..l.o', '_......_'] },
+  {name: "镜子长廊", colors: [0,1,2,3,4], moves: 23, goals: [{t: "grass"},{t: "ice"},{t: "c", color: 1, n: 14}], stars: [1,10500,12500], sim: {greedy: 97, random: 21, tier: 1}, layout: ['...__...', '...__...', '.iiiiii.', '.iiiiii.', '.iiiiii.', '.iiiiii.', '...__...', '...__...'], soil: ['________', '________', '___dd___', 'dddddddd', 'dddddddd', '___dd___', '________', '________'] },
+  {name: "高高的塔", colors: [0,1,2,3,4], moves: 22, goals: [{t: "bl"},{t: "c", color: 2, n: 14}], stars: [1,14000,16500], sim: {greedy: 100, random: 43, tier: 0}, layout: ['........', '........', '........', '...ll...', 'l......l', '........', '........', '........'] },
+  {name: "放烟花", colors: [0,1,2,3,4], moves: 28, goals: [{t: "cage"},{t: "bub"}], stars: [1,10500,13500], sim: {greedy: 93, random: 38, tier: 1}, layout: ['........', '..o..o..', '4......4', '........', '.4....4.', '__....__', '__.oo.__', '__....__'] },
+  {name: "金色王冠", colors: [0,1,2,3,4], moves: 19, goals: [{t: "egg"},{t: "bub"}], stars: [1,10000,12500], sim: {greedy: 87, random: 14, tier: 2}, layout: ['_......_', '..e..e..', '........', '...ee...', 'o......o', 'o.eooe.o', '........', '_......_'] },
+  {name: "星光舞会", colors: [0,1,2,3,4], moves: 31, goals: [{t: "grass"},{t: "egg"},{t: "box"}], stars: [1,17500,21500], sim: {greedy: 93, random: 12, tier: 2}, layout: ['........', '..e..e..', 'b.b..b.b', '.b.ee.b.', '..e..e..', '........', '........', '........'], soil: ['________', 'dddddddd', '________', 'dddddddd', '________', 'dddddddd', '________', 'dddddddd'] },
+  {name: "彩虹城堡大挑战", colors: [0,1,2,3,4], moves: 23, goals: [{t: "bl"},{t: "cage"},{t: "ice"},{t: "box"}], stars: [1,19000,23000], sim: {greedy: 80, random: 5, tier: 3}, layout: ['._._._._.', '..1.i.1..', 'B.BiIiB.B', '.BiIIIiB.', '.iIIIIIi.', '.4iIIIi4.', 'B..iIi..B', '..3.i.3..', '....l....'] },
+);
+
 // 动物消消乐 · everything the narrator says. dev/voice/collect.js reads this file (with levels.js and board.js) to
 // list every line for recording, so a line built from a level must be built here and nowhere else.
 const KID = '可可';   // decli's daughter, who plays this
@@ -1214,10 +1466,16 @@ const NUM_ZH = n => String(n);   // the voice reads digits naturally ("18只" �
 // the animals change every game (cast.js), so a line never names them: the intro says how many kinds to collect and
 // their names follow as clips of their own (L.gift.names), each with its goal picture bouncing (UI.intro)
 function goalSay(g, lv) {
+  const count = chs => (lv.layout || []).join('').split('').filter(ch => chs.includes(ch)).length;
   if (g.t === 'ice') return '敲碎所有冰块';
   if (g.t === 'box') return '拆开所有礼物盒';
   if (g.t === 'bub') return '戳破所有泡泡';
   if (g.t === 'pg') return `把${lv.penguins.total}只小企鹅送回家`;
+  // season two
+  if (g.t === 'egg') return `把${count('e')}个蛋宝宝都孵出来`;
+  if (g.t === 'grass') return '把土地都种上小草';
+  if (g.t === 'bl') return `把${count('l')}个气球都送上天`;
+  if (g.t === 'cage') return `把笼子里的${count('012345')}个小伙伴都救出来`;
   return '';
 }
 // Every animal in decli's pictures (heads.webp, cut by dev/heads.py), in their order: [id, name, tier, colour].
@@ -1262,6 +1520,22 @@ const L = {
     box2: '紫色的大礼物盒有两层，要拆两次。小企鹅被挡住了，先把礼物盒拆开！',
     six: '这一关有六种小动物，不容易连上，多想一想再动手。',
     final: '最后一关啦！冰块、礼物盒和小企鹅都在，加油！',
+    // season two: each island's new thing, said before its first level
+    egg: '蛋宝宝来啦！在蛋旁边消两次，小鸡就破壳出来了。',
+    grass: '在土地上消一消，那里就长出小草。把土地都种绿吧！',
+    bl: '在气球旁边消一消，气球就往上飘一格。飘到最上面，它就飞上天啦！',
+    cage: '小伙伴被关在笼子里了！在笼子旁边消和它一样的小动物，笼子就打开啦。',
+    castle: '彩虹城堡里，蛋宝宝、小草、气球和笼子都在，加油！',
+  },
+  cageStuck: '笼子里的小动物拨不动。在旁边消和它一样的小动物，笼子才会打开。',
+  balloonStuck: '气球拨不动。在它旁边消一消，它就往上飘！',
+  balloonAway: '气球飞上天啦！',
+  helper: '别灰心！送你一个小帮手。',
+  // the islands (ISLANDS in levels.js): arriving on one, winning all of it, trying one that is still locked
+  isle: {
+    hi: ISLANDS.map(s => `欢迎来到${s.name}！`),
+    done: ISLANDS.map(s => `${s.name}全部通关啦！送你一个稀有盲盒！`),
+    locked: '这座小岛还锁着，先把前面的关都过了吧！',
   },
   // said once, the first time she makes each special piece; the piece itself shows what it does (Game.showOff)
   made: {
@@ -1280,7 +1554,7 @@ const L = {
   fail: '步数用完啦，就差一点点！',
   extraOffer: '做5道数学题，就能再多5步！',
   extraDone: '多了5步，加油！',
-  allDone: '十关全部通过啦！你是消消乐大师！',
+  allDone: '所有小岛全部通关啦！你是消消乐大师！',
   // decli: call her by name on the math page, every right answer is praise for 可可
   math: {
     title: `${KID}，敢不敢先挑战一页数学题？`,
@@ -1395,6 +1669,8 @@ const L = {
     album: '这是你的动物收集册。每过一关就能拆一个盲盒，把小伙伴都集齐吧！',
     names: FRIENDS.map(f => f.name),
     locked: '还没抽到它呢，过关拆盲盒就有机会哦！',
+    more: '拿到三颗星，还能再拆一个盲盒哦！',
+    shiny: '又抽到它啦！它变成闪光版啦！',   // a replay: boxes come the first time a level is won, and with its first three stars
   },
 };
 // English cheers for each step of excitement (excitement() in board.js): decli's own recordings in sound/, not the
@@ -1424,8 +1700,9 @@ const Cast = {
   // six new animals for level li: they show at once everywhere (intro card, pieces, goals, effects) and are kept for
   // Game.start(li)
   pick(li) {
-    const lv = LEVELS[li], penguins = lv.goals.some(g => g.t === 'pg');
-    const pool = FRIENDS.filter(f => f.tier <= 1 && f.id !== 'penguin' && !(penguins && this.near(f.fam, 'k')));
+    const lv = LEVELS[li], penguins = lv.goals.some(g => g.t === 'pg'), eggs = lv.goals.some(g => g.t === 'egg');
+    // the chicks that hatch from eggs are their own surprise, not one of the six
+    const pool = FRIENDS.filter(f => f.tier <= 1 && f.id !== 'penguin' && !(penguins && this.near(f.fam, 'k')) && !(eggs && f.id === 'chick'));
     let got = [];
     for (let tries = 0; got.length < 6 && tries < 50; tries++) {   // an unlucky early pick can leave fewer than six colours: draw again
       for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
@@ -1574,6 +1851,13 @@ const Snd = {
       case 'right': this.tone(this.pent(7), 0.15, { type: 'triangle', vol: 0.18 }); this.tone(this.pent(9), 0.3, { type: 'triangle', vol: 0.18, at: 0.1, verb: true }); break;
       case 'wrong': this.tone(392, 0.14, { type: 'sine', vol: 0.13 }); this.tone(330, 0.22, { type: 'sine', vol: 0.12, at: 0.12, to: 370 }); break;   // "hmm?", not a buzz
       case 'key': this.tone(700 + k * 30, 0.05, { type: 'sine', vol: 0.1 }); break;
+      // season two: an egg cracking and a chick peeping out, grass growing, a balloon going up and away, a cage opening
+      case 'crack': this.noise(0.07, { filter: 'highpass', f: 2600, vol: 0.2 }); this.tone(620, 0.08, { type: 'triangle', to: 420, vol: 0.12 }); break;
+      case 'hatch': this.noise(0.1, { filter: 'highpass', f: 2200, vol: 0.18 }); [0, 0.13].forEach(at => this.tone(2100, 0.07, { type: 'sine', to: 2900, vol: 0.12, at: at + 0.08 })); this.tone(this.pent(12), 0.3, { type: 'triangle', vol: 0.1, at: 0.3, verb: true }); break;
+      case 'grow': this.tone(this.pent(7 + (k % 5)), 0.12, { type: 'sine', vol: 0.06, to: this.pent(9 + (k % 5)), verb: true }); break;
+      case 'rise': this.tone(330, 0.25, { type: 'sine', to: 520, vol: 0.08 }); break;
+      case 'balloon': this.noise(0.4, { f: 500, fto: 2500, q: 0.7, vol: 0.08 }); this.tone(440, 0.5, { type: 'sine', to: 1100, vol: 0.1, verb: true }); break;
+      case 'free': this.noise(0.05, { filter: 'highpass', f: 4000, vol: 0.15 }); [0, 2, 4, 7].forEach((n, i) => this.tone(this.pent(7 + n), 0.3, { type: 'triangle', vol: 0.12, at: 0.05 + i * 0.07, verb: true })); break;
       // marking a handed-in page: a pen's tick that climbs a note with every right sum, a soft low one for a ring
       case 'mark': this.noise(0.05, { filter: 'highpass', f: 3500, vol: 0.12 }); this.tone(this.pent(5 + ((k - 1) % 10)), 0.2, { type: 'triangle', vol: 0.15, at: 0.02, verb: true }); break;
       case 'ring': this.noise(0.16, { f: 1200, fto: 700, q: 1.2, vol: 0.08 }); this.tone(392, 0.22, { type: 'sine', vol: 0.09, to: 350 }); break;
@@ -1721,6 +2005,23 @@ const Voice = { on: true, last: '', busy: false };
 // 216 px square, the head in the middle), in the order of FRIENDS (lines.js).
 const HEADS = { cell: 216, cols: 10, size: [[164,141],[162,143],[160,141],[173,178],[161,140],[160,138],[208,136],[137,184],[148,154],[153,144],[158,131],[162,138],[149,142],[154,141],[142,142],[168,149],[129,164],[154,153],[148,148],[131,144],[166,136],[188,143],[195,151],[157,161],[173,172],[157,163],[163,140],[208,136],[146,144],[155,129],[152,160],[161,137],[177,143],[171,137],[150,140],[164,139],[158,142],[188,147],[187,134],[146,138],[175,129],[150,133],[162,151],[174,148],[182,140],[162,146],[157,147],[184,153],[187,142],[147,152],[139,115],[149,110],[122,125],[150,106],[133,116],[116,133],[136,124],[113,129],[110,137],[116,133],[127,139],[112,124],[124,133],[123,134],[135,134],[143,125],[138,136],[142,132],[135,117],[134,125]] };
 
+// 动物消消乐 · decli's pictures for season two (the egg, the balloon, the cage, grass, the islands and their maps),
+// made from dev/art/season2/*.png by dev/art2.py into ../s2/*.webp, which also writes the list below. Until a picture
+// is in, the code draws its own (art.js, ui.js), so the game never waits for them; when they load, the board's tiles
+// are made again with them.
+const Art2 = {
+  names: ['egg', 'egg-crack', 'balloon', 'cage', 'grass', 'island-1', 'island-1-bg', 'island-2', 'island-2-bg', 'island-3', 'island-3-bg', 'island-4', 'island-4-bg', 'island-5', 'island-5-bg', 'island-6', 'island-6-bg'],   // filled in by dev/art2.py
+  badge: [0.4979, 0.8594, 0.1172],   // the cage picture's badge: centre x (of its width), y and radius (of its height); art2.py measures it
+  img: {},
+  load() {
+    for (const n of this.names) {
+      const im = new Image();
+      im.onload = () => { this.img[n] = im; Art.cell = 0; if (Game.active) Game.layout(); if (!$('#map').hidden && n.startsWith('island')) UI.map(); };
+      im.src = 's2/' + n + '.webp';
+    }
+  },
+};
+
 // 动物消消乐 · drawing the pieces, the cell layers (ice, gift boxes, bubbles) and the little sprites the effects use.
 // Everything that does not move is drawn once into a canvas the size it will appear on screen (re-made on resize).
 const Art = {
@@ -1784,6 +2085,106 @@ const Art = {
     this.cache.ice1 = this.iceTile(D, 1); this.cache.ice2 = this.iceTile(D, 2);
     this.cache.box1 = this.boxTile(D, 1); this.cache.box2 = this.boxTile(D, 2);
     this.cache.bub = this.bubbleTile(T, D);
+    // season two: an egg whole and cracked, a balloon, a cage, bare soil and grass (decli's pictures when they are in)
+    this.cache.egg2 = this.eggTile(T, D, 2); this.cache.egg1 = this.eggTile(T, D, 1);
+    this.cache.balloon = this.balloonTile(T, D);
+    this.cache.cage = this.cageTile(T, D);
+    this.cache.dirt = this.dirtTile(D); this.cache.grass = this.grassTile(D);
+  },
+  // a picture of decli's (Art2, art2.js) drawn to fill a T x T tile, if it has loaded
+  pic(name, T, fit) {
+    const im = Art2.img[name];
+    if (!im) return null;
+    const c = this.canvas(T, T), x = c.getContext('2d'), f = fit * T / Math.max(im.width, im.height);
+    x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high';
+    x.drawImage(im, (T - im.width * f) / 2, (T - im.height * f) / 2, im.width * f, im.height * f);
+    return c;
+  },
+  // 蛋宝宝: cream with pastel spots; cracked: a zigzag and a bit of yellow fluff
+  eggTile(T, D, hp) {
+    const own = this.pic(hp === 2 ? 'egg' : 'egg-crack', T, D * 0.92 / T * 1.0);
+    if (own) return own;
+    const c = this.canvas(T, T), x = c.getContext('2d'), m = T / 2, w = D * 0.36, h = D * 0.44;
+    const shape = () => { x.beginPath(); x.moveTo(m, m - h); x.bezierCurveTo(m + w * 1.05, m - h, m + w * 1.1, m + h * 0.75, m, m + h * 0.92); x.bezierCurveTo(m - w * 1.1, m + h * 0.75, m - w * 1.05, m - h, m, m - h); x.closePath(); };
+    const g = x.createRadialGradient(m - w * 0.35, m - h * 0.35, D * 0.04, m, m, h * 1.2);
+    g.addColorStop(0, '#fffdf6'); g.addColorStop(0.65, '#fbefd8'); g.addColorStop(1, '#e9cfa6');
+    shape(); x.fillStyle = g; x.fill();
+    x.save(); shape(); x.clip();
+    [['#ffb3cf', -0.45, -0.1, 0.11], ['#a9e8c8', 0.4, 0.15, 0.1], ['#ffb3cf', 0.15, 0.55, 0.09], ['#a9e8c8', -0.3, 0.55, 0.07], ['#ffd27a', 0.1, -0.5, 0.08]]
+      .forEach(([col, dx, dy, r]) => { x.fillStyle = col; x.beginPath(); x.arc(m + dx * w * 1.6, m + dy * h, D * r, 0, 7); x.fill(); });
+    if (hp === 1) {
+      const zig = [[-1.05, 0.02], [-0.6, -0.14], [-0.25, 0.1], [0.12, -0.16], [0.5, 0.08], [1.05, -0.08]];
+      x.fillStyle = '#ffd23a'; x.beginPath(); zig.forEach(([zx, zy], k) => x[k ? 'lineTo' : 'moveTo'](m + zx * w, m + zy * h + h * 0.06)); zig.slice().reverse().forEach(([zx, zy]) => x.lineTo(m + zx * w, m + zy * h - h * 0.05)); x.closePath(); x.fill();
+      x.strokeStyle = '#8a6a48'; x.lineWidth = D * 0.035; x.lineJoin = 'round'; x.beginPath(); zig.forEach(([zx, zy], k) => x[k ? 'lineTo' : 'moveTo'](m + zx * w, m + zy * h)); x.stroke();
+    }
+    x.restore();
+    x.fillStyle = 'rgba(255,255,255,0.85)'; x.beginPath(); x.ellipse(m - w * 0.42, m - h * 0.45, w * 0.16, h * 0.12, -0.5, 0, 7); x.fill();
+    shape(); x.lineWidth = D * 0.03; x.strokeStyle = 'rgba(160,120,80,0.55)'; x.stroke();
+    return c;
+  },
+  // 气球: glossy pink, a knot and a curly string
+  balloonTile(T, D) {
+    const own = this.pic('balloon', T, D * 0.98 / T);
+    if (own) return own;
+    const c = this.canvas(T, T), x = c.getContext('2d'), m = T / 2, r = D * 0.33, cy = m - D * 0.1;
+    x.strokeStyle = '#ffffff'; x.lineWidth = D * 0.03; x.lineCap = 'round';
+    x.beginPath(); x.moveTo(m, cy + r * 1.15); x.bezierCurveTo(m - D * 0.08, cy + r * 1.5, m + D * 0.08, cy + r * 1.75, m - D * 0.02, m + D * 0.47); x.stroke();
+    const g = x.createRadialGradient(m - r * 0.35, cy - r * 0.4, r * 0.1, m, cy, r * 1.2);
+    g.addColorStop(0, '#ffd0e4'); g.addColorStop(0.5, '#ff7fb3'); g.addColorStop(1, '#e8457f');
+    x.fillStyle = g; x.beginPath(); x.ellipse(m, cy, r, r * 1.12, 0, 0, 7); x.fill();
+    x.fillStyle = '#e8457f'; x.beginPath(); x.moveTo(m - D * 0.05, cy + r * 1.2); x.lineTo(m + D * 0.05, cy + r * 1.2); x.lineTo(m, cy + r * 1.06); x.closePath(); x.fill();
+    x.fillStyle = 'rgba(255,255,255,0.85)'; x.beginPath(); x.ellipse(m - r * 0.4, cy - r * 0.5, r * 0.2, r * 0.32, -0.5, 0, 7); x.fill();
+    return c;
+  },
+  // 彩色笼子: a rounded frame and bars; the badge at the bottom gets the caged animal's head when drawn (cageAt)
+  cageTile(T, D) {
+    const own = this.pic('cage', T, D * 1.04 / T);
+    if (own) return own;
+    const c = this.canvas(T, T), x = c.getContext('2d'), m = T / 2, w = D * 0.98, top = m - w / 2;
+    x.lineCap = 'round';
+    const bar = (x0, y0, x1, y1, wd) => { x.lineWidth = wd * 1.6; x.strokeStyle = 'rgba(122,82,30,0.55)'; x.beginPath(); x.moveTo(x0, y0); x.lineTo(x1, y1); x.stroke(); x.lineWidth = wd; x.strokeStyle = '#fff3cf'; x.stroke(); };
+    for (const k of [-0.3, -0.1, 0.1, 0.3]) bar(m + k * w, top + w * 0.08, m + k * w, top + w * 0.92, D * 0.05);
+    this.rr(x, top + w * 0.04, top + w * 0.04, w * 0.92, w * 0.92, w * 0.18);
+    x.lineWidth = D * 0.1; x.strokeStyle = 'rgba(122,82,30,0.5)'; x.stroke(); x.lineWidth = D * 0.065; x.strokeStyle = '#ffd56b'; x.stroke();
+    return c;
+  },
+  dirtTile(D) {
+    const own = Art2.img.dirt && this.pic('dirt', D, 1);
+    if (own) return own;
+    const c = this.canvas(D, D), x = c.getContext('2d'), p = D * 0.05;
+    const g = x.createLinearGradient(0, 0, 0, D); g.addColorStop(0, '#e9c79c'); g.addColorStop(1, '#d6a874');
+    this.rr(x, p, p, D - 2 * p, D - 2 * p, D * 0.2); x.fillStyle = g; x.fill();
+    x.fillStyle = 'rgba(140,90,45,0.35)';
+    [[0.25, 0.3, 0.05], [0.7, 0.22, 0.04], [0.55, 0.7, 0.06], [0.2, 0.75, 0.035], [0.82, 0.62, 0.04]].forEach(([a, b, r]) => { x.beginPath(); x.arc(a * D, b * D, r * D, 0, 7); x.fill(); });
+    return c;
+  },
+  grassTile(D) {
+    const c = this.canvas(D, D), x = c.getContext('2d'), p = D * 0.05;
+    const own = Art2.img.grass;
+    this.rr(x, p, p, D - 2 * p, D - 2 * p, D * 0.2);
+    if (own) { x.save(); x.clip(); x.drawImage(own, 0, 0, D, D); x.restore(); return c; }
+    const g = x.createLinearGradient(0, 0, 0, D); g.addColorStop(0, '#b8ee8f'); g.addColorStop(1, '#8edb6b');
+    x.fillStyle = g; x.fill();
+    x.save(); x.clip(); x.strokeStyle = 'rgba(70,160,60,0.45)'; x.lineWidth = D * 0.03; x.lineCap = 'round';
+    for (let k = 0; k < 14; k++) { const a = ((k * 37) % 100) / 100, b = ((k * 61) % 100) / 100; x.beginPath(); x.moveTo(a * D, b * D + D * 0.08); x.lineTo(a * D + D * 0.03, b * D); x.stroke(); }
+    [[0.22, 0.25, '#ffffff'], [0.74, 0.7, '#fff27a']].forEach(([a, b, col]) => { x.fillStyle = col; for (let k = 0; k < 5; k++) { x.beginPath(); x.arc(a * D + Math.cos(k * 1.26) * D * 0.035, b * D + Math.sin(k * 1.26) * D * 0.035, D * 0.025, 0, 7); x.fill(); } x.fillStyle = '#ffb000'; x.beginPath(); x.arc(a * D, b * D, D * 0.02, 0, 7); x.fill(); });
+    x.restore();
+    return c;
+  },
+  // a cage over the animal in it, with that animal's little head on its badge (decli's blank badge when her picture
+  // is in, a drawn one before that)
+  cageAt(ctx, k, x, y, size) {
+    ctx.drawImage(this.cache.cage, x - size / 2, y - size / 2, size, size);
+    const im = Art2.img.cage, B = Art2.badge;
+    let bx = x, by = y + size * 0.36, br = size * 0.15;
+    if (im && B) {   // where cageTile put her picture: its longer side 1.04 cells, in a tile 1.3 cells wide
+      const f = 1.04 / 1.3 * size / Math.max(im.width, im.height), w = im.width * f, h = im.height * f;
+      bx = x - w / 2 + B[0] * w; by = y - h / 2 + B[1] * h; br = B[2] * h * 0.86;
+    } else {
+      ctx.fillStyle = '#ffd56b'; ctx.strokeStyle = 'rgba(122,82,30,0.6)'; ctx.lineWidth = size * 0.025;
+      ctx.beginPath(); ctx.arc(bx, by, br, 0, 7); ctx.fill(); ctx.stroke();
+    }
+    ctx.drawImage(this.tiles[k], bx - br * 1.05, by - br * 1.05, br * 2.1, br * 2.1);
   },
   stripes(T, D, dir) {
     const c = this.canvas(T, T), x = c.getContext('2d'), m = T / 2, r = D * 0.42;
@@ -1879,10 +2280,12 @@ const Art = {
 
   // ---------- drawing on the board (ctx in CSS pixels) ----------
   // p: piece, (x, y) centre, sc scale, t clock ms, flash 0..1 white
-  piece(ctx, p, x, y, sc, t, flash, sx, sy) {
+  piece(ctx, p, x, y, sc, t, flash, sx, sy, hp) {
     const s = this.T / this.dpr * sc, cell = this.cell;
     const w = s * (sx || 1), h = s * (sy || 1);
     if (p.k === 'g') { ctx.drawImage(this.tiles[PENGUIN], x - w / 2, y - h / 2, w, h); return; }
+    if (p.k === 'e') { ctx.drawImage(this.cache[(hp != null ? hp : p.hp) === 2 ? 'egg2' : 'egg1'], x - w / 2, y - h / 2, w, h); if (flash > 0) { ctx.globalAlpha = Math.min(1, flash) * 0.7; ctx.drawImage(Fx.dot('#ffffff'), x - w / 2, y - h / 2, w, h); ctx.globalAlpha = 1; } return; }
+    if (p.k === 'l') { ctx.save(); ctx.translate(x, y + cell * 0.04); ctx.rotate(Math.sin(t / 520 + p.id) * 0.08); ctx.drawImage(this.cache.balloon, -w / 2, -h / 2, w, h); ctx.restore(); return; }
     if (p.s === 'c') {
       const pul = 1 + Math.sin(t / 180) * 0.04;
       ctx.save(); ctx.globalCompositeOperation = 'lighter'; const gl = Fx.dot('#ffffff');
@@ -1921,6 +2324,10 @@ const Art = {
     } else if (g.t === 'ice') x.drawImage(this.iceTile(px, 1), 0, 0);
     else if (g.t === 'box') x.drawImage(this.boxTile(px, 1), 0, 0);
     else if (g.t === 'bub') { x.drawImage(this.head(1, px, px * 0.8), 0, 0); x.drawImage(this.bubbleTile(px, px * 0.86), 0, 0); }
+    else if (g.t === 'egg') x.drawImage(this.eggTile(px, px * 1.05, 2), 0, 0);
+    else if (g.t === 'bl') x.drawImage(this.balloonTile(px, px * 0.95), 0, 0);
+    else if (g.t === 'grass') { x.drawImage(this.grassTile(px), 0, 0); x.font = `${px * 0.5}px ${FONT}`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('🌱', px / 2, px * 0.52); }
+    else if (g.t === 'cage') { x.drawImage(this.head(g.k != null ? g.k : 0, px, px * 0.8), 0, 0); x.drawImage(this.cageTile(px, px * 0.95), 0, 0); }
     return c;
   },
 };
@@ -1950,6 +2357,14 @@ const Fx = {
     for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? 9 : 21; x.lineTo(Math.cos(a) * r, Math.sin(a) * r); }
     x.closePath(); x.fillStyle = color; x.fill(); x.lineWidth = 3; x.strokeStyle = '#fff'; x.stroke();
     return (this.stars[color] = c);
+  },
+  heart(color) {   // for an animal let out of its cage
+    const key = 'h' + color;
+    if (this.stars[key]) return this.stars[key];
+    const c = Art.canvas(48, 48), x = c.getContext('2d');
+    x.beginPath(); x.moveTo(24, 40); x.bezierCurveTo(4, 26, 6, 8, 24, 16); x.bezierCurveTo(42, 8, 44, 26, 24, 40); x.closePath();
+    x.fillStyle = color; x.fill(); x.lineWidth = 3; x.strokeStyle = '#fff'; x.stroke();
+    return (this.stars[key] = c);
   },
   drawStar(ctx, x, y, r, color) {   // a four-point twinkle
     ctx.fillStyle = color; ctx.beginPath();
@@ -3756,8 +4171,9 @@ const Gift = {
 
   owned(i) { return FRIENDS[i].tier < 0 || (Store.d.gifts[FRIENDS[i].id] || 0) > 0; },
   count() { return FRIENDS.filter(f => this.owned(f.i)).length; },
-  roll(stars) {
-    const [pr, ph] = this.ODDS[stars] || this.ODDS[1], r = Math.random();
+  // rare: the box for a whole island won, always 稀有 or 隐藏款
+  roll(stars, rare) {
+    const [pr, ph] = rare ? [0.75, 0.25] : this.ODDS[stars] || this.ODDS[1], r = Math.random();
     const tier = r < ph ? 2 : r < ph + pr ? 1 : 0;
     const of = t => FRIENDS.filter(f => f.tier === t), fresh = l => l.filter(f => !this.owned(f.i));
     let pool = fresh(of(tier));
@@ -3768,9 +4184,9 @@ const Gift = {
   },
 
   // ---------- opening a box: resolves when she has taken the friend ----------
-  open(stars) {
+  open(stars, o = {}) {
     return new Promise(resolve => {
-      const d = Store.d, f = this.roll(stars), fresh = !this.owned(f.i);
+      const d = Store.d, f = this.roll(stars, o.rare), fresh = !this.owned(f.i);
       d.gifts[f.id] = (d.gifts[f.id] || 0) + 1;
       if (fresh) d.giftFresh = [...(d.giftFresh || []), f.id];
       d.seen.boxes = (d.seen.boxes || 0) + 1;
@@ -3820,12 +4236,13 @@ const Gift = {
     const s = this.s, g = this.geo(), f = s.f;
     s.phase = 'open'; s.openT = 0;
     Voice.stop();
-    Snd.play('gopen'); if (f.tier > 0) Snd.play('grare');
+    Snd.play('gopen'); if (f.tier > 0 || s.n === 2) Snd.play('grare');
     Fx.flash(0.75, '#fff');
     Fx.confetti(f.tier > 0 ? 140 : 90);
     Fx.burst(g.bx, g.by - g.S * 0.4, ['#ffd23a', '#ffffff'], 30, 2.2, g.S * 0.5);
     // what the narrator says: the kind of friend, its name, and whether it is a new one
-    const lines = [f.tier === 2 ? L.gift.hidden : f.tier === 1 ? L.gift.rare : null, L.gift.got[f.i], s.fresh ? null : L.gift.again, s.all ? L.gift.full : null].filter(Boolean);
+    // a friend's second copy makes it 闪光版 (season two: more levels than friends, so the album goes on)
+    const lines = [f.tier === 2 ? L.gift.hidden : f.tier === 1 ? L.gift.rare : null, L.gift.got[f.i], s.fresh ? null : s.n === 2 ? L.gift.shiny : L.gift.again, s.all ? L.gift.full : null].filter(Boolean);
     const tok = s.token;
     const next = () => { const t = lines.shift(); if (t && this.on && this.s.token === tok) Voice.say(t, { onend: () => setTimeout(next, 150) }); };
     setTimeout(next, 650);
@@ -4054,9 +4471,9 @@ const Gift = {
     root.appendChild(top);
     const grid = el('div', 'agrid'); root.appendChild(grid);
     const slots = FRIENDS.map(f => {
-      const b = el('button', 'aslot t' + Math.max(0, f.tier) + (this.owned(f.i) ? '' : ' no'));
-      if (fresh.has(f.id)) b.appendChild(el('i', 'anew', 'NEW'));
       const n = d.gifts[f.id] || 0;
+      const b = el('button', 'aslot t' + Math.max(0, f.tier) + (this.owned(f.i) ? '' : ' no') + (n >= 2 ? ' shiny' : ''));
+      if (fresh.has(f.id)) b.appendChild(el('i', 'anew', 'NEW'));
       if (n > 1) b.appendChild(el('b', null, '×' + n));
       b.onclick = () => {
         if (this.owned(f.i)) { Snd.play('select'); Voice.say(L.gift.names[f.i]); b.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.18)' }, { transform: 'scale(1)' }], 380); }
@@ -4118,12 +4535,15 @@ const Game = {
     Cast.take(li);
     this.li = li; this.lv = LEVELS[li];
     this.b = new Board(this.lv);
+    // 小帮手: two lost games in a row on this level start the next with a striped animal already made (four: and a bomb)
+    const streak = (Store.d.fails || {})[li] || 0;
+    this.helped = streak >= 2 ? this.b.helper(streak >= 4 ? [pick(['h', 'v']), 'b'] : [pick(['h', 'v'])]) : [];
     this.active = true; this.busy = false; this.over = false; this.sel = -1; this.hint = null; this.extraUsed = false; this.saidLow = false;
     this.cheered = 0; this.hudScore = 0;
     this.hintAfter = Store.d.seen.swipe ? 7000 : 1500;   // the very first game: the finger shows how to swipe straight away
     Fx.clear(); Clock.clear();
     this.sprites.clear();
-    this.vis = this.b.cells.map(x => ({ ice: x.ice, box: x.box, bub: x.bub, hit: -1e9 }));
+    this.vis = this.b.cells.map(x => ({ ice: x.ice, box: x.box, bub: x.bub, dirt: x.dirt, grass: x.grass, cage: x.cage, hit: -1e9, grew: -1e9 }));
     this.b.cells.forEach((x, i) => { if (x.p) this.addSprite(x.p, i); });
     this.hudGoals = this.b.goals.map(g => g.left);
     this.buildHud();
@@ -4139,12 +4559,20 @@ const Game = {
         const kk = clamp((t - s.delay) / 420, 0, 1);
         s.r = s.r0 - (1 - Ease.back(kk)) * (this.b.R + 1);
       }
-    }).then(() => { for (const s of this.sprites.values()) { if (s.r0 != null) s.r = s.r0; s.r0 = null; } this.busy = false; this.lastAct = Clock.now; });
+    }).then(() => {
+      for (const s of this.sprites.values()) { if (s.r0 != null) s.r = s.r0; s.r0 = null; }
+      this.busy = false; this.lastAct = Clock.now;
+      if (this.helped.length) {   // the helping hand shows itself
+        Voice.say(L.helper);
+        this.helped.forEach(i => { const [r, c] = this.b.rc(i), [x, y] = this.cellXY(r, c); Fx.ring(x, y, '#ffd23a', this.G.cell * 0.2, this.G.cell, 600, 8); Fx.sparkles(x, y, 12, this.G.cell * 0.6, '#ffd23a'); const p = this.b.cells[i].p; if (p) this.showOff(p); });
+        Snd.play('make');
+      }
+    });
     Music.start();
   },
   addSprite(p, i) {
     const [r, c] = this.b.rc(i);
-    const s = { id: p.id, p, r, c, sc: 1, sx: 1, sy: 1, flash: 0, land: -1e9, born: Clock.now, wig: 0 };
+    const s = { id: p.id, p, r, c, sc: 1, sx: 1, sy: 1, flash: 0, land: -1e9, born: Clock.now, wig: 0, hp: p.hp };
     this.sprites.set(p.id, s);
     return s;
   },
@@ -4226,6 +4654,12 @@ const Game = {
     const [sx, sy] = Fx.shakeOffset();
     ctx.setTransform(d, 0, 0, d, sx * d, sy * d);
     ctx.drawImage(this.base.c, G.ox - this.base.pad, G.oy - this.base.pad, this.base.c.width / d, this.base.c.height / d);
+    this.vis.forEach((v, i) => {   // 种草地: bare soil, or the grass that grew there (popping up when it has just grown)
+      if (!v.dirt) return;
+      const [r, c] = b.rc(i), k = clamp((t - v.grew) / 380, 0, 1);
+      if (!v.grass || k < 1) ctx.drawImage(Art.cache.dirt, G.ox + c * cell, G.oy + r * cell, cell, cell);
+      if (v.grass) { const sc = Ease.back(k); ctx.globalAlpha = Math.min(1, k * 2); ctx.drawImage(Art.cache.grass, G.ox + (c + 0.5 - sc / 2) * cell, G.oy + (r + 0.5 - sc / 2) * cell, cell * sc, cell * sc); ctx.globalAlpha = 1; }
+    });
     this.vis.forEach((v, i) => {
       if (!v.ice) return;
       const [r, c] = b.rc(i);
@@ -4245,16 +4679,17 @@ const Game = {
       if (since < 260) { const k = since / 260, a = Math.sin(k * Math.PI) * (1 - k) * 0.22; syy *= 1 - a; sxx *= 1 + a; y += a * cell * 0.25; }
       if (this.sel >= 0 && this.b.cells[this.sel].p === s.p && !this.busy) { const k = Math.abs(Math.sin(t / 180)); y -= k * cell * 0.08; syy *= 1 + k * 0.04; }
       if (s.wig) { const k = Math.sin(t / 90) * s.wig; x += k * cell * 0.08 * (s.wdx || 0); y += k * cell * 0.08 * (s.wdy || 0); }
-      if (s.p.k === 'g') y += Math.sin(t / 300 + s.c) * cell * 0.03;
+      if (s.p.k === 'g' || s.p.k === 'l') y += Math.sin(t / 300 + s.c) * cell * 0.03;
       ctx.globalAlpha = s.a == null ? 1 : s.a;
-      Art.piece(ctx, s.p, x, y, sc, t, s.flash, sxx, syy);
+      Art.piece(ctx, s.p, x, y, sc, t, s.flash, sxx, syy, s.hp);
       ctx.globalAlpha = 1;
     }
     ctx.restore();
     this.vis.forEach((v, i) => {
-      if (!v.bub && !v.box) return;
+      if (!v.bub && !v.box && v.cage < 0) return;
       const [r, c] = b.rc(i), [x, y] = this.cellXY(r, c);
       const hk = clamp((t - v.hit) / 260, 0, 1), hit = hk < 1 ? Math.sin(hk * Math.PI) * 0.12 : 0;
+      if (v.cage >= 0) Art.cageAt(ctx, v.cage, x, y, cell * (1.04 + hit * 0.5));
       if (v.box) { const s = cell * (1 - hit); ctx.drawImage(Art.cache['box' + v.box], x - s / 2, y - s / 2, s, s); }
       if (v.bub) { const w = 1 + Math.sin(t / 400 + i) * 0.03, s = Art.T / d * w; ctx.drawImage(Art.cache.bub, x - s / 2, y - s / 2, s, s); }
     });
@@ -4333,6 +4768,8 @@ const Game = {
     if (this.sel === i) { this.sel = -1; return; }
     const x = this.b.cells[i];
     if (x.bub && x.p) { this.nudge(i); this.tip('bubStuck'); return; }
+    if (x.cage >= 0) { this.nudge(i); this.tip('cageStuck'); return; }
+    if (x.p && x.p.k === 'l') { this.nudge(i); this.tip('balloonStuck'); return; }
     if (!this.b.movable(i)) return;
     this.sel = i; Snd.play('select'); this.clearHint();
   },
@@ -4346,7 +4783,15 @@ const Game = {
     if (this.busy || this.over) return;
     this.clearHint();
     const B = this.b;
-    if (!B.movable(a) || !B.movable(b)) { if (B.cells[a].bub || B.cells[b].bub) { this.nudge(B.cells[a].bub ? a : b); this.tip('bubStuck'); } return; }
+    if (!B.movable(a) || !B.movable(b)) {
+      for (const i of [a, b]) {
+        const x = B.cells[i];
+        if (x.bub) { this.nudge(i); this.tip('bubStuck'); return; }
+        if (x.cage >= 0) { this.nudge(i); this.tip('cageStuck'); return; }
+        if (x.p && x.p.k === 'l') { this.nudge(i); this.tip('balloonStuck'); return; }
+      }
+      return;
+    }
     this.busy = true;
     const res = B.swap(a, b);
     if (!res.ok) {
@@ -4372,6 +4817,7 @@ const Game = {
       else if (ph.type === 'clear') { await this.animClear(ph); this.maybeCheer(done); }
       else if (ph.type === 'fall') await this.animFall(ph);
       else if (ph.type === 'exit') await this.animExit(ph);
+      else if (ph.type === 'rise') await this.animRise(ph);
     }
   },
   maybeCheer(done) {
@@ -4511,6 +4957,48 @@ const Game = {
         if (e.goal) this.flyGoal(this.goalIndex('bub'), Art.cache.bub, x, y);
         break;
       }
+      case 'grass': {   // 种草地
+        const v = this.vis[e.i]; v.grass = true; v.grew = Clock.now;
+        Fx.burst(x, y, ['#8edb6b', '#fff27a', '#ffffff'], 6, 0.7, cell);
+        if (Clock.now - (this.growSnd || 0) > 60) { this.growSnd = Clock.now; Snd.play('grow', e.i); }
+        if (e.goal) this.flyGoal(this.goalIndex('grass'), Art.cache.grass, x, y);
+        break;
+      }
+      case 'crack': {   // 蛋宝宝, the first knock
+        const s = this.sprites.get(e.p.id);
+        if (s) { s.hp = e.left; Clock.tween(320, k => { s.sx = 1 + Math.sin(k * Math.PI * 4) * 0.1 * (1 - k); }); }
+        Fx.burst(x, y, ['#fffdf6', '#ffd23a', '#ffb3cf'], 8, 0.8, cell);
+        Snd.play('crack');
+        break;
+      }
+      case 'hatch': {   // the second: the shell bursts and a chick hops out and flies to the goal
+        const s = this.sprites.get(e.p.id);
+        if (s) { s.hp = 0; s.z = 3; Clock.tween(160, k => { s.sc = 1 + k * 0.3; s.a = 1 - k; }).then(() => this.sprites.delete(e.p.id)); }
+        Fx.burst(x, y, ['#fffdf6', '#fbefd8', '#ffd23a'], 14, 1.2, cell);
+        Fx.sparkles(x, y, 8, cell * 0.5, '#ffd23a');
+        Snd.play('hatch');
+        const chick = Art.friend(FRIENDS.findIndex(f => f.id === 'chick'), 128, 112);
+        this.flyGoal(this.goalIndex('egg'), chick, x, y - cell * 0.2, true, !e.goal);
+        break;
+      }
+      case 'tug': {   // 气球: a match next to it gives it a tug; it goes up when the board has settled (animRise)
+        const s = this.sprites.get(e.p.id);
+        if (s) Clock.tween(300, k => { s.sy = 1 + Math.sin(k * Math.PI) * 0.14; s.sx = 1 - Math.sin(k * Math.PI) * 0.06; });
+        Fx.sparkles(x, y - cell * 0.3, 5, cell * 0.4, '#ffffff');
+        break;
+      }
+      case 'free': {   // 彩色笼子 opens: the bars spring away and the animal inside jumps for joy
+        const v = this.vis[e.i]; v.cage = -1; v.hit = Clock.now;
+        Fx.ring(x, y, '#ffd56b', cell * 0.3, cell * 1.1, 420, 10);
+        Fx.burst(x, y, ['#ffd56b', '#fff3cf', ANIMALS[e.c].fx[0]], 14, 1.2, cell);
+        for (let k = 0; k < 4; k++) Fx.part({ kind: 'img', img: Fx.heart('#ff6fae'), x, y, vx: rnd(-0.12, 0.12), vy: rnd(-0.32, -0.18), g: 0.0006, life: 700, size: cell * 0.32 });
+        const s = e.p && this.sprites.get(e.p.id);
+        if (s) Clock.tween(420, k => { s.sy = 1 + Math.sin(k * Math.PI * 2) * 0.12 * (1 - k); s.land = Clock.now - 300; });
+        Snd.play('free');
+        const cg = Art.canvas(cell * 1.2, cell * 1.2); Art.cageAt(cg.getContext('2d'), e.c, cell * 0.6, cell * 0.6, cell * 1.1);
+        if (e.goal) this.flyGoal(this.goalIndex('cage'), cg, x, y);
+        break;
+      }
     }
   },
   // pieces fall: logic already moved them; follow each one's path, faster and faster, with a little squash on landing
@@ -4556,6 +5044,31 @@ const Game = {
     this.sayOnce('penguinHome', L.penguinHome);
     await Clock.wait(350);
   },
+  // 气球: the lifted ones swap places with what is above them; one that reached the top floats off to the goal
+  async animRise(ph) {
+    const from = new Map();
+    for (const m of ph.moves) { const s = this.sprites.get(m.id); if (s) from.set(m.id, [s, s.r, s.c]); }
+    if (ph.moves.length) {
+      Snd.play('rise');
+      await Clock.tween(300, k => {
+        for (const m of ph.moves) {
+          const f = from.get(m.id); if (!f) continue;
+          const [s] = f, [r1, c1] = this.b.rc(m.to);
+          s.r = lerp(f[1], r1, k); s.c = lerp(f[2], c1, k);
+        }
+      }, Ease.inOut);
+      for (const m of ph.moves) { const f = from.get(m.id); if (f) { const [r1, c1] = this.b.rc(m.to); f[0].r = r1; f[0].c = c1; f[0].land = Clock.now; } }
+    }
+    for (const o of ph.away) {
+      const s = this.sprites.get(o.p.id), [r, c] = this.b.rc(o.i), [x, y] = this.cellXY(r, c);
+      Snd.play('balloon');
+      Fx.sparkles(x, y, 10, this.G.cell * 0.6, '#ffd0e4');
+      Fx.text(x, y, '+' + ph.pts, this.G.cell * 0.45, '#ff4f9a');
+      if (s) { s.z = 3; await Clock.tween(260, k => { s.r = r - k * 0.8; s.a = 1 - k; }); this.sprites.delete(o.p.id); }
+      this.flyGoal(this.goalIndex('bl'), Art.cache.balloon, x, y - this.G.cell * 0.8, true);
+    }
+    if (ph.away.length) this.sayOnce('balloonAway', L.balloonAway);
+  },
   // sprites and board must agree after a turn (a safety net: an animation that was cut short leaves nothing behind)
   reconcile() {
     const live = new Set();
@@ -4565,10 +5078,10 @@ const Game = {
       const [r, c] = this.b.rc(i);
       let s = this.sprites.get(x.p.id);
       if (!s) s = this.addSprite(x.p, i);
-      s.p = x.p; s.r = r; s.c = c; s.sc = 1; s.sx = 1; s.sy = 1; s.flash = 0; s.holdFlash = false; s.z = 0; s.a = 1;
+      s.p = x.p; s.r = r; s.c = c; s.sc = 1; s.sx = 1; s.sy = 1; s.flash = 0; s.holdFlash = false; s.z = 0; s.a = 1; s.hp = x.p.hp;
     });
     for (const id of [...this.sprites.keys()]) if (!live.has(id)) this.sprites.delete(id);
-    this.b.cells.forEach((x, i) => { const v = this.vis[i]; v.ice = x.ice; v.box = x.box; v.bub = x.bub; });
+    this.b.cells.forEach((x, i) => { const v = this.vis[i]; v.ice = x.ice; v.box = x.box; v.bub = x.bub; v.grass = x.grass; v.cage = x.cage; });
   },
   async afterTurn() {
     this.reconcile();
@@ -4615,15 +5128,25 @@ const Game = {
     }
     this.syncHud();
     await Clock.wait(500);
-    const stars = B.stars(), li = this.li, d = Store.d;
-    d.stars[li] = Math.max(d.stars[li] || 0, stars);
+    const stars = B.stars(), li = this.li, d = Store.d, before = d.stars[li] || 0;
+    d.stars[li] = Math.max(before, stars);
     d.best[li] = Math.max(d.best[li] || 0, B.score);
     d.open = Math.max(d.open, Math.min(LEVELS.length, li + 2));
+    if (d.fails) delete d.fails[li];
+    // the last level of an island won for the first time: the map goes on to the next island
+    const k = isleOf(li), isle = ISLANDS[k];
+    const isleDone = !before && isle && li === isle.from + isle.n - 1;
+    if (isleDone && k + 1 < ISLANDS.length) d.isle = k + 1;
     Store.save();
-    await Gift.open(stars);   // the blind box first, then the stars card
-    UI.result({ win: true, stars, score: B.score, li });
+    // the blind box first, then the stars card (decli 2026-11-02, with so many levels: a box the first time a level is
+    // won, and a better one the first time it gets three stars; replays only for the stars)
+    const box = !before || (stars === 3 && before < 3);
+    if (box) await Gift.open(stars);
+    if (isleDone) await UI.isleDone(k);
+    UI.result({ win: true, stars, score: B.score, li, box });
   },
   async fail() {
+    const d = Store.d; d.fails = d.fails || {}; d.fails[this.li] = (d.fails[this.li] || 0) + 1; Store.save();   // for the 小帮手
     await Clock.wait(400);
     Snd.play('lose');
     Voice.say(L.fail);
@@ -4646,8 +5169,10 @@ const Game = {
     Store.d.seen[key] = 1; Store.save();
     setTimeout(() => Voice.say(line), 700);
   },
+  // what can't be moved says why, once a game
   tip(key) {
-    if (key === 'bubStuck' && !this._bubTold) { this._bubTold = true; Voice.say(L.bubStuck); }
+    this._told = this._told || {};
+    if (L[key] && !this._told[key]) { this._told[key] = true; Voice.say(L[key]); }
   },
   // a special piece just made shows off what it will do: a glowing ring, plus arrows along its row or column or a spinning
   // rainbow (the bomb only glows: decli found its big diamond outline across the board got in the way, 2026-10-19).
@@ -4754,8 +5279,8 @@ const Game = {
     m.style.transform = 'scale(1.15)'; setTimeout(() => { m.style.transform = ''; }, 150);
   },
   goalIndex(t, c) { return this.b.goals.findIndex(g => g.t === t && (t !== 'c' || g.color === c)); },
-  flyGoal(gi, img, x, y, big) {
-    if (gi < 0) return;
+  flyGoal(gi, img, x, y, big, quiet) {
+    if (gi < 0 || quiet) return;
     const node = $$('#hud .goal')[gi]; if (!node) return;
     const r = node.getBoundingClientRect(), cell = this.G.cell;
     Fx.fly({ x0: x, y0: y, x1: r.left + r.width / 2, y1: r.top + r.height / 2, s0: cell * (big ? 1.1 : 0.9), s1: r.width * 0.8, dur: 520 + Math.random() * 160, lift: 60 + Math.random() * 60, img, trail: '#ffffff',
@@ -4801,36 +5326,58 @@ const UI = {
     return b;
   },
 
-  // ---------- the level map ----------
-  map() {
+  // ---------- the level map: one island at a time ----------
+  // 第二季 (decli 2026-11-02): the levels are islands (ISLANDS in levels.js); ◀ ▶, a swipe or the row of islands at the
+  // bottom goes to another one. An island she can't play yet can be looked at, its levels locked. The first time she
+  // arrives on a new island it is welcomed by name.
+  isleOpen(k) { return Store.d.open > ISLANDS[k].from; },
+  isleStars(k) { const s = ISLANDS[k]; let n = 0; for (let i = s.from; i < s.from + s.n; i++) n += Store.d.stars[i] || 0; return n; },
+  map(k) {
     Game.stop(); this.closeModal(); $('#album').hidden = true;
     Music.start();
+    const d = Store.d, cur = Math.min(d.open, LEVELS.length) - 1;
+    if (k == null) k = d.isle >= 0 && d.isle < ISLANDS.length ? d.isle : isleOf(cur);
+    if (k !== d.isle) { d.isle = k; Store.save(); }
+    const isle = ISLANDS[k], open = this.isleOpen(k);
     const map = $('#map'); map.hidden = false; map.innerHTML = '';
-    const d = Store.d;
+    // the island's own picture when decli's is in, else its colours and things growing round the edges
+    const bg = Art2.img['island-' + (k + 1) + '-bg'];
+    map.style.background = bg ? `center/cover no-repeat url(${bg.src})` : `radial-gradient(ellipse at 50% 58%,${isle.land} 0 34%,transparent 62%),linear-gradient(170deg,${isle.sky.join(',')})`;
+    if (!bg) {
+      const deco = el('div', 'deco');
+      for (let i = 0; i < 14; i++) {
+        const a = i / 14 * Math.PI * 2 + 0.3, e = el('span', null, isle.deco[i % isle.deco.length]);
+        Object.assign(e.style, { left: 50 + Math.cos(a) * 47 + '%', top: 54 + Math.sin(a) * 44 + '%', fontSize: 34 + (i * 7) % 22 + 'px', animationDelay: -i * 0.7 + 's' });
+        deco.appendChild(e);
+      }
+      map.appendChild(deco);
+    }
     const top = el('div', 'top');
     top.appendChild(this.homeButton());
-    top.appendChild(el('h1', null, '动物消消乐'));
-    const total = LEVELS.reduce((n, _, i) => n + (d.stars[i] || 0), 0);
-    top.appendChild(el('div', 'pill', `⭐ ${total} / ${LEVELS.length * 3}`));
+    const title = el('h1', null, `<span class="ic">${isle.icon} </span>${isle.name}`);
+    top.appendChild(title);
+    top.appendChild(el('div', 'pill stars', `⭐ ${this.isleStars(k)} / ${isle.n * 3}`));
     const book = el('button', 'pill book' + ((d.giftFresh || []).length ? ' new' : ''), `🎁 ${Gift.count()} / ${FRIENDS.length}`);
     book.onclick = () => { Snd.init(); Snd.play('select'); Gift.album(); };
     top.appendChild(book);
     const gear = el('button', 'ibtn', '⚙️'); gear.onclick = () => { Snd.play('tap'); this.parent({}); };
     top.appendChild(gear);
     map.appendChild(top);
+    if (!open) map.appendChild(el('div', 'isle-lock', '🔒'));   // behind the path and the levels
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.id = 'path';
     map.appendChild(svg);
-    const nodes = LEVELS.map((lv, i) => {
-      const n = el('button', 'node');
-      const open = i < d.open, st = d.stars[i] || 0;
-      if (!open) { n.classList.add('lock'); n.innerHTML = '🔒'; }
+    const idx = Array.from({ length: isle.n }, (_, j) => isle.from + j);
+    const nodes = idx.map(i => {
+      const lv = LEVELS[i], n = el('button', 'node' + (i === isle.from + isle.n - 1 ? ' boss' : ''));
+      const on = i < d.open, st = d.stars[i] || 0;
+      if (!on) { n.classList.add('lock'); n.innerHTML = '🔒'; }
       else { n.textContent = i + 1; if (st) n.classList.add('done'); }
-      if (open && i === d.open - 1 && !st) n.classList.add('cur');
-      n.appendChild(el('span', 'st', open ? '⭐'.repeat(st) + '<span style="opacity:.3">' + '⭐'.repeat(3 - st) + '</span>' : ''));
-      if (open) n.appendChild(el('span', 'nm', lv.name));
+      if (on && i === d.open - 1 && !st) n.classList.add('cur');
+      n.appendChild(el('span', 'st', on ? '⭐'.repeat(st) + '<span style="opacity:.3">' + '⭐'.repeat(3 - st) + '</span>' : ''));
+      if (on) n.appendChild(el('span', 'nm', lv.name));
       n.onclick = () => {
         Snd.init();
-        if (!open) { Snd.play('bad'); Voice.say(L.locked); n.animate([{ transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'none' }], 250); return; }
+        if (!on) { Snd.play('bad'); Voice.say(open ? L.locked : L.isle.locked); n.animate([{ transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'none' }], 250); return; }
         Snd.play('select'); this.intro(i);
       };
       map.appendChild(n);
@@ -4838,21 +5385,43 @@ const UI = {
     });
     const av = el('canvas', 'avatar'); av.width = av.height = 152;
     const head = Art.friend(FRIENDS.findIndex(f => f.id === 'panda'), 152, 120); av.getContext('2d').drawImage(head, 0, 0);
+    av.hidden = !idx.includes(cur);
     map.appendChild(av);
+    // travelling between islands
+    const go = j => { if (j < 0 || j >= ISLANDS.length || j === k) return; Snd.init(); Snd.play('swap'); this.map(j); };
+    const prev = el('button', 'isle-arrow prev', '◀'), next = el('button', 'isle-arrow next' + (k + 1 < ISLANDS.length && !this.isleOpen(k + 1) ? ' shut' : ''), '▶');
+    prev.hidden = k === 0; next.hidden = k === ISLANDS.length - 1;
+    prev.onclick = () => go(k - 1); next.onclick = () => go(k + 1);
+    map.appendChild(prev); map.appendChild(next);
+    const row = el('div', 'isles');
+    ISLANDS.forEach((s, j) => {
+      const b = el('button', 'isle' + (j === k ? ' on' : '') + (this.isleOpen(j) ? '' : ' shut'));
+      const pic = Art2.img['island-' + (j + 1)];
+      if (pic) { const im = el('img'); im.src = pic.src; im.alt = ''; b.appendChild(im); } else b.textContent = s.icon;
+      if (this.isleStars(j) >= s.n * 3) b.classList.add('full');
+      b.onclick = () => go(j);
+      row.appendChild(b);
+    });
+    map.appendChild(row);
+    let sx = null;
+    map.onpointerdown = e => { sx = e.target === map || e.target === svg || e.target.closest('.deco') ? e.clientX : null; };
+    map.onpointerup = e => { if (sx == null) return; const dx = e.clientX - sx; sx = null; if (Math.abs(dx) > 70) go(k + (dx < 0 ? 1 : -1)); };
     const place = () => {
       const W = innerWidth, H = innerHeight, wide = W >= H;
-      const cols = wide ? 5 : 3, rows = Math.ceil(LEVELS.length / cols);
-      const topH = top.getBoundingClientRect().bottom + 40, bottom = 40;
-      const x0 = W * (wide ? 0.12 : 0.17), x1 = W * (wide ? 0.88 : 0.83);
-      const pts = LEVELS.map((_, i) => {
-        const row = Math.floor(i / cols), k = i % cols, col = row % 2 ? cols - 1 - k : k;
-        const y = topH + (H - bottom - topH) * (row + 0.5) / rows;
-        return [x0 + (x1 - x0) * col / (cols - 1), y + Math.sin(i * 1.7) * 10];
+      const cols = wide ? 5 : 3, rows = Math.ceil(isle.n / cols);
+      const topH = top.getBoundingClientRect().bottom + (H < 500 ? 24 : 40), bottom = row.getBoundingClientRect().height + (H < 500 ? 34 : 50);
+      const x0 = W * (wide ? 0.14 : 0.19), x1 = W * (wide ? 0.86 : 0.81);
+      const pts = idx.map((_, j) => {
+        const r = Math.floor(j / cols), c = j % cols, col = r % 2 ? cols - 1 - c : c;
+        const y = topH + (H - bottom - topH) * (r + 0.5) / rows;
+        return [x0 + (x1 - x0) * col / (cols - 1), y + Math.sin(j * 1.7) * 10];
       });
-      const sz = clamp(Math.min(W / (cols * 2.4), (H - topH - bottom) / (rows * 1.9)), 64, 110);
-      nodes.forEach((n, i) => {
-        n.style.left = pts[i][0] + 'px'; n.style.top = pts[i][1] + 'px';
-        n.style.width = n.style.height = sz + 'px'; n.style.margin = `${-sz / 2}px 0 0 ${-sz / 2}px`; n.style.fontSize = sz * 0.42 + 'px';
+      const sz = clamp(Math.min(W / (cols * 2.5), (H - topH - bottom) / (rows * 1.95)), 44, 104);
+      map.classList.toggle('tight', sz < 62);   // a short screen: the stars stay, the names go
+      nodes.forEach((n, j) => {
+        const big = j === isle.n - 1 ? 1.18 : 1;
+        n.style.left = pts[j][0] + 'px'; n.style.top = pts[j][1] + 'px';
+        n.style.width = n.style.height = sz * big + 'px'; n.style.margin = `${-sz * big / 2}px 0 0 ${-sz * big / 2}px`; n.style.fontSize = sz * 0.4 + 'px';
       });
       let dd = `M${pts[0][0]},${pts[0][1]}`;
       for (let i = 1; i < pts.length; i++) {
@@ -4862,14 +5431,34 @@ const UI = {
       svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
       svg.innerHTML = `<path d="${dd}" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="${sz * 0.42}" stroke-linecap="round"/>` +
         `<path d="${dd}" fill="none" stroke="#ffb3d6" stroke-width="${sz * 0.12}" stroke-dasharray="${sz * 0.05} ${sz * 0.28}" stroke-linecap="round"/>`;
-      const cur = Math.min(d.open, LEVELS.length) - 1;
-      av.style.left = pts[cur][0] + 'px'; av.style.top = pts[cur][1] + 'px';
-      av.style.width = av.style.height = sz * 0.75 + 'px'; av.style.margin = `${-sz * 1.15}px 0 0 ${sz * 0.05}px`;
+      const at = idx.indexOf(cur);
+      if (at >= 0) { av.style.left = pts[at][0] + 'px'; av.style.top = pts[at][1] + 'px'; av.style.width = av.style.height = sz * 0.75 + 'px'; av.style.margin = `${-sz * 1.15}px 0 0 ${sz * 0.05}px`; }
     };
     place();
     this._mapResize && removeEventListener('resize', this._mapResize);
     this._mapResize = () => { if (!map.hidden) place(); };
     addEventListener('resize', this._mapResize);
+    // a new island, the first time she gets there
+    if (open && k > 0 && !d.seen['isle_' + k]) { d.seen['isle_' + k] = 1; Store.save(); Voice.say(L.isle.hi[k]); title.animate([{ transform: 'scale(.6)' }, { transform: 'scale(1.15)' }, { transform: 'scale(1)' }], { duration: 600, easing: 'ease-out' }); Fx.confetti(50); }
+  },
+  // the last level of an island won for the first time: a card for the island and a blind box that is always 稀有 or
+  // better
+  async isleDone(k) {
+    const isle = ISLANDS[k];
+    Snd.play('win'); Fx.confetti(120);
+    Voice.say(L.isle.done[k]);
+    await new Promise(res => {
+      this.modal(card => {
+        card.appendChild(el('h2', 'green', `${isle.icon} ${isle.name}`));
+        const pic = Art2.img['island-' + (k + 1)];
+        if (pic) { const im = el('img', 'isle-pic'); im.src = pic.src; im.alt = ''; card.appendChild(im); } else card.appendChild(el('div', 'bigstars', '🏝️'));
+        card.appendChild(el('p', null, `<span class="big">${isle.n} / ${isle.n}</span> 关 · ⭐ ${this.isleStars(k)}`));
+        const row = el('div', 'row');
+        row.appendChild(this.button('🎁 打开', 'sun', () => { this.closeModal(); res(); }));
+        card.appendChild(row);
+      });
+    });
+    await Gift.open(3, { rare: true });
   },
 
   // ---------- before a level ----------
@@ -4923,13 +5512,14 @@ const UI = {
         card.appendChild(st);
         [...st.children].forEach((s, i) => { if (i < o.stars) setTimeout(() => { s.classList.add('on'); Snd.play('star', i); Fx.sparkles(s.getBoundingClientRect().left + 30, s.getBoundingClientRect().top + 30, 8, 30, '#ffd23a'); }, 300 + i * 380); });
         card.appendChild(el('p', null, `<span class="big">${o.score.toLocaleString('en-US')}</span> 分`));
-        if (last) card.appendChild(el('p', null, '🏆 十关全部通过啦！'));
+        if (last) card.appendChild(el('p', null, '🏆 所有小岛全部通关啦！'));
         const row = el('div', 'row');
         row.appendChild(this.button('🗺️', 'ghost', () => this.map()));
         row.appendChild(this.button('↻ 再玩一次', 'violet', () => this.play(o.li)));
         if (!last) row.appendChild(this.button('下一关 ▶', 'green', () => this.play(o.li + 1)));
         card.appendChild(row);
-        setTimeout(() => Voice.say(last ? L.allDone : L.stars[o.stars]), 1500);
+        // a replay that opened no box: she hears that three stars still would (if she hasn't had them)
+        setTimeout(() => Voice.say(last ? L.allDone : !o.box && o.stars < 3 && (Store.d.stars[o.li] || 0) < 3 ? L.gift.more : L.stars[o.stars]), 1500);
         if (last) setTimeout(() => Fx.confetti(120), 600);
       } else {
         card.appendChild(el('h2', 'violet', '差一点点！'));
@@ -5056,7 +5646,7 @@ const UI = {
       const row = el('div', 'row'); row.style.justifyContent = 'flex-start'; row.style.marginTop = '4px';
       if (o.fromMath && o.skip) row.appendChild(this.button('跳过这一页', 'sun small', () => { m.style.zIndex = ''; this.closeModal(); o.skip(); }));
       else row.appendChild(this.button(d.owed ? '免做下一页数学题' : '下一局不用做题 ✓', 'sun small', () => { d.owed = false; Store.save(); this.toast('好的，下一局不用先做题'); }));
-      row.appendChild(this.button('解锁全部关卡', 'ghost small', () => { d.open = LEVELS.length; Store.save(); this.toast('10 关都打开了'); }));
+      row.appendChild(this.button('解锁全部关卡', 'ghost small', () => { d.open = LEVELS.length; Store.save(); this.toast(`${LEVELS.length} 关都打开了`); }));
       row.appendChild(this.button('清空进度', 'ghost small', () => {
         if (!confirm('清空关卡、星星、收集册和做题记录？')) return;
         const keep = { math: d.math, way: d.way, snd: d.snd, voi: d.voi, mus: d.mus };
@@ -5078,7 +5668,7 @@ const UI = {
 // 动物消消乐 · start-up and the frame loop.
 (function boot() {
   Store.load();
-  if (/[?&]debug\b/.test(location.search)) window.XX = { Game, Board, Store, UI, Fx, Clock, MathGate, Wheel, Teach, L, LEVELS, Snd, Voice, Music, Gift, Cast, ANIMALS, FRIENDS, Art };
+  if (/[?&]debug\b/.test(location.search)) window.XX = { Game, Board, Store, UI, Fx, Clock, MathGate, Wheel, Teach, L, LEVELS, ISLANDS, Snd, Voice, Music, Gift, Cast, ANIMALS, FRIENDS, Art, Art2 };
   Snd.on = Store.d.snd; Snd.music = Store.d.mus; Voice.on = Store.d.voi;
   Fx.init($('#fx'));
   Game.init();
@@ -5086,6 +5676,7 @@ const UI = {
   const bar = $('#ldBar');
   bar.style.width = '30%';
   Voice.load();
+  Art2.load();
   Snd.load(['bg1', 'bg2', 'great', 'excellent', 'unbelievable']);
   let last = performance.now();
   const loop = now => {
