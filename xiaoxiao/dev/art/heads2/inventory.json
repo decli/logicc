@@ -1,0 +1,2420 @@
+{
+  "expected_images": 219,
+  "available_images": 92,
+  "remaining_images": 127,
+  "batch_counts": {
+    "1": 12,
+    "2": 80,
+    "5": 25,
+    "4": 49,
+    "3": 53
+  },
+  "characters": [
+    {
+      "id": "pig",
+      "name": "小猪·乐呵呵",
+      "island": "动物乐园（24 个）",
+      "colour": "粉",
+      "hidden": false,
+      "partner": true,
+      "files": [
+        {
+          "name": "pig.png",
+          "batch": 1,
+          "present": true,
+          "status": "approved",
+          "sha256": "ddb19bf1d5a605cbb6e63ee80b28b529df8a47fea70e6be87f7d56acc6bd18e8"
+        },
+        {
+          "name": "pig-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "91943ca6ed84c72489c93ddd9aa984514873cbac3ea99ab1e7c38fdbc143d3b6"
+        },
+        {
+          "name": "pig-tap.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "pig-cheer.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "panda",
+      "name": "熊猫·小机灵",
+      "island": "动物乐园（24 个）",
+      "colour": "黑白",
+      "hidden": false,
+      "partner": true,
+      "files": [
+        {
+          "name": "panda.png",
+          "batch": 1,
+          "present": true,
+          "status": "approved",
+          "sha256": "c6b4a548e3b2280ad41468acbd823a4242f440138d6ce38d57e43c6b9d8c3609"
+        },
+        {
+          "name": "panda-fun.png",
+          "batch": 1,
+          "present": true,
+          "status": "approved",
+          "sha256": "c39eaf2dab3c13fa4e2b521c9ae2e700c985055465ff30eb1c19b94586cf904b"
+        },
+        {
+          "name": "panda-tap.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "panda-cheer.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "hippo",
+      "name": "河马·慢半拍",
+      "island": "动物乐园（24 个）",
+      "colour": "紫",
+      "hidden": false,
+      "partner": true,
+      "files": [
+        {
+          "name": "hippo.png",
+          "batch": 1,
+          "present": true,
+          "status": "approved",
+          "sha256": "b40e3aa198640bc22cb11a12114d4fc3e3aa35311f7ac21010d9ee33216bc1ed"
+        },
+        {
+          "name": "hippo-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "01c1db7b6c8bbf47d4564d0e79e634dc202bcd5b4cc76f258b43afe091b3eaa3"
+        },
+        {
+          "name": "hippo-tap.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "hippo-cheer.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "giraffe",
+      "name": "长颈鹿·好奇鬼",
+      "island": "动物乐园（24 个）",
+      "colour": "黄",
+      "hidden": false,
+      "partner": true,
+      "files": [
+        {
+          "name": "giraffe.png",
+          "batch": 1,
+          "present": true,
+          "status": "approved",
+          "sha256": "f4fcabbcd071e77eb284dbb9932a021797eb3246d295544fcd1d097b0b828e47"
+        },
+        {
+          "name": "giraffe-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "1e6af69e298a59c6a50113fba84cd7e2c490d73bf6b3a6704ef30584a5fddc13"
+        },
+        {
+          "name": "giraffe-tap.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "giraffe-cheer.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "parrot",
+      "name": "鹦鹉·话痨王",
+      "island": "动物乐园（24 个）",
+      "colour": "红",
+      "hidden": false,
+      "partner": true,
+      "files": [
+        {
+          "name": "parrot.png",
+          "batch": 1,
+          "present": true,
+          "status": "approved",
+          "sha256": "f6c6caf5051c70bf1898f99601edb36ef14cf5d473de55e25838afbb99df0615"
+        },
+        {
+          "name": "parrot-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "2907796935b318974e1a1f6a02125f1ce35667a0d4142594ab00f67ce7f85352"
+        },
+        {
+          "name": "parrot-tap.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "parrot-cheer.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "frog",
+      "name": "小青蛙·元气派",
+      "island": "动物乐园（24 个）",
+      "colour": "绿",
+      "hidden": false,
+      "partner": true,
+      "files": [
+        {
+          "name": "frog.png",
+          "batch": 1,
+          "present": true,
+          "status": "approved",
+          "sha256": "82d01be20e430f4229d6e3613639d139cd0d3e8af810eb342634a3d533eb564b"
+        },
+        {
+          "name": "frog-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "2cc752b13a724cbbc830e78547e06481907e13a462b3ed1bad2e06de47945bdb"
+        },
+        {
+          "name": "frog-tap.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "frog-cheer.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "penguin",
+      "name": "小企鹅·乖乖仔",
+      "island": "动物乐园（24 个）",
+      "colour": "黑白",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "penguin.png",
+          "batch": 1,
+          "present": true,
+          "status": "approved",
+          "sha256": "1f8f30cbb4b53a712b49f0336b7ccaadd6d6d75102900dd676c85cd6fa62a965"
+        },
+        {
+          "name": "penguin-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "e2936c3705750cc502bb9cd995e901d77ee623d5d5ab45ab40f059684c16c63a"
+        }
+      ]
+    },
+    {
+      "id": "elephant",
+      "name": "小象·温柔",
+      "island": "动物乐园（24 个）",
+      "colour": "蓝",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "elephant.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "90c624d05870d5002d3ceded27cf3ea41237e6d9ee6c049e8ee59d2b84fef8a7"
+        },
+        {
+          "name": "elephant-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "4f32190d1cede8cdcdf3be3358df6dd3abe7a1d78ea989cc5926d4a11452cb10"
+        }
+      ]
+    },
+    {
+      "id": "dolphin",
+      "name": "海豚·开心果",
+      "island": "动物乐园（24 个）",
+      "colour": "蓝",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "dolphin.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "bae96609dd7d50d1dfa63a09d51e8d813b96511e3d957233d4ddad72cb3ec202"
+        },
+        {
+          "name": "dolphin-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "2ee81e31ed81a75b567be48700fe165afcb43b6cd90242e04b04ef29bdf14be6"
+        }
+      ]
+    },
+    {
+      "id": "shark",
+      "name": "小鲨鱼·假装凶",
+      "island": "动物乐园（24 个）",
+      "colour": "蓝",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "shark.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "5ceecbac3e3b470c6af1a945adc99d33ac7ab5b3b16f233eaae4f4013530c7c0"
+        },
+        {
+          "name": "shark-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "814d3c3446efe2687eca2512c9fa498256f41d5a9ab60f83bfc928183d61b6c6"
+        }
+      ]
+    },
+    {
+      "id": "whale",
+      "name": "小蓝鲸·憨憨",
+      "island": "动物乐园（24 个）",
+      "colour": "蓝",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "whale.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "ea52cce5cdef19c318dba06eef2fbaab9e193bf7c52f42f0606d242892e73934"
+        },
+        {
+          "name": "whale-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "de645fe381ed688e617a4f7628bdf835e299ab7f0df54ecc5fd2130319f5f7b4"
+        }
+      ]
+    },
+    {
+      "id": "orca",
+      "name": "虎鲸·大嗓门",
+      "island": "动物乐园（24 个）",
+      "colour": "黑白",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "orca.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "240229d0bec34d7a7424ed187dd5d2364ad04b551b6f252db5ff143a478d7bfa"
+        },
+        {
+          "name": "orca-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "a8a3c899052d1c4cb1bc20722ecee4ef53c47d24d12e0419d0b41105efa94f88"
+        }
+      ]
+    },
+    {
+      "id": "octopus",
+      "name": "章鱼·手忙脚乱",
+      "island": "动物乐园（24 个）",
+      "colour": "粉",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "octopus.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "e9d22a716e98fe05e8d0f048295eb4a8aa2d8727636cec3cf6933f450a11ed0c"
+        },
+        {
+          "name": "octopus-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "c6bf105209a32f4c3069e95986028d8272a20a08d4952810a18795f859f28004"
+        }
+      ]
+    },
+    {
+      "id": "clownfish",
+      "name": "小丑鱼·快乐泡泡",
+      "island": "动物乐园（24 个）",
+      "colour": "橙",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "clownfish.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "49a773f153d57174e97dee62e5d92068fbca1e4416928924f67dcb4aa5b0bc3d"
+        },
+        {
+          "name": "clownfish-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "90d4d7178111f9f309b048bfefa6de632246d69a97e7637ef3aabe8f67c83408"
+        }
+      ]
+    },
+    {
+      "id": "puffer",
+      "name": "河豚·气鼓鼓",
+      "island": "动物乐园（24 个）",
+      "colour": "蓝",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "puffer.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "b56bf41706d997b22bb9ac0c978cebccb735483a90ee46a9d3968af191e3b3cd"
+        },
+        {
+          "name": "puffer-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "5fbe3dce7b793928ad540a615e11493d83999ded697aedad7f622fe49e61a9c2"
+        }
+      ]
+    },
+    {
+      "id": "seal",
+      "name": "海豹·拍拍手",
+      "island": "动物乐园（24 个）",
+      "colour": "灰",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "seal.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "3d403886b735bc6c034758922e38d8867817db133fb5e051cb41425eab016073"
+        },
+        {
+          "name": "seal-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "5a7f1dcfc651eb2cf23bb81e5ce55a9fd7443f8c618b45d6ea756aca6019d578"
+        }
+      ]
+    },
+    {
+      "id": "otter",
+      "name": "水獭·抱抱怪",
+      "island": "动物乐园（24 个）",
+      "colour": "棕",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "otter.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "9d77dc07563c7bc371a7dd32d3531e6b26b367be5615aa662ce3b48111351c56"
+        },
+        {
+          "name": "otter-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "a2fe12ab1554fc0886ef9c2eb82c27c039d5174da667e6ce3667a3841aec2440"
+        }
+      ]
+    },
+    {
+      "id": "turtle",
+      "name": "小海龟·慢吞吞",
+      "island": "动物乐园（24 个）",
+      "colour": "绿",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "turtle.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "a890507ecaaac54bbf8ebb9476c1e0b7e5fc267630ca6bf470681aef2057f16f"
+        },
+        {
+          "name": "turtle-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "e1daaead150b81ff658d7347e820bdac9b05d360928e93d457c978a62af1f8b0"
+        }
+      ]
+    },
+    {
+      "id": "axolotl",
+      "name": "六角恐龙·笑嘻嘻",
+      "island": "动物乐园（24 个）",
+      "colour": "粉",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "axolotl.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "9c826876470f68c119fdd099c4b123bf6c51f24a69ebfc7dc9a11aa57c4ab2d2"
+        },
+        {
+          "name": "axolotl-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "60dffa8126cf27e5d691ad4faf5c34373bb2ccf286cae4cf5ece4901d4590a17"
+        }
+      ]
+    },
+    {
+      "id": "icecream",
+      "name": "冰淇淋·甜甜",
+      "island": "动物乐园（24 个）",
+      "colour": "粉",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "icecream.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "7959696801a71422b71af83a21784b25f93595de614e0bd245d4de4fd4ad51ad"
+        },
+        {
+          "name": "icecream-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "cc5c09fe36e88c96220b245daeddfe4e5571c0bd8d399ed79fc01432d18a1af1"
+        }
+      ]
+    },
+    {
+      "id": "cottoncandy",
+      "name": "棉花糖·甜滋滋",
+      "island": "动物乐园（24 个）",
+      "colour": "蓝",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "cottoncandy.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "8bd52fedf74219ac1e15e0b96d6c24381dfd3a16b866d87a287871e61f36054f"
+        },
+        {
+          "name": "cottoncandy-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "4b7cdff3808202ad07d2deb524bbd6a93f787bb479e35bce385cd208ef65d74e"
+        }
+      ]
+    },
+    {
+      "id": "popcorn",
+      "name": "爆米花·蹦蹦",
+      "island": "动物乐园（24 个）",
+      "colour": "白",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "popcorn.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "d542ebf8696008ed6c77b85009257d260bec62e85f02242fc4bd597b95cac126"
+        },
+        {
+          "name": "popcorn-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "f85e3ae860178ea1e89bb3008a13377ea3f6ef684d58f8c95d32fd2d603023b6"
+        }
+      ]
+    },
+    {
+      "id": "donut",
+      "name": "甜甜圈·圆滚滚",
+      "island": "动物乐园（24 个）",
+      "colour": "棕",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "donut.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "115e0f530e33fb5e473d2350551350c531cb4a827f004981febadbd6f651bbba"
+        },
+        {
+          "name": "donut-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "f10165c61c39c2c9a24a3a3a99ab35149ba9e66af06fd93ee20b56ad88987f1b"
+        }
+      ]
+    },
+    {
+      "id": "mermaid",
+      "name": "小美人鱼·爱唱歌",
+      "island": "动物乐园（24 个）",
+      "colour": "—",
+      "hidden": true,
+      "partner": false,
+      "files": [
+        {
+          "name": "mermaid-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "cow",
+      "name": "小奶牛·慢悠悠",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "黑白",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "cow.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "93c57a150987b8052493f58d67e8ad5312b4ebb5d5fff40bfb609ae7938a46c6"
+        },
+        {
+          "name": "cow-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "24c26bda96ea06f8d39ea07ec14a374ebc19befe6b9aec5214c51b25677f9663"
+        }
+      ]
+    },
+    {
+      "id": "sheep",
+      "name": "小绵羊·软绵绵",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "白",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "sheep.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "20f4cad81d1834a32e1ddfc796e35982ff9b9a46b9df8c5cc812f8c139c21581"
+        },
+        {
+          "name": "sheep-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "2b3c8f42fc09bd648e641d732c06b0c762a6a49e90bd0fadb41eb223ab30433b"
+        }
+      ]
+    },
+    {
+      "id": "horse",
+      "name": "小马·爱臭美",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "棕",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "horse.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "f6d00406b3bd511b203facb2904ccd1ea94d168dbfc83b497e7eef0e0ab4e27a"
+        },
+        {
+          "name": "horse-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "eaa7f4ac4c28175295a6cfcc1b02f90f662561fe2b4e9439936e22d077f2fa95"
+        }
+      ]
+    },
+    {
+      "id": "donkey",
+      "name": "小毛驴·倔脾气",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "灰",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "donkey.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "660e18c35c6621e61e4d180dcac48ce6636d3be3ebf89761036d84d1ea83ec6c"
+        },
+        {
+          "name": "donkey-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "33d5672e00f5dbb5c2b225d0463b3046f1ed62a5634cbc4056d50bf1a84d0f4d"
+        }
+      ]
+    },
+    {
+      "id": "rooster",
+      "name": "大公鸡·早起鸟",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "红",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "rooster.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "3511f1580d951b21936406a7a52f13bc886978cc555dafc9287ce77a21c1dc15"
+        },
+        {
+          "name": "rooster-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "50772b2ce081fb05f8c44b8923158367ab900e9e299a8d539187592430128687"
+        }
+      ]
+    },
+    {
+      "id": "goose",
+      "name": "大白鹅·凶巴巴",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "白",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "goose.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "24ac4a7a1a5ff4bd1a0b7b444c771376c592aed7945bce7c4caf9f83e931182f"
+        },
+        {
+          "name": "goose-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "ce0d4a0c834a61097636971e46274a1a7544e80381f8c9460c8a7c020a13cfc7"
+        }
+      ]
+    },
+    {
+      "id": "duck",
+      "name": "小白鸭·嘎嘎嘎",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "白",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "duck.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "b1647ad3af899bc3e9467d46f680c898ac643047a976f86e1c337767a68c017d"
+        },
+        {
+          "name": "duck-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "61822c02fbda966f461f6d5155b99edd4ef9f7e7b5d514b7500757445c893272"
+        }
+      ]
+    },
+    {
+      "id": "duckling",
+      "name": "小黄鸭·呆萌",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "黄",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "duckling.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "73410c63643d4e8e443834766d57754db66575d5e68eea8d80e613217d8354cd"
+        },
+        {
+          "name": "duckling-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "d0c7efc7548457aaaba8994ea8ab09cc8ebbb3121ed8a6a7e87ffb2b815b7ed4"
+        }
+      ]
+    },
+    {
+      "id": "chick",
+      "name": "小黄鸡·刚出壳",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "黄",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "chick.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "74f5726b5cdb2a0045d6e51e77d4ca4fa1a6ca5364be772999a4443b30c91628"
+        },
+        {
+          "name": "chick-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "840c529313a4299f4ec30f3410ac6c3fbc59eb1972cb4286622316fd1f4a7ff3"
+        },
+        {
+          "name": "chick-hatch.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "dog",
+      "name": "小狗·跟屁虫",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "棕",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "dog.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "2f04616bb5f67eb5889ea43cce51e419bf2fd1c9312045c4c29dfea7bc46bced"
+        },
+        {
+          "name": "dog-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "0530446e48fba2b3165929e62429bd607afc9a45e6c97a7e697338317ff10202"
+        }
+      ]
+    },
+    {
+      "id": "corgi",
+      "name": "柯基·小短腿",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "橙",
+      "hidden": false,
+      "partner": true,
+      "files": [
+        {
+          "name": "corgi.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "687a3b336fe0ae8502ea4ccd3a678387105efe06ae548d43e4c149d14149743c"
+        },
+        {
+          "name": "corgi-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "019dadd11080c5a0b0c8b9b061cd03e580145e9403c1afb1b387094b90ca0a0d"
+        },
+        {
+          "name": "corgi-tap.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "corgi-cheer.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "dalmatian",
+      "name": "斑点狗·跑跑跑",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "黑白",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "dalmatian.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "4abeba531f4cb08427342de0708ca37d45d6d2c109e61ee050a8797f08c6377d"
+        },
+        {
+          "name": "dalmatian-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "9342da62c1352b3fd8bc12db8d5ff43736ab2e75a24d4fec273ef71c4fa036dd"
+        }
+      ]
+    },
+    {
+      "id": "cat",
+      "name": "小蓝猫·傲娇",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "蓝",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "cat.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "b8573ec5b6d74c5759893a2c1d881df746968cb83ca16488ec1767698352ab0d"
+        },
+        {
+          "name": "cat-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "8628de98667c3c4fbafaa51ff7f73fde1f826a89641ae051887d5973c83d7613"
+        }
+      ]
+    },
+    {
+      "id": "siamese",
+      "name": "暹罗猫·高冷",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "白",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "siamese.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "328d01fcb5a41d5c0d673d9d2168d23655b455ba0331423526066528b8d63a0c"
+        },
+        {
+          "name": "siamese-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "3fd8e47e4a05837d1878d2e7bbf5f3cb622704d3fcc15cd14fb7cea32596d35e"
+        }
+      ]
+    },
+    {
+      "id": "bunny",
+      "name": "小兔子·蹦蹦",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "粉",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "bunny.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "cb3ab14018ccc2e048ee4ca617a063b7cdec6b239424552c9360ee5f2087bf01"
+        },
+        {
+          "name": "bunny-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "d108d5a73add8c1f3f95fba5caca653e622a83f9165de3f5a6b94cbbc2bb375b"
+        }
+      ]
+    },
+    {
+      "id": "alpaca",
+      "name": "羊驼·无语",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "白",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "alpaca.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "67f66547b14593b5b3ada99ffe4a10a027d17fb65616c161e7630de379549b71"
+        },
+        {
+          "name": "alpaca-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "d166b1b83c428088e38d19cda9c6b5347ad863456fcb62deabecf922879e4098"
+        }
+      ]
+    },
+    {
+      "id": "bison",
+      "name": "野牛·倔牛",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "棕",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "bison.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "be37c5338d651d9a5a45b2c4c3c9dd25e8184fd93bcb573fdee0f11f3bca1294"
+        },
+        {
+          "name": "bison-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "4db2b2c4364ac5d0b9c61206bf128cbeb5edadec1ff8a92d50dc43292b496dab"
+        }
+      ]
+    },
+    {
+      "id": "carrot",
+      "name": "胡萝卜·急性子",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "橙",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "carrot.png",
+          "batch": 1,
+          "present": true,
+          "status": "approved",
+          "sha256": "bcdcc829d493210ee452329cbd44d145a70ed3d3a906c448ff947190004c6665"
+        },
+        {
+          "name": "carrot-fun.png",
+          "batch": 1,
+          "present": true,
+          "status": "approved",
+          "sha256": "29148dacb0b380e9809845aa254cd9ccdca3c000cfd71c266be3eaf12e3d2b38"
+        }
+      ]
+    },
+    {
+      "id": "tomato",
+      "name": "番茄·红脸蛋",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "红",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "tomato.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "1d2c86cfb3197ad25d22c1eebcd43038d77acc2e7e6754af3dfe23838d4393ea"
+        },
+        {
+          "name": "tomato-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "ad315da082f3bdb1bfb43085ddc7a23fcf7bdc1023a589ceb6e6c407a84e1534"
+        }
+      ]
+    },
+    {
+      "id": "eggplant",
+      "name": "茄子·委屈巴巴",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "紫",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "eggplant.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "13fedfd2319e81d05d484d5d116dfd366f86321584621cd210323c1f5bd8dfbd"
+        },
+        {
+          "name": "eggplant-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "6f648d32bcfa65879650825e69bf1149bb9e74163266a966b47b70b1159ac9e4"
+        }
+      ]
+    },
+    {
+      "id": "corn",
+      "name": "玉米·爆脾气",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "黄",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "corn.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "a3db5766a3f5486cf9fd1c95de6d76abd3d39cd64d441f49fd1df7f827a6ef4c"
+        },
+        {
+          "name": "corn-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "e3f87a3e44f44101de8b99908b029832fedbd068fe9591df38fea7ea5cb0da2a"
+        }
+      ]
+    },
+    {
+      "id": "scarecrow",
+      "name": "稻草人·吓唬王",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "棕",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "scarecrow.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "b2b200a1518ae38744cc564baecaf0444338f70b2e543e8a704524d81e1e4478"
+        },
+        {
+          "name": "scarecrow-fun.png",
+          "batch": 2,
+          "present": true,
+          "status": "ready_for_game_review",
+          "sha256": "8e08e4b7714ab3189072355cdd44063a7a1fd7ef3b9296bc38c584b9a460c633"
+        }
+      ]
+    },
+    {
+      "id": "goldhen",
+      "name": "金蛋母鸡·下金蛋",
+      "island": "蛋蛋农场（23 个）",
+      "colour": "—",
+      "hidden": true,
+      "partner": false,
+      "files": [
+        {
+          "name": "goldhen-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "bee",
+      "name": "小蜜蜂·勤快",
+      "island": "花花草原（15 个）",
+      "colour": "黄",
+      "hidden": false,
+      "partner": true,
+      "files": [
+        {
+          "name": "bee.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "bee-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "bee-tap.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "bee-cheer.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "ladybug",
+      "name": "瓢虫·小乖乖",
+      "island": "花花草原（15 个）",
+      "colour": "红",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "ladybug.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "ladybug-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "hedgehog",
+      "name": "刺猬·小刺头",
+      "island": "花花草原（15 个）",
+      "colour": "棕",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "hedgehog.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "hedgehog-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "squirrel",
+      "name": "松鼠·囤囤囤",
+      "island": "花花草原（15 个）",
+      "colour": "橙",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "squirrel.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "squirrel-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "hamster",
+      "name": "仓鼠·小吃货",
+      "island": "花花草原（15 个）",
+      "colour": "橙",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "hamster.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "hamster-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "deer",
+      "name": "小鹿·害羞",
+      "island": "花花草原（15 个）",
+      "colour": "棕",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "deer.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "deer-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "fox",
+      "name": "小狐狸·鬼点子",
+      "island": "花花草原（15 个）",
+      "colour": "橙",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "fox.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "fox-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "bear",
+      "name": "小棕熊·暖心",
+      "island": "花花草原（15 个）",
+      "colour": "棕",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "bear.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "bear-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "capybara",
+      "name": "水豚·佛系",
+      "island": "花花草原（15 个）",
+      "colour": "棕",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "capybara.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "capybara-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "sunflower",
+      "name": "向日葵·笑嘻嘻",
+      "island": "花花草原（15 个）",
+      "colour": "黄",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "sunflower.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "sunflower-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "tulip",
+      "name": "郁金香·小淑女",
+      "island": "花花草原（15 个）",
+      "colour": "粉",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "tulip.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "tulip-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "mushroom",
+      "name": "小蘑菇·小迷糊",
+      "island": "花花草原（15 个）",
+      "colour": "红",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "mushroom.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "mushroom-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "cactus",
+      "name": "仙人掌·刺刺的",
+      "island": "花花草原（15 个）",
+      "colour": "绿",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "cactus.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "cactus-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "butterfly",
+      "name": "蝴蝶·翩翩",
+      "island": "花花草原（15 个）",
+      "colour": "紫",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "butterfly.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "butterfly-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "fairy",
+      "name": "花仙子·会魔法",
+      "island": "花花草原（15 个）",
+      "colour": "—",
+      "hidden": true,
+      "partner": false,
+      "files": [
+        {
+          "name": "fairy-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "owl",
+      "name": "猫头鹰·小老师",
+      "island": "云朵气球岛（14 个）",
+      "colour": "紫",
+      "hidden": false,
+      "partner": true,
+      "files": [
+        {
+          "name": "owl.png",
+          "batch": 1,
+          "present": true,
+          "status": "approved",
+          "sha256": "eeffc5b80943e7d286e7863b45f2492d71500792fde9109cb9c0d5a7568e35fd"
+        },
+        {
+          "name": "owl-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "owl-tap.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "owl-cheer.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "pigeon",
+      "name": "小鸽子·咕咕",
+      "island": "云朵气球岛（14 个）",
+      "colour": "灰",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "pigeon.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "pigeon-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "budgie",
+      "name": "虎皮鹦鹉·复读机",
+      "island": "云朵气球岛（14 个）",
+      "colour": "蓝",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "budgie.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "budgie-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "cardinal",
+      "name": "小红鸟·小气包",
+      "island": "云朵气球岛（14 个）",
+      "colour": "红",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "cardinal.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "cardinal-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "flamingo",
+      "name": "火烈鸟·优雅",
+      "island": "云朵气球岛（14 个）",
+      "colour": "粉",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "flamingo.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "flamingo-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "bat",
+      "name": "小蝙蝠·夜猫子",
+      "island": "云朵气球岛（14 个）",
+      "colour": "紫",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "bat.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "bat-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "peacock",
+      "name": "孔雀·爱显摆",
+      "island": "云朵气球岛（14 个）",
+      "colour": "青",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "peacock.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "peacock-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "polar",
+      "name": "北极熊·冷静",
+      "island": "云朵气球岛（14 个）",
+      "colour": "白",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "polar.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "polar-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "arcticfox",
+      "name": "北极狐·机灵",
+      "island": "云朵气球岛（14 个）",
+      "colour": "白",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "arcticfox.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "arcticfox-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "sun",
+      "name": "太阳·暖洋洋",
+      "island": "云朵气球岛（14 个）",
+      "colour": "橙",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "sun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "sun-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "moon",
+      "name": "月亮·睡不醒",
+      "island": "云朵气球岛（14 个）",
+      "colour": "黄",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "moon.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "moon-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "cloud",
+      "name": "云朵宝宝·懒洋洋",
+      "island": "云朵气球岛（14 个）",
+      "colour": "白",
+      "hidden": false,
+      "partner": true,
+      "files": [
+        {
+          "name": "cloud.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "cloud-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "cloud-tap.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "cloud-cheer.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "raindrop",
+      "name": "雨滴·爱哭鬼",
+      "island": "云朵气球岛（14 个）",
+      "colour": "蓝",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "raindrop.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "raindrop-fun.png",
+          "batch": 3,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "unicorn",
+      "name": "独角兽·梦幻",
+      "island": "云朵气球岛（14 个）",
+      "colour": "—",
+      "hidden": true,
+      "partner": false,
+      "files": [
+        {
+          "name": "unicorn-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "monkey",
+      "name": "小猴子·调皮",
+      "island": "森林营救（19 个）",
+      "colour": "棕",
+      "hidden": false,
+      "partner": true,
+      "files": [
+        {
+          "name": "monkey.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "monkey-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "monkey-tap.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "monkey-cheer.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "tiger",
+      "name": "小老虎·威风",
+      "island": "森林营救（19 个）",
+      "colour": "橙",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "tiger.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "tiger-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "lion",
+      "name": "小狮子·臭美",
+      "island": "森林营救（19 个）",
+      "colour": "橙",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "lion.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "lion-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "sloth",
+      "name": "树懒·慢慢来",
+      "island": "森林营救（19 个）",
+      "colour": "棕",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "sloth.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "sloth-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "chameleon",
+      "name": "变色龙·眼珠乱转",
+      "island": "森林营救（19 个）",
+      "colour": "绿",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "chameleon.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "chameleon-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "croc",
+      "name": "鳄鱼·笑面虎",
+      "island": "森林营救（19 个）",
+      "colour": "绿",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "croc.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "croc-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "rhino",
+      "name": "犀牛·横冲直撞",
+      "island": "森林营救（19 个）",
+      "colour": "青",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "rhino.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "rhino-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "zebra",
+      "name": "斑马·酷酷的",
+      "island": "森林营救（19 个）",
+      "colour": "黑白",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "zebra.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "zebra-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "koala",
+      "name": "考拉·瞌睡虫",
+      "island": "森林营救（19 个）",
+      "colour": "灰",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "koala.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "koala-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "kangaroo",
+      "name": "袋鼠·蹦蹦跳",
+      "island": "森林营救（19 个）",
+      "colour": "橙",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "kangaroo.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "kangaroo-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "redpanda",
+      "name": "小熊猫·不好意思",
+      "island": "森林营救（19 个）",
+      "colour": "橙",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "redpanda.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "redpanda-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "fennec",
+      "name": "耳廓狐·大耳朵",
+      "island": "森林营救（19 个）",
+      "colour": "黄",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "fennec.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "fennec-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "raccoon",
+      "name": "浣熊·小偷偷",
+      "island": "森林营救（19 个）",
+      "colour": "灰",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "raccoon.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "raccoon-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "skunk",
+      "name": "臭鼬·小捣蛋",
+      "island": "森林营救（19 个）",
+      "colour": "黑白",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "skunk.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "skunk-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "toucan",
+      "name": "大嘴鸟·嘴大王",
+      "island": "森林营救（19 个）",
+      "colour": "黑白",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "toucan.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "toucan-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "banana",
+      "name": "香蕉·弯弯",
+      "island": "森林营救（19 个）",
+      "colour": "黄",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "banana.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "banana-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "dragonfruit",
+      "name": "火龙果·刺头",
+      "island": "森林营救（19 个）",
+      "colour": "粉",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "dragonfruit.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "dragonfruit-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "coconut",
+      "name": "椰子·硬汉",
+      "island": "森林营救（19 个）",
+      "colour": "棕",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "coconut.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "coconut-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "ninedeer",
+      "name": "九色鹿·善良",
+      "island": "森林营救（19 个）",
+      "colour": "—",
+      "hidden": true,
+      "partner": false,
+      "files": [
+        {
+          "name": "ninedeer-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "princess",
+      "name": "小公主·爱美",
+      "island": "彩虹城堡（5 个）",
+      "colour": "粉",
+      "hidden": false,
+      "partner": true,
+      "files": [
+        {
+          "name": "princess.png",
+          "batch": 1,
+          "present": true,
+          "status": "approved",
+          "sha256": "c15a87c353b9531cbd6564e4b329f791835a3ceb8b04682056e85ce21a9bb0b2"
+        },
+        {
+          "name": "princess-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "princess-tap.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "princess-cheer.png",
+          "batch": 5,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "knight",
+      "name": "小骑士·勇敢",
+      "island": "彩虹城堡（5 个）",
+      "colour": "灰",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "knight.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "knight-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "wizard",
+      "name": "小魔法师·神秘",
+      "island": "彩虹城堡（5 个）",
+      "colour": "紫",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "wizard.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "wizard-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "ghost",
+      "name": "小幽灵·躲猫猫",
+      "island": "彩虹城堡（5 个）",
+      "colour": "白",
+      "hidden": false,
+      "partner": false,
+      "files": [
+        {
+          "name": "ghost.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        },
+        {
+          "name": "ghost-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "id": "dragon",
+      "name": "小龙·守宝藏",
+      "island": "彩虹城堡（5 个）",
+      "colour": "—",
+      "hidden": true,
+      "partner": false,
+      "files": [
+        {
+          "name": "dragon-fun.png",
+          "batch": 4,
+          "present": false,
+          "status": "pending"
+        }
+      ]
+    }
+  ]
+}

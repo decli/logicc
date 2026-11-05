@@ -1,0 +1,518 @@
+[
+  {
+    "group": "粉",
+    "a": "pig",
+    "b": "octopus",
+    "intersection_over_union": 0.829
+  },
+  {
+    "group": "粉",
+    "a": "pig",
+    "b": "axolotl",
+    "intersection_over_union": 0.5775
+  },
+  {
+    "group": "粉",
+    "a": "pig",
+    "b": "icecream",
+    "intersection_over_union": 0.677
+  },
+  {
+    "group": "粉",
+    "a": "pig",
+    "b": "bunny",
+    "intersection_over_union": 0.7333
+  },
+  {
+    "group": "粉",
+    "a": "octopus",
+    "b": "axolotl",
+    "intersection_over_union": 0.495
+  },
+  {
+    "group": "粉",
+    "a": "octopus",
+    "b": "icecream",
+    "intersection_over_union": 0.6738
+  },
+  {
+    "group": "粉",
+    "a": "octopus",
+    "b": "bunny",
+    "intersection_over_union": 0.7107
+  },
+  {
+    "group": "粉",
+    "a": "axolotl",
+    "b": "icecream",
+    "intersection_over_union": 0.5792
+  },
+  {
+    "group": "粉",
+    "a": "axolotl",
+    "b": "bunny",
+    "intersection_over_union": 0.4303
+  },
+  {
+    "group": "粉",
+    "a": "icecream",
+    "b": "bunny",
+    "intersection_over_union": 0.5946
+  },
+  {
+    "group": "黑白",
+    "a": "panda",
+    "b": "penguin",
+    "intersection_over_union": 0.8331
+  },
+  {
+    "group": "黑白",
+    "a": "panda",
+    "b": "orca",
+    "intersection_over_union": 0.6974
+  },
+  {
+    "group": "黑白",
+    "a": "panda",
+    "b": "cow",
+    "intersection_over_union": 0.6909
+  },
+  {
+    "group": "黑白",
+    "a": "panda",
+    "b": "dalmatian",
+    "intersection_over_union": 0.7149
+  },
+  {
+    "group": "黑白",
+    "a": "penguin",
+    "b": "orca",
+    "intersection_over_union": 0.7569
+  },
+  {
+    "group": "黑白",
+    "a": "penguin",
+    "b": "cow",
+    "intersection_over_union": 0.7708
+  },
+  {
+    "group": "黑白",
+    "a": "penguin",
+    "b": "dalmatian",
+    "intersection_over_union": 0.7629
+  },
+  {
+    "group": "黑白",
+    "a": "orca",
+    "b": "cow",
+    "intersection_over_union": 0.6905
+  },
+  {
+    "group": "黑白",
+    "a": "orca",
+    "b": "dalmatian",
+    "intersection_over_union": 0.7912
+  },
+  {
+    "group": "黑白",
+    "a": "cow",
+    "b": "dalmatian",
+    "intersection_over_union": 0.7305
+  },
+  {
+    "group": "紫",
+    "a": "hippo",
+    "b": "eggplant",
+    "intersection_over_union": 0.664
+  },
+  {
+    "group": "黄",
+    "a": "giraffe",
+    "b": "duckling",
+    "intersection_over_union": 0.7285
+  },
+  {
+    "group": "黄",
+    "a": "giraffe",
+    "b": "chick",
+    "intersection_over_union": 0.6757
+  },
+  {
+    "group": "黄",
+    "a": "giraffe",
+    "b": "corn",
+    "intersection_over_union": 0.6849
+  },
+  {
+    "group": "黄",
+    "a": "duckling",
+    "b": "chick",
+    "intersection_over_union": 0.8281
+  },
+  {
+    "group": "黄",
+    "a": "duckling",
+    "b": "corn",
+    "intersection_over_union": 0.7546
+  },
+  {
+    "group": "黄",
+    "a": "chick",
+    "b": "corn",
+    "intersection_over_union": 0.8861
+  },
+  {
+    "group": "红",
+    "a": "parrot",
+    "b": "rooster",
+    "intersection_over_union": 0.8455
+  },
+  {
+    "group": "红",
+    "a": "parrot",
+    "b": "tomato",
+    "intersection_over_union": 0.8074
+  },
+  {
+    "group": "红",
+    "a": "rooster",
+    "b": "tomato",
+    "intersection_over_union": 0.8632
+  },
+  {
+    "group": "绿",
+    "a": "frog",
+    "b": "turtle",
+    "intersection_over_union": 0.733
+  },
+  {
+    "group": "蓝",
+    "a": "elephant",
+    "b": "dolphin",
+    "intersection_over_union": 0.6972
+  },
+  {
+    "group": "蓝",
+    "a": "elephant",
+    "b": "shark",
+    "intersection_over_union": 0.6155
+  },
+  {
+    "group": "蓝",
+    "a": "elephant",
+    "b": "whale",
+    "intersection_over_union": 0.6066
+  },
+  {
+    "group": "蓝",
+    "a": "elephant",
+    "b": "puffer",
+    "intersection_over_union": 0.7433
+  },
+  {
+    "group": "蓝",
+    "a": "elephant",
+    "b": "cottoncandy",
+    "intersection_over_union": 0.7318
+  },
+  {
+    "group": "蓝",
+    "a": "elephant",
+    "b": "cat",
+    "intersection_over_union": 0.7352
+  },
+  {
+    "group": "蓝",
+    "a": "dolphin",
+    "b": "shark",
+    "intersection_over_union": 0.5968
+  },
+  {
+    "group": "蓝",
+    "a": "dolphin",
+    "b": "whale",
+    "intersection_over_union": 0.6045
+  },
+  {
+    "group": "蓝",
+    "a": "dolphin",
+    "b": "puffer",
+    "intersection_over_union": 0.6666
+  },
+  {
+    "group": "蓝",
+    "a": "dolphin",
+    "b": "cottoncandy",
+    "intersection_over_union": 0.6249
+  },
+  {
+    "group": "蓝",
+    "a": "dolphin",
+    "b": "cat",
+    "intersection_over_union": 0.6674
+  },
+  {
+    "group": "蓝",
+    "a": "shark",
+    "b": "whale",
+    "intersection_over_union": 0.8883
+  },
+  {
+    "group": "蓝",
+    "a": "shark",
+    "b": "puffer",
+    "intersection_over_union": 0.7182
+  },
+  {
+    "group": "蓝",
+    "a": "shark",
+    "b": "cottoncandy",
+    "intersection_over_union": 0.7522
+  },
+  {
+    "group": "蓝",
+    "a": "shark",
+    "b": "cat",
+    "intersection_over_union": 0.6763
+  },
+  {
+    "group": "蓝",
+    "a": "whale",
+    "b": "puffer",
+    "intersection_over_union": 0.7159
+  },
+  {
+    "group": "蓝",
+    "a": "whale",
+    "b": "cottoncandy",
+    "intersection_over_union": 0.7419
+  },
+  {
+    "group": "蓝",
+    "a": "whale",
+    "b": "cat",
+    "intersection_over_union": 0.6665
+  },
+  {
+    "group": "蓝",
+    "a": "puffer",
+    "b": "cottoncandy",
+    "intersection_over_union": 0.8378
+  },
+  {
+    "group": "蓝",
+    "a": "puffer",
+    "b": "cat",
+    "intersection_over_union": 0.7957
+  },
+  {
+    "group": "蓝",
+    "a": "cottoncandy",
+    "b": "cat",
+    "intersection_over_union": 0.7845
+  },
+  {
+    "group": "橙",
+    "a": "clownfish",
+    "b": "corgi",
+    "intersection_over_union": 0.5575
+  },
+  {
+    "group": "橙",
+    "a": "clownfish",
+    "b": "carrot",
+    "intersection_over_union": 0.702
+  },
+  {
+    "group": "橙",
+    "a": "corgi",
+    "b": "carrot",
+    "intersection_over_union": 0.4913
+  },
+  {
+    "group": "灰",
+    "a": "seal",
+    "b": "donkey",
+    "intersection_over_union": 0.5836
+  },
+  {
+    "group": "棕",
+    "a": "otter",
+    "b": "donut",
+    "intersection_over_union": 0.7691
+  },
+  {
+    "group": "棕",
+    "a": "otter",
+    "b": "horse",
+    "intersection_over_union": 0.796
+  },
+  {
+    "group": "棕",
+    "a": "otter",
+    "b": "dog",
+    "intersection_over_union": 0.7134
+  },
+  {
+    "group": "棕",
+    "a": "otter",
+    "b": "bison",
+    "intersection_over_union": 0.8691
+  },
+  {
+    "group": "棕",
+    "a": "otter",
+    "b": "scarecrow",
+    "intersection_over_union": 0.7062
+  },
+  {
+    "group": "棕",
+    "a": "donut",
+    "b": "horse",
+    "intersection_over_union": 0.7644
+  },
+  {
+    "group": "棕",
+    "a": "donut",
+    "b": "dog",
+    "intersection_over_union": 0.5681
+  },
+  {
+    "group": "棕",
+    "a": "donut",
+    "b": "bison",
+    "intersection_over_union": 0.8069
+  },
+  {
+    "group": "棕",
+    "a": "donut",
+    "b": "scarecrow",
+    "intersection_over_union": 0.6297
+  },
+  {
+    "group": "棕",
+    "a": "horse",
+    "b": "dog",
+    "intersection_over_union": 0.618
+  },
+  {
+    "group": "棕",
+    "a": "horse",
+    "b": "bison",
+    "intersection_over_union": 0.8397
+  },
+  {
+    "group": "棕",
+    "a": "horse",
+    "b": "scarecrow",
+    "intersection_over_union": 0.6726
+  },
+  {
+    "group": "棕",
+    "a": "dog",
+    "b": "bison",
+    "intersection_over_union": 0.6532
+  },
+  {
+    "group": "棕",
+    "a": "dog",
+    "b": "scarecrow",
+    "intersection_over_union": 0.6612
+  },
+  {
+    "group": "棕",
+    "a": "bison",
+    "b": "scarecrow",
+    "intersection_over_union": 0.729
+  },
+  {
+    "group": "白",
+    "a": "popcorn",
+    "b": "sheep",
+    "intersection_over_union": 0.8978
+  },
+  {
+    "group": "白",
+    "a": "popcorn",
+    "b": "goose",
+    "intersection_over_union": 0.8405
+  },
+  {
+    "group": "白",
+    "a": "popcorn",
+    "b": "duck",
+    "intersection_over_union": 0.8285
+  },
+  {
+    "group": "白",
+    "a": "popcorn",
+    "b": "siamese",
+    "intersection_over_union": 0.72
+  },
+  {
+    "group": "白",
+    "a": "popcorn",
+    "b": "alpaca",
+    "intersection_over_union": 0.7243
+  },
+  {
+    "group": "白",
+    "a": "sheep",
+    "b": "goose",
+    "intersection_over_union": 0.8165
+  },
+  {
+    "group": "白",
+    "a": "sheep",
+    "b": "duck",
+    "intersection_over_union": 0.805
+  },
+  {
+    "group": "白",
+    "a": "sheep",
+    "b": "siamese",
+    "intersection_over_union": 0.7647
+  },
+  {
+    "group": "白",
+    "a": "sheep",
+    "b": "alpaca",
+    "intersection_over_union": 0.6908
+  },
+  {
+    "group": "白",
+    "a": "goose",
+    "b": "duck",
+    "intersection_over_union": 0.8845
+  },
+  {
+    "group": "白",
+    "a": "goose",
+    "b": "siamese",
+    "intersection_over_union": 0.7027
+  },
+  {
+    "group": "白",
+    "a": "goose",
+    "b": "alpaca",
+    "intersection_over_union": 0.6662
+  },
+  {
+    "group": "白",
+    "a": "duck",
+    "b": "siamese",
+    "intersection_over_union": 0.7273
+  },
+  {
+    "group": "白",
+    "a": "duck",
+    "b": "alpaca",
+    "intersection_over_union": 0.6455
+  },
+  {
+    "group": "白",
+    "a": "siamese",
+    "b": "alpaca",
+    "intersection_over_union": 0.6161
+  }
+]
