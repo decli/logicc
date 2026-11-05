@@ -1,0 +1,13 @@
+{
+  "expected": 219,
+  "present": 219,
+  "selected": 25,
+  "missing": [],
+  "matched_expression_pairs": 24,
+  "baseline92_unchanged": true,
+  "minimum_margin_px": 56,
+  "maximum_partial_edge_width_px": 3.0,
+  "colour_review": [],
+  "silhouette_review": [],
+  "errors": []
+}
