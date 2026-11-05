@@ -1,0 +1,74 @@
+[
+  {
+    "file": "panda.png",
+    "approximate_dark_neutral_area": 0.2142
+  },
+  {
+    "file": "panda-fun.png",
+    "approximate_dark_neutral_area": 0.312
+  },
+  {
+    "file": "panda-tap.png",
+    "approximate_dark_neutral_area": 0.2794
+  },
+  {
+    "file": "panda-cheer.png",
+    "approximate_dark_neutral_area": 0.289
+  },
+  {
+    "file": "penguin.png",
+    "approximate_dark_neutral_area": 0.3238
+  },
+  {
+    "file": "penguin-fun.png",
+    "approximate_dark_neutral_area": 0.3212
+  },
+  {
+    "file": "orca.png",
+    "approximate_dark_neutral_area": 0.3641
+  },
+  {
+    "file": "orca-fun.png",
+    "approximate_dark_neutral_area": 0.3628
+  },
+  {
+    "file": "cow.png",
+    "approximate_dark_neutral_area": 0.0913
+  },
+  {
+    "file": "cow-fun.png",
+    "approximate_dark_neutral_area": 0.0892
+  },
+  {
+    "file": "dalmatian.png",
+    "approximate_dark_neutral_area": 0.1572
+  },
+  {
+    "file": "dalmatian-fun.png",
+    "approximate_dark_neutral_area": 0.1657
+  },
+  {
+    "file": "zebra.png",
+    "approximate_dark_neutral_area": 0.3405
+  },
+  {
+    "file": "zebra-fun.png",
+    "approximate_dark_neutral_area": 0.35
+  },
+  {
+    "file": "skunk.png",
+    "approximate_dark_neutral_area": 0.24
+  },
+  {
+    "file": "skunk-fun.png",
+    "approximate_dark_neutral_area": 0.2899
+  },
+  {
+    "file": "toucan.png",
+    "approximate_dark_neutral_area": 0.2327
+  },
+  {
+    "file": "toucan-fun.png",
+    "approximate_dark_neutral_area": 0.2375
+  }
+]
