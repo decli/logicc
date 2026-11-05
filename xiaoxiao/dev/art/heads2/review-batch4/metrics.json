@@ -1,0 +1,639 @@
+[
+  {
+    "file": "banana-fun.png",
+    "bbox": [
+      72,
+      85,
+      952,
+      939
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 2.828,
+    "alpha_matches_board": true,
+    "sha256": "11d5be10eec7e4a622f6861f59a27a1ba28661ef2b3f6fbadb9ae0f356bb275a"
+  },
+  {
+    "file": "banana.png",
+    "bbox": [
+      72,
+      85,
+      952,
+      939
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 2.828,
+    "alpha_matches_board": null,
+    "sha256": "16d075b47dfd17dbfb148cae5d7db18078ae9d790a4e68d1011d1c640be88615"
+  },
+  {
+    "file": "chameleon-fun.png",
+    "bbox": [
+      116,
+      72,
+      907,
+      952
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 2.828,
+    "alpha_matches_board": true,
+    "sha256": "012cd8a1702edd3781ab78aa8fc92eca3c3034e869f8c16e18a081fdf44e5e3f"
+  },
+  {
+    "file": "chameleon.png",
+    "bbox": [
+      116,
+      72,
+      907,
+      952
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 2.828,
+    "alpha_matches_board": null,
+    "sha256": "5f7ddeb8baceb792ae6c7487aaa4ac270ce43553d5781da67e8a3f7b377c675d"
+  },
+  {
+    "file": "coconut-fun.png",
+    "bbox": [
+      76,
+      72,
+      948,
+      952
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 2.236,
+    "alpha_matches_board": true,
+    "sha256": "5a3b82ef3b3b2f5328d00944373a415c9fb8652e957096e703977daabc503518"
+  },
+  {
+    "file": "coconut.png",
+    "bbox": [
+      76,
+      72,
+      948,
+      952
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 2.236,
+    "alpha_matches_board": null,
+    "sha256": "547e5fa7d452a52d33107aee6fa7826cdc908bb51dc1315be8ff96f9a316b8e5"
+  },
+  {
+    "file": "croc-fun.png",
+    "bbox": [
+      72,
+      133,
+      953,
+      891
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 2.0,
+    "alpha_matches_board": true,
+    "sha256": "4c8181b850a40f5a69acc437e92473423e188c0b0a3673018028f46e22f8e458"
+  },
+  {
+    "file": "croc.png",
+    "bbox": [
+      72,
+      133,
+      953,
+      891
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 2.0,
+    "alpha_matches_board": null,
+    "sha256": "10fd169e95b7f95aaebb8b76d353dbef51f1857c85b618b75b924553377bb228"
+  },
+  {
+    "file": "dragon-fun.png",
+    "bbox": [
+      72,
+      136,
+      952,
+      888
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 3.0,
+    "alpha_matches_board": null,
+    "sha256": "bd9edfefabe7a9ad86f4f3ad1ed70147cc08c839b6ac2159e02f47773807cb1c"
+  },
+  {
+    "file": "dragonfruit-fun.png",
+    "bbox": [
+      96,
+      72,
+      927,
+      953
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 3.0,
+    "alpha_matches_board": true,
+    "sha256": "39fd8017fa25cb312769d63fd1c2cf3da021990fc964d7462721509a15baf36b"
+  },
+  {
+    "file": "dragonfruit.png",
+    "bbox": [
+      96,
+      72,
+      927,
+      953
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 3.0,
+    "alpha_matches_board": null,
+    "sha256": "5687436ca12c4b07797f22587bdf32980e3714fef95f574e56a7cd3829ebf8e0"
+  },
+  {
+    "file": "fairy-fun.png",
+    "bbox": [
+      71,
+      116,
+      952,
+      907
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 3.0,
+    "alpha_matches_board": null,
+    "sha256": "88234064001b36693c085bb34c7df73111667da57693a3a5025b9a6a1350d46c"
+  },
+  {
+    "file": "fennec-fun.png",
+    "bbox": [
+      72,
+      107,
+      952,
+      916
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 3.0,
+    "alpha_matches_board": true,
+    "sha256": "507a2dd2e0bb4174aae8d89ec63d74c6fa1bae664e6f695cbe35cc55d910c0f8"
+  },
+  {
+    "file": "fennec.png",
+    "bbox": [
+      72,
+      107,
+      952,
+      916
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 3.0,
+    "alpha_matches_board": null,
+    "sha256": "0f3b5ecdc5fc11689cbdef70c43f6645b3275524bf40d72407147c05996e8b51"
+  },
+  {
+    "file": "ghost-fun.png",
+    "bbox": [
+      72,
+      106,
+      953,
+      917
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 2.0,
+    "alpha_matches_board": true,
+    "sha256": "fa23918f6b3a1bc6e9f3c3a54647702ddf6e89502aab33cc03aa3c31f229714e"
+  },
+  {
+    "file": "ghost.png",
+    "bbox": [
+      72,
+      106,
+      953,
+      917
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 2.0,
+    "alpha_matches_board": null,
+    "sha256": "d793a4a7132d23ff43ffc8268a2b2798bc1a21278d994047591f2738ef8b0b3e"
+  },
+  {
+    "file": "goldhen-fun.png",
+    "bbox": [
+      85,
+      72,
+      940,
+      952
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 3.0,
+    "alpha_matches_board": null,
+    "sha256": "112a669019e77fb4c062f58cc7fe4988fe6e1a0a50e38a123a438b69ebc56e88"
+  },
+  {
+    "file": "kangaroo-fun.png",
+    "bbox": [
+      172,
+      72,
+      852,
+      952
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 2.828,
+    "alpha_matches_board": true,
+    "sha256": "c1c2404c0ce88edb77cfda4b2e10f17abf09dffb41137e68560f822ce7a437e0"
+  },
+  {
+    "file": "kangaroo.png",
+    "bbox": [
+      172,
+      72,
+      852,
+      952
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 2.828,
+    "alpha_matches_board": null,
+    "sha256": "3098461cfdc0b82ab95e2b2352f5887c035a6559b81d43d5056c258aaaf08373"
+  },
+  {
+    "file": "knight-fun.png",
+    "bbox": [
+      109,
+      71,
+      914,
+      952
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 2.236,
+    "alpha_matches_board": true,
+    "sha256": "3568e62daab65ac4bcfe7a4dc6e9749f2ce832ee73ec676c7afd4e023873a3cf"
+  },
+  {
+    "file": "knight.png",
+    "bbox": [
+      109,
+      71,
+      914,
+      952
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 2.236,
+    "alpha_matches_board": null,
+    "sha256": "b1c7c94577a33ecb4af62530d493edd6c9426c3f2da1919c2dac54127ef27f10"
+  },
+  {
+    "file": "koala-fun.png",
+    "bbox": [
+      72,
+      188,
+      952,
+      836
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 2.828,
+    "alpha_matches_board": true,
+    "sha256": "5dab8f450a1e11575d315ade30094598ecaf4ad761a5b8f5e0847ec92d97bbe3"
+  },
+  {
+    "file": "koala.png",
+    "bbox": [
+      72,
+      188,
+      952,
+      836
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 2.828,
+    "alpha_matches_board": null,
+    "sha256": "edb6ac0a354de8fae8d18559d156a8bee9cccb9215038570f36c2058e5ee07fd"
+  },
+  {
+    "file": "lion-fun.png",
+    "bbox": [
+      71,
+      84,
+      952,
+      940
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 2.236,
+    "alpha_matches_board": true,
+    "sha256": "7f08fac00693807117d6a7932129598a687c862b7e8271574ab868877ada284f"
+  },
+  {
+    "file": "lion.png",
+    "bbox": [
+      71,
+      84,
+      952,
+      940
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 2.236,
+    "alpha_matches_board": null,
+    "sha256": "046e7dec9dc9dec41879d913ef68f8e3a125459ec778b9833ae799ba3e0f8e91"
+  },
+  {
+    "file": "mermaid-fun.png",
+    "bbox": [
+      71,
+      77,
+      952,
+      947
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 2.236,
+    "alpha_matches_board": null,
+    "sha256": "6598738cc0386b2b2bef7cb024f941cde0e9edcdfefc73934f823a8d3e4dcfd8"
+  },
+  {
+    "file": "monkey-fun.png",
+    "bbox": [
+      72,
+      206,
+      952,
+      818
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 3.0,
+    "alpha_matches_board": true,
+    "sha256": "fb9b95d33e4c21d6bb834ae91e425b21fc8b80ef25aa015d0bae3bee62e9cb20"
+  },
+  {
+    "file": "monkey.png",
+    "bbox": [
+      72,
+      206,
+      952,
+      818
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 3.0,
+    "alpha_matches_board": null,
+    "sha256": "ac8339b2eb11b41c4458c21456dc400a29b90ab5c8555d7eaee2af2fb520b056"
+  },
+  {
+    "file": "ninedeer-fun.png",
+    "bbox": [
+      79,
+      72,
+      945,
+      953
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 3.0,
+    "alpha_matches_board": null,
+    "sha256": "70da52702cbca3a6eff81d818435d1039f9036431a0baf31655c9be340b97044"
+  },
+  {
+    "file": "princess-fun.png",
+    "bbox": [
+      72,
+      86,
+      952,
+      887
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 2.0,
+    "alpha_matches_board": true,
+    "sha256": "d6fa660f15e94b3a72e510009b4c12e6725f06fc09da8293eb1053c804d60669"
+  },
+  {
+    "file": "raccoon-fun.png",
+    "bbox": [
+      72,
+      150,
+      953,
+      874
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 2.236,
+    "alpha_matches_board": true,
+    "sha256": "86bad6fe35868797291036b21c17a55bc6c8f99c47c92279bf15d3fd91ae4d36"
+  },
+  {
+    "file": "raccoon.png",
+    "bbox": [
+      72,
+      150,
+      953,
+      874
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 2.236,
+    "alpha_matches_board": null,
+    "sha256": "27df7842318356206e5295384853e73617dac7dbd1f5c0c156fbb416fcfc0369"
+  },
+  {
+    "file": "redpanda-fun.png",
+    "bbox": [
+      71,
+      255,
+      953,
+      768
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 2.236,
+    "alpha_matches_board": true,
+    "sha256": "864fb44a83676584095d6b24c36bc1f07f78a02f488be039fa682ebb033a37b8"
+  },
+  {
+    "file": "redpanda.png",
+    "bbox": [
+      71,
+      255,
+      953,
+      768
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 2.236,
+    "alpha_matches_board": null,
+    "sha256": "9accff2d76275a476ea4d4a733c564c110b3471c837762615231699bd229a90c"
+  },
+  {
+    "file": "rhino-fun.png",
+    "bbox": [
+      72,
+      131,
+      952,
+      892
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 2.236,
+    "alpha_matches_board": true,
+    "sha256": "8ee0e6e2e312564f39d8caa5c24736741d9d7196a9891804af5d35981b886f98"
+  },
+  {
+    "file": "rhino.png",
+    "bbox": [
+      72,
+      131,
+      952,
+      892
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 2.236,
+    "alpha_matches_board": null,
+    "sha256": "4ecddac46a618e33d6e7a68986e4abe7649d4c1b90ffb0f86b6e0d456c780f20"
+  },
+  {
+    "file": "skunk-fun.png",
+    "bbox": [
+      72,
+      85,
+      953,
+      939
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 3.0,
+    "alpha_matches_board": true,
+    "sha256": "20555cb326ef5e4a19a7af7be2eb3e7624693f3f99303aac5e6ca2e54a215528"
+  },
+  {
+    "file": "skunk.png",
+    "bbox": [
+      72,
+      85,
+      953,
+      939
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 3.0,
+    "alpha_matches_board": null,
+    "sha256": "7e78e87bf18b732e5520a4580c73185619cc19e5e9e29ae66f772de11b7e8913"
+  },
+  {
+    "file": "sloth-fun.png",
+    "bbox": [
+      72,
+      96,
+      953,
+      926
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 3.0,
+    "alpha_matches_board": true,
+    "sha256": "0a15487ed5ee472598f2d47d897e7e86c9b9b56524a9e79a22857535af95e8d6"
+  },
+  {
+    "file": "sloth.png",
+    "bbox": [
+      72,
+      96,
+      953,
+      926
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 3.0,
+    "alpha_matches_board": null,
+    "sha256": "9200e9354aea8f7d8a9ba4546b96c4f151cba831fe2edfc3080fe3ea69890b3b"
+  },
+  {
+    "file": "tiger-fun.png",
+    "bbox": [
+      72,
+      120,
+      952,
+      903
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 3.0,
+    "alpha_matches_board": true,
+    "sha256": "72979b712b676408e79ddfede98e9293ceeb46226823dc944defe75334d4fe68"
+  },
+  {
+    "file": "tiger.png",
+    "bbox": [
+      72,
+      120,
+      952,
+      903
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 3.0,
+    "alpha_matches_board": null,
+    "sha256": "68cd93ea3f0863ad6db0b39af7f360d4d3238f141a8ed6f616e9059c36e3e764"
+  },
+  {
+    "file": "toucan-fun.png",
+    "bbox": [
+      72,
+      97,
+      952,
+      928
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 3.0,
+    "alpha_matches_board": true,
+    "sha256": "e54c2169f67186c6b2db2b87415c2424b0ac4297bbdf339be7db867980c49916"
+  },
+  {
+    "file": "toucan.png",
+    "bbox": [
+      72,
+      97,
+      952,
+      928
+    ],
+    "margin_px": 72,
+    "partial_edge_width_px": 3.0,
+    "alpha_matches_board": null,
+    "sha256": "2d1758cda0d282971892abddf5b3e5265e2d24f02ca7b9ed91b13b4f86ef105d"
+  },
+  {
+    "file": "unicorn-fun.png",
+    "bbox": [
+      82,
+      71,
+      942,
+      952
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 2.828,
+    "alpha_matches_board": null,
+    "sha256": "7a984f751a92a1a04aead222839e42d3e369f1d40dce3af8a8af01f7ad21acae"
+  },
+  {
+    "file": "wizard-fun.png",
+    "bbox": [
+      72,
+      112,
+      953,
+      911
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 2.236,
+    "alpha_matches_board": true,
+    "sha256": "17d21586f75ea665de0c7cb7b1fd99ce68559fde554607f06eca4dc26d6e5505"
+  },
+  {
+    "file": "wizard.png",
+    "bbox": [
+      72,
+      112,
+      953,
+      911
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 2.236,
+    "alpha_matches_board": null,
+    "sha256": "d35f799eff57237bf1463205745d9d35dfe32270f5ea6494a9c59735f7610d9a"
+  },
+  {
+    "file": "zebra-fun.png",
+    "bbox": [
+      151,
+      72,
+      871,
+      953
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 2.236,
+    "alpha_matches_board": true,
+    "sha256": "a2f09a532c94af69e6506d88fcb570f8955266b7cdc9a7a54e673d7ad97d5c51"
+  },
+  {
+    "file": "zebra.png",
+    "bbox": [
+      151,
+      72,
+      871,
+      953
+    ],
+    "margin_px": 71,
+    "partial_edge_width_px": 2.236,
+    "alpha_matches_board": null,
+    "sha256": "da50b02be8dc9ff463ee12cceda9f11e10d0378c7c91bff7ad2a481989cfad39"
+  }
+]

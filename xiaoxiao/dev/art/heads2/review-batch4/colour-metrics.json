@@ -1,0 +1,260 @@
+[
+  {
+    "file": "banana-fun.png",
+    "group": "黄",
+    "approximate_family_area": 0.849,
+    "review": false
+  },
+  {
+    "file": "banana.png",
+    "group": "黄",
+    "approximate_family_area": 0.8075,
+    "review": false
+  },
+  {
+    "file": "chameleon-fun.png",
+    "group": "绿",
+    "approximate_family_area": 0.7681,
+    "review": false
+  },
+  {
+    "file": "chameleon.png",
+    "group": "绿",
+    "approximate_family_area": 0.8513,
+    "review": false
+  },
+  {
+    "file": "coconut-fun.png",
+    "group": "棕",
+    "approximate_family_area": 0.9484,
+    "review": false
+  },
+  {
+    "file": "coconut.png",
+    "group": "棕",
+    "approximate_family_area": 0.941,
+    "review": false
+  },
+  {
+    "file": "croc-fun.png",
+    "group": "绿",
+    "approximate_family_area": 0.605,
+    "review": false
+  },
+  {
+    "file": "croc.png",
+    "group": "绿",
+    "approximate_family_area": 0.6477,
+    "review": false
+  },
+  {
+    "file": "dragonfruit-fun.png",
+    "group": "粉",
+    "approximate_family_area": 0.825,
+    "review": false
+  },
+  {
+    "file": "dragonfruit.png",
+    "group": "粉",
+    "approximate_family_area": 0.8003,
+    "review": false
+  },
+  {
+    "file": "fennec-fun.png",
+    "group": "黄",
+    "approximate_family_area": 0.7621,
+    "review": false
+  },
+  {
+    "file": "fennec.png",
+    "group": "黄",
+    "approximate_family_area": 0.7745,
+    "review": false
+  },
+  {
+    "file": "ghost-fun.png",
+    "group": "白",
+    "approximate_family_area": 0.8274,
+    "review": false
+  },
+  {
+    "file": "ghost.png",
+    "group": "白",
+    "approximate_family_area": 0.8735,
+    "review": false
+  },
+  {
+    "file": "kangaroo-fun.png",
+    "group": "橙",
+    "approximate_family_area": 0.8714,
+    "review": false
+  },
+  {
+    "file": "kangaroo.png",
+    "group": "橙",
+    "approximate_family_area": 0.8941,
+    "review": false
+  },
+  {
+    "file": "knight-fun.png",
+    "group": "灰",
+    "approximate_family_area": 0.7525,
+    "review": false
+  },
+  {
+    "file": "knight.png",
+    "group": "灰",
+    "approximate_family_area": 0.7645,
+    "review": false
+  },
+  {
+    "file": "koala-fun.png",
+    "group": "灰",
+    "approximate_family_area": 0.9647,
+    "review": false
+  },
+  {
+    "file": "koala.png",
+    "group": "灰",
+    "approximate_family_area": 0.9623,
+    "review": false
+  },
+  {
+    "file": "lion-fun.png",
+    "group": "橙",
+    "approximate_family_area": 0.9559,
+    "review": false
+  },
+  {
+    "file": "lion.png",
+    "group": "橙",
+    "approximate_family_area": 0.9719,
+    "review": false
+  },
+  {
+    "file": "monkey-fun.png",
+    "group": "棕",
+    "approximate_family_area": 0.8806,
+    "review": false
+  },
+  {
+    "file": "monkey.png",
+    "group": "棕",
+    "approximate_family_area": 0.9111,
+    "review": false
+  },
+  {
+    "file": "princess-fun.png",
+    "group": "粉",
+    "approximate_family_area": 0.7788,
+    "review": false
+  },
+  {
+    "file": "raccoon-fun.png",
+    "group": "灰",
+    "approximate_family_area": 0.8988,
+    "review": false
+  },
+  {
+    "file": "raccoon.png",
+    "group": "灰",
+    "approximate_family_area": 0.8916,
+    "review": false
+  },
+  {
+    "file": "redpanda-fun.png",
+    "group": "橙",
+    "approximate_family_area": 0.8052,
+    "review": false
+  },
+  {
+    "file": "redpanda.png",
+    "group": "橙",
+    "approximate_family_area": 0.77,
+    "review": false
+  },
+  {
+    "file": "rhino-fun.png",
+    "group": "青",
+    "approximate_family_area": 0.7427,
+    "review": false
+  },
+  {
+    "file": "rhino.png",
+    "group": "青",
+    "approximate_family_area": 0.7824,
+    "review": false
+  },
+  {
+    "file": "skunk-fun.png",
+    "group": "黑白",
+    "approximate_family_area": 0.9271,
+    "review": false
+  },
+  {
+    "file": "skunk.png",
+    "group": "黑白",
+    "approximate_family_area": 0.9058,
+    "review": false
+  },
+  {
+    "file": "sloth-fun.png",
+    "group": "棕",
+    "approximate_family_area": 0.9824,
+    "review": false
+  },
+  {
+    "file": "sloth.png",
+    "group": "棕",
+    "approximate_family_area": 0.9699,
+    "review": false
+  },
+  {
+    "file": "tiger-fun.png",
+    "group": "橙",
+    "approximate_family_area": 0.8367,
+    "review": false
+  },
+  {
+    "file": "tiger.png",
+    "group": "橙",
+    "approximate_family_area": 0.7987,
+    "review": false
+  },
+  {
+    "file": "toucan-fun.png",
+    "group": "黑白",
+    "approximate_family_area": 0.6801,
+    "review": false
+  },
+  {
+    "file": "toucan.png",
+    "group": "黑白",
+    "approximate_family_area": 0.6832,
+    "review": false
+  },
+  {
+    "file": "wizard-fun.png",
+    "group": "紫",
+    "approximate_family_area": 0.8122,
+    "review": false
+  },
+  {
+    "file": "wizard.png",
+    "group": "紫",
+    "approximate_family_area": 0.8318,
+    "review": false
+  },
+  {
+    "file": "zebra-fun.png",
+    "group": "黑白",
+    "approximate_family_area": 0.8684,
+    "review": false
+  },
+  {
+    "file": "zebra.png",
+    "group": "黑白",
+    "approximate_family_area": 0.8284,
+    "review": false
+  }
+]
