@@ -1,7 +1,7 @@
 {
   "expected_images": 219,
-  "available_images": 194,
-  "remaining_images": 25,
+  "available_images": 219,
+  "remaining_images": 0,
   "batch_counts": {
     "1": 12,
     "2": 80,
@@ -35,14 +35,16 @@
         {
           "name": "pig-tap.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "1fd1870fcb0cee4685b40148164d0daa10dce56e112d1dc3af7287ac26d01b06"
         },
         {
           "name": "pig-cheer.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "f7120fc9e04c158b5704ba1a837477d1bd7c3eddbee6f1a9f9afe4533182ec13"
         }
       ]
     },
@@ -71,14 +73,16 @@
         {
           "name": "panda-tap.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "3ea5e28a2d253949b47e8dcbe01ddfb1b76b1ca3b87bfe6cca36321d0028a207"
         },
         {
           "name": "panda-cheer.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "5f716b8a7df9c3b1b7288a968899adf78ee740f5a898f24d18064304c0b43e76"
         }
       ]
     },
@@ -107,14 +111,16 @@
         {
           "name": "hippo-tap.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "6b628482e5fbf46ca6732a230509c33e9ad30374715e6868e9ef31e68dcfa2a0"
         },
         {
           "name": "hippo-cheer.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "6197b788c1014899af502fb83cb42a057c76380531c3e29afe2007b81cfe8c9e"
         }
       ]
     },
@@ -143,14 +149,16 @@
         {
           "name": "giraffe-tap.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "1acc8cffa3ce6a3aa18914236b6288a2a99b529aa51cb87f73536b73580b9a5a"
         },
         {
           "name": "giraffe-cheer.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "a65c781d720893fffbed41866ca88223bb331f6c6dfeada6da3a1e7784fda68d"
         }
       ]
     },
@@ -179,14 +187,16 @@
         {
           "name": "parrot-tap.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "68ce9de440634824d291a0e1e64c667d494ae42c1b4a9014f035dd596ab895a7"
         },
         {
           "name": "parrot-cheer.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "8abdf3e4c750795a39f82e8f87900f3b8086d314e1307e9d6705b4e3f640d06c"
         }
       ]
     },
@@ -215,14 +225,16 @@
         {
           "name": "frog-tap.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "ecd33e87d6bc5d77e165601a19b4d27d95f0763912f89556107124c8136fcb8a"
         },
         {
           "name": "frog-cheer.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "8cccdb8fc869ba2cdf8e62e3490af2dfac3a0788bf12ec87c0d637fc364afb5f"
         }
       ]
     },
@@ -868,8 +880,9 @@
         {
           "name": "chick-hatch.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "ea8e7dff02b6db69f736c2591b877d8ec1171727dd053cf99051c68cefd23fcf"
         }
       ]
     },
@@ -922,14 +935,16 @@
         {
           "name": "corgi-tap.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "91c80ce3d1e84f98337e3ef234c0be7e33e460d4e640ada8404bd36319c83717"
         },
         {
           "name": "corgi-cheer.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "4c2a72f32e6925cf4b585ac39ccca1c74ff751c6ee6257f637e0063d09ae2a7d"
         }
       ]
     },
@@ -1239,14 +1254,16 @@
         {
           "name": "bee-tap.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "991c166dfce0cf72f599f264fb30e18d005b2fd20f1d8f8718274a8788daf320"
         },
         {
           "name": "bee-cheer.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "4b0e66e79282e7bfa85cc6c0516f0405c82efed02ea9f69a34e879ecc713a2b3"
         }
       ]
     },
@@ -1604,14 +1621,16 @@
         {
           "name": "owl-tap.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "38e9f2e04647ab200b8594fa1532b11c9ac9454b1b4af6993f7b6a01755b1c6f"
         },
         {
           "name": "owl-cheer.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "289ce57b469a1c86c4ee1ad8e4a57b086bda871cfce2d0be19a024bbe79c2af9"
         }
       ]
     },
@@ -1880,14 +1899,16 @@
         {
           "name": "cloud-tap.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "ba778885ce51b48b2c4a3526cbfb69d62a5ddaf4a2e7c38843e49ea8a9cbbb46"
         },
         {
           "name": "cloud-cheer.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "569facf92f4beaad3faa7d449a1a16267fb4b61e93efb184736076818bb457fc"
         }
       ]
     },
@@ -1957,14 +1978,16 @@
         {
           "name": "monkey-tap.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "7fae60cdeb1171715d5dfe29fd96fd42c46c8f33162c51e925b0bf20080e42e6"
         },
         {
           "name": "monkey-cheer.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "cf9d7fa61383fb592d40ca1b6e3d4695c9a93672c470f08d5cab6406a745da39"
         }
       ]
     },
@@ -2418,14 +2441,16 @@
         {
           "name": "princess-tap.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "a4f69b74cdc4f66e69d4e72c98a55490ffd634042e476ea8656eb00e35aa8831"
         },
         {
           "name": "princess-cheer.png",
           "batch": 5,
-          "present": false,
-          "status": "pending"
+          "present": true,
+          "status": "delivered",
+          "sha256": "1de89453dca4c533d8403c0c6be101bfc9e171b18c917e44e677ae01bf7af3b5"
         }
       ]
     },
