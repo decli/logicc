@@ -1,18 +1,21 @@
 <!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="theme-color" content="#ffd9ef"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><link rel="manifest" href="../manifest.webmanifest"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><link rel="icon" href="../icon-192.png"><meta name="description" content="动物消消乐：三个连成一排就消掉，十关闯关，每局之后做一页数学题。"><title>动物消消乐</title>
 <style>
 :root{
-  --ink:#4a2b5e;           /* deep plum for text and outlines */
-  --pink:#ff7eb6; --pink2:#ff4f9a;
-  --violet:#a77bff; --violet2:#7b4dff;
+  /* 怪趣森林 (decli 2026-11-05): felt and clay on a cream table, leaf-green frames, orange buttons (the names are older) */
+  --ink:#3d5229;           /* deep forest green for text and outlines */
+  --pink:#f7a95a; --pink2:#ee8a3c;   /* orange felt: the main buttons */
+  --violet:#a68fdc; --violet2:#8466c4;
+  --leaf:#a8cc7c; --leaf2:#7aa651; --leaf3:#557f38; --cream:#fffbf1; --stitch:rgba(122,166,81,.5);
   --sky:#7cc8ff; --mint:#5fe0b0; --sun:#ffd23a; --orange:#ff9d3a; --red:#ff5a5a;
-  --card:#fffaff;
-  --shadow:0 6px 0 rgba(74,43,94,.18),0 10px 24px rgba(74,43,94,.18);
+  --card:#fffbf2;
+  --shadow:0 6px 0 rgba(61,82,41,.18),0 10px 24px rgba(61,82,41,.18);
   --font:"Hiragino Maru Gothic ProN","Yuanti SC","PingFang SC","HarmonyOS Sans SC","MiSans","Microsoft YaHei",system-ui,sans-serif;
   color-scheme:light;
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0;overflow:hidden}
-body{background:linear-gradient(170deg,#ffd9ef 0%,#e9d9ff 45%,#c9ecff 100%);color:var(--ink);font-family:var(--font);
+body{background:radial-gradient(circle at 10% 14%,rgba(255,255,255,.7) 0 70px,transparent 71px),radial-gradient(circle at 92% 88%,rgba(190,215,150,.35) 0 130px,transparent 131px),
+  radial-gradient(circle at 6% 92%,rgba(245,205,140,.25) 0 90px,transparent 91px),linear-gradient(170deg,#f8f2e4 0%,#f1ead4 50%,#e2edcd 100%);color:var(--ink);font-family:var(--font);
   -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:none;overscroll-behavior:none;-webkit-touch-callout:none}
 [hidden]{display:none!important}
 button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer;touch-action:manipulation}
@@ -22,37 +25,37 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 
 /* ---------- candy buttons ---------- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:.35em;min-height:58px;padding:0 26px;border-radius:999px;font-size:24px;font-weight:800;color:#fff;
-  background:linear-gradient(180deg,#ff9fca,var(--pink2));box-shadow:0 5px 0 #c42c70,0 10px 18px rgba(196,44,112,.3);text-shadow:0 2px 0 rgba(0,0,0,.15);
+  background:linear-gradient(180deg,#f9b46b,var(--pink2));box-shadow:0 5px 0 #b9601c,0 10px 18px rgba(185,96,28,.3);text-shadow:0 2px 0 rgba(0,0,0,.15);
   transition:transform .12s, box-shadow .12s;position:relative}
 .btn::after{content:"";position:absolute;left:14%;right:14%;top:6px;height:30%;border-radius:999px;background:linear-gradient(rgba(255,255,255,.55),rgba(255,255,255,0));pointer-events:none}
-.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #c42c70,0 4px 10px rgba(196,44,112,.3)}
-.btn.green{background:linear-gradient(180deg,#8ff0c6,#22c38a);box-shadow:0 5px 0 #15895f,0 10px 18px rgba(21,137,95,.3)}
-.btn.green:active{box-shadow:0 1px 0 #15895f}
-.btn.violet{background:linear-gradient(180deg,#c6a6ff,var(--violet2));box-shadow:0 5px 0 #5328c9,0 10px 18px rgba(83,40,201,.3)}
-.btn.violet:active{box-shadow:0 1px 0 #5328c9}
-.btn.sun{background:linear-gradient(180deg,#ffe680,#ffb000);box-shadow:0 5px 0 #c27c00,0 10px 18px rgba(194,124,0,.3);color:#6b3d00;text-shadow:0 1px 0 rgba(255,255,255,.5)}
-.btn.sun:active{box-shadow:0 1px 0 #c27c00}
-.btn.ghost{background:#fff;color:var(--ink);box-shadow:0 5px 0 #d9c6ea,0 10px 18px rgba(74,43,94,.12);text-shadow:none}
-.btn.ghost:active{box-shadow:0 1px 0 #d9c6ea}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #b9601c,0 4px 10px rgba(185,96,28,.3)}
+.btn.green{background:linear-gradient(180deg,#b2d887,#73a848);box-shadow:0 5px 0 #4d7c2e,0 10px 18px rgba(77,124,46,.3)}
+.btn.green:active{box-shadow:0 1px 0 #4d7c2e}
+.btn.violet{background:linear-gradient(180deg,#c4b0ea,var(--violet2));box-shadow:0 5px 0 #5e4796,0 10px 18px rgba(94,71,150,.3)}
+.btn.violet:active{box-shadow:0 1px 0 #5e4796}
+.btn.sun{background:linear-gradient(180deg,#ffe08a,#f2b630);box-shadow:0 5px 0 #b98516,0 10px 18px rgba(185,133,22,.3);color:#6b4a10;text-shadow:0 1px 0 rgba(255,255,255,.5)}
+.btn.sun:active{box-shadow:0 1px 0 #b98516}
+.btn.ghost{background:#fff;color:var(--ink);box-shadow:0 5px 0 #d8d2b4,0 10px 18px rgba(61,82,41,.12);text-shadow:none}
+.btn.ghost:active{box-shadow:0 1px 0 #d8d2b4}
 .btn.small{min-height:46px;font-size:19px;padding:0 18px}
-.ibtn{width:56px;height:56px;border-radius:50%;background:#fff;box-shadow:0 4px 0 #d9c6ea,0 8px 16px rgba(74,43,94,.15);font-size:28px;display:inline-flex;align-items:center;justify-content:center;flex:none}
-.ibtn:active{transform:translateY(3px);box-shadow:0 1px 0 #d9c6ea}
+.ibtn{width:56px;height:56px;border-radius:50%;background:var(--cream);box-shadow:0 4px 0 #d8d2b4,0 8px 16px rgba(61,82,41,.15);font-size:28px;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.ibtn:active{transform:translateY(3px);box-shadow:0 1px 0 #d8d2b4}
 
 /* ---------- map ---------- */
 #map{position:fixed;inset:0;z-index:10;overflow:hidden;
-  background:radial-gradient(circle at 20% 15%,rgba(255,255,255,.75) 0 60px,transparent 61px),radial-gradient(circle at 80% 85%,rgba(255,255,255,.5) 0 90px,transparent 91px),linear-gradient(170deg,#ffd9ef 0%,#e9d9ff 45%,#c9ecff 100%)}
+  background:radial-gradient(circle at 20% 15%,rgba(255,255,255,.75) 0 60px,transparent 61px),radial-gradient(circle at 80% 85%,rgba(255,255,255,.5) 0 90px,transparent 91px),linear-gradient(170deg,#f8f2e4 0%,#f1ead4 50%,#e2edcd 100%)}
 #map .top{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:14px;padding:max(14px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) 0 max(18px,env(safe-area-inset-left))}
 #map h1{margin:0;font-size:34px;font-weight:900;letter-spacing:2px;color:#fff;-webkit-text-stroke:2px var(--ink);paint-order:stroke fill;text-shadow:0 4px 0 var(--ink);flex:1;text-align:center;white-space:nowrap}
-#map .pill{display:flex;align-items:center;gap:6px;background:#fff;border-radius:999px;padding:8px 16px;font-size:22px;font-weight:800;box-shadow:0 4px 0 #d9c6ea}
+#map .pill{display:flex;align-items:center;gap:6px;background:#fff;border-radius:999px;padding:8px 16px;font-size:22px;font-weight:800;box-shadow:0 4px 0 #d8d2b4}
 #path{position:absolute;inset:0;pointer-events:none}
 .node{position:absolute;width:96px;height:96px;margin:-48px 0 0 -48px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:radial-gradient(circle at 35% 30%,#fff 0 18%,#ffb3d6 19% 100%);box-shadow:0 6px 0 #d4448a,0 12px 20px rgba(212,68,138,.35);font-size:40px;font-weight:900;color:#fff;
-  -webkit-text-stroke:2px #b8306f;paint-order:stroke fill;transition:transform .15s}
+  background:radial-gradient(circle at 35% 30%,#fff 0 18%,#f8c690 19% 100%);box-shadow:0 6px 0 #c8742a,0 12px 20px rgba(200,116,42,.35);font-size:40px;font-weight:900;color:#fff;
+  -webkit-text-stroke:2px #a85a18;paint-order:stroke fill;transition:transform .15s}
 .node:active{transform:scale(.94)}
-.node.done{background:radial-gradient(circle at 35% 30%,#fff 0 18%,#ffd84d 19% 100%);box-shadow:0 6px 0 #d19a00,0 12px 20px rgba(209,154,0,.35);-webkit-text-stroke-color:#a86b00}
-.node.lock{background:radial-gradient(circle at 35% 30%,#fff 0 18%,#d5cde0 19% 100%);box-shadow:0 6px 0 #a99bbb;-webkit-text-stroke-color:#8a7c9b;font-size:30px}
+.node.done{background:radial-gradient(circle at 35% 30%,#fff 0 18%,#f5cf55 19% 100%);box-shadow:0 6px 0 #b98a16,0 12px 20px rgba(185,138,22,.35);-webkit-text-stroke-color:#a86b00}
+.node.lock{background:radial-gradient(circle at 35% 30%,#fff 0 18%,#d6d6c6 19% 100%);box-shadow:0 6px 0 #a7a891;-webkit-text-stroke-color:#87887a;font-size:30px}
 .node.cur{animation:bob 1.2s ease-in-out infinite}
-.node .st{position:absolute;bottom:-28px;font-size:22px;-webkit-text-stroke:0;letter-spacing:-2px;white-space:nowrap;filter:drop-shadow(0 2px 0 rgba(74,43,94,.25))}
+.node .st{position:absolute;bottom:-28px;font-size:22px;-webkit-text-stroke:0;letter-spacing:-2px;white-space:nowrap;filter:drop-shadow(0 2px 0 rgba(61,82,41,.25))}
 .node .nm{position:absolute;bottom:-60px;font-size:17px;font-weight:800;-webkit-text-stroke:0;color:var(--ink);background:rgba(255,255,255,.85);padding:2px 10px;border-radius:999px;white-space:nowrap}
 .avatar{position:absolute;width:76px;height:76px;margin:-118px 0 0 -38px;pointer-events:none;animation:hop 1.2s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(-6px)}}
@@ -60,21 +63,21 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 
 /* season two: islands */
 #map .deco{position:absolute;inset:0;pointer-events:none}
-#map .deco span{position:absolute;transform:translate(-50%,-50%);opacity:.85;animation:sway 4s ease-in-out infinite;filter:drop-shadow(0 4px 4px rgba(74,43,94,.15))}
+#map .deco span{position:absolute;transform:translate(-50%,-50%);opacity:.85;animation:sway 4s ease-in-out infinite;filter:drop-shadow(0 4px 4px rgba(61,82,41,.15))}
 @keyframes sway{50%{transform:translate(-50%,-58%) rotate(4deg)}}
-.node.boss{background:radial-gradient(circle at 35% 30%,#fff 0 18%,#c6a6ff 19% 100%);box-shadow:0 6px 0 #5328c9,0 12px 20px rgba(83,40,201,.35);-webkit-text-stroke-color:#5328c9}
+.node.boss{background:radial-gradient(circle at 35% 30%,#fff 0 18%,#c4b0ea 19% 100%);box-shadow:0 6px 0 #5e4796,0 12px 20px rgba(94,71,150,.35);-webkit-text-stroke-color:#5e4796}
 .node.boss::before{content:"👑";position:absolute;top:-.62em;font-size:.6em;-webkit-text-stroke:0}
-.node.boss.done{background:radial-gradient(circle at 35% 30%,#fff 0 18%,#ffd84d 19% 100%);box-shadow:0 6px 0 #d19a00,0 12px 20px rgba(209,154,0,.35);-webkit-text-stroke-color:#a86b00}
-.isle-arrow{position:absolute;top:52%;width:62px;height:62px;margin-top:-31px;border-radius:50%;background:#fff;box-shadow:0 5px 0 #d9c6ea,0 10px 18px rgba(74,43,94,.18);
+.node.boss.done{background:radial-gradient(circle at 35% 30%,#fff 0 18%,#f5cf55 19% 100%);box-shadow:0 6px 0 #b98a16,0 12px 20px rgba(185,138,22,.35);-webkit-text-stroke-color:#a86b00}
+.isle-arrow{position:absolute;top:52%;width:62px;height:62px;margin-top:-31px;border-radius:50%;background:#fff;box-shadow:0 5px 0 #d8d2b4,0 10px 18px rgba(61,82,41,.18);
   font-size:30px;color:var(--violet2);display:flex;align-items:center;justify-content:center;z-index:2}
 .isle-arrow.prev{left:max(10px,env(safe-area-inset-left))}
 .isle-arrow.next{right:max(10px,env(safe-area-inset-right))}
-.isle-arrow.shut{color:#b9aecb}
+.isle-arrow.shut{color:#b4b59e}
 .isle-arrow:active{transform:translateY(3px)}
 #map .isles{position:absolute;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;gap:10px;padding:8px 12px;background:rgba(255,255,255,.7);border-radius:999px;box-shadow:0 4px 0 rgba(217,198,234,.8)}
-.isle{width:50px;height:50px;border-radius:50%;background:#fff;font-size:28px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 0 #d9c6ea;position:relative}
+.isle{width:50px;height:50px;border-radius:50%;background:#fff;font-size:28px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 0 #d8d2b4;position:relative}
 .isle img{width:118%;height:118%;object-fit:contain;pointer-events:none}
-.isle.on{box-shadow:0 0 0 4px #ffd23a,0 3px 0 #d9c6ea;transform:scale(1.14)}
+.isle.on{box-shadow:0 0 0 4px #ffd23a,0 3px 0 #d8d2b4;transform:scale(1.14)}
 .isle.shut{filter:grayscale(1);opacity:.55}
 .isle.full::after{content:"⭐";position:absolute;right:-8px;top:-10px;font-size:18px}
 .isle-lock{position:absolute;left:50%;top:54%;transform:translate(-50%,-50%);font-size:120px;opacity:.35;pointer-events:none}
@@ -93,7 +96,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 #map h1{min-width:0;overflow:hidden;text-overflow:ellipsis}
 @media (max-width:440px){#map .top .pill.stars{display:none}#map h1{font-size:20px}#map h1 .ic{display:none}#map .top{gap:6px}}
 #map .pill.book{cursor:pointer}
-#map .pill.book.new{animation:wig 1.1s ease-in-out infinite;box-shadow:0 4px 0 #d9c6ea,0 0 0 4px #ff4f6d}
+#map .pill.book.new{animation:wig 1.1s ease-in-out infinite;box-shadow:0 4px 0 #d8d2b4,0 0 0 4px #e2483d}
 @keyframes wig{0%,60%,100%{transform:none}70%{transform:rotate(-6deg) scale(1.08)}80%{transform:rotate(6deg) scale(1.08)}90%{transform:rotate(-3deg)}}
 
 /* ---------- the blind box and the album (gift.js) ---------- */
@@ -103,50 +106,87 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
   transform:translate(-50%,60px);opacity:0;pointer-events:none;transition:transform .4s cubic-bezier(.2,1.6,.4,1),opacity .25s}
 #gift .keep.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}
 #album{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;gap:12px;
-  background:radial-gradient(circle at 85% 10%,rgba(255,255,255,.7) 0 70px,transparent 71px),linear-gradient(170deg,#fff4d6 0%,#ffe3f1 55%,#e3e9ff 100%);
+  background:radial-gradient(circle at 85% 10%,rgba(255,255,255,.7) 0 70px,transparent 71px),linear-gradient(170deg,#fbf6e8 0%,#f4eedb 55%,#e6efd6 100%);
   padding:max(14px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))}
 #album .top{display:flex;align-items:center;gap:14px}
 #album h1{margin:0;font-size:34px;font-weight:900;letter-spacing:2px;color:#fff;-webkit-text-stroke:2px var(--ink);paint-order:stroke fill;text-shadow:0 4px 0 var(--ink);flex:1;text-align:center;white-space:nowrap}
-#album .pill{background:#fff;border-radius:999px;padding:8px 16px;font-size:22px;font-weight:800;box-shadow:0 4px 0 #d9c6ea}
-#album .agrid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(10,minmax(0,1fr));grid-template-rows:repeat(7,minmax(0,1fr));gap:8px}
-.aslot{position:relative;min-width:0;min-height:0;border-radius:18px;background:#fff;box-shadow:0 4px 0 #ecd3b0;display:flex;align-items:center;justify-content:center}
-.aslot.t1{background:radial-gradient(circle at 50% 45%,#fffdf0 0 35%,#ffe27a 100%);box-shadow:0 4px 0 #e0a800}
-.aslot.t2{background:conic-gradient(#ffc6dc,#ffe3a8,#fff6a8,#c8f5d2,#c4e9ff,#e0d0ff,#ffc6dc);box-shadow:0 4px 0 #a982ff}
-.aslot.no{background:#f3ebfb;box-shadow:0 4px 0 #ddd0ea}
+#album .pill{background:#fff;border-radius:999px;padding:8px 16px;font-size:22px;font-weight:800;box-shadow:0 4px 0 #d8d2b4}
+#album .atabs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.atab{position:relative;width:76px;height:76px;border-radius:22px;background:var(--cream);box-shadow:0 4px 0 #d8d2b4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;transition:transform .15s}
+.atab img{width:56px;height:46px;object-fit:contain;pointer-events:none}
+.atab .ic{font-size:34px;line-height:1.25}
+.atab small{font-size:14px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.atab.on{background:var(--leaf);box-shadow:0 4px 0 var(--leaf3),0 0 0 4px #fff;transform:translateY(-3px) scale(1.06);color:#fff;text-shadow:0 1px 0 var(--leaf3)}
+.atab.full::after{content:"⭐";position:absolute;right:-8px;top:-10px;font-size:18px}
+.atab.new::before{content:"";position:absolute;left:-4px;top:-4px;width:16px;height:16px;border-radius:50%;background:#e2483d;border:3px solid #fff;animation:pulse .8s ease-in-out infinite}
+#album .apage{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;gap:8px;background:var(--cream);border-radius:30px;padding:14px 16px 18px;
+  box-shadow:0 6px 0 #c9d6a8,0 12px 26px rgba(61,82,41,.12);outline:2px dashed var(--stitch);outline-offset:-9px}
+#album .aname{font-size:22px;font-weight:900;letter-spacing:1px}
+#album .agrid{flex:1;min-height:0;align-self:stretch;display:grid;gap:10px;justify-content:center;align-content:center}
+.aslot{position:relative;min-width:0;min-height:0;border-radius:22px;background:#f7f3e3;box-shadow:0 4px 0 #e0d6b8;display:flex;align-items:center;justify-content:center}
+.aslot.t1{background:radial-gradient(circle at 50% 45%,#fffdf0 0 35%,#f8dc86 100%);box-shadow:0 4px 0 #c99a1e}
+.aslot.t2{background:conic-gradient(#ffc6dc,#ffe3a8,#fff6a8,#c8f5d2,#c4e9ff,#e0d0ff,#ffc6dc);box-shadow:0 4px 0 #8fae6a}
+.aslot.no{background:#efeedd;box-shadow:0 4px 0 #dcdcc4}
 .aslot.no.t1{background:#fbf3d6;box-shadow:0 4px 0 #ecd9a0}
-.aslot.no.t2{background:conic-gradient(#f6e3ee,#f8efdc,#f7f4dc,#e3f4e7,#e2eff8,#ece4f8,#f6e3ee);box-shadow:0 4px 0 #d3c4ef}
+.aslot.no.t2{background:conic-gradient(#f6e3ee,#f8efdc,#f7f4dc,#e3f4e7,#e2eff8,#ece4f8,#f6e3ee);box-shadow:0 4px 0 #d4d8bc}
 .aslot canvas{display:block;pointer-events:none}
 .aslot.shiny{box-shadow:0 4px 0 #e0a800,0 0 0 3px #ffd23a,0 0 14px 4px rgba(255,210,58,.75);animation:shine 1.6s ease-in-out infinite}
 .aslot.shiny::before{content:"✨";position:absolute;left:-8px;top:-10px;font-size:20px}
 @keyframes shine{50%{box-shadow:0 4px 0 #e0a800,0 0 0 3px #fff3a6,0 0 22px 8px rgba(255,210,58,.9)}}
+@media (max-width:600px),(max-height:500px){
+  #album h1{font-size:24px;letter-spacing:0;-webkit-text-stroke-width:1.5px;text-shadow:0 3px 0 var(--ink)}
+  #album .pill{font-size:16px;padding:6px 10px;white-space:nowrap}
+  #album .top{gap:8px}
+  #album .atabs{gap:6px}
+  .atab{width:52px;height:58px;border-radius:16px}
+  .atab img{width:42px;height:34px}
+  .atab .ic{font-size:26px}
+  .atab small{font-size:12px}
+  #album .apage{padding:10px 8px 12px;border-radius:24px}
+  #album .aname{font-size:18px}
+}
+@media (max-height:500px){#album{flex-direction:column;gap:6px}#album .aname{display:none}}
+.aslot.pal u{position:absolute;left:-6px;bottom:-6px;width:30px;height:30px;border-radius:50%;background:var(--pink2);color:#fff;font-size:16px;font-weight:900;text-decoration:none;
+  display:flex;align-items:center;justify-content:center;border:3px solid #fff;box-shadow:0 2px 0 rgba(61,82,41,.25)}
+.aslot.pal.no u{background:#c9c9b4}
+.aslot.mine{box-shadow:0 0 0 4px var(--pink2),0 4px 0 4px #b9601c}
+.aslot.mine u{background:var(--leaf2)}
 .aslot b{position:absolute;right:-5px;bottom:-5px;min-width:30px;height:26px;padding:0 6px;border-radius:999px;background:var(--violet2);color:#fff;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;border:3px solid #fff}
-.aslot .anew{position:absolute;left:-6px;top:-6px;background:#ff4f6d;color:#fff;font-size:13px;font-weight:900;font-style:normal;padding:2px 7px;border-radius:999px;border:2px solid #fff;animation:pulse .8s ease-in-out infinite}
+.aslot .anew{position:absolute;left:-6px;top:-6px;background:#e2483d;color:#fff;font-size:13px;font-weight:900;font-style:normal;padding:2px 7px;border-radius:999px;border:2px solid #fff;animation:pulse .8s ease-in-out infinite}
 
 /* ---------- in-game HUD ---------- */
 #hud{position:fixed;z-index:5;display:flex;gap:12px;pointer-events:none}
 #hud > *{pointer-events:auto}
-#hud.side{right:0;top:0;bottom:0;transform-origin:100% 0;flex-direction:column;justify-content:center;padding:max(14px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) 6px}
-#hud.top{left:0;right:0;top:0;transform-origin:0 0;flex-direction:row;align-items:stretch;padding:max(10px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) 0 max(12px,env(safe-area-inset-left))}
-.panel{background:rgba(255,255,255,.88);border-radius:26px;box-shadow:var(--shadow);padding:12px 14px;display:flex;flex-direction:column;align-items:center;gap:6px}
-.lvname{font-size:20px;font-weight:900;text-align:center;line-height:1.2}
-.lvname small{display:block;font-size:15px;font-weight:700;opacity:.65}
-.moves{width:104px;height:104px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0 14%,#b993ff 15% 100%);box-shadow:inset 0 -6px 0 rgba(0,0,0,.12),0 5px 0 #6c40d9;
+#hud.side{right:0;top:0;bottom:0;transform-origin:100% 0;flex-direction:column;justify-content:center;padding:max(14px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) 16px;
+  background:linear-gradient(180deg,var(--leaf),#8fb866);border-radius:34px 0 0 34px;box-shadow:inset 0 0 0 3px rgba(255,255,255,.18),-4px 0 22px rgba(61,82,41,.2)}
+#hud.side::before{content:"";position:absolute;inset:9px 0 9px 9px;border:2px dashed rgba(255,255,255,.45);border-right:0;border-radius:27px 0 0 27px;pointer-events:none}
+#hud.top{left:0;right:0;top:0;transform-origin:0 0;flex-direction:row;align-items:stretch;padding:max(10px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) 10px max(12px,env(safe-area-inset-left));
+  background:linear-gradient(180deg,#8fb866,var(--leaf));border-radius:0 0 30px 30px;box-shadow:0 4px 22px rgba(61,82,41,.2)}
+.panel{background:var(--cream);border-radius:26px;box-shadow:0 5px 0 var(--leaf3),0 10px 18px rgba(61,82,41,.18);padding:12px 14px;display:flex;flex-direction:column;align-items:center;gap:6px;
+  outline:2px dashed var(--stitch);outline-offset:-6px}
+/* the companion (pal.js): its face at the top of the panel, a bubble when it reacts */
+.panel.pal{position:relative;padding:4px;cursor:pointer;background:radial-gradient(circle at 50% 42%,#fff 0 38%,var(--cream) 70%)}
+.panel.pal canvas{width:128px;height:128px;display:block;pointer-events:none}
+.pal .bub{position:absolute;right:-8px;top:-10px;font-size:30px;line-height:1;opacity:0;pointer-events:none;filter:drop-shadow(0 2px 2px rgba(61,82,41,.25))}
+.pal .bub.on{animation:bub 1.8s ease-out forwards}
+@keyframes bub{0%{opacity:0;transform:scale(.3) translateY(12px)}18%{opacity:1;transform:scale(1.2)}30%{transform:scale(1)}80%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-14px)}}
+.moves{width:104px;height:104px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0 14%,#93be68 15% 100%);box-shadow:inset 0 -6px 0 rgba(0,0,0,.12),0 5px 0 #557f38;
   display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;transition:transform .15s}
-.moves b{font-size:48px;line-height:1;font-weight:900;-webkit-text-stroke:2px #5a2fc0;paint-order:stroke fill}
+.moves b{font-size:48px;line-height:1;font-weight:900;-webkit-text-stroke:2px #3f6326;paint-order:stroke fill}
 .moves span{font-size:15px;font-weight:800;opacity:.95}
-.moves.low{background:radial-gradient(circle at 35% 30%,#fff 0 14%,#ff7a9c 15% 100%);box-shadow:inset 0 -6px 0 rgba(0,0,0,.12),0 5px 0 #c73560;animation:pulse .8s ease-in-out infinite}
-.moves.low b{-webkit-text-stroke-color:#a3214a}
+.moves.low{background:radial-gradient(circle at 35% 30%,#fff 0 14%,#ef8a57 15% 100%);box-shadow:inset 0 -6px 0 rgba(0,0,0,.12),0 5px 0 #b6502c;animation:pulse .8s ease-in-out infinite}
+.moves.low b{-webkit-text-stroke-color:#8f3c1c}
 @keyframes pulse{50%{transform:scale(1.07)}}
 .goals{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
-.goal{position:relative;width:74px;height:74px;border-radius:20px;background:#f6edff;display:flex;align-items:center;justify-content:center;transition:transform .15s}
+.goal{position:relative;width:74px;height:74px;border-radius:20px;background:#f1efdc;display:flex;align-items:center;justify-content:center;transition:transform .15s}
 .goal img,.goal canvas{width:60px;height:60px;object-fit:contain}
 .goal b{position:absolute;right:-6px;bottom:-6px;min-width:34px;height:30px;padding:0 7px;border-radius:999px;background:var(--ink);color:#fff;font-size:20px;font-weight:900;display:flex;align-items:center;justify-content:center;border:3px solid #fff}
-.goal.ok b{background:#22c38a;font-size:20px}
+.goal.ok b{background:#73a848;font-size:20px}
 .goal.bump{transform:scale(1.18)}
 .score{width:100%;min-width:150px}
 .score .num{font-size:24px;font-weight:900;text-align:center}
-.bar{position:relative;align-self:stretch;height:18px;border-radius:999px;background:#eadcf7;margin:18px 10px 6px;overflow:visible}
-.bar i{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:linear-gradient(90deg,#ff9fca,#ffd23a);width:0;transition:width .35s}
+.bar{position:relative;align-self:stretch;height:18px;border-radius:999px;background:#e6e3c9;margin:18px 10px 6px;overflow:visible}
+.bar i{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:linear-gradient(90deg,#f9b46b,#ffd23a);width:0;transition:width .35s}
 .bar s{position:absolute;top:-18px;margin-left:-14px;font-size:26px;text-decoration:none;filter:grayscale(1) opacity(.45);transition:filter .3s,transform .3s}
 .bar s.on{filter:none;transform:scale(1.25)}
 .hbtns{display:flex;gap:12px;justify-content:center}
@@ -156,11 +196,9 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 #hud.top .goal{width:62px;height:62px;border-radius:16px}
 #hud.top .goal img,#hud.top .goal canvas{width:50px;height:50px}
 #hud.top .score{min-width:120px}
-#hud.top .lvname{font-size:17px}
-#hud.top .panel.name{display:none}
+#hud.top .panel.pal canvas{width:80px;height:80px}
 #hud.top .goals{flex-wrap:nowrap}
-.score .sub{display:none;font-size:16px;font-weight:800;opacity:.7;text-align:center}
-#hud.top .score .sub{display:block}
+.score .sub{font-size:16px;font-weight:800;opacity:.7;text-align:center}
 #hud.top .ibtn{width:48px;height:48px;font-size:24px}
 /* phones held upright: one row is too narrow for everything, so the score goes on a second row under the moves and goals */
 @media (max-width:560px){
@@ -173,22 +211,26 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
   #hud.top .goal img,#hud.top .goal canvas{width:80%;height:80%}
   #hud.top .goal b{min-width:28px;height:26px;font-size:16px;right:-5px;bottom:-5px;padding:0 5px}
   #hud.top .hbtns{margin-left:auto;align-items:center}
-  #hud.top .score{order:9;flex:1 1 100%;min-width:0;flex-direction:row;align-items:center;gap:10px;padding:4px 14px 6px}
+  #hud.top::before{content:"";order:7;flex:0 0 100%;height:0}   /* a new row: the companion and the score */
+  #hud.top .panel.pal{order:8;padding:2px 6px}
+  #hud.top .panel.pal canvas{width:50px;height:50px}
+  #hud.top .score{order:9;flex:1 1 0;min-width:0;flex-direction:row;align-items:center;gap:10px;padding:4px 14px 6px}
   #hud.top .score .sub{white-space:nowrap;font-size:15px}
-  #hud.top .score .num{font-size:20px;min-width:62px}
+  #hud.top .score .sub span{display:none}   /* the level's name is on its card; the stars need the room */
+  #hud.top .score .num{font-size:20px;min-width:48px}
   #hud.top .bar{flex:1;margin:16px 10px 2px}
 }
 
 /* ---------- cards and modals ---------- */
-.modal{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;background:rgba(74,43,94,.35);padding:20px;
+.modal{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;background:rgba(61,82,41,.35);padding:20px;
   -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
-.card{position:relative;background:var(--card);border-radius:34px;box-shadow:0 10px 0 rgba(74,43,94,.2),0 24px 50px rgba(74,43,94,.3);padding:26px 30px 30px;max-width:min(560px,100%);width:100%;
+.card{position:relative;background:var(--card);border-radius:34px;outline:2px dashed var(--stitch);outline-offset:-11px;box-shadow:0 10px 0 rgba(61,82,41,.2),0 24px 50px rgba(61,82,41,.3);padding:26px 30px 30px;max-width:min(560px,100%);width:100%;
   text-align:center;animation:pop .35s cubic-bezier(.2,1.6,.4,1)}
 @keyframes pop{from{transform:scale(.6);opacity:0}}
-.card h2{margin:-56px auto 10px;width:max-content;max-width:100%;padding:10px 30px;border-radius:999px;background:linear-gradient(180deg,#ffb3d6,var(--pink2));color:#fff;font-size:28px;font-weight:900;
-  box-shadow:0 5px 0 #c42c70;text-shadow:0 2px 0 rgba(0,0,0,.15)}
-.card h2.green{background:linear-gradient(180deg,#8ff0c6,#22c38a);box-shadow:0 5px 0 #15895f}
-.card h2.violet{background:linear-gradient(180deg,#c6a6ff,var(--violet2));box-shadow:0 5px 0 #5328c9}
+.card h2{margin:-56px auto 10px;width:max-content;max-width:100%;padding:10px 30px;border-radius:999px;background:linear-gradient(180deg,#f8c690,var(--pink2));color:#fff;font-size:28px;font-weight:900;
+  box-shadow:0 5px 0 #b9601c;text-shadow:0 2px 0 rgba(0,0,0,.15)}
+.card h2.green{background:linear-gradient(180deg,#b2d887,#73a848);box-shadow:0 5px 0 #4d7c2e}
+.card h2.violet{background:linear-gradient(180deg,#c4b0ea,var(--violet2));box-shadow:0 5px 0 #5e4796}
 .card p{font-size:22px;line-height:1.5;margin:10px 0}
 .card .row{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:18px}
 .card .goals{margin:14px 0 4px;gap:16px}
@@ -207,7 +249,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .big{font-size:34px;font-weight:900}
 
 /* ---------- math page ---------- */
-#math{position:fixed;inset:0;z-index:40;display:flex;background:linear-gradient(170deg,#fff4d6 0%,#ffe3f1 60%,#e3e9ff 100%);
+#math{position:fixed;inset:0;z-index:40;display:flex;background:linear-gradient(170deg,#fbf6e8 0%,#f4eedb 60%,#e6efd6 100%);
   padding:max(12px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));gap:14px}
 #math.wide{flex-direction:row}
 #math.tall{flex-direction:column}
@@ -218,14 +260,14 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 #math .grid{flex:1;min-height:0;display:grid;gap:10px}
 .q{background:#fff;border-radius:18px;box-shadow:0 4px 0 #ecd3b0;display:flex;align-items:center;justify-content:center;gap:.25em;font-weight:900;font-variant-numeric:tabular-nums;
   border:4px solid transparent;transition:transform .1s,border-color .15s,background .2s;white-space:nowrap;min-width:0;overflow:hidden;position:relative}
-.q.cur{border-color:#ffb000;background:#fffbe8;transform:scale(1.03)}
-.q.ok{background:#e6fff4;box-shadow:0 4px 0 #9fe3c4}
-.q.ok::after{content:"✓";position:absolute;right:8px;top:2px;color:#22c38a;font-size:.8em}
-.q .ans{display:inline-block;min-width:1.9em;padding:0 .15em;border-bottom:4px solid #d8c3a5;text-align:center;color:#7b4dff}
-.q.ok .ans{color:#15895f;border-color:#9fe3c4}
-.q.bad{animation:shake .35s;border-color:#ffb000;background:#fff8e6}
+.q.cur{border-color:#f2b630;background:#fffbe8;transform:scale(1.03)}
+.q.ok{background:#eef6df;box-shadow:0 4px 0 #bfd99e}
+.q.ok::after{content:"✓";position:absolute;right:8px;top:2px;color:#73a848;font-size:.8em}
+.q .ans{display:inline-block;min-width:1.9em;padding:0 .15em;border-bottom:4px solid #d8c3a5;text-align:center;color:#2f8f86}
+.q.ok .ans{color:#4d7c2e;border-color:#bfd99e}
+.q.bad{animation:shake .35s;border-color:#f2b630;background:#fff8e6}
 /* writing the page: an answer written; handed in and marked: ✓ (above) or the answer ringed and ✏️ to correct it */
-.q.has .ans{border-color:#c6a6ff}
+.q.has .ans{border-color:#a3c77a}
 .q.fix{background:#fff6ea}
 .q.fix::after{content:"✏️";position:absolute;right:6px;top:0;font-size:.55em}
 .q.fix.cur{border-color:#ff9d3a}
@@ -236,13 +278,13 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 #math .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-content:center}
 #math.wide .pad{width:clamp(250px,30vw,330px)}
 #math.tall .pad{grid-template-columns:repeat(6,1fr);height:clamp(150px,26vh,230px)}
-.key{border-radius:20px;background:#fff;box-shadow:0 5px 0 #d9c6ea;font-size:38px;font-weight:900;display:flex;align-items:center;justify-content:center;min-height:62px}
-.key:active{transform:translateY(4px);box-shadow:0 1px 0 #d9c6ea;background:#f6edff}
-.key.ok{background:linear-gradient(180deg,#8ff0c6,#22c38a);color:#fff;box-shadow:0 5px 0 #15895f}
-.key.del{background:#ffe9f2;color:#c42c70}
+.key{border-radius:20px;background:#fff;box-shadow:0 5px 0 #d8d2b4;font-size:38px;font-weight:900;display:flex;align-items:center;justify-content:center;min-height:62px}
+.key:active{transform:translateY(4px);box-shadow:0 1px 0 #d8d2b4;background:#f1efdc}
+.key.ok{background:linear-gradient(180deg,#b2d887,#73a848);color:#fff;box-shadow:0 5px 0 #4d7c2e}
+.key.del{background:#fde6d6;color:#b9601c}
 #math .disp{grid-column:1/-1;text-align:center;font-size:24px;font-weight:800;min-height:58px;display:flex;align-items:center;justify-content:center;gap:10px}
 .q i.op{font-style:normal;display:inline-block}
-.q i.op.hey{animation:hey .5s ease-in-out 3;color:#ff4f8a}
+.q i.op.hey{animation:hey .5s ease-in-out 3;color:#e2483d}
 @keyframes hey{50%{transform:scale(1.7)}}
 .bulb{width:58px;height:58px;border-radius:50%;background:#fff6c8;box-shadow:0 4px 0 #e8c95a;font-size:32px;flex:none}
 .bulb:active{transform:translateY(3px);box-shadow:0 1px 0 #e8c95a}
@@ -252,8 +294,8 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 /* ---------- the wheel before a math page (wheel.js) ---------- */
 #math.spin{flex-direction:column}
 .wstage{flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:pointer}
-.wbig{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%) scale(0);font-weight:900;color:#fff;-webkit-text-stroke:.07em #7b4dff;paint-order:stroke fill;
-  text-shadow:0 .07em 0 #5328c9;pointer-events:none;font-variant-numeric:tabular-nums;line-height:1}
+.wbig{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%) scale(0);font-weight:900;color:#fff;-webkit-text-stroke:.07em #2f8f86;paint-order:stroke fill;
+  text-shadow:0 .07em 0 #5e4796;pointer-events:none;font-variant-numeric:tabular-nums;line-height:1}
 .wbig.on{animation:wbig .6s cubic-bezier(.2,1.6,.4,1) forwards}
 @keyframes wbig{to{transform:translate(-50%,-50%) scale(1)}}
 .whand{position:absolute;left:50%;top:60%;font-size:64px;line-height:1;pointer-events:none;opacity:0;transition:opacity .3s;filter:drop-shadow(0 4px 4px rgba(0,0,0,.25));z-index:3}
@@ -262,7 +304,7 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 
 /* ---------- 小老师: the animals act a sum out (teach.js) ---------- */
 #math .sheet{position:relative}
-.teach{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;gap:6px;background:linear-gradient(170deg,#fffaf0,#fff0f8);border-radius:24px;
+.teach{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;gap:6px;background:linear-gradient(170deg,#fffbf1,#f5f2e2);border-radius:24px;
   box-shadow:0 6px 0 #ecd3b0,0 10px 30px rgba(120,60,140,.15);padding:10px 14px;animation:pop .3s cubic-bezier(.2,1.4,.4,1)}
 .teach.bye{transition:opacity .3s,transform .3s;opacity:0;transform:scale(.96)}
 .thead{display:flex;align-items:center;gap:12px}
@@ -274,35 +316,35 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 @media (max-width:520px){.teq{font-size:32px}.thead .owl{width:52px;height:52px}.thead{gap:8px}}
 .teq .n{color:var(--c);padding:0 .14em;border-radius:.25em;transition:background .3s,box-shadow .3s}
 .teq .n.now{background:#fff2a8;box-shadow:0 0 0 4px #ffd23a}
-.teq .op{color:#a58cba}
-.tans{display:inline-block;min-width:1.9em;text-align:center;border-bottom:5px solid #d8c3a5;color:#7b4dff}
+.teq .op{color:#8f9a74}
+.tans{display:inline-block;min-width:1.9em;text-align:center;border-bottom:5px solid #d8c3a5;color:#2f8f86}
 .tans.ask{animation:ask 1s ease-in-out infinite}
-@keyframes ask{50%{scale:1.14;border-color:#ffb000}}
+@keyframes ask{50%{scale:1.14;border-color:#f2b630}}
 .tans.bad{animation:shake .35s;color:var(--red)}
 .tstage{flex:1;min-height:0;position:relative;touch-action:none;cursor:pointer;overflow:hidden}
 .tframe{position:absolute;left:0;top:0;display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(2,1fr);background:#fff;box-shadow:0 4px 0 #ecd3b0;box-sizing:border-box}
 .tframe i{border:3px dashed #f0d9b8;border-radius:50%;margin:7%}
 .tk,.tcard{position:absolute;left:0;top:0;transform-origin:0 0;transition:transform .42s cubic-bezier(.3,1.35,.5,1),opacity .3s,filter .3s}
 .tk img{width:100%;height:100%;display:block;pointer-events:none}
-.tcard{background:#f3e9ff;border:3px solid #b48cff;box-sizing:border-box;box-shadow:0 3px 0 #d6c2ff}
+.tcard{background:#f1f0dc;border:3px solid #9fb77a;box-sizing:border-box;box-shadow:0 3px 0 #cfd7b0}
 .tcard img{position:absolute;pointer-events:none}
 .tcard.new{animation:tie .5s cubic-bezier(.2,1.6,.4,1)}
 @keyframes tie{from{scale:1.35}}
-.tslot{position:absolute;left:0;top:0;border:3px dashed #c9b8dd;border-radius:50%;box-sizing:border-box;transition:opacity .3s}
+.tslot{position:absolute;left:0;top:0;border:3px dashed #c2c8a6;border-radius:50%;box-sizing:border-box;transition:opacity .3s}
 .tslot.ten{border-radius:12px}
 .tslot.dim{opacity:.35}
 .tsign{position:absolute;left:0;top:0;display:flex;align-items:center;justify-content:center;font-weight:900;opacity:0;transition:opacity .3s;line-height:1}
 .tsign.on{opacity:1}
-.tsign.add{color:#22c38a}
+.tsign.add{color:#73a848}
 .tsign.sub{color:#ff5a7a}
 .troot{position:absolute;inset:0}
 .tk.gone,.tcard.gone,.tk.x,.tcard.x{filter:grayscale(.8);opacity:.35}
-.tk.ask{border-radius:50%;box-shadow:0 0 0 4px #ffb000}
+.tk.ask{border-radius:50%;box-shadow:0 0 0 4px #f2b630}
 /* she picks a way: three cards, the last one used glowing */
 .tpick{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:3%;padding:2% 3%}
 .tway{flex:1;max-width:250px;height:min(100%,330px);background:#fff;border-radius:26px;box-shadow:0 6px 0 #ecd3b0;display:flex;flex-direction:column;align-items:center;
   justify-content:center;gap:8px;padding:14px 10px;position:relative;font:inherit;transition:transform .1s}
-.tway b{font-size:clamp(22px,3.4vw,32px);font-weight:900;color:#7b4dff}
+.tway b{font-size:clamp(22px,3.4vw,32px);font-weight:900;color:#2f8f86}
 .tway:active{transform:translateY(4px);box-shadow:0 2px 0 #ecd3b0}
 .tway.last{box-shadow:0 0 0 5px #ffd23a,0 6px 0 #ecd3b0}
 .tway.last::before{content:"⭐";position:absolute;top:-16px;right:-10px;font-size:34px}
@@ -317,56 +359,56 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .tpic .tframe img{position:absolute;inset:-8%;width:116%;height:116%}
 /* 跳一跳 */
 .tline{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
-.tline .axis{stroke:#b9a1d6;stroke-width:6;stroke-linecap:round}
-.tline .tick{stroke:#cbb9e0;stroke-width:3;stroke-linecap:round}
-.tline .tick.ten{stroke:#9c7fd0;stroke-width:4}
+.tline .axis{stroke:#a9b48c;stroke-width:6;stroke-linecap:round}
+.tline .tick{stroke:#c4caa8;stroke-width:3;stroke-linecap:round}
+.tline .tick.ten{stroke:#7f9160;stroke-width:4}
 .tline .hop{fill:none;stroke-width:4;stroke-linecap:round}
-.tline .tlab{fill:#9c7fd0;font-weight:900;text-anchor:middle;font-family:var(--font)}
+.tline .tlab{fill:#7f9160;font-weight:900;text-anchor:middle;font-family:var(--font)}
 .tfrog{position:absolute;left:0;top:0;pointer-events:none;z-index:2}
 .tfrog img{width:100%;height:100%;display:block}
 .tstart{position:absolute;left:0;top:0;transform:translate(-50%,-50%);font-weight:900;background:#fff;border-radius:999px;padding:0 .4em;box-shadow:0 3px 0 #ecd3b0;
   line-height:1.25;font-variant-numeric:tabular-nums}
 /* 拆一拆 */
 .tsplit{position:absolute;left:0;right:0;top:0;display:flex;flex-direction:column;align-items:center;gap:.12em;font-weight:900;font-variant-numeric:tabular-nums;pointer-events:none}
-.tchips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;font-size:.5em;color:#15895f}
-.tchips span{background:#e6fff4;border-radius:999px;padding:0 .6em;box-shadow:0 2px 0 #9fe3c4}
+.tchips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;font-size:.5em;color:#4d7c2e}
+.tchips span{background:#eef6df;border-radius:999px;padding:0 .6em;box-shadow:0 2px 0 #bfd99e}
 .trows{display:flex;flex-direction:column;align-items:center;gap:.12em}
 .trow{display:flex;align-items:center;gap:.22em;padding:.02em .45em;border-radius:.4em;white-space:nowrap;line-height:1.3;transition:background .3s,box-shadow .3s}
 .trow.cur{background:#fff2a8;box-shadow:0 0 0 3px #ffd23a}
-.trow.ok::after{content:"✓";color:#22c38a;margin-left:.1em}
-.trow .op{font-style:normal;color:#a58cba}
-.tbox{display:inline-block;min-width:1.6em;text-align:center;border-bottom:4px solid #d8c3a5;color:#7b4dff}
+.trow.ok::after{content:"✓";color:#73a848;margin-left:.1em}
+.trow .op{font-style:normal;color:#8f9a74}
+.tbox{display:inline-block;min-width:1.6em;text-align:center;border-bottom:4px solid #d8c3a5;color:#2f8f86}
 .tbox.ask{animation:ask 1s ease-in-out infinite}
 .tbox.bad{animation:shake .35s;color:var(--red)}
-.trow.ok .tbox{color:#15895f;border-color:#9fe3c4}
+.trow.ok .tbox{color:#4d7c2e;border-color:#bfd99e}
 .thelp{position:absolute;inset:0;pointer-events:none}
 /* 列竖式: the column form, and the place-value chart (tens | ones) with the same columns */
 .tvert{position:absolute;left:0;top:0;display:grid;align-items:end;font-weight:900;font-variant-numeric:tabular-nums;line-height:1.2;text-align:center;
   background:#fff;border-radius:.22em;padding:.08em .22em .14em;box-shadow:0 4px 0 #ecd3b0;white-space:nowrap}
 .tvert>span{position:relative;border-radius:.14em;transition:background .3s}
-.tvert .lab{font-size:.32em;line-height:1.7;color:#b9a1d6}
-.tvert .op{color:#a58cba}
+.tvert .lab{font-size:.32em;line-height:1.7;color:#a9b48c}
+.tvert .op{color:#8f9a74}
 .tvert .on{background:#fff2a8}
-.tvert .bar{grid-column:1/-1;height:.07em;background:#7a5a8e;border-radius:.04em;margin:.03em 0 .05em}
+.tvert .bar{grid-column:1/-1;height:.07em;background:#5d6b45;border-radius:.04em;margin:.03em 0 .05em}
 .tvert .r{min-height:1.2em}
 .tvert .carry{position:absolute;right:-.1em;bottom:-.08em;font-size:.4em;font-style:normal;color:#ff8a1f;line-height:1}
 .tvert .dot{position:absolute;left:50%;top:.02em;width:.16em;height:.16em;margin-left:-.08em;border-radius:50%;background:#ff5a7a}
 .tvert .tbox{min-width:.72em;border-bottom-width:.06em}
-.tvert .tbox.ok{color:#15895f;border-color:transparent}
-.tvert.done .r{background:#e6fff4}
-.tcell{position:absolute;left:0;top:0;border:4px solid #e3d4f5;background:rgba(255,255,255,.75);box-sizing:border-box;transition:box-shadow .3s,background .3s}
+.tvert .tbox.ok{color:#4d7c2e;border-color:transparent}
+.tvert.done .r{background:#eef6df}
+.tcell{position:absolute;left:0;top:0;border:4px solid #dfe3c6;background:rgba(255,255,255,.75);box-sizing:border-box;transition:box-shadow .3s,background .3s}
 .tcell.one{border-color:#ffe0a8}
 .tcell.on{box-shadow:0 0 0 5px #ffd23a;background:#fffdf0}
-.tcell b{position:absolute;left:0;right:0;top:.12em;text-align:center;font-weight:900;color:#a58cba}
+.tcell b{position:absolute;left:0;right:0;top:.12em;text-align:center;font-weight:900;color:#8f9a74}
 .tcell.one b{color:#e0a860}
 .tcolchips{position:absolute;left:0;right:0;top:0;font-size:22px;font-weight:900;font-variant-numeric:tabular-nums}
-.tgap{position:absolute;left:0;top:0;border:4px dashed #ffb000;border-radius:50%;box-sizing:border-box;background:#fff8d6;animation:gap 1.2s ease-in-out infinite}
+.tgap{position:absolute;left:0;top:0;border:4px dashed #f2b630;border-radius:50%;box-sizing:border-box;background:#fff8d6;animation:gap 1.2s ease-in-out infinite}
 @keyframes gap{50%{background:#ffe98a}}
-.tring{position:absolute;left:0;top:0;border:5px solid #d9c6ea;border-radius:50%;box-sizing:border-box;background:#fff;display:flex;align-items:center;justify-content:center;
-  font-weight:900;color:#c9b8dd;transition:transform .3s}
-.tring.q{border-color:#ffb000;border-style:dashed;background:#fffbe8}
+.tring{position:absolute;left:0;top:0;border:5px solid #d8d2b4;border-radius:50%;box-sizing:border-box;background:#fff;display:flex;align-items:center;justify-content:center;
+  font-weight:900;color:#c2c8a6;transition:transform .3s}
+.tring.q{border-color:#f2b630;border-style:dashed;background:#fffbe8}
 .tbondl{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}
-.tbondl line{stroke:#d9c6ea;stroke-width:5;stroke-linecap:round}
+.tbondl line{stroke:#d8d2b4;stroke-width:5;stroke-linecap:round}
 /* counting together: a number on each thing counted */
 .tbadge{position:absolute;left:0;top:0;transform:translate(-50%,-50%);min-width:1.5em;padding:0 .25em;text-align:center;font-weight:900;color:#fff;background:#ff8a1f;
   border-radius:999px;box-shadow:0 2px 0 #c95f00;line-height:1.35;font-variant-numeric:tabular-nums;pointer-events:none;z-index:4}
@@ -379,27 +421,27 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 .set h3{font-size:19px;margin:16px 0 8px}
 .set .done{position:sticky;bottom:-30px;margin:10px -30px -30px;padding:14px 0 18px;background:linear-gradient(rgba(255,255,255,0),#fff 35%)}
 .seg{display:flex;flex-wrap:wrap;gap:8px}
-.seg button{padding:10px 16px;border-radius:14px;background:#f1e8fb;font-size:19px;font-weight:800;box-shadow:0 3px 0 #d9c6ea}
-.seg button.on{background:var(--violet2);color:#fff;box-shadow:0 3px 0 #5328c9}
+.seg button{padding:10px 16px;border-radius:14px;background:#efeedb;font-size:19px;font-weight:800;box-shadow:0 3px 0 #d8d2b4}
+.seg button.on{background:var(--leaf2);color:#fff;box-shadow:0 3px 0 var(--leaf3)}
 .set .sample{font-size:18px;opacity:.75;margin-top:8px}
 .set .note{font-size:16px;opacity:.75;margin:8px 0 0;line-height:1.5}
 .set table{width:100%;border-collapse:collapse;font-size:16px}
-.set td{padding:5px 4px;border-bottom:1px solid #eee3f5}
+.set td{padding:5px 4px;border-bottom:1px solid #ebe7d3}
 .gate .keys{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}
 .gate .key{font-size:28px;min-height:54px}
 
 #toast{position:fixed;z-index:55;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translate(-50%,200%);width:max-content;max-width:min(640px,92vw);background:#fff;border-radius:24px;box-shadow:var(--shadow);
   padding:14px 22px;font-size:21px;font-weight:800;line-height:1.4;transition:transform .35s cubic-bezier(.2,1.4,.4,1);pointer-events:none}
 #toast.on{transform:translate(-50%,0)}
-#loader{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:linear-gradient(170deg,#ffd9ef 0%,#e9d9ff 45%,#c9ecff 100%);
+#loader{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:linear-gradient(170deg,#f8f2e4 0%,#f1ead4 50%,#e2edcd 100%);
   font-size:24px;font-weight:800;transition:opacity .4s}
 #loader.gone{opacity:0;pointer-events:none}
 #loader .ld{width:220px;height:16px;border-radius:999px;background:#fff;overflow:hidden}
-#loader .ld i{display:block;height:100%;width:10%;background:linear-gradient(90deg,#ff9fca,#ffd23a);transition:width .3s}
+#loader .ld i{display:block;height:100%;width:10%;background:linear-gradient(90deg,#f9b46b,#ffd23a);transition:width .3s}
 </style>
 </head>
 <body>
-<div id="loader"><div style="font-size:64px">🐼</div><div>动物们正在赶来…</div><div class="ld"><i id="ldBar"></i></div></div>
+<div id="loader"><div style="font-size:64px">🐼</div><div>小伙伴们正在赶来…</div><div class="ld"><i id="ldBar"></i></div></div>
 <canvas id="cv"></canvas>
 <div id="hud" hidden></div>
 <div id="map" hidden></div>
@@ -464,7 +506,7 @@ const Store = {
       owed: false,           // a math page is due before the next game
       played: 0,
       math: { max: 100, ops: 2, mode: 'mix', count: 'wheel' },  // count: 'wheel' (MATH_WHEEL), 'ramp' (MATH_RAMP) or a fixed size (MATH_COUNTS), 家长设置
-      mathV: 5,              // 5: the wheel draws 10 to 20, within 100, 列竖式 first; 4: the wheel (2 to 10); 3: the day's ramp; 2: a fixed size (10 by default); before that always 20
+      mathV: 6,              // 6: the wheel draws 2 to 16, pages go from easy to hard; 5: 10 to 20, within 100, 列竖式 first; 4: the wheel (2 to 10); 3: the day's ramp; 2: a fixed size (10 by default); before that always 20
       today: { day: '', pages: 0 },   // math pages finished today (not the 5-sum page for 5 more moves): where the ramp is
       spin: null,            // what the wheel landed on for the page owed now, { n, p: played }, so leaving can't spin again
       log: [],               // finished math pages: [time, count, right first time, seconds, settings label]
@@ -477,6 +519,8 @@ const Store = {
       s2: 1,                 // season two: progress made in season one has been carried over
       gifts: {},             // friends from the blind box (gift.js): id -> how many
       giftFresh: [],         // new friends not yet seen in the album
+      albumIsle: -1,         // the album's page shown last (an island)
+      pal: '',               // the companion she picked in the album (PALS; pal.js), the panda until then
       snd: true, voi: true, mus: true,
     };
   },
@@ -496,7 +540,8 @@ const Store = {
         // decli 2026-11-02: harder now, sums within 100 on a wheel of 10 to 20 (a spin of the old wheel is dropped, so
         // the page owed is drawn again), and 小老师 starts with 列竖式 instead of asking her to choose
         if (v < 5) { this.d.math.max = 100; this.d.spin = null; if (!raw.way || raw.way === 'pick') this.d.way = 'col'; }
-        this.d.mathV = 5;
+        if (v < 6) this.d.spin = null;   // decli 2026-11-05: the wheel's numbers changed, a page owed is drawn again
+        this.d.mathV = 6;
         // season two: a level won in season one now opens the next (the eleventh after the tenth); the map starts on
         // the island she is up to
         if (!raw.s2) {
@@ -1453,12 +1498,12 @@ LEVELS.push(
 
 // 动物消消乐 · everything the narrator says. dev/voice/collect.js reads this file (with levels.js and board.js) to
 // list every line for recording, so a line built from a level must be built here and nowhere else.
-const KID = '可可';   // decli's daughter, who plays this
-// how many sums a math page has (家长设置). By default she spins a wheel before each page and does what it lands on
-// (decli 2026-10-19, evening: sums feel like a chore, make drawing them a game), 10 to 20 since decli 2026-11-02 (she
-// is ready for more, and for sums within 100). A parent can pick the day's ramp instead (2, 6, 12, then 20 every time
-// after, back to 2 the next day) or one fixed size.
-const MATH_WHEEL = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+const KID = '小朋友';   // how the narrator calls the child (decli 2026-11-05: no names, for privacy)
+// how many sums a math page has (家长设置). By default the child spins a wheel before each page and does what it lands
+// on (decli 2026-10-19, evening: sums feel like a chore, make drawing them a game). decli 2026-11-05: 2 to 16, so a
+// page can also be short and nobody dreads it; each page goes from easy to hard (MathGate.page). A parent can pick the
+// day's ramp instead (2, 6, 12, then 20 every time after, back to 2 the next day) or one fixed size.
+const MATH_WHEEL = [2, 4, 6, 8, 10, 12, 16];
 const MATH_RAMP = [2, 6, 12, 20];
 const MATH_COUNTS = [5, 10, 15, 20];
 const NUM_ZH = n => String(n);   // the voice reads digits naturally ("18只" → 十八只)
@@ -1478,28 +1523,37 @@ function goalSay(g, lv) {
   if (g.t === 'cage') return `把笼子里的${count('012345')}个小伙伴都救出来`;
   return '';
 }
-// Every animal in decli's pictures (heads.webp, cut by dev/heads.py), in their order: [id, name, tier, colour].
-// tier: -1 in the album from the start (the first six on the board and the penguin), else from the blind box after a
-// win (gift.js): 0 普通, 1 稀有, 2 隐藏款. colour: the head's main colour, so a game's six animals all look different
-// (cast.js): p pink, w white, k black and white, v purple, y yellow, o orange, r red, g green, l blue, t teal,
-// b brown, a grey. A second letter: it also looks like that colour (the pigeon is grey-purple), so it never plays next
-// to those either (decli: some animals look very much alike).
+// Every character of decli's 怪趣森林 pictures (decli 2026-11-05; dev/art/heads2/HEADS.md, packed by dev/heads2.py in
+// this order): [id, name, tier, colour, island, temper]. The first seventy are the animals of the first pictures (same
+// ids, so what was collected stays), then thirty more: vegetables, flowers, weather, sweets and fairy-tale people.
+// tier: -1 on the board and in the album from the start, else from the blind box: 0 普通, 1 稀有, 2 隐藏款 (never on the
+// board). colour: the face's main colour, so a game's animals all look different (cast.js): p pink, w white,
+// k black and white, v purple, y yellow, o orange, r red, g green, l blue, t teal, b brown, a grey. island: ISLANDS'
+// number where it lives — its levels draw it first, and so do its blind boxes. temper: its nickname (小猪·乐呵呵).
 const FRIENDS = [
-  ['panda', '熊猫', -1, 'k'], ['fox', '小狐狸', 0, 'o'], ['tiger', '小老虎', 1, 'o'], ['lion', '小狮子', 1, 'o'], ['bear', '小棕熊', 0, 'b'],
-  ['polar', '北极熊', 0, 'w'], ['koala', '考拉', 1, 'a'], ['bunny', '小兔子', 0, 'p'], ['corgi', '柯基', 0, 'o'], ['cat', '小蓝猫', 0, 'l'],
-  ['frog', '小青蛙', -1, 'g'], ['owl', '猫头鹰', 0, 'v'], ['chick', '小黄鸡', 0, 'y'], ['penguin', '小企鹅', -1, 'k'], ['duck', '小白鸭', 0, 'w'],
-  ['flamingo', '火烈鸟', 1, 'p'], ['peacock', '孔雀', 1, 't'], ['parrot', '鹦鹉', -1, 'r'], ['budgie', '虎皮鹦鹉', 0, 'l'], ['pigeon', '小鸽子', 0, 'av'],
-  ['pig', '小猪', -1, 'p'], ['sheep', '小绵羊', 0, 'w'], ['cow', '小奶牛', 0, 'k'], ['horse', '小马', 0, 'b'], ['deer', '小鹿', 0, 'b'],
-  ['giraffe', '长颈鹿', -1, 'y'], ['hippo', '河马', -1, 'v'], ['elephant', '小象', 1, 'l'], ['rhino', '犀牛', 0, 't'], ['croc', '鳄鱼', 0, 'g'],
-  ['squirrel', '松鼠', 0, 'o'], ['hamster', '仓鼠', 0, 'o'], ['hedgehog', '刺猬', 0, 'b'], ['raccoon', '浣熊', 0, 'a'], ['skunk', '臭鼬', 0, 'k'],
-  ['redpanda', '小熊猫', 1, 'o'], ['sloth', '树懒', 1, 'b'], ['fennec', '耳廓狐', 0, 'o'], ['monkey', '小猴子', 0, 'b'], ['capybara', '水豚', 0, 'b'],
-  ['turtle', '小海龟', 0, 'g'], ['seal', '海豹', 0, 'a'], ['dolphin', '海豚', 1, 'l'], ['shark', '小鲨鱼', 1, 'l'], ['clownfish', '小丑鱼', 0, 'o'],
-  ['octopus', '章鱼', 0, 'p'], ['ladybug', '瓢虫', 0, 'r'], ['bee', '小蜜蜂', 0, 'y'], ['dragon', '小龙', 2, 't'], ['unicorn', '独角兽', 2, 'w'],
-  ['dog', '小狗', 0, 'o'], ['dalmatian', '斑点狗', 0, 'k'], ['siamese', '暹罗猫', 0, 'w'], ['axolotl', '六角恐龙', 1, 'p'], ['bat', '小蝙蝠', 0, 'v'],
-  ['alpaca', '羊驼', 1, 'w'], ['bison', '野牛', 0, 'b'], ['zebra', '斑马', 1, 'k'], ['donkey', '小毛驴', 0, 'a'], ['kangaroo', '袋鼠', 0, 'o'],
-  ['rooster', '大公鸡', 0, 'r'], ['goose', '大白鹅', 0, 'w'], ['duckling', '小黄鸭', 0, 'y'], ['cardinal', '小红鸟', 0, 'r'], ['chameleon', '变色龙', 1, 'g'],
-  ['puffer', '河豚', 0, 'o'], ['orca', '虎鲸', 1, 'k'], ['whale', '小蓝鲸', 0, 'l'], ['otter', '水獭', 0, 'b'], ['arcticfox', '北极狐', 0, 'w'],
-].map(([id, name, tier, fam], i) => ({ i, id, name, tier, fam }));
+  ['panda', '熊猫', -1, 'k', 0, '小机灵'], ['fox', '小狐狸', 0, 'o', 2, '鬼点子'], ['tiger', '小老虎', 1, 'o', 4, '威风'], ['lion', '小狮子', 1, 'o', 4, '臭美'], ['bear', '小棕熊', 0, 'b', 2, '暖心'],
+  ['polar', '北极熊', 0, 'w', 3, '冷静'], ['koala', '考拉', 1, 'a', 4, '瞌睡虫'], ['bunny', '小兔子', 0, 'p', 1, '蹦蹦'], ['corgi', '柯基', 0, 'o', 1, '小短腿'], ['cat', '小蓝猫', 0, 'l', 1, '傲娇'],
+  ['frog', '小青蛙', -1, 'g', 0, '元气派'], ['owl', '猫头鹰', 0, 'v', 3, '小老师'], ['chick', '小黄鸡', 0, 'y', 1, '刚出壳'], ['penguin', '小企鹅', -1, 'k', 0, '乖乖仔'], ['duck', '小白鸭', 0, 'w', 1, '嘎嘎嘎'],
+  ['flamingo', '火烈鸟', 1, 'p', 3, '优雅'], ['peacock', '孔雀', 1, 't', 3, '爱显摆'], ['parrot', '鹦鹉', -1, 'r', 0, '话痨王'], ['budgie', '虎皮鹦鹉', 0, 'l', 3, '复读机'], ['pigeon', '小鸽子', 0, 'a', 3, '咕咕'],
+  ['pig', '小猪', -1, 'p', 0, '乐呵呵'], ['sheep', '小绵羊', 0, 'w', 1, '软绵绵'], ['cow', '小奶牛', 0, 'k', 1, '慢悠悠'], ['horse', '小马', 0, 'b', 1, '爱臭美'], ['deer', '小鹿', 0, 'b', 2, '害羞'],
+  ['giraffe', '长颈鹿', -1, 'y', 0, '好奇鬼'], ['hippo', '河马', -1, 'v', 0, '慢半拍'], ['elephant', '小象', 1, 'l', 0, '温柔'], ['rhino', '犀牛', 0, 't', 4, '横冲直撞'], ['croc', '鳄鱼', 0, 'g', 4, '笑面虎'],
+  ['squirrel', '松鼠', 0, 'o', 2, '囤囤囤'], ['hamster', '仓鼠', 0, 'o', 2, '小吃货'], ['hedgehog', '刺猬', 0, 'b', 2, '小刺头'], ['raccoon', '浣熊', 0, 'a', 4, '小偷偷'], ['skunk', '臭鼬', 0, 'k', 4, '小捣蛋'],
+  ['redpanda', '小熊猫', 1, 'o', 4, '不好意思'], ['sloth', '树懒', 1, 'b', 4, '慢慢来'], ['fennec', '耳廓狐', 0, 'y', 4, '大耳朵'], ['monkey', '小猴子', 0, 'b', 4, '调皮'], ['capybara', '水豚', 0, 'b', 2, '佛系'],
+  ['turtle', '小海龟', 0, 'g', 0, '慢吞吞'], ['seal', '海豹', 0, 'a', 0, '拍拍手'], ['dolphin', '海豚', 1, 'l', 0, '开心果'], ['shark', '小鲨鱼', 1, 'l', 0, '假装凶'], ['clownfish', '小丑鱼', 0, 'o', 0, '快乐泡泡'],
+  ['octopus', '章鱼', 0, 'p', 0, '手忙脚乱'], ['ladybug', '瓢虫', 0, 'r', 2, '小乖乖'], ['bee', '小蜜蜂', 0, 'y', 2, '勤快'], ['dragon', '小龙', 2, 'w', 5, '守宝藏'], ['unicorn', '独角兽', 2, 'w', 3, '梦幻'],
+  ['dog', '小狗', 0, 'b', 1, '跟屁虫'], ['dalmatian', '斑点狗', 0, 'k', 1, '跑跑跑'], ['siamese', '暹罗猫', 0, 'w', 1, '高冷'], ['axolotl', '六角恐龙', 1, 'p', 0, '笑嘻嘻'], ['bat', '小蝙蝠', 0, 'v', 3, '夜猫子'],
+  ['alpaca', '羊驼', 1, 'w', 1, '无语'], ['bison', '野牛', 0, 'b', 1, '倔牛'], ['zebra', '斑马', 1, 'k', 4, '酷酷的'], ['donkey', '小毛驴', 0, 'a', 1, '倔脾气'], ['kangaroo', '袋鼠', 0, 'o', 4, '蹦蹦跳'],
+  ['rooster', '大公鸡', 0, 'r', 1, '早起鸟'], ['goose', '大白鹅', 0, 'w', 1, '凶巴巴'], ['duckling', '小黄鸭', 0, 'y', 1, '呆萌'], ['cardinal', '小红鸟', 0, 'r', 3, '小气包'], ['chameleon', '变色龙', 1, 'g', 4, '眼珠乱转'],
+  ['puffer', '河豚', 0, 'l', 0, '气鼓鼓'], ['orca', '虎鲸', 1, 'k', 0, '大嗓门'], ['whale', '小蓝鲸', 0, 'l', 0, '憨憨'], ['otter', '水獭', 0, 'b', 0, '抱抱怪'], ['arcticfox', '北极狐', 0, 'w', 3, '机灵'],
+  ['icecream', '冰淇淋', 0, 'p', 0, '甜甜'], ['cottoncandy', '棉花糖', 0, 'l', 0, '甜滋滋'], ['popcorn', '爆米花', 0, 'w', 0, '蹦蹦'], ['donut', '甜甜圈', 0, 'b', 0, '圆滚滚'], ['mermaid', '小美人鱼', 2, 'w', 0, '爱唱歌'],
+  ['carrot', '胡萝卜', 0, 'o', 1, '急性子'], ['tomato', '番茄', 0, 'r', 1, '红脸蛋'], ['eggplant', '茄子', 0, 'v', 1, '委屈巴巴'], ['corn', '玉米', 0, 'y', 1, '爆脾气'], ['scarecrow', '稻草人', 0, 'b', 1, '吓唬王'],
+  ['goldhen', '金蛋母鸡', 2, 'w', 1, '下金蛋'], ['sunflower', '向日葵', 0, 'y', 2, '笑嘻嘻'], ['tulip', '郁金香', 0, 'p', 2, '小淑女'], ['mushroom', '小蘑菇', 0, 'r', 2, '小迷糊'], ['cactus', '仙人掌', 0, 'g', 2, '刺刺的'],
+  ['butterfly', '蝴蝶', 1, 'v', 2, '翩翩'], ['fairy', '花仙子', 2, 'w', 2, '会魔法'], ['sun', '太阳', 1, 'o', 3, '暖洋洋'], ['moon', '月亮', 0, 'y', 3, '睡不醒'], ['cloud', '云朵宝宝', 0, 'w', 3, '懒洋洋'],
+  ['raindrop', '雨滴', 0, 'l', 3, '爱哭鬼'], ['toucan', '大嘴鸟', 0, 'k', 4, '嘴大王'], ['banana', '香蕉', 0, 'y', 4, '弯弯'], ['dragonfruit', '火龙果', 0, 'p', 4, '刺头'], ['coconut', '椰子', 0, 'b', 4, '硬汉'],
+  ['ninedeer', '九色鹿', 2, 'w', 4, '善良'], ['princess', '小公主', 1, 'p', 5, '爱美'], ['knight', '小骑士', 1, 'a', 5, '勇敢'], ['wizard', '小魔法师', 1, 'v', 5, '神秘'], ['ghost', '小幽灵', 0, 'w', 5, '躲猫猫'],
+].map(([id, name, tier, fam, isle, temper], i) => ({ i, id, name, tier, fam, isle, temper }));
+// the partners: the twelve decli drew with four faces (also in dev/heads2.py), any of which can keep the child company
+const PALS = ['pig', 'panda', 'hippo', 'giraffe', 'parrot', 'frog', 'owl', 'corgi', 'bee', 'cloud', 'monkey', 'princess'];
 const L = {
   welcome: '欢迎来到动物消消乐！点一个关卡开始吧。',
   pick: '选一关吧！',
@@ -1507,7 +1561,7 @@ const L = {
   intro(lv, n) {
     const kinds = lv.goals.filter(g => g.t === 'c').length;
     const parts = lv.goals.filter(g => g.t !== 'c').map(g => goalSay(g, lv));
-    if (kinds) parts.push(`收集${['', '这种', '这两种', '这三种'][kinds]}小动物：`);
+    if (kinds) parts.push(`收集${['', '这种', '这两种', '这三种'][kinds]}小伙伴：`);
     return `第${NUM_ZH(n)}关，${lv.name}，一共${NUM_ZH(lv.moves)}步。要${parts.join('，还要')}` + (kinds ? '' : '。');
   },
   tip: {
@@ -1555,7 +1609,7 @@ const L = {
   extraOffer: '做5道数学题，就能再多5步！',
   extraDone: '多了5步，加油！',
   allDone: '所有小岛全部通关啦！你是消消乐大师！',
-  // decli: call her by name on the math page, every right answer is praise for 可可
+  // the math page speaks to the child (KID), every right answer is praise for them
   math: {
     title: `${KID}，敢不敢先挑战一页数学题？`,
     start: n => `${KID}，敢不敢先挑战一页数学题？${n}道题都做对，就能接着玩啦。`,   // recorded for every size above
@@ -1585,7 +1639,7 @@ const L = {
   // the wheel before a math page (wheel.js): every number is good news
   wheel: {
     ask: `${KID}，点一下转盘，看看这次做几道题！`,
-    land: n => n <= 13 ? `转到${n}道题！不多不少，${KID}加油！` : n <= 16 ? `哇，转到${n}道题！${KID}，接受挑战吧！` : `哇，转到${n}道题！超级大挑战，${KID}一定行！`,
+    land: n => n <= 4 ? `转到${n}道题！${KID}，热热身吧！` : n <= 10 ? `转到${n}道题！不多不少，${KID}加油！` : `哇，转到${n}道题！${KID}，接受挑战吧！`,
   },
   // 小老师 (teach.js): when a sum she is correcting is wrong again, or 💡. 列竖式 first (decli 2026-11-02), 🔄 for the
   // others; no line ever says the answer: they count only what is added or taken away, or count along with her
@@ -1659,15 +1713,18 @@ const L = {
     nums: Array.from({ length: 101 }, (_, i) => String(i)),   // counting: what has come or gone, or counting along
   },
   parent: '这里是给爸爸妈妈的设置哦。',
+  // 伙伴 (pal.js): picked in the album
+  pal: { chosen: Object.fromEntries(PALS.map(id => [id, `好！今天${FRIENDS.find(f => f.id === id).name}陪你一起玩！`])) },
   gift: {
     drop: '过关礼物！是一个神秘盲盒，点它三下，打开看看！',
     rare: '稀有款！运气真好！',
     hidden: '天哪！是隐藏款！超级超级难得！',
     got: FRIENDS.map(f => `哇！是${f.name}！`),
     again: '又抽到它啦！',
-    full: '所有的动物小伙伴都集齐啦！你是收集大王！',
-    album: '这是你的动物收集册。每过一关就能拆一个盲盒，把小伙伴都集齐吧！',
+    full: '一百个小伙伴都集齐啦！你是收集大王！',
+    album: '这是你的小伙伴收集册。每座小岛都有自己的小伙伴，第一次过关就能拆一个盲盒，把它们都集齐吧！点一点挂着伙伴牌子的，它就会陪你一起玩。',
     names: FRIENDS.map(f => f.name),
+    who: FRIENDS.map(f => `${f.name}，${f.temper}！`),   // tapped in the album: its name and its nickname
     locked: '还没抽到它呢，过关拆盲盒就有机会哦！',
     more: '拿到三颗星，还能再拆一个盲盒哦！',
     shiny: '又抽到它啦！它变成闪光版啦！',   // a replay: boxes come the first time a level is won, and with its first three stars
@@ -1699,15 +1756,19 @@ const Cast = {
   near(a, b) { return [...a].some(x => [...b].some(y => x === y || this.NEAR.includes(x + y) || this.NEAR.includes(y + x))); },
   // six new animals for level li: they show at once everywhere (intro card, pieces, goals, effects) and are kept for
   // Game.start(li)
+  // decli 2026-11-05: each island has its own cast (FRIENDS' island), so up to four of the six are from the level's
+  // island and the rest from anywhere — a new island looks new, and no two games are the same
   pick(li) {
-    const lv = LEVELS[li], penguins = lv.goals.some(g => g.t === 'pg'), eggs = lv.goals.some(g => g.t === 'egg');
+    const lv = LEVELS[li], penguins = lv.goals.some(g => g.t === 'pg'), eggs = lv.goals.some(g => g.t === 'egg'), isle = isleOf(li);
     // the chicks that hatch from eggs are their own surprise, not one of the six
     const pool = FRIENDS.filter(f => f.tier <= 1 && f.id !== 'penguin' && !(penguins && this.near(f.fam, 'k')) && !(eggs && f.id === 'chick'));
+    const mix = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
     let got = [];
     for (let tries = 0; got.length < 6 && tries < 50; tries++) {   // an unlucky early pick can leave fewer than six colours: draw again
-      for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
       got = [];
-      for (const f of pool) if (got.length < 6 && got.every(g => !this.near(g.fam, f.fam))) got.push(f);
+      const fits = f => got.every(g => g !== f && !this.near(g.fam, f.fam));
+      for (const f of mix(pool.filter(f => f.isle === isle))) if (got.length < 4 && fits(f)) got.push(f);
+      for (const f of mix(pool.slice())) if (got.length < 6 && fits(f)) got.push(f);
     }
     if (got.length < 6) got = this.FIRST();
     this.set(got);
@@ -2001,9 +2062,10 @@ const Voice = { on: true, last: '', busy: false };
   }
 })();
 
-// 动物消消乐 · made by dev/heads.py: the sprite sheet heads.webp, and each head's width and height in it (its cell is
-// 216 px square, the head in the middle), in the order of FRIENDS (lines.js).
-const HEADS = { cell: 216, cols: 10, size: [[164,141],[162,143],[160,141],[173,178],[161,140],[160,138],[208,136],[137,184],[148,154],[153,144],[158,131],[162,138],[149,142],[154,141],[142,142],[168,149],[129,164],[154,153],[148,148],[131,144],[166,136],[188,143],[195,151],[157,161],[173,172],[157,163],[163,140],[208,136],[146,144],[155,129],[152,160],[161,137],[177,143],[171,137],[150,140],[164,139],[158,142],[188,147],[187,134],[146,138],[175,129],[150,133],[162,151],[174,148],[182,140],[162,146],[157,147],[184,153],[187,142],[147,152],[139,115],[149,110],[122,125],[150,106],[133,116],[116,133],[136,124],[113,129],[110,137],[116,133],[127,139],[112,124],[124,133],[123,134],[135,134],[143,125],[138,136],[142,132],[135,117],[134,125]] };
+// 动物消消乐 · made by dev/heads2.py: how the 怪趣森林 heads are laid out in heads.webp (board faces), funs.webp (fun
+// faces) and pals.webp (the partners' tap and cheer faces, then the chick hatching); cells in the order of FRIENDS.
+// fill: how much of a cell a board face's longer side takes; h: the pictures' fingerprint (in their addresses).
+const HEADS = {"cell":224,"cols":10,"n":100,"fill":0.942,"big":640,"h":"8c9909c4d5","pals":{"pig":[0,1],"panda":[2,3],"hippo":[4,5],"giraffe":[6,7],"parrot":[8,9],"frog":[10,11],"owl":[12,13],"corgi":[14,15],"bee":[16,17],"cloud":[18,19],"monkey":[20,21],"princess":[22,23]},"palCell":256,"palCols":5,"hatch":24};
 
 // 动物消消乐 · decli's pictures for season two (the egg, the balloon, the cage, grass, the islands and their maps),
 // made from dev/art/season2/*.png by dev/art2.py into ../s2/*.webp, which also writes the list below. Until a picture
@@ -2025,54 +2087,77 @@ const Art2 = {
 // 动物消消乐 · drawing the pieces, the cell layers (ice, gift boxes, bubbles) and the little sprites the effects use.
 // Everything that does not move is drawn once into a canvas the size it will appear on screen (re-made on resize).
 const Art = {
-  img: null, dpr: 1, cell: 0, T: 0, tiles: [], white: [], cache: {},
-  // decli's animal heads, one sprite sheet (made by dev/heads.py; HEADS in heads.js gives each head's size). A failed
-  // download is tried again: the start screen waits for the first three tries, later ones go on in the background and
-  // the pictures replace the coloured balls from the next game on.
+  img: null, funs: null, pals: null, big: {}, dpr: 1, cell: 0, T: 0, tiles: [], funTiles: [], white: [], cache: {},
+  // decli's 怪趣森林 heads (made by dev/heads2.py, laid out as HEADS in heads.js): the board faces, which the start
+  // screen waits for, and the fun faces and the partners' faces, which come in behind them (the board face stands in
+  // until they do). A failed download is tried again: the start screen waits for the first three tries, later ones go
+  // on in the background and the pictures replace the coloured balls from the next game on.
   load() {
-    return new Promise(res => {
+    const sheet = (name, done, onFirst) => {
       let k = 0;
       const get = () => {
         const im = new Image();
-        im.onload = () => { this.img = im; res(); };
-        im.onerror = () => { k++; if (k === 3) res(); if (k < 6) setTimeout(get, [1000, 2500, 5000, 10000, 20000][k - 1]); };
-        im.src = 'heads.webp' + (k ? '?try=' + k : '');
+        im.onload = () => { done(im); if (onFirst) onFirst(); };
+        im.onerror = () => { k++; if (k === 3 && onFirst) onFirst(); if (k < 6) setTimeout(get, [1000, 2500, 5000, 10000, 20000][k - 1]); };
+        im.src = name + '?h=' + HEADS.h + (k ? '&try=' + k : '');   // a new set of pictures has a new address
       };
       get();
+    };
+    return new Promise(res => {
+      sheet('heads.webp', im => { this.img = im; this.cell = 0; }, () => {
+        res();
+        sheet('funs.webp', im => { this.funs = im; this.cell = 0; });
+        sheet('pals.webp', im => { this.pals = im; });
+      });
     });
+  },
+  // the big fun face of FRIENDS[i] for the blind box (big/<id>.webp, fetched when a box opens): the picture, or null
+  // while it is on its way
+  bigFace(i) {
+    const id = FRIENDS[i].id;
+    if (!this.big[id]) { const im = new Image(); this.big[id] = { im, ok: false }; im.onload = () => { this.big[id].ok = true; }; im.src = 'big/' + id + '.webp?h=' + HEADS.h; }
+    return this.big[id].ok ? this.big[id].im : null;
   },
   canvas(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, Math.ceil(w)); c.height = Math.max(1, Math.ceil(h)); return c; },
   rr(ctx, x, y, w, h, r) {
     ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
     ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
   },
-  // FRIENDS[i]'s head drawn into x centred on (cx, cy), scaled so its longer side is fit pixels
-  friendTo(x, i, cx, cy, fit) {
-    const [w, h] = HEADS.size[i], C = HEADS.cell, f = fit / Math.max(w, h);
+  // FRIENDS[i]'s head drawn into x centred on (cx, cy), its longer side about fit pixels. face: 'b' the board face
+  // (default), 'f' its fun face, 't' / 'c' a partner's tap / cheer face, 'h' the chick hatching. Every cell holds the
+  // whole picture, so all of a character's faces sit exactly on top of each other.
+  friendTo(x, i, cx, cy, fit, face) {
     if (!this.img) {   // the picture did not load: a coloured ball
       const col = Cast.FX[FRIENDS[i].fam[0]];
       x.fillStyle = col[0]; x.strokeStyle = col[1]; x.lineWidth = fit * 0.05;
       x.beginPath(); x.arc(cx, cy, fit * 0.42, 0, 7); x.fill(); x.stroke();
       return;
     }
-    const sx = (i % HEADS.cols) * C + (C - w) / 2, sy = Math.floor(i / HEADS.cols) * C + (C - h) / 2;
+    let im = this.img, C = HEADS.cell, k = i, cols = HEADS.cols;
+    if (face === 'f' && this.funs) im = this.funs;
+    const pal = (face === 't' || face === 'c') && HEADS.pals[FRIENDS[i].id];
+    if ((pal || face === 'h') && this.pals) { im = this.pals; C = HEADS.palCell; cols = HEADS.palCols; k = face === 'h' ? HEADS.hatch : pal[face === 't' ? 0 : 1]; }
+    else if (face === 'h' || face === 't' || face === 'c') im = this.funs || this.img;
+    const D = fit / HEADS.fill;
     x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high';
-    x.drawImage(this.img, sx, sy, w, h, cx - w * f / 2, cy - h * f / 2, w * f, h * f);
+    x.drawImage(im, (k % cols) * C, Math.floor(k / cols) * C, C, C, cx - D / 2, cy - D / 2, D, D);
   },
-  friend(i, s, fit) { const c = this.canvas(s, s); this.friendTo(c.getContext('2d'), i, s / 2, s / 2, fit); return c; },
+  friend(i, s, fit, face) { const c = this.canvas(s, s); this.friendTo(c.getContext('2d'), i, s / 2, s / 2, fit, face); return c; },
+  byId(id) { return FRIENDS.findIndex(f => f.id === id); },
   // the board's kinds (this game's six ANIMALS, then the penguin) as FRIENDS numbers
-  kindHead(k) { return k < ANIMALS.length ? ANIMALS[k].h : FRIENDS.findIndex(f => f.id === 'penguin'); },
+  kindHead(k) { return k < ANIMALS.length ? ANIMALS[k].h : this.byId('penguin'); },
   // an animal head (k 0-5, 6 = penguin) into a square canvas of side s, for a cell cellPx wide
-  head(k, s, cellPx) { return this.friend(this.kindHead(k), s, cellPx * 0.9); },
+  head(k, s, cellPx, face) { return this.friend(this.kindHead(k), s, cellPx * 0.92, face); },
   setCell(cell, dpr) {
     const cast = ANIMALS.map(a => a.h).join() + (this.img ? '' : '?');   // the pieces change with the game's animals too
     if (cell === this.cell && dpr === this.dpr && cast === this.cast && this.tiles.length) return;
     this.cell = cell; this.dpr = dpr; this.cast = cast;
     const D = cell * dpr, T = this.T = Math.ceil(D * 1.3);
-    this.tiles = []; this.white = [];
+    this.tiles = []; this.white = []; this.funTiles = [];
     for (let k = 0; k < 7; k++) {
       const t = this.head(k, T, D);
       this.tiles.push(t);
+      this.funTiles.push(this.funs ? this.head(k, T, D, 'f') : t);   // a piece she has picked up, or that the hint points at
       const w = this.canvas(T, T), x = w.getContext('2d');
       x.drawImage(t, 0, 0); x.globalCompositeOperation = 'source-in'; x.fillStyle = '#fff'; x.fillRect(0, 0, T, T);
       this.white.push(w);
@@ -2280,10 +2365,10 @@ const Art = {
 
   // ---------- drawing on the board (ctx in CSS pixels) ----------
   // p: piece, (x, y) centre, sc scale, t clock ms, flash 0..1 white
-  piece(ctx, p, x, y, sc, t, flash, sx, sy, hp) {
+  piece(ctx, p, x, y, sc, t, flash, sx, sy, hp, fun) {
     const s = this.T / this.dpr * sc, cell = this.cell;
     const w = s * (sx || 1), h = s * (sy || 1);
-    if (p.k === 'g') { ctx.drawImage(this.tiles[PENGUIN], x - w / 2, y - h / 2, w, h); return; }
+    if (p.k === 'g') { ctx.drawImage((fun ? this.funTiles : this.tiles)[PENGUIN], x - w / 2, y - h / 2, w, h); return; }
     if (p.k === 'e') { ctx.drawImage(this.cache[(hp != null ? hp : p.hp) === 2 ? 'egg2' : 'egg1'], x - w / 2, y - h / 2, w, h); if (flash > 0) { ctx.globalAlpha = Math.min(1, flash) * 0.7; ctx.drawImage(Fx.dot('#ffffff'), x - w / 2, y - h / 2, w, h); ctx.globalAlpha = 1; } return; }
     if (p.k === 'l') { ctx.save(); ctx.translate(x, y + cell * 0.04); ctx.rotate(Math.sin(t / 520 + p.id) * 0.08); ctx.drawImage(this.cache.balloon, -w / 2, -h / 2, w, h); ctx.restore(); return; }
     if (p.s === 'c') {
@@ -2308,7 +2393,7 @@ const Art = {
       ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = 0.5 + 0.25 * Math.sin(t / 140);
       const gl = Fx.dot(ANIMALS[p.c].fx[0]); ctx.drawImage(gl, x - cell * 0.7, y - cell * 0.7, cell * 1.4, cell * 1.4); ctx.restore();
     }
-    ctx.drawImage(this.tiles[p.c], x - w / 2, y - h / 2, w, h);
+    ctx.drawImage((fun ? this.funTiles : this.tiles)[p.c], x - w / 2, y - h / 2, w, h);
     if (p.s === 'h' || p.s === 'v') {
       const wob = 1 + Math.sin(t / 120) * 0.05;
       ctx.drawImage(p.s === 'h' ? this.cache.stripeH : this.cache.stripeV, x - w * wob / 2, y - h * wob / 2, w * wob, h * wob);
@@ -2473,7 +2558,7 @@ const Fx = {
       const w = ctx.measureText(word).width, g = ctx.createLinearGradient(-w / 2, 0, w / 2, 0);
       hues.forEach((h, i) => g.addColorStop(i / Math.max(1, hues.length - 1), h));
       ctx.lineJoin = 'round';
-      ctx.lineWidth = size * 0.3; ctx.strokeStyle = '#4a2b5e'; ctx.strokeText(word, 0, size * 0.06);
+      ctx.lineWidth = size * 0.3; ctx.strokeStyle = '#3d5229'; ctx.strokeText(word, 0, size * 0.06);
       ctx.lineWidth = size * 0.16; ctx.strokeStyle = '#fff'; ctx.strokeText(word, 0, 0);
       ctx.fillStyle = g; ctx.fillText(word, 0, 0);
       ctx.restore(); ctx.globalAlpha = 1;
@@ -2571,14 +2656,14 @@ const Fx = {
 const FONT = '"Hiragino Maru Gothic ProN","Yuanti SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif';
 
 // 动物消消乐 · the wheel before a math page (decli 2026-10-19: draw how many sums like a lucky draw, so the page starts
-// with a bit of fun instead of a chore; 10 to 20 since decli 2026-11-02). She taps it; it winds back a little and spins, slows down with a
+// with a bit of fun instead of a chore; 2 to 16 since decli 2026-11-05). She taps it; it winds back a little and spins, slows down with a
 // tick and a flick of the pointer at every peg, and lands with lights, confetti and her number popping up. Every slice
 // is the same size and the number is drawn fairly before the spin (never steered to a near miss); every number is good
 // news, a few a warm-up and many a challenge (L.wheel.land). What it lands on is kept until the page is done, so
 // leaving and coming back can't spin again.
 const Wheel = {
-  // one colour a slice, round the rainbow (MATH_WHEEL has 11 numbers)
-  COLS: ['#ff7fb0', '#ff8f6b', '#ffb347', '#ffd23a', '#b4e05a', '#5fd38a', '#45d0b5', '#5fc0ff', '#7d9bff', '#a283ff', '#d27cff'],
+  // one colour a slice: the 怪趣森林 felt colours round the rainbow (MATH_WHEEL has 7 numbers)
+  COLS: ['#ef8fa8', '#ee8a3c', '#f2c443', '#79b956', '#3fb0a3', '#5c9ddc', '#a385d8'],
   // on the math layer; resolves with the number, 'skip' (a parent skipped the page) or 'again' (a parent changed the
   // settings, so the page starts over the new way)
   spin() {
@@ -2598,7 +2683,7 @@ const Wheel = {
       const stage = el('div', 'wstage'), cv = el('canvas'), big = el('div', 'wbig'), hand = el('div', 'whand', '👆');
       stage.appendChild(cv); stage.appendChild(big); stage.appendChild(hand);
       root.appendChild(stage);
-      const x = cv.getContext('2d'), panda = Art.friend(FRIENDS.findIndex(f => f.id === 'panda'), 256, 230);
+      const x = cv.getContext('2d'), pal = Art.friend(Pal.i(), 256, 236);   // the companion in the hub
       let S = 0, dpr = 1, rot = Math.random() * TAU, state = 'idle', t = 0, from = 0, to = 0, flap = 0, peg = 0, tickAt = 0, won = -1, n = 0;
       let last = performance.now(), raf = 0, idle = 0, asked = 1;
       const DUR = 3000;   // short: the wheel is a moment of fun before the sums, not a show to sit through
@@ -2614,17 +2699,17 @@ const Wheel = {
         x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, S, S);
         const cx = S / 2, cy = S * 0.52, R = S * 0.39;
         // shadow, golden rim and its light bulbs: a slow chase while waiting, a fast one while spinning, all blinking together when it lands
-        x.fillStyle = 'rgba(110,50,130,.16)'; circle(cx, cy + R * 0.06, R * 1.14); x.fill();
+        x.fillStyle = 'rgba(60,80,40,.18)'; circle(cx, cy + R * 0.06, R * 1.14); x.fill();
         const rim = x.createLinearGradient(0, cy - R, 0, cy + R);
-        rim.addColorStop(0, '#ffe680'); rim.addColorStop(0.5, '#ffb52e'); rim.addColorStop(1, '#e58a00');
+        rim.addColorStop(0, '#a8cc7c'); rim.addColorStop(0.5, '#7aa651'); rim.addColorStop(1, '#557f38');   // a leafy felt rim
         x.fillStyle = rim; circle(cx, cy, R * 1.12); x.fill();
-        x.lineWidth = R * 0.02; x.strokeStyle = '#fff6cf'; circle(cx, cy, R * 1.1); x.stroke();
+        x.lineWidth = R * 0.02; x.strokeStyle = '#eef6d8'; circle(cx, cy, R * 1.1); x.stroke();
         const B = 18, step = state === 'spin' ? Math.floor(now / 70) : Math.floor(now / 380);
         for (let i = 0; i < B; i++) {
           const a = -Math.PI / 2 + i * TAU / B, bx = cx + Math.cos(a) * R * 1.055, by = cy + Math.sin(a) * R * 1.055;
           const on = state === 'won' ? Math.floor(now / 160) % 2 === 0 : (i + step) % 3 === 0;
           if (on) { x.fillStyle = 'rgba(255,255,255,.55)'; circle(bx, by, R * 0.06); x.fill(); }
-          x.fillStyle = on ? (i % 2 ? '#fff8c4' : '#ffe1f0') : '#c97a00'; circle(bx, by, R * 0.032); x.fill();
+          x.fillStyle = on ? (i % 2 ? '#fff6c8' : '#ffe2c4') : '#4a6e30'; circle(bx, by, R * 0.032); x.fill();
         }
         // the slices (their numbers are drawn upright afterwards, so a 6 never turns into a 9)
         x.save(); x.translate(cx, cy); x.rotate(rot);
@@ -2641,27 +2726,27 @@ const Wheel = {
         for (let i = 0; i < N; i++) {   // the pegs that flick the pointer
           const a = -Math.PI / 2 + i * A;
           x.fillStyle = '#fff'; circle(Math.cos(a) * R * 0.95, Math.sin(a) * R * 0.95, R * 0.035); x.fill();
-          x.fillStyle = '#e58a00'; circle(Math.cos(a) * R * 0.95, Math.sin(a) * R * 0.95, R * 0.015); x.fill();
+          x.fillStyle = '#557f38'; circle(Math.cos(a) * R * 0.95, Math.sin(a) * R * 0.95, R * 0.015); x.fill();
         }
         x.restore();
         x.textAlign = 'center'; x.textBaseline = 'middle'; x.lineJoin = 'round';
         for (let i = 0; i < N; i++) {
           const m = -Math.PI / 2 + (i + 0.5) * A + rot, tx = cx + Math.cos(m) * R * 0.68, ty = cy + Math.sin(m) * R * 0.68;
           x.font = `900 ${Math.round(R * (i === won ? 0.27 : 0.22))}px ${FONT}`;
-          x.lineWidth = R * 0.05; x.strokeStyle = 'rgba(80,30,90,.55)'; x.strokeText(MATH_WHEEL[i], tx, ty + R * 0.01);
+          x.lineWidth = R * 0.05; x.strokeStyle = 'rgba(52,64,34,.55)'; x.strokeText(MATH_WHEEL[i], tx, ty + R * 0.01);
           x.fillStyle = '#fff'; x.fillText(MATH_WHEEL[i], tx, ty + R * 0.01);
         }
-        // the hub with the panda, breathing while it waits to be tapped
+        // the hub with her companion, breathing while it waits to be tapped
         const pulse = state === 'idle' ? 1 + 0.05 * Math.sin(now / 220) : 1, hr = R * 0.25 * pulse;
         if (state === 'idle') { x.fillStyle = `rgba(255,255,255,${0.3 + 0.2 * Math.sin(now / 220)})`; circle(cx, cy, hr * 1.25); x.fill(); }
         x.fillStyle = '#fff'; circle(cx, cy, hr); x.fill();
-        x.lineWidth = R * 0.03; x.strokeStyle = '#ffb52e'; x.stroke();
-        if (won < 0) x.drawImage(panda, cx - hr * 0.92, cy - hr * 0.92, hr * 1.84, hr * 1.84);   // her number takes its place
+        x.lineWidth = R * 0.03; x.strokeStyle = '#7aa651'; x.stroke();
+        if (won < 0) x.drawImage(pal, cx - hr * 0.92, cy - hr * 0.92, hr * 1.84, hr * 1.84);   // her number takes its place
         // the pointer at the top, flicked by each peg and springing back
         x.save(); x.translate(cx, cy - R * 1.2); x.rotate(flap);
         x.beginPath(); x.moveTo(-R * 0.11, 0); x.quadraticCurveTo(-R * 0.1, R * 0.16, 0, R * 0.32); x.quadraticCurveTo(R * 0.1, R * 0.16, R * 0.11, 0);
         x.arc(0, 0, R * 0.11, 0, Math.PI, true); x.closePath();
-        x.fillStyle = '#ff4f8a'; x.fill(); x.lineWidth = R * 0.025; x.strokeStyle = '#fff'; x.stroke();
+        x.fillStyle = '#ee8a3c'; x.fill(); x.lineWidth = R * 0.025; x.strokeStyle = '#fff'; x.stroke();
         x.fillStyle = '#ffd23a'; circle(0, 0, R * 0.05); x.fill();
         x.restore();
       }
@@ -2747,9 +2832,18 @@ const Teach = {
   on: false, s: null, imgs: {}, W: {},
   WAYS: ['col', 'frame', 'line', 'split'],
   CW: 0.96, CH: 2.3, CG: 0.24, MC: 0.43,   // a bundle (its width, height, the gap after it, one of its cells) in frame cells
-  img(i) {   // a friend's head as a picture, made once
-    if (!this.imgs[i]) this.imgs[i] = Art.friend(i, 128, 120).toDataURL();
-    return this.imgs[i];
+  img(i, face) {   // a friend's head as a picture (face as in Art.friendTo), made once
+    const key = i + (face || 'b');
+    if (!this.imgs[key]) this.imgs[key] = Art.friend(i, 128, 120, face).toDataURL();
+    return this.imgs[key];
+  },
+  // the owl's face (decli's four, 2026-11-05): 'b' listening, 't' talking, 'f' praising, 'c' encouraging; a mood holds
+  // its face for a while, then the owl goes back to listening or talking with the voice
+  owlFace(face, ms) {
+    const s = this.s; if (!s) return;
+    if (ms) s.moodT = performance.now() + ms;
+    const src = this.img(Art.byId('owl'), face);
+    if (s.owl.dataset.face !== face) { s.owl.src = src; s.owl.dataset.face = face; }
   },
   // how often each way was used, and how often the sum was then answered without counting together (家长设置 shows it)
   stat(w) { const d = Store.d; if (!d.ways) d.ways = {}; return d.ways[w] || (d.ways[w] = [0, 0]); },
@@ -2760,7 +2854,7 @@ const Teach = {
     this.on = true;
     const kinds = q.nums.map((_, j) => ANIMALS[j % ANIMALS.length].h);
     const ov = el('div', 'teach'), top = el('div', 'thead'), stage = el('div', 'tstage');
-    const owl = el('img', 'owl'); owl.src = this.img(FRIENDS.findIndex(f => f.id === 'owl')); owl.alt = '';
+    const owl = el('img', 'owl'); owl.src = this.img(Art.byId('owl')); owl.alt = ''; owl.dataset.face = 'b';
     owl.onclick = () => { Snd.play('tap'); Voice.say(this.s && this.s.line); };   // tap the teacher to hear what to do again
     top.appendChild(owl);
     const eq = el('div', 'teq'), parts = [];
@@ -2780,8 +2874,8 @@ const Teach = {
     ov.appendChild(top); ov.appendChild(stage); host.appendChild(ov);
     const hand = el('div', 'whand', '👆'); stage.appendChild(hand);
     const s = this.s = {
-      q, o, ov, stage, ans, parts, kinds, hand, swap, timers: [], gen: 0, line: '', way: '', w: null, cnt: null, badges: [],
-      guided: false, idle: 0,
+      q, o, ov, stage, ans, parts, kinds, hand, swap, owl, timers: [], gen: 0, line: '', way: '', w: null, cnt: null, badges: [],
+      guided: false, idle: 0, moodT: 0,
     };
     s.later = (fn, ms) => { const id = setTimeout(() => { s.timers = s.timers.filter(x => x !== id); if (this.s === s) fn(); }, ms); s.timers.push(id); };
     s.say = (t, o2) => { s.line = t; Voice.say(t, o2); };
@@ -2789,6 +2883,7 @@ const Teach = {
     // the teacher talks while the voice does, and a hand shows where to tap when she waits
     s.tick = setInterval(() => {
       owl.classList.toggle('talk', Voice.busy);
+      if (performance.now() > s.moodT) this.owlFace(Voice.busy ? 't' : 'b');
       const t = this.target();
       if (!t) { hand.classList.remove('on'); s.idle = 0; return; }
       s.idle += 150;
@@ -2884,12 +2979,12 @@ const Teach = {
     const s = this.s, p = el('div', 'tpic ' + w);
     if (w === 'col') {   // 27 + 15 in columns, the tens tinted like the bundles' side of the chart, the ones like the animals'
       const T = (x, y, t, fill, size = 30) => `<text x="${x}" y="${y}" font-size="${size}" font-weight="900" text-anchor="middle" fill="${fill}">${t}</text>`;
-      p.innerHTML = `<svg viewBox="0 0 200 140"><rect x="80" y="4" width="42" height="132" rx="10" fill="#f3e9ff"/><rect x="126" y="4" width="42" height="132" rx="10" fill="#fff1d6"/>`
-        + T(101, 30, '十', '#b9a1d6', 15) + T(147, 30, '个', '#e0a860', 15)
-        + T(101, 62, '2', '#7b4dff') + T(147, 62, '7', '#7b4dff') + T(50, 98, '+', '#a58cba') + T(101, 98, '1', '#ff8a1f') + T(147, 98, '5', '#ff8a1f')
-        + `<line x1="32" y1="108" x2="170" y2="108" stroke="#7a5a8e" stroke-width="4" stroke-linecap="round"/>` + T(116, 106, '1', '#ff8a1f', 15)
-        + `<rect x="89" y="113" width="24" height="20" rx="5" fill="#fff" stroke="#ffb000" stroke-width="3" stroke-dasharray="5 4"/>`
-        + `<rect x="135" y="113" width="24" height="20" rx="5" fill="#fff" stroke="#ffb000" stroke-width="3" stroke-dasharray="5 4"/></svg>`;
+      p.innerHTML = `<svg viewBox="0 0 200 140"><rect x="80" y="4" width="42" height="132" rx="10" fill="#f1f0dc"/><rect x="126" y="4" width="42" height="132" rx="10" fill="#fff1d6"/>`
+        + T(101, 30, '十', '#a9b48c', 15) + T(147, 30, '个', '#e0a860', 15)
+        + T(101, 62, '2', '#2f8f86') + T(147, 62, '7', '#2f8f86') + T(50, 98, '+', '#8f9a74') + T(101, 98, '1', '#ff8a1f') + T(147, 98, '5', '#ff8a1f')
+        + `<line x1="32" y1="108" x2="170" y2="108" stroke="#5d6b45" stroke-width="4" stroke-linecap="round"/>` + T(116, 106, '1', '#ff8a1f', 15)
+        + `<rect x="89" y="113" width="24" height="20" rx="5" fill="#fff" stroke="#f2b630" stroke-width="3" stroke-dasharray="5 4"/>`
+        + `<rect x="135" y="113" width="24" height="20" rx="5" fill="#fff" stroke="#f2b630" stroke-width="3" stroke-dasharray="5 4"/></svg>`;
     } else if (w === 'frame') {
       const g = el('div', 'tframe');
       for (let i = 0; i < 10; i++) {
@@ -2900,16 +2995,16 @@ const Teach = {
       p.appendChild(g);
     } else if (w === 'line') {
       let t = '';
-      for (let i = 0; i <= 10; i++) t += `<line x1="${10 + i * 18}" y1="96" x2="${10 + i * 18}" y2="${i % 5 ? 106 : 112}" stroke="#c9b8dd" stroke-width="3" stroke-linecap="round"/>`;
+      for (let i = 0; i <= 10; i++) t += `<line x1="${10 + i * 18}" y1="96" x2="${10 + i * 18}" y2="${i % 5 ? 106 : 112}" stroke="#c2c8a6" stroke-width="3" stroke-linecap="round"/>`;
       const arc = (a, b) => `<path d="M${a} 94 Q${(a + b) / 2} 62 ${b} 94" fill="none" stroke="#ff8a1f" stroke-width="4" stroke-linecap="round"/>`;
-      p.innerHTML = `<svg viewBox="0 0 200 120"><line x1="4" y1="96" x2="196" y2="96" stroke="#b9a1d6" stroke-width="5" stroke-linecap="round"/>${t}`
-        + `${arc(46, 64)}${arc(64, 82)}${arc(82, 100)}<image href="${this.img(FRIENDS.findIndex(f => f.id === 'frog'))}" x="80" y="40" width="44" height="44"/></svg>`;
+      p.innerHTML = `<svg viewBox="0 0 200 120"><line x1="4" y1="96" x2="196" y2="96" stroke="#a9b48c" stroke-width="5" stroke-linecap="round"/>${t}`
+        + `${arc(46, 64)}${arc(64, 82)}${arc(82, 100)}<image href="${this.img(Art.byId('frog'))}" x="80" y="40" width="44" height="44"/></svg>`;
     } else {
       const col = '#ff8a1f', dots = (cx, cy, n) => Array.from({ length: n }, (_, i) => `<circle cx="${cx + (i - (n - 1) / 2) * 13}" cy="${cy}" r="5.5" fill="${col}"/>`).join('');
-      p.innerHTML = `<svg viewBox="0 0 200 140"><path d="M88 52 L58 86 M112 52 L142 86" stroke="#c9b8dd" stroke-width="4" stroke-linecap="round"/>`
-        + `<circle cx="100" cy="32" r="30" fill="#fff" stroke="#d9c6ea" stroke-width="4"/>${dots(100, 32, 5)}`
-        + `<circle cx="52" cy="106" r="28" fill="#fff" stroke="#d9c6ea" stroke-width="4"/>${dots(52, 106, 2)}`
-        + `<circle cx="148" cy="106" r="28" fill="#fff8d6" stroke="#ffb000" stroke-width="4" stroke-dasharray="7 5"/>${dots(148, 106, 3)}</svg>`;
+      p.innerHTML = `<svg viewBox="0 0 200 140"><path d="M88 52 L58 86 M112 52 L142 86" stroke="#c2c8a6" stroke-width="4" stroke-linecap="round"/>`
+        + `<circle cx="100" cy="32" r="30" fill="#fff" stroke="#d8d2b4" stroke-width="4"/>${dots(100, 32, 5)}`
+        + `<circle cx="52" cy="106" r="28" fill="#fff" stroke="#d8d2b4" stroke-width="4"/>${dots(52, 106, 2)}`
+        + `<circle cx="148" cy="106" r="28" fill="#fff8d6" stroke="#f2b630" stroke-width="4" stroke-dasharray="7 5"/>${dots(148, 106, 3)}</svg>`;
     }
     return p;
   },
@@ -2942,6 +3037,7 @@ const Teach = {
     const s = this.s;
     if (s.cnt && !s.cnt.fin) { s.say(s.w.guideLine || L.teach.guide); return; }   // still counting: keep going
     const again = !!s.cnt;
+    this.owlFace('c', 2000);
     this.unbadge();
     s.cnt = { items, i: 0, fin: false };
     s.guided = true; s.idle = 1500;
@@ -3000,7 +3096,7 @@ const Teach = {
   // the answer was wrong: before the picture is finished, finish it first; after, count it together (again)
   wrong() {
     const s = this.s; if (!s) return;
-    this.shake();
+    this.shake(); this.owlFace('c', 2200);
     if (!s.w) s.say(s.line || L.teach.pick);
     else if (!s.w.ready()) s.say(L.teach.early);
     else if (s.w.wrongMain) s.w.wrongMain();   // 列竖式: the answer is under the line already, she copied it wrong
@@ -3008,6 +3104,7 @@ const Teach = {
   },
   right() {
     const s = this.s; if (!s) return;
+    this.owlFace('f', 2000);
     if (s.way && !s.guided) { this.stat(s.way)[1]++; Store.save(); }
     this.close(true);
   },
@@ -3289,7 +3386,7 @@ Teach.W.col = (c, first) => {
   function check() {
     const st = f.step;
     if (+f.got === st.ans) {
-      Snd.play('right'); f.busy = true; f.step = null;
+      Snd.play('right'); f.busy = true; f.step = null; Teach.owlFace('f', 1500);
       Teach.unbadge(); s.cnt = null;
       st.bx.classList.remove('ask'); st.bx.classList.add('ok'); st.bx.textContent = st.ans;
       const r = st.bx.getBoundingClientRect();
@@ -3526,13 +3623,13 @@ Teach.W.line = (c, first) => {
   const svg = c.sv('svg', { class: 'tline' }), ticks = c.sv('g'), arcs = c.sv('g');
   svg.appendChild(ticks); svg.appendChild(arcs); root.appendChild(svg);
   const start = el('div', 'tstart', q.nums[0]); start.style.color = c.col(0); root.appendChild(start);
-  const frog = el('div', 'tfrog'), fi = el('img'); fi.src = Teach.img(FRIENDS.findIndex(x => x.id === 'frog')); fi.alt = '';
+  const frog = el('div', 'tfrog'), fi = el('img'); fi.src = Teach.img(Art.byId('frog')); fi.alt = '';
   frog.appendChild(fi); root.appendChild(frog);
   const f = { at: q.nums[0], i: 0, j: 0, n: 0, phase: 'intro', busy: true, drawn: [], wait: 0 };
   const G = {};
   const X = x => G.m + (x - lo) * G.sp;
   const arcH = h => h.n === 10 ? Math.min(G.H * 0.3, G.sp * 10 * 0.42) : clamp(G.sp * 0.75, 12, 40);
-  const HOP = ['#ff8a1f', '#22c38a', '#5fb8ff'];   // the arcs of each number added or taken away
+  const HOP = ['#ff8a1f', '#73a848', '#5fb8ff'];   // the arcs of each number added or taken away
   function geo() {
     const W = root.clientWidth, H = root.clientHeight;
     Object.assign(G, { W, H, m: Math.max(34, W * 0.06), Y: H * 0.6 });
@@ -3734,7 +3831,7 @@ Teach.W.split = (c, first) => {
   }
   function check() {
     if (+f.got === f.r.ans) {
-      Snd.play('right'); f.busy = true;
+      Snd.play('right'); f.busy = true; Teach.owlFace('f', 1500);
       Teach.unbadge(); s.cnt = null;
       f.box.classList.remove('ask'); f.row.classList.add('ok');
       const b = f.box.getBoundingClientRect();
@@ -3810,15 +3907,38 @@ const MathGate = {
     }
     return { text: '1 + 1', ans: 2, nums: [1, 1], signs: ['+'] };
   },
+  // how hard a sum is (decli 2026-11-05: a page should start easy and work up, and mix small and big numbers):
+  // 0 within 20 with no carrying or borrowing, 1 within 20 with one, 2 beyond 20 with none, 3 beyond 20 with one
+  band(q) {
+    let v = q.nums[0], big = v > 20, cross = false;
+    q.signs.forEach((sg, j) => {
+      const b = q.nums[j + 1];
+      if (sg === '+' ? v % 10 + b % 10 >= 10 : v % 10 < b % 10) cross = true;
+      v = sg === '+' ? v + b : v - b;
+      if (b > 20 || v > 20) big = true;
+    });
+    return (big ? 2 : 0) + (cross ? 1 : 0);
+  },
+  // how many sums of each band a page of n has: within 20 and beyond about half and half (all within 20 when that is
+  // the range), more of the easier kind of each
+  share(n, max) {
+    const w = max > 20 ? [3, 2, 3, 2] : [3, 2, 0, 0], sum = w.reduce((a, b) => a + b, 0);
+    const raw = w.map(x => x * n / sum), got = raw.map(Math.floor);
+    raw.map((x, i) => [x - got[i], i]).sort((a, b) => b[0] - a[0] || a[1] - b[1]).slice(0, n - got.reduce((a, b) => a + b, 0)).forEach(([, i]) => got[i]++);
+    return got;
+  },
+  // a page, easiest first: within 20 without carrying, beyond 20 without, then within 20 with carrying or borrowing,
+  // then beyond 20 with it; adding and taking away by turns in each band
   page(cfg, count) {
-    const out = [], seen = new Set();
-    for (let k = 0; out.length < count && k < count * 30; k++) {
-      // with both signs, the first sign alternates so a page is half adding, half taking away
-      const q = this.problem(cfg.max, cfg.ops, cfg.mode, cfg.mode === 'mix' ? (out.length % 2 ? '-' : '+') : null);
-      if (seen.has(q.text)) continue;
-      seen.add(q.text); out.push(q);
+    const out = [], seen = new Set(), want = this.share(count, cfg.max);
+    for (const b of [0, 2, 1, 3]) {
+      for (let k = 0, made = 0; made < want[b] && k < 600; k++) {
+        const sign = cfg.mode === 'mix' ? (made % 2 ? '-' : '+') : null;
+        const q = this.problem(b < 2 ? Math.min(20, cfg.max) : cfg.max, cfg.ops, cfg.mode, sign);
+        if (seen.has(q.text) || (this.band(q) !== b && k < 500)) continue;   // after 500 tries any sum of the range will do
+        seen.add(q.text); out.push(q); made++;
+      }
     }
-    for (let i = out.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [out[i], out[j]] = [out[j], out[i]]; }
     return out;
   },
   // a sum on its card, the signs in their own tags so a hint can point at them
@@ -4158,25 +4278,27 @@ const MathGate = {
 };
 
 // 动物消消乐 · the blind box after each win (decli asked for a gift to open after a level): a box drops in, she taps it
-// three times, and an animal friend from decli's picture pops out. More stars give a finer box and better odds of a
+// three times, and a friend from decli's 怪趣森林 pictures pops out. More stars give a finer box and better odds of a
 // rare friend; a friend she does not have yet always comes before one she has. The album (🎁 on the map) shows every
-// friend, the missing ones as shadows to guess. Everything here is pictures and the narrator's voice: she can't read.
+// friend, island by island, the missing ones as shadows to guess. Everything here is pictures and the narrator's voice: she can't read.
 const Gift = {
   // chance of 稀有 and 隐藏款 for a box won with 1, 2 or 3 stars
   ODDS: [[0.12, 0], [0.12, 0], [0.25, 0.04], [0.4, 0.1]],
   // the box by stars: light, base, dark, ribbon, ribbon shade
-  LOOK: [null, ['#ffd3e8', '#ff8fc4', '#d9478d', '#fff3a6', '#e0a800'], ['#e6dbff', '#a982ff', '#6a3fd6', '#ffd0e6', '#e05a9a'],
+  LOOK: [null, ['#ffe2c4', '#f5a65b', '#c8742a', '#fff3c4', '#e0a800'], ['#e4f1cf', '#93be68', '#557f38', '#ffd9c2', '#e07a4a'],
     ['#fff3bf', '#ffcf3a', '#d98e00', '#ff6b8a', '#c42c55']],
   on: false,
 
   owned(i) { return FRIENDS[i].tier < 0 || (Store.d.gifts[FRIENDS[i].id] || 0) > 0; },
   count() { return FRIENDS.filter(f => this.owned(f.i)).length; },
-  // rare: the box for a whole island won, always 稀有 or 隐藏款
-  roll(stars, rare) {
+  // rare: the box for a whole island won, always 稀有 or 隐藏款. isle: the island she won it on, whose friends come
+  // first (decli 2026-11-05: each island has its own cast, so a new island brings new friends to find)
+  roll(stars, rare, isle) {
     const [pr, ph] = rare ? [0.75, 0.25] : this.ODDS[stars] || this.ODDS[1], r = Math.random();
     const tier = r < ph ? 2 : r < ph + pr ? 1 : 0;
     const of = t => FRIENDS.filter(f => f.tier === t), fresh = l => l.filter(f => !this.owned(f.i));
-    let pool = fresh(of(tier));
+    const here = l => { const h = l.filter(f => f.isle === isle); return h.length ? h : l; };
+    let pool = here(fresh(of(tier)));
     // that tier is complete: most of the time a missing ordinary or rare friend comes instead (never a free 隐藏款)
     if (!pool.length && Math.random() < 0.7) pool = fresh([...of(0), ...of(1)]);
     if (!pool.length) pool = of(tier);
@@ -4186,7 +4308,8 @@ const Gift = {
   // ---------- opening a box: resolves when she has taken the friend ----------
   open(stars, o = {}) {
     return new Promise(resolve => {
-      const d = Store.d, f = this.roll(stars, o.rare), fresh = !this.owned(f.i);
+      const d = Store.d, f = this.roll(stars, o.rare, o.isle), fresh = !this.owned(f.i);
+      Art.bigFace(f.i);   // the big picture comes in while the box drops and she taps it
       d.gifts[f.id] = (d.gifts[f.id] || 0) + 1;
       if (fresh) d.giftFresh = [...(d.giftFresh || []), f.id];
       d.seen.boxes = (d.seen.boxes || 0) + 1;
@@ -4203,7 +4326,7 @@ const Gift = {
       ov.addEventListener('pointerdown', e => { if (e.target !== keep) this.tap(e.clientX, e.clientY); });
       document.body.appendChild(ov);
       Fx.hush();
-      this.on = true; this.prize = null; this.W = 0;
+      this.on = true; this.prize = null; this.prizeBig = false; this.W = 0;
       let last = performance.now();
       const step = now => {
         if (!this.on) return;
@@ -4283,14 +4406,19 @@ const Gift = {
     const s = this.s, g = this.geo(), dpr = Math.min(devicePixelRatio || 1, 2), cv = this.cv;
     if (g.W !== this.W || g.H !== this.H) {
       this.W = g.W; this.H = g.H; cv.width = Math.round(g.W * dpr); cv.height = Math.round(g.H * dpr);
-      cv.style.width = g.W + 'px'; cv.style.height = g.H + 'px'; this.prize = null;
+      cv.style.width = g.W + 'px'; cv.style.height = g.H + 'px'; this.prize = null; this.prizeBig = false;
     }
-    if (!this.prize) this.prize = Art.friend(s.f.i, g.P * dpr, g.P * dpr * 0.92);
+    // the friend's big fun face (big/<id>.webp, asked for when the box opened), or its fun face from the sheet until it is in
+    if (!this.prize || (!this.prizeBig && Art.bigFace(s.f.i))) {
+      const big = Art.bigFace(s.f.i), side = g.P * dpr;
+      if (big) { this.prize = Art.canvas(side, side); const x2 = this.prize.getContext('2d'); x2.imageSmoothingQuality = 'high'; x2.drawImage(big, 0, 0, side, side); this.prizeBig = true; }
+      else this.prize = Art.friend(s.f.i, side, side * HEADS.fill, 'f');
+    }
     const x = cv.getContext('2d');
     x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, cv.width, cv.height); x.setTransform(dpr, 0, 0, dpr, 0, 0);
     const fade = s.phase === 'leave' ? 1 - s.leaveT / 480 : Math.min(1, s.t / 250);
     x.globalAlpha = fade;
-    x.fillStyle = 'rgba(46,20,78,0.72)'; x.fillRect(0, 0, g.W, g.H);
+    x.fillStyle = 'rgba(30,44,22,0.72)'; x.fillRect(0, 0, g.W, g.H);
     const opened = s.phase === 'open' || s.phase === 'show' || s.phase === 'leave';
     const ok = opened ? Math.min(1, s.openT / 500) : 0;
     // light rays: soft behind the box, then the friend's colour (gold for 稀有, a rainbow for 隐藏款)
@@ -4333,7 +4461,7 @@ const Gift = {
     }
     // the shadow on the floor
     x.save(); x.globalAlpha *= a * (s.phase === 'drop' ? Math.min(1, s.t / 650) : 1);
-    x.fillStyle = 'rgba(20,6,40,0.35)'; x.beginPath(); x.ellipse(g.bx, g.by + S * 0.38, S * 0.6 * sx, S * 0.09, 0, 0, 7); x.fill();
+    x.fillStyle = 'rgba(14,24,8,0.35)'; x.beginPath(); x.ellipse(g.bx, g.by + S * 0.38, S * 0.6 * sx, S * 0.09, 0, 0, 7); x.fill();
     x.restore();
     x.save();
     x.translate(g.bx, g.by + S * 0.36 + dy); x.rotate(rot); x.scale(sx, sy); x.translate(0, -S * 0.36);
@@ -4356,7 +4484,7 @@ const Gift = {
   // the box, its body's centre at (0, 0); lid offset {x, y, r} once it is flying; glow 0-1 = light leaking out;
   // bodyA the body's opacity (it fades as it sinks away; the lid stays whole)
   drawBox(x, S, look, lid, glow, bodyA) {
-    const [lt, base, dk, rb, rbd] = look, w = S, h = S * 0.72, r = S * 0.07, lw = S * 0.028, ink = '#4a2b5e', rw = S * 0.17;
+    const [lt, base, dk, rb, rbd] = look, w = S, h = S * 0.72, r = S * 0.07, lw = S * 0.028, ink = '#3d5229', rw = S * 0.17;
     x.lineJoin = 'round';
     const ribbon = (y0, hh) => {
       const rg = x.createLinearGradient(-rw / 2, 0, rw / 2, 0);
@@ -4370,7 +4498,7 @@ const Gift = {
     x.save(); Art.rr(x, -w / 2, -h / 2, w, h, r); x.clip();
     ribbon(-h / 2, h);
     x.fillStyle = 'rgba(255,255,255,0.3)'; Art.rr(x, -w / 2 + S * 0.06, -h / 2 + S * 0.07, S * 0.07, h * 0.62, S * 0.035); x.fill();
-    x.fillStyle = 'rgba(60,20,80,0.18)'; x.fillRect(-w / 2, -h / 2, w, S * 0.05);   // the lid's shadow
+    x.fillStyle = 'rgba(40,60,20,0.18)'; x.fillRect(-w / 2, -h / 2, w, S * 0.05);   // the lid's shadow
     x.restore();
     Art.rr(x, -w / 2, -h / 2, w, h, r); x.lineWidth = lw; x.strokeStyle = ink; x.stroke();
     // the question-mark sticker on the ribbon
@@ -4436,7 +4564,7 @@ const Gift = {
       x.restore();
     } else {
       x.save(); x.translate(cx + P * 0.38, cy + P * 0.34); x.scale(e, e);
-      Art.rr(x, -P * 0.1, -P * 0.06, P * 0.2, P * 0.12, P * 0.06); x.fillStyle = '#7b4dff'; x.fill(); x.lineWidth = P * 0.014; x.strokeStyle = '#fff'; x.stroke();
+      Art.rr(x, -P * 0.1, -P * 0.06, P * 0.2, P * 0.12, P * 0.06); x.fillStyle = '#8466c4'; x.fill(); x.lineWidth = P * 0.014; x.strokeStyle = '#fff'; x.stroke();
       x.font = `900 ${P * 0.075}px ${FONT}`; x.fillStyle = '#fff'; x.fillText('×' + s.n, 0, P * 0.004);
       x.restore();
     }
@@ -4457,38 +4585,73 @@ const Gift = {
     }
   },
 
-  // ---------- the album: every friend on one page, ten in a row like decli's pictures ----------
-  album() {
-    const d = Store.d, fresh = new Set(d.giftFresh || []);
-    d.giftFresh = []; Store.save();
+  // ---------- the album (decli 2026-11-05): a page for each island and the friends who live there ----------
+  // The islands are tabs along the top, each with how many of its friends she has. A friend she has found shows its fun
+  // face (and its name and nickname when tapped); one still in a box is a shadow with a question mark. The twelve
+  // partners (PALS) wear a heart: tapping one she has makes it her companion (Pal), shown with a ring.
+  album(k) {
+    const d = Store.d;
+    if (k == null) {   // from the map: what is new is shown once, on the island it came from
+      this.fresh = new Set(d.giftFresh || []);
+      d.giftFresh = []; Store.save();
+      const nf = FRIENDS.find(f => this.fresh.has(f.id));
+      k = nf ? nf.isle : d.albumIsle >= 0 ? d.albumIsle : Math.max(0, d.isle);
+    }
+    if (d.albumIsle !== k) { d.albumIsle = k; Store.save(); }
     UI.closeModal();
     const root = $('#album'); root.hidden = false; root.innerHTML = '';
     const top = el('div', 'top');
     const back = el('button', 'ibtn', '🗺️'); back.onclick = () => { Snd.play('tap'); root.hidden = true; root.innerHTML = ''; UI.map(); };
     top.appendChild(back);
-    top.appendChild(el('h1', null, '动物收集册'));
+    top.appendChild(el('h1', null, '小伙伴收集册'));
     top.appendChild(el('div', 'pill', `🎁 ${this.count()} / ${FRIENDS.length}`));
     root.appendChild(top);
-    const grid = el('div', 'agrid'); root.appendChild(grid);
-    const slots = FRIENDS.map(f => {
-      const n = d.gifts[f.id] || 0;
-      const b = el('button', 'aslot t' + Math.max(0, f.tier) + (this.owned(f.i) ? '' : ' no') + (n >= 2 ? ' shiny' : ''));
-      if (fresh.has(f.id)) b.appendChild(el('i', 'anew', 'NEW'));
+    const tabs = el('div', 'atabs');
+    ISLANDS.forEach((s, j) => {
+      const all = FRIENDS.filter(f => f.isle === j), got = all.filter(f => this.owned(f.i)).length;
+      const t = el('button', 'atab' + (j === k ? ' on' : '') + (got === all.length ? ' full' : '') + (all.some(f => this.fresh && this.fresh.has(f.id)) ? ' new' : ''));
+      const pic = Art2.img['island-' + (j + 1)];
+      if (pic) { const im = el('img'); im.src = pic.src; im.alt = ''; t.appendChild(im); } else t.appendChild(el('span', 'ic', s.icon));
+      t.appendChild(el('small', null, `${got}/${all.length}`));
+      t.onclick = () => { if (j === k) return; Snd.play('swap'); this.album(j); };
+      tabs.appendChild(t);
+    });
+    root.appendChild(tabs);
+    const page = el('div', 'apage'), grid = el('div', 'agrid');
+    page.appendChild(el('div', 'aname', `${ISLANDS[k].icon} ${ISLANDS[k].name}`));
+    page.appendChild(grid); root.appendChild(page);
+    const list = FRIENDS.filter(f => f.isle === k), pal = Pal.id();
+    const slots = list.map(f => {
+      const n = d.gifts[f.id] || 0, has = this.owned(f.i), isPal = PALS.includes(f.id);
+      const b = el('button', 'aslot t' + Math.max(0, f.tier) + (has ? '' : ' no') + (n >= 2 ? ' shiny' : '') + (isPal ? ' pal' : '') + (f.id === pal ? ' mine' : ''));
+      if (this.fresh && this.fresh.has(f.id)) b.appendChild(el('i', 'anew', 'NEW'));
       if (n > 1) b.appendChild(el('b', null, '×' + n));
+      if (isPal) b.appendChild(el('u', null, f.id === pal ? '✓' : '♥'));
       b.onclick = () => {
-        if (this.owned(f.i)) { Snd.play('select'); Voice.say(L.gift.names[f.i]); b.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.18)' }, { transform: 'scale(1)' }], 380); }
-        else { Snd.play('bad'); Voice.say(L.gift.locked); b.animate([{ transform: 'translateX(-5px)' }, { transform: 'translateX(5px)' }, { transform: 'none' }], 250); }
+        if (!has) { Snd.play('bad'); Voice.say(L.gift.locked); b.animate([{ transform: 'translateX(-5px)' }, { transform: 'translateX(5px)' }, { transform: 'none' }], 250); return; }
+        b.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.15) rotate(-3deg)' }, { transform: 'scale(1)' }], 380);
+        if (isPal && f.id !== Pal.id()) {
+          Snd.play('make'); Pal.choose(f.id);
+          $$('.aslot.mine', grid).forEach(o => { o.classList.remove('mine'); const u = $('u', o); if (u) u.textContent = '♥'; });
+          b.classList.add('mine'); $('u', b).textContent = '✓';
+          const r = b.getBoundingClientRect(); Fx.sparkles(r.left + r.width / 2, r.top + r.height / 2, 14, r.width * 0.6, '#ffd23a');
+        } else { Snd.play('select'); Voice.say(L.gift.who[f.i]); }
       };
       grid.appendChild(b);
       return b;
     });
-    // the heads are drawn once the slots have their size
+    // as many columns as keep the slots square and as big as they can be
     const paint = () => {
-      if (root.hidden) return;
-      const dpr = Math.min(devicePixelRatio || 1, 2), r = slots[0].getBoundingClientRect(), px = Math.floor(Math.min(r.width, r.height) * 0.94);
+      if (root.hidden || !grid.isConnected) return;
+      const W = grid.clientWidth, H = grid.clientHeight, n = list.length, gap = 10;
+      let best = 0, cols = 1;
+      for (let c = 1; c <= n; c++) { const r = Math.ceil(n / c), q = Math.min((W - gap * (c - 1)) / c, (H - gap * (r - 1)) / r); if (q > best) { best = q; cols = c; } }
+      const px = Math.max(30, Math.floor(Math.min(best, 170)));
+      grid.style.gridTemplateColumns = `repeat(${cols}, ${px}px)`; grid.style.gridAutoRows = px + 'px';
+      const dpr = Math.min(devicePixelRatio || 1, 2), cp = Math.floor(px * 0.96);
       slots.forEach((b, i) => {
         const old = $('canvas', b); if (old) old.remove();
-        const c = this.slot(FRIENDS[i], px * dpr); c.style.width = c.style.height = px + 'px';
+        const c = this.slot(list[i], cp * dpr); c.style.width = c.style.height = cp + 'px';
         b.prepend(c);
       });
     };
@@ -4496,18 +4659,65 @@ const Gift = {
     this._albumResize && removeEventListener('resize', this._albumResize);
     this._albumResize = () => requestAnimationFrame(paint);
     addEventListener('resize', this._albumResize);
-    if (!d.seen.album) { d.seen.album = 1; Store.save(); Voice.say(L.gift.album); }
+    if (!d.seen.album2) { d.seen.album2 = 1; Store.save(); Voice.say(L.gift.album); }
   },
-  // a friend for the album: its head, or its shadow with a question mark if she has not found it yet
+  // a friend for the album: its fun face, or its shadow with a question mark if she has not found it yet
   slot(f, s) {
-    const c = Art.friend(f.i, s, s * 0.86);
-    if (this.owned(f.i)) return c;
+    const has = this.owned(f.i), c = Art.friend(f.i, s, s * 0.86, has ? 'f' : 'b');
+    if (has) return c;
     const x = c.getContext('2d');
-    x.globalCompositeOperation = 'source-in'; x.fillStyle = f.tier === 2 ? '#d7b8f0' : '#cbbcdb'; x.fillRect(0, 0, s, s);
+    x.globalCompositeOperation = 'source-in'; x.fillStyle = f.tier === 2 ? '#d9cbe6' : f.tier === 1 ? '#e6d9b8' : '#d3d9c4'; x.fillRect(0, 0, s, s);
     x.globalCompositeOperation = 'source-over';
     x.font = `900 ${s * 0.38}px ${FONT}`; x.textAlign = 'center'; x.textBaseline = 'middle';
-    x.lineWidth = s * 0.05; x.strokeStyle = '#a593bd'; x.strokeText('?', s / 2, s * 0.53); x.fillStyle = '#fff'; x.fillText('?', s / 2, s * 0.53);
+    x.lineWidth = s * 0.05; x.strokeStyle = '#9aa58a'; x.strokeText('?', s / 2, s * 0.53); x.fillStyle = '#fff'; x.fillText('?', s / 2, s * 0.53);
     return c;
+  },
+};
+
+// 动物消消乐 · 伙伴 (decli 2026-11-05, from her 怪趣森林 style sketch): one of the twelve partners — the characters
+// decli drew with four faces (PALS in lines.js, HEADS.pals) — keeps the child company. It sits at the top of the side
+// panel while they play and reacts with its faces: listening (the board face), leaning in when a piece is picked up
+// (tap), cheering big moves and wins (fun), and encouraging when the moves run low, the 小帮手 comes or a game is lost
+// (cheer). It also stands for the child on the map and in the middle of the wheel. The child picks it in the album,
+// from the partners they have; the panda keeps them company until then.
+const Pal = {
+  root: null, cv: null, bub: null, face: 'b', timer: 0,
+  id() { const id = Store.d.pal; return id && PALS.includes(id) && Gift.owned(Art.byId(id)) ? id : 'panda'; },
+  i() { return Art.byId(this.id()); },
+  // the companion's panel, first in the HUD
+  mount(parent) {
+    const p = el('div', 'panel pal'), cv = this.cv = el('canvas'), bub = this.bub = el('span', 'bub');
+    p.appendChild(cv); p.appendChild(bub); parent.appendChild(p);
+    p.onclick = () => { Snd.play('tap'); this.react('tap'); Voice.say(L.gift.who[this.i()]); };
+    clearTimeout(this.timer);
+    this.root = p; this.face = 'b';
+    requestAnimationFrame(() => this.draw());
+    return p;
+  },
+  draw() {
+    if (!this.cv || !this.root.isConnected) return;
+    const r = this.cv.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2), s = Math.max(48, Math.round(Math.max(r.width, r.height) * dpr * 1.5));
+    if (this.cv.width !== s) this.cv.width = this.cv.height = s;
+    const x = this.cv.getContext('2d'); x.clearRect(0, 0, s, s);
+    Art.friendTo(x, this.i(), s / 2, s / 2, s * 0.92, this.face);
+  },
+  // a face for a while (ms, or its own time), with a little bubble, then back to listening
+  react(kind, ms) {
+    if (!this.root || !this.root.isConnected) return;
+    const [face, t, emo] = { tap: ['t', 1300, '👀'], joy: ['f', 2200, '🎉'], cheer: ['c', 2800, '💪'] }[kind];
+    if (kind === 'tap' && this.face !== 'b' && this.face !== 't') return;   // a cheer is not cut short by a tap
+    this.face = face; this.draw();
+    if (kind !== 'tap') {
+      this.root.animate([{ transform: 'translateY(0) scale(1)' }, { transform: 'translateY(-8px) scale(1.06)' }, { transform: 'translateY(0) scale(1)' }], { duration: 420, easing: 'ease-out' });
+      this.bub.textContent = emo; this.bub.classList.remove('on'); void this.bub.offsetWidth; this.bub.classList.add('on');
+    }
+    clearTimeout(this.timer);
+    this.timer = setTimeout(() => { this.face = 'b'; this.draw(); this.bub.classList.remove('on'); }, Math.min(ms || t, 2e9));
+  },
+  // from the album: the new companion
+  choose(id) {
+    Store.d.pal = id; Store.save();
+    Voice.say(L.pal.chosen[id]);
   },
 };
 
@@ -4521,7 +4731,7 @@ const Game = {
 
   init() {
     this.cv = $('#cv'); this.ctx = this.cv.getContext('2d');
-    for (let i = 0; i < 14; i++) this.bg.push({ x: Math.random(), y: Math.random(), r: rnd(20, 70), v: rnd(0.004, 0.012), h: pick(['255,255,255', '255,190,225', '200,230,255', '255,240,180']) });
+    for (let i = 0; i < 14; i++) this.bg.push({ x: Math.random(), y: Math.random(), r: rnd(20, 70), v: rnd(0.004, 0.012), h: pick(['255,255,255', '200,225,160', '245,215,150', '240,195,170']) });
     const cv = this.cv;
     cv.addEventListener('pointerdown', e => this.pdown(e));
     cv.addEventListener('pointermove', e => this.pmove(e));
@@ -4547,7 +4757,7 @@ const Game = {
     this.b.cells.forEach((x, i) => { if (x.p) this.addSprite(x.p, i); });
     this.hudGoals = this.b.goals.map(g => g.left);
     this.buildHud();
-    $('#hud').hidden = false; $('#map').hidden = true;
+    $('#hud').hidden = false; $('#map').hidden = true; $('#album').hidden = true;
     this.layout();
     // drop the animals in from the top, row by row
     for (const s of this.sprites.values()) { s.r0 = s.r; s.r -= this.b.R + 1; s.delay = (this.b.R - s.r0) * 35 + s.c * 12; }
@@ -4563,7 +4773,7 @@ const Game = {
       for (const s of this.sprites.values()) { if (s.r0 != null) s.r = s.r0; s.r0 = null; }
       this.busy = false; this.lastAct = Clock.now;
       if (this.helped.length) {   // the helping hand shows itself
-        Voice.say(L.helper);
+        Voice.say(L.helper); Pal.react('cheer');
         this.helped.forEach(i => { const [r, c] = this.b.rc(i), [x, y] = this.cellXY(r, c); Fx.ring(x, y, '#ffd23a', this.G.cell * 0.2, this.G.cell, 600, 8); Fx.sparkles(x, y, 12, this.G.cell * 0.6, '#ffd23a'); const p = this.b.cells[i].p; if (p) this.showOff(p); });
         Snd.play('make');
       }
@@ -4614,19 +4824,20 @@ const Game = {
     const W = (G.w + 2 * pad) * d, H = (G.h + 2 * pad) * d;
     const frame = Art.canvas(W, H), fx = frame.getContext('2d');
     fx.scale(d, d); fx.translate(pad, pad);
-    fx.fillStyle = 'rgba(255,255,255,0.92)';
+    // 怪趣森林: a leaf-green felt board with cream cells (decli's sketch, 2026-11-05)
+    fx.fillStyle = '#a3c77a';
     b.cells.forEach((x, i) => { if (x.v) return; const [r, c] = b.rc(i); Art.rr(fx, c * cell - f, r * cell - f, cell + 2 * f, cell + 2 * f, cell * 0.28); fx.fill(); });
     const base = Art.canvas(W, H), x = base.getContext('2d');
-    x.save(); x.shadowColor = 'rgba(74,43,94,0.28)'; x.shadowBlur = 18 * d; x.shadowOffsetY = 6 * d; x.drawImage(frame, 0, 0); x.restore();
+    x.save(); x.shadowColor = 'rgba(61,82,41,0.3)'; x.shadowBlur = 18 * d; x.shadowOffsetY = 6 * d; x.drawImage(frame, 0, 0); x.restore();
     x.scale(d, d); x.translate(pad, pad);
     b.cells.forEach((cl, i) => {
       if (cl.v) return;
       const [r, c] = b.rc(i);
       Art.rr(x, c * cell + 2, r * cell + 2, cell - 4, cell - 4, cell * 0.2);
-      x.fillStyle = (r + c) % 2 ? '#f3e9ff' : '#fdf8ff'; x.fill();
+      x.fillStyle = (r + c) % 2 ? '#f3ecd7' : '#fcf7ea'; x.fill();
     });
     if (b.pg.total) {   // where the penguins go home
-      x.fillStyle = '#22c38a'; x.strokeStyle = '#fff'; x.lineWidth = 3; x.lineJoin = 'round';
+      x.fillStyle = '#73a848'; x.strokeStyle = '#fff'; x.lineWidth = 3; x.lineJoin = 'round';
       b.cells.forEach((cl, i) => {
         if (!b.exit[i]) return;
         const [r, c] = b.rc(i), cx = (c + 0.5) * cell, cy = (r + 1) * cell + cell * 0.16;
@@ -4681,7 +4892,9 @@ const Game = {
       if (s.wig) { const k = Math.sin(t / 90) * s.wig; x += k * cell * 0.08 * (s.wdx || 0); y += k * cell * 0.08 * (s.wdy || 0); }
       if (s.p.k === 'g' || s.p.k === 'l') y += Math.sin(t / 300 + s.c) * cell * 0.03;
       ctx.globalAlpha = s.a == null ? 1 : s.a;
-      Art.piece(ctx, s.p, x, y, sc, t, s.flash, sxx, syy, s.hp);
+      // its fun face when she picks it up, when the hint wiggles it and as it pops (怪趣森林, decli 2026-11-05)
+      const fun = s.fun || s.wig > 0 || (this.sel >= 0 && this.b.cells[this.sel].p === s.p);
+      Art.piece(ctx, s.p, x, y, sc, t, s.flash, sxx, syy, s.hp, fun);
       ctx.globalAlpha = 1;
     }
     ctx.restore();
@@ -4771,7 +4984,7 @@ const Game = {
     if (x.cage >= 0) { this.nudge(i); this.tip('cageStuck'); return; }
     if (x.p && x.p.k === 'l') { this.nudge(i); this.tip('balloonStuck'); return; }
     if (!this.b.movable(i)) return;
-    this.sel = i; Snd.play('select'); this.clearHint();
+    this.sel = i; Snd.play('select'); this.clearHint(); Pal.react('tap');
   },
   nudge(i) {
     const p = this.b.cells[i].p; const s = p && this.sprites.get(p.id);
@@ -4829,6 +5042,7 @@ const Game = {
       Voice.cheer(word);
       Fx.praise(word, G.ox + G.w / 2, G.oy + G.h * 0.42, G.w, lvl);
       if (lvl >= 4) Fx.shake(6, 300);
+      if (lvl >= 3) Pal.react('joy');
     }
   },
   animSwap(ph) {
@@ -4876,9 +5090,10 @@ const Game = {
         if (e.to != null) {   // sliding into the special it is turning into
           const [tr, tc] = b.rc(e.to), r0 = s.r, c0 = s.c;
           s.z = 1;
+          s.fun = true;
           Clock.tween(150, k => { s.r = lerp(r0, tr, k); s.c = lerp(c0, tc, k); s.sc = 1 - k * 0.5; s.flash = k; }, Ease.in).then(() => this.sprites.delete(s.id));
         } else {
-          s.z = 3; s.holdFlash = true;
+          s.z = 3; s.holdFlash = true; s.fun = true;
           Clock.tween(110, k => { s.sc = 1 + k * 0.35; s.flash = k; }, Ease.out).then(() => {
             this.sprites.delete(s.id);
             Fx.burst(x, y, col, e.by === 'match' ? 10 : 8, e.by === 'match' ? 1 : 1.3, cell);
@@ -4977,7 +5192,7 @@ const Game = {
         Fx.burst(x, y, ['#fffdf6', '#fbefd8', '#ffd23a'], 14, 1.2, cell);
         Fx.sparkles(x, y, 8, cell * 0.5, '#ffd23a');
         Snd.play('hatch');
-        const chick = Art.friend(FRIENDS.findIndex(f => f.id === 'chick'), 128, 112);
+        const chick = Art.friend(Art.byId('chick'), 128, 112, 'h');   // still wearing half its shell
         this.flyGoal(this.goalIndex('egg'), chick, x, y - cell * 0.2, true, !e.goal);
         break;
       }
@@ -5038,7 +5253,7 @@ const Game = {
       Snd.play('home');
       Fx.text(x, y, '+' + ph.pts, this.G.cell * 0.45, '#22c38a');
       Fx.sparkles(x, y, 12, this.G.cell * 0.6, '#ffd23a');
-      this.flyGoal(this.goalIndex('pg'), Art.tiles[PENGUIN], x, y, true);
+      this.flyGoal(this.goalIndex('pg'), Art.funTiles[PENGUIN] || Art.tiles[PENGUIN], x, y, true);
       if (s) s.a = 0;
     }
     this.sayOnce('penguinHome', L.penguinHome);
@@ -5078,7 +5293,7 @@ const Game = {
       const [r, c] = this.b.rc(i);
       let s = this.sprites.get(x.p.id);
       if (!s) s = this.addSprite(x.p, i);
-      s.p = x.p; s.r = r; s.c = c; s.sc = 1; s.sx = 1; s.sy = 1; s.flash = 0; s.holdFlash = false; s.z = 0; s.a = 1; s.hp = x.p.hp;
+      s.p = x.p; s.r = r; s.c = c; s.sc = 1; s.sx = 1; s.sy = 1; s.flash = 0; s.holdFlash = false; s.z = 0; s.a = 1; s.hp = x.p.hp; s.fun = false;
     });
     for (const id of [...this.sprites.keys()]) if (!live.has(id)) this.sprites.delete(id);
     this.b.cells.forEach((x, i) => { const v = this.vis[i]; v.ice = x.ice; v.box = x.box; v.bub = x.bub; v.grass = x.grass; v.cage = x.cage; });
@@ -5090,7 +5305,7 @@ const Game = {
     if (B.won()) { this.over = true; await this.win(); return; }
     if (B.moves <= 0) { this.over = true; await this.fail(); return; }
     if (!B.hasMove()) await this.reshuffle();
-    if (B.moves === 5 && !this.saidLow) { this.saidLow = true; Voice.say(L.movesLow); }
+    if (B.moves === 5 && !this.saidLow) { this.saidLow = true; Voice.say(L.movesLow); Pal.react('cheer'); }
     this.busy = false; this.lastAct = Clock.now;
   },
   async reshuffle() {
@@ -5115,6 +5330,7 @@ const Game = {
     await Clock.wait(300);
     Snd.play('win');
     Voice.say(pick(L.win));
+    Pal.react('joy', 4000);
     Fx.confetti(60);
     if (B.moves > 0) {
       await Clock.wait(900);
@@ -5141,7 +5357,7 @@ const Game = {
     // the blind box first, then the stars card (decli 2026-11-02, with so many levels: a box the first time a level is
     // won, and a better one the first time it gets three stars; replays only for the stars)
     const box = !before || (stars === 3 && before < 3);
-    if (box) await Gift.open(stars);
+    if (box) await Gift.open(stars, { isle: k });
     if (isleDone) await UI.isleDone(k);
     UI.result({ win: true, stars, score: B.score, li, box });
   },
@@ -5150,6 +5366,7 @@ const Game = {
     await Clock.wait(400);
     Snd.play('lose');
     Voice.say(L.fail);
+    Pal.react('cheer', 9e9);
     UI.result({ win: false, li: this.li, goals: this.b.goals, extra: !this.extraUsed });
   },
   // five sums for five more moves, once per game
@@ -5158,7 +5375,7 @@ const Game = {
     await MathGate.open({ count: 5, extra: true });
     this.b.moves += 5; this.setMoves(this.b.moves);
     this.over = false; this.busy = false; this.saidLow = false; this.lastAct = Clock.now;
-    Voice.say(L.extraDone);
+    Voice.say(L.extraDone); Pal.react('joy');
     Music.start();
     if (!this.b.hasMove()) { this.busy = true; await this.reshuffle(); this.busy = false; }
   },
@@ -5244,7 +5461,7 @@ const Game = {
   buildHud() {
     const hud = $('#hud'), b = this.b, lv = this.lv;
     hud.innerHTML = '';
-    const name = el('div', 'panel name'); name.appendChild(el('div', 'lvname', `第 ${this.li + 1} 关<small>${lv.name}</small>`));
+    Pal.mount(hud);   // the companion (pal.js) on top, the level's name under the score
     const mv = el('div', 'panel'); const moves = el('div', 'moves', `<b>${b.moves}</b><span>步</span>`); mv.appendChild(moves);
     const gp = el('div', 'panel'), goals = el('div', 'goals');
     b.goals.forEach(g => {
@@ -5255,11 +5472,11 @@ const Game = {
     });
     gp.appendChild(goals);
     const sp = el('div', 'panel score');
-    sp.innerHTML = `<div class="sub">第 ${this.li + 1} 关 · ${lv.name}</div><div class="num">0</div><div class="bar"><i></i><s>⭐</s><s>⭐</s><s>⭐</s></div>`;
+    sp.innerHTML = `<div class="sub">第 ${this.li + 1} 关<span> · ${lv.name}</span></div><div class="num">0</div><div class="bar"><i></i><s>⭐</s><s>⭐</s><s>⭐</s></div>`;
     const btns = el('div', 'hbtns');
     const pause = el('button', 'ibtn', '⏸'); pause.onclick = () => { Snd.play('tap'); UI.pause(); };
     btns.appendChild(UI.homeButton()); btns.appendChild(pause);
-    [name, mv, gp, sp, btns].forEach(n => hud.appendChild(n));
+    [mv, gp, sp, btns].forEach(n => hud.appendChild(n));
     const s = lv.stars, max = s[2] * 1.12, marks = $$('.bar s', sp);
     [s[1] * 0.45, s[1], s[2]].forEach((v, i) => { marks[i].style.left = (100 * v / max) + '%'; });
     this.drawScore();
@@ -5384,7 +5601,7 @@ const UI = {
       return n;
     });
     const av = el('canvas', 'avatar'); av.width = av.height = 152;
-    const head = Art.friend(FRIENDS.findIndex(f => f.id === 'panda'), 152, 120); av.getContext('2d').drawImage(head, 0, 0);
+    av.getContext('2d').drawImage(Art.friend(Pal.i(), 152, 132), 0, 0);   // the companion stands for her on the map
     av.hidden = !idx.includes(cur);
     map.appendChild(av);
     // travelling between islands
@@ -5430,7 +5647,7 @@ const UI = {
       }
       svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
       svg.innerHTML = `<path d="${dd}" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="${sz * 0.42}" stroke-linecap="round"/>` +
-        `<path d="${dd}" fill="none" stroke="#ffb3d6" stroke-width="${sz * 0.12}" stroke-dasharray="${sz * 0.05} ${sz * 0.28}" stroke-linecap="round"/>`;
+        `<path d="${dd}" fill="none" stroke="#e9a35a" stroke-width="${sz * 0.12}" stroke-dasharray="${sz * 0.05} ${sz * 0.28}" stroke-linecap="round"/>`;
       const at = idx.indexOf(cur);
       if (at >= 0) { av.style.left = pts[at][0] + 'px'; av.style.top = pts[at][1] + 'px'; av.style.width = av.style.height = sz * 0.75 + 'px'; av.style.margin = `${-sz * 1.15}px 0 0 ${sz * 0.05}px`; }
     };
@@ -5458,7 +5675,7 @@ const UI = {
         card.appendChild(row);
       });
     });
-    await Gift.open(3, { rare: true });
+    await Gift.open(3, { rare: true, isle: k });
   },
 
   // ---------- before a level ----------
@@ -5620,6 +5837,7 @@ const UI = {
       card.appendChild(el('p', 'note', '列竖式（默认）：学校里的竖式，个位对个位、十位对十位，旁边的数位表里个位是小动物、十位是一捆捆；满十捆一捆进到十位（记小 1），不够减从十位借一捆拆开（点退位点），她一位一位数、一位一位写，最后把得数写回横式。摆一摆：小动物摆进十格框，满十捆一捆、不够拆一捆。跳一跳：小青蛙在数轴上往前、往回跳，整十跳大步，数轴上标着整十。拆一拆：拆成几小步自己填（凑十、平十、破十、先算整十），每步配图数一数。小老师里点 🔄 随时换一种。'
         + (used.length ? '<br>她的记录：' + used.join('；') + (d.wayLast ? `；上次用的是${L.teach.ways[Teach.WAYS.indexOf(d.wayLast)]}。` : '。') : '')));
       seg('📏 数的范围', 'max', [[20, '20 以内'], [50, '50 以内'], [100, '100 以内']]);
+      card.appendChild(el('p', 'note', '每一页都由易到难：先是 20 以内不进位不退位的，再是两位数不进位的，然后 20 以内进位退位的，最后两位数进位退位的。选 50 或 100 以内时，20 以内的题和更大的数大约各占一半；选 20 以内就全是 20 以内。'));
       seg('🔢 几个数一起算', 'ops', [[2, '两个数'], [3, '三个数'], [4, '四个数']]);
       seg('➕ 题型', 'mode', [['mix', '加减混合'], ['add', '只有加法'], ['sub', '只有减法']]);
       const smp = el('div', 'sample'); card.appendChild(smp);
@@ -5668,7 +5886,7 @@ const UI = {
 // 动物消消乐 · start-up and the frame loop.
 (function boot() {
   Store.load();
-  if (/[?&]debug\b/.test(location.search)) window.XX = { Game, Board, Store, UI, Fx, Clock, MathGate, Wheel, Teach, L, LEVELS, ISLANDS, Snd, Voice, Music, Gift, Cast, ANIMALS, FRIENDS, Art, Art2 };
+  if (/[?&]debug\b/.test(location.search)) window.XX = { Game, Board, Store, UI, Fx, Clock, MathGate, Wheel, Teach, L, LEVELS, ISLANDS, Snd, Voice, Music, Gift, Cast, ANIMALS, FRIENDS, Art, Art2, Pal };
   Snd.on = Store.d.snd; Snd.music = Store.d.mus; Voice.on = Store.d.voi;
   Fx.init($('#fx'));
   Game.init();

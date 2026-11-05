@@ -1,54 +1,77 @@
 // 动物消消乐 · drawing the pieces, the cell layers (ice, gift boxes, bubbles) and the little sprites the effects use.
 // Everything that does not move is drawn once into a canvas the size it will appear on screen (re-made on resize).
 const Art = {
-  img: null, dpr: 1, cell: 0, T: 0, tiles: [], white: [], cache: {},
-  // decli's animal heads, one sprite sheet (made by dev/heads.py; HEADS in heads.js gives each head's size). A failed
-  // download is tried again: the start screen waits for the first three tries, later ones go on in the background and
-  // the pictures replace the coloured balls from the next game on.
+  img: null, funs: null, pals: null, big: {}, dpr: 1, cell: 0, T: 0, tiles: [], funTiles: [], white: [], cache: {},
+  // decli's 怪趣森林 heads (made by dev/heads2.py, laid out as HEADS in heads.js): the board faces, which the start
+  // screen waits for, and the fun faces and the partners' faces, which come in behind them (the board face stands in
+  // until they do). A failed download is tried again: the start screen waits for the first three tries, later ones go
+  // on in the background and the pictures replace the coloured balls from the next game on.
   load() {
-    return new Promise(res => {
+    const sheet = (name, done, onFirst) => {
       let k = 0;
       const get = () => {
         const im = new Image();
-        im.onload = () => { this.img = im; res(); };
-        im.onerror = () => { k++; if (k === 3) res(); if (k < 6) setTimeout(get, [1000, 2500, 5000, 10000, 20000][k - 1]); };
-        im.src = 'heads.webp' + (k ? '?try=' + k : '');
+        im.onload = () => { done(im); if (onFirst) onFirst(); };
+        im.onerror = () => { k++; if (k === 3 && onFirst) onFirst(); if (k < 6) setTimeout(get, [1000, 2500, 5000, 10000, 20000][k - 1]); };
+        im.src = name + '?h=' + HEADS.h + (k ? '&try=' + k : '');   // a new set of pictures has a new address
       };
       get();
+    };
+    return new Promise(res => {
+      sheet('heads.webp', im => { this.img = im; this.cell = 0; }, () => {
+        res();
+        sheet('funs.webp', im => { this.funs = im; this.cell = 0; });
+        sheet('pals.webp', im => { this.pals = im; });
+      });
     });
+  },
+  // the big fun face of FRIENDS[i] for the blind box (big/<id>.webp, fetched when a box opens): the picture, or null
+  // while it is on its way
+  bigFace(i) {
+    const id = FRIENDS[i].id;
+    if (!this.big[id]) { const im = new Image(); this.big[id] = { im, ok: false }; im.onload = () => { this.big[id].ok = true; }; im.src = 'big/' + id + '.webp?h=' + HEADS.h; }
+    return this.big[id].ok ? this.big[id].im : null;
   },
   canvas(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, Math.ceil(w)); c.height = Math.max(1, Math.ceil(h)); return c; },
   rr(ctx, x, y, w, h, r) {
     ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
     ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
   },
-  // FRIENDS[i]'s head drawn into x centred on (cx, cy), scaled so its longer side is fit pixels
-  friendTo(x, i, cx, cy, fit) {
-    const [w, h] = HEADS.size[i], C = HEADS.cell, f = fit / Math.max(w, h);
+  // FRIENDS[i]'s head drawn into x centred on (cx, cy), its longer side about fit pixels. face: 'b' the board face
+  // (default), 'f' its fun face, 't' / 'c' a partner's tap / cheer face, 'h' the chick hatching. Every cell holds the
+  // whole picture, so all of a character's faces sit exactly on top of each other.
+  friendTo(x, i, cx, cy, fit, face) {
     if (!this.img) {   // the picture did not load: a coloured ball
       const col = Cast.FX[FRIENDS[i].fam[0]];
       x.fillStyle = col[0]; x.strokeStyle = col[1]; x.lineWidth = fit * 0.05;
       x.beginPath(); x.arc(cx, cy, fit * 0.42, 0, 7); x.fill(); x.stroke();
       return;
     }
-    const sx = (i % HEADS.cols) * C + (C - w) / 2, sy = Math.floor(i / HEADS.cols) * C + (C - h) / 2;
+    let im = this.img, C = HEADS.cell, k = i, cols = HEADS.cols;
+    if (face === 'f' && this.funs) im = this.funs;
+    const pal = (face === 't' || face === 'c') && HEADS.pals[FRIENDS[i].id];
+    if ((pal || face === 'h') && this.pals) { im = this.pals; C = HEADS.palCell; cols = HEADS.palCols; k = face === 'h' ? HEADS.hatch : pal[face === 't' ? 0 : 1]; }
+    else if (face === 'h' || face === 't' || face === 'c') im = this.funs || this.img;
+    const D = fit / HEADS.fill;
     x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high';
-    x.drawImage(this.img, sx, sy, w, h, cx - w * f / 2, cy - h * f / 2, w * f, h * f);
+    x.drawImage(im, (k % cols) * C, Math.floor(k / cols) * C, C, C, cx - D / 2, cy - D / 2, D, D);
   },
-  friend(i, s, fit) { const c = this.canvas(s, s); this.friendTo(c.getContext('2d'), i, s / 2, s / 2, fit); return c; },
+  friend(i, s, fit, face) { const c = this.canvas(s, s); this.friendTo(c.getContext('2d'), i, s / 2, s / 2, fit, face); return c; },
+  byId(id) { return FRIENDS.findIndex(f => f.id === id); },
   // the board's kinds (this game's six ANIMALS, then the penguin) as FRIENDS numbers
-  kindHead(k) { return k < ANIMALS.length ? ANIMALS[k].h : FRIENDS.findIndex(f => f.id === 'penguin'); },
+  kindHead(k) { return k < ANIMALS.length ? ANIMALS[k].h : this.byId('penguin'); },
   // an animal head (k 0-5, 6 = penguin) into a square canvas of side s, for a cell cellPx wide
-  head(k, s, cellPx) { return this.friend(this.kindHead(k), s, cellPx * 0.9); },
+  head(k, s, cellPx, face) { return this.friend(this.kindHead(k), s, cellPx * 0.92, face); },
   setCell(cell, dpr) {
     const cast = ANIMALS.map(a => a.h).join() + (this.img ? '' : '?');   // the pieces change with the game's animals too
     if (cell === this.cell && dpr === this.dpr && cast === this.cast && this.tiles.length) return;
     this.cell = cell; this.dpr = dpr; this.cast = cast;
     const D = cell * dpr, T = this.T = Math.ceil(D * 1.3);
-    this.tiles = []; this.white = [];
+    this.tiles = []; this.white = []; this.funTiles = [];
     for (let k = 0; k < 7; k++) {
       const t = this.head(k, T, D);
       this.tiles.push(t);
+      this.funTiles.push(this.funs ? this.head(k, T, D, 'f') : t);   // a piece she has picked up, or that the hint points at
       const w = this.canvas(T, T), x = w.getContext('2d');
       x.drawImage(t, 0, 0); x.globalCompositeOperation = 'source-in'; x.fillStyle = '#fff'; x.fillRect(0, 0, T, T);
       this.white.push(w);
@@ -256,10 +279,10 @@ const Art = {
 
   // ---------- drawing on the board (ctx in CSS pixels) ----------
   // p: piece, (x, y) centre, sc scale, t clock ms, flash 0..1 white
-  piece(ctx, p, x, y, sc, t, flash, sx, sy, hp) {
+  piece(ctx, p, x, y, sc, t, flash, sx, sy, hp, fun) {
     const s = this.T / this.dpr * sc, cell = this.cell;
     const w = s * (sx || 1), h = s * (sy || 1);
-    if (p.k === 'g') { ctx.drawImage(this.tiles[PENGUIN], x - w / 2, y - h / 2, w, h); return; }
+    if (p.k === 'g') { ctx.drawImage((fun ? this.funTiles : this.tiles)[PENGUIN], x - w / 2, y - h / 2, w, h); return; }
     if (p.k === 'e') { ctx.drawImage(this.cache[(hp != null ? hp : p.hp) === 2 ? 'egg2' : 'egg1'], x - w / 2, y - h / 2, w, h); if (flash > 0) { ctx.globalAlpha = Math.min(1, flash) * 0.7; ctx.drawImage(Fx.dot('#ffffff'), x - w / 2, y - h / 2, w, h); ctx.globalAlpha = 1; } return; }
     if (p.k === 'l') { ctx.save(); ctx.translate(x, y + cell * 0.04); ctx.rotate(Math.sin(t / 520 + p.id) * 0.08); ctx.drawImage(this.cache.balloon, -w / 2, -h / 2, w, h); ctx.restore(); return; }
     if (p.s === 'c') {
@@ -284,7 +307,7 @@ const Art = {
       ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = 0.5 + 0.25 * Math.sin(t / 140);
       const gl = Fx.dot(ANIMALS[p.c].fx[0]); ctx.drawImage(gl, x - cell * 0.7, y - cell * 0.7, cell * 1.4, cell * 1.4); ctx.restore();
     }
-    ctx.drawImage(this.tiles[p.c], x - w / 2, y - h / 2, w, h);
+    ctx.drawImage((fun ? this.funTiles : this.tiles)[p.c], x - w / 2, y - h / 2, w, h);
     if (p.s === 'h' || p.s === 'v') {
       const wob = 1 + Math.sin(t / 120) * 0.05;
       ctx.drawImage(p.s === 'h' ? this.cache.stripeH : this.cache.stripeV, x - w * wob / 2, y - h * wob / 2, w * wob, h * wob);

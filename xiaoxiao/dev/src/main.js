@@ -1,7 +1,7 @@
 // 动物消消乐 · start-up and the frame loop.
 (function boot() {
   Store.load();
-  if (/[?&]debug\b/.test(location.search)) window.XX = { Game, Board, Store, UI, Fx, Clock, MathGate, Wheel, Teach, L, LEVELS, ISLANDS, Snd, Voice, Music, Gift, Cast, ANIMALS, FRIENDS, Art, Art2 };
+  if (/[?&]debug\b/.test(location.search)) window.XX = { Game, Board, Store, UI, Fx, Clock, MathGate, Wheel, Teach, L, LEVELS, ISLANDS, Snd, Voice, Music, Gift, Cast, ANIMALS, FRIENDS, Art, Art2, Pal };
   Snd.on = Store.d.snd; Snd.music = Store.d.mus; Voice.on = Store.d.voi;
   Fx.init($('#fx'));
   Game.init();

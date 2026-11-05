@@ -8,7 +8,7 @@ const Game = {
 
   init() {
     this.cv = $('#cv'); this.ctx = this.cv.getContext('2d');
-    for (let i = 0; i < 14; i++) this.bg.push({ x: Math.random(), y: Math.random(), r: rnd(20, 70), v: rnd(0.004, 0.012), h: pick(['255,255,255', '255,190,225', '200,230,255', '255,240,180']) });
+    for (let i = 0; i < 14; i++) this.bg.push({ x: Math.random(), y: Math.random(), r: rnd(20, 70), v: rnd(0.004, 0.012), h: pick(['255,255,255', '200,225,160', '245,215,150', '240,195,170']) });
     const cv = this.cv;
     cv.addEventListener('pointerdown', e => this.pdown(e));
     cv.addEventListener('pointermove', e => this.pmove(e));
@@ -34,7 +34,7 @@ const Game = {
     this.b.cells.forEach((x, i) => { if (x.p) this.addSprite(x.p, i); });
     this.hudGoals = this.b.goals.map(g => g.left);
     this.buildHud();
-    $('#hud').hidden = false; $('#map').hidden = true;
+    $('#hud').hidden = false; $('#map').hidden = true; $('#album').hidden = true;
     this.layout();
     // drop the animals in from the top, row by row
     for (const s of this.sprites.values()) { s.r0 = s.r; s.r -= this.b.R + 1; s.delay = (this.b.R - s.r0) * 35 + s.c * 12; }
@@ -50,7 +50,7 @@ const Game = {
       for (const s of this.sprites.values()) { if (s.r0 != null) s.r = s.r0; s.r0 = null; }
       this.busy = false; this.lastAct = Clock.now;
       if (this.helped.length) {   // the helping hand shows itself
-        Voice.say(L.helper);
+        Voice.say(L.helper); Pal.react('cheer');
         this.helped.forEach(i => { const [r, c] = this.b.rc(i), [x, y] = this.cellXY(r, c); Fx.ring(x, y, '#ffd23a', this.G.cell * 0.2, this.G.cell, 600, 8); Fx.sparkles(x, y, 12, this.G.cell * 0.6, '#ffd23a'); const p = this.b.cells[i].p; if (p) this.showOff(p); });
         Snd.play('make');
       }
@@ -101,19 +101,20 @@ const Game = {
     const W = (G.w + 2 * pad) * d, H = (G.h + 2 * pad) * d;
     const frame = Art.canvas(W, H), fx = frame.getContext('2d');
     fx.scale(d, d); fx.translate(pad, pad);
-    fx.fillStyle = 'rgba(255,255,255,0.92)';
+    // 怪趣森林: a leaf-green felt board with cream cells (decli's sketch, 2026-11-05)
+    fx.fillStyle = '#a3c77a';
     b.cells.forEach((x, i) => { if (x.v) return; const [r, c] = b.rc(i); Art.rr(fx, c * cell - f, r * cell - f, cell + 2 * f, cell + 2 * f, cell * 0.28); fx.fill(); });
     const base = Art.canvas(W, H), x = base.getContext('2d');
-    x.save(); x.shadowColor = 'rgba(74,43,94,0.28)'; x.shadowBlur = 18 * d; x.shadowOffsetY = 6 * d; x.drawImage(frame, 0, 0); x.restore();
+    x.save(); x.shadowColor = 'rgba(61,82,41,0.3)'; x.shadowBlur = 18 * d; x.shadowOffsetY = 6 * d; x.drawImage(frame, 0, 0); x.restore();
     x.scale(d, d); x.translate(pad, pad);
     b.cells.forEach((cl, i) => {
       if (cl.v) return;
       const [r, c] = b.rc(i);
       Art.rr(x, c * cell + 2, r * cell + 2, cell - 4, cell - 4, cell * 0.2);
-      x.fillStyle = (r + c) % 2 ? '#f3e9ff' : '#fdf8ff'; x.fill();
+      x.fillStyle = (r + c) % 2 ? '#f3ecd7' : '#fcf7ea'; x.fill();
     });
     if (b.pg.total) {   // where the penguins go home
-      x.fillStyle = '#22c38a'; x.strokeStyle = '#fff'; x.lineWidth = 3; x.lineJoin = 'round';
+      x.fillStyle = '#73a848'; x.strokeStyle = '#fff'; x.lineWidth = 3; x.lineJoin = 'round';
       b.cells.forEach((cl, i) => {
         if (!b.exit[i]) return;
         const [r, c] = b.rc(i), cx = (c + 0.5) * cell, cy = (r + 1) * cell + cell * 0.16;
@@ -168,7 +169,9 @@ const Game = {
       if (s.wig) { const k = Math.sin(t / 90) * s.wig; x += k * cell * 0.08 * (s.wdx || 0); y += k * cell * 0.08 * (s.wdy || 0); }
       if (s.p.k === 'g' || s.p.k === 'l') y += Math.sin(t / 300 + s.c) * cell * 0.03;
       ctx.globalAlpha = s.a == null ? 1 : s.a;
-      Art.piece(ctx, s.p, x, y, sc, t, s.flash, sxx, syy, s.hp);
+      // its fun face when she picks it up, when the hint wiggles it and as it pops (怪趣森林, decli 2026-11-05)
+      const fun = s.fun || s.wig > 0 || (this.sel >= 0 && this.b.cells[this.sel].p === s.p);
+      Art.piece(ctx, s.p, x, y, sc, t, s.flash, sxx, syy, s.hp, fun);
       ctx.globalAlpha = 1;
     }
     ctx.restore();
@@ -258,7 +261,7 @@ const Game = {
     if (x.cage >= 0) { this.nudge(i); this.tip('cageStuck'); return; }
     if (x.p && x.p.k === 'l') { this.nudge(i); this.tip('balloonStuck'); return; }
     if (!this.b.movable(i)) return;
-    this.sel = i; Snd.play('select'); this.clearHint();
+    this.sel = i; Snd.play('select'); this.clearHint(); Pal.react('tap');
   },
   nudge(i) {
     const p = this.b.cells[i].p; const s = p && this.sprites.get(p.id);
@@ -316,6 +319,7 @@ const Game = {
       Voice.cheer(word);
       Fx.praise(word, G.ox + G.w / 2, G.oy + G.h * 0.42, G.w, lvl);
       if (lvl >= 4) Fx.shake(6, 300);
+      if (lvl >= 3) Pal.react('joy');
     }
   },
   animSwap(ph) {
@@ -363,9 +367,10 @@ const Game = {
         if (e.to != null) {   // sliding into the special it is turning into
           const [tr, tc] = b.rc(e.to), r0 = s.r, c0 = s.c;
           s.z = 1;
+          s.fun = true;
           Clock.tween(150, k => { s.r = lerp(r0, tr, k); s.c = lerp(c0, tc, k); s.sc = 1 - k * 0.5; s.flash = k; }, Ease.in).then(() => this.sprites.delete(s.id));
         } else {
-          s.z = 3; s.holdFlash = true;
+          s.z = 3; s.holdFlash = true; s.fun = true;
           Clock.tween(110, k => { s.sc = 1 + k * 0.35; s.flash = k; }, Ease.out).then(() => {
             this.sprites.delete(s.id);
             Fx.burst(x, y, col, e.by === 'match' ? 10 : 8, e.by === 'match' ? 1 : 1.3, cell);
@@ -464,7 +469,7 @@ const Game = {
         Fx.burst(x, y, ['#fffdf6', '#fbefd8', '#ffd23a'], 14, 1.2, cell);
         Fx.sparkles(x, y, 8, cell * 0.5, '#ffd23a');
         Snd.play('hatch');
-        const chick = Art.friend(FRIENDS.findIndex(f => f.id === 'chick'), 128, 112);
+        const chick = Art.friend(Art.byId('chick'), 128, 112, 'h');   // still wearing half its shell
         this.flyGoal(this.goalIndex('egg'), chick, x, y - cell * 0.2, true, !e.goal);
         break;
       }
@@ -525,7 +530,7 @@ const Game = {
       Snd.play('home');
       Fx.text(x, y, '+' + ph.pts, this.G.cell * 0.45, '#22c38a');
       Fx.sparkles(x, y, 12, this.G.cell * 0.6, '#ffd23a');
-      this.flyGoal(this.goalIndex('pg'), Art.tiles[PENGUIN], x, y, true);
+      this.flyGoal(this.goalIndex('pg'), Art.funTiles[PENGUIN] || Art.tiles[PENGUIN], x, y, true);
       if (s) s.a = 0;
     }
     this.sayOnce('penguinHome', L.penguinHome);
@@ -565,7 +570,7 @@ const Game = {
       const [r, c] = this.b.rc(i);
       let s = this.sprites.get(x.p.id);
       if (!s) s = this.addSprite(x.p, i);
-      s.p = x.p; s.r = r; s.c = c; s.sc = 1; s.sx = 1; s.sy = 1; s.flash = 0; s.holdFlash = false; s.z = 0; s.a = 1; s.hp = x.p.hp;
+      s.p = x.p; s.r = r; s.c = c; s.sc = 1; s.sx = 1; s.sy = 1; s.flash = 0; s.holdFlash = false; s.z = 0; s.a = 1; s.hp = x.p.hp; s.fun = false;
     });
     for (const id of [...this.sprites.keys()]) if (!live.has(id)) this.sprites.delete(id);
     this.b.cells.forEach((x, i) => { const v = this.vis[i]; v.ice = x.ice; v.box = x.box; v.bub = x.bub; v.grass = x.grass; v.cage = x.cage; });
@@ -577,7 +582,7 @@ const Game = {
     if (B.won()) { this.over = true; await this.win(); return; }
     if (B.moves <= 0) { this.over = true; await this.fail(); return; }
     if (!B.hasMove()) await this.reshuffle();
-    if (B.moves === 5 && !this.saidLow) { this.saidLow = true; Voice.say(L.movesLow); }
+    if (B.moves === 5 && !this.saidLow) { this.saidLow = true; Voice.say(L.movesLow); Pal.react('cheer'); }
     this.busy = false; this.lastAct = Clock.now;
   },
   async reshuffle() {
@@ -602,6 +607,7 @@ const Game = {
     await Clock.wait(300);
     Snd.play('win');
     Voice.say(pick(L.win));
+    Pal.react('joy', 4000);
     Fx.confetti(60);
     if (B.moves > 0) {
       await Clock.wait(900);
@@ -628,7 +634,7 @@ const Game = {
     // the blind box first, then the stars card (decli 2026-11-02, with so many levels: a box the first time a level is
     // won, and a better one the first time it gets three stars; replays only for the stars)
     const box = !before || (stars === 3 && before < 3);
-    if (box) await Gift.open(stars);
+    if (box) await Gift.open(stars, { isle: k });
     if (isleDone) await UI.isleDone(k);
     UI.result({ win: true, stars, score: B.score, li, box });
   },
@@ -637,6 +643,7 @@ const Game = {
     await Clock.wait(400);
     Snd.play('lose');
     Voice.say(L.fail);
+    Pal.react('cheer', 9e9);
     UI.result({ win: false, li: this.li, goals: this.b.goals, extra: !this.extraUsed });
   },
   // five sums for five more moves, once per game
@@ -645,7 +652,7 @@ const Game = {
     await MathGate.open({ count: 5, extra: true });
     this.b.moves += 5; this.setMoves(this.b.moves);
     this.over = false; this.busy = false; this.saidLow = false; this.lastAct = Clock.now;
-    Voice.say(L.extraDone);
+    Voice.say(L.extraDone); Pal.react('joy');
     Music.start();
     if (!this.b.hasMove()) { this.busy = true; await this.reshuffle(); this.busy = false; }
   },
@@ -731,7 +738,7 @@ const Game = {
   buildHud() {
     const hud = $('#hud'), b = this.b, lv = this.lv;
     hud.innerHTML = '';
-    const name = el('div', 'panel name'); name.appendChild(el('div', 'lvname', `第 ${this.li + 1} 关<small>${lv.name}</small>`));
+    Pal.mount(hud);   // the companion (pal.js) on top, the level's name under the score
     const mv = el('div', 'panel'); const moves = el('div', 'moves', `<b>${b.moves}</b><span>步</span>`); mv.appendChild(moves);
     const gp = el('div', 'panel'), goals = el('div', 'goals');
     b.goals.forEach(g => {
@@ -742,11 +749,11 @@ const Game = {
     });
     gp.appendChild(goals);
     const sp = el('div', 'panel score');
-    sp.innerHTML = `<div class="sub">第 ${this.li + 1} 关 · ${lv.name}</div><div class="num">0</div><div class="bar"><i></i><s>⭐</s><s>⭐</s><s>⭐</s></div>`;
+    sp.innerHTML = `<div class="sub">第 ${this.li + 1} 关<span> · ${lv.name}</span></div><div class="num">0</div><div class="bar"><i></i><s>⭐</s><s>⭐</s><s>⭐</s></div>`;
     const btns = el('div', 'hbtns');
     const pause = el('button', 'ibtn', '⏸'); pause.onclick = () => { Snd.play('tap'); UI.pause(); };
     btns.appendChild(UI.homeButton()); btns.appendChild(pause);
-    [name, mv, gp, sp, btns].forEach(n => hud.appendChild(n));
+    [mv, gp, sp, btns].forEach(n => hud.appendChild(n));
     const s = lv.stars, max = s[2] * 1.12, marks = $$('.bar s', sp);
     [s[1] * 0.45, s[1], s[2]].forEach((v, i) => { marks[i].style.left = (100 * v / max) + '%'; });
     this.drawScore();

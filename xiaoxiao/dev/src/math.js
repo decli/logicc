@@ -37,15 +37,38 @@ const MathGate = {
     }
     return { text: '1 + 1', ans: 2, nums: [1, 1], signs: ['+'] };
   },
+  // how hard a sum is (decli 2026-11-05: a page should start easy and work up, and mix small and big numbers):
+  // 0 within 20 with no carrying or borrowing, 1 within 20 with one, 2 beyond 20 with none, 3 beyond 20 with one
+  band(q) {
+    let v = q.nums[0], big = v > 20, cross = false;
+    q.signs.forEach((sg, j) => {
+      const b = q.nums[j + 1];
+      if (sg === '+' ? v % 10 + b % 10 >= 10 : v % 10 < b % 10) cross = true;
+      v = sg === '+' ? v + b : v - b;
+      if (b > 20 || v > 20) big = true;
+    });
+    return (big ? 2 : 0) + (cross ? 1 : 0);
+  },
+  // how many sums of each band a page of n has: within 20 and beyond about half and half (all within 20 when that is
+  // the range), more of the easier kind of each
+  share(n, max) {
+    const w = max > 20 ? [3, 2, 3, 2] : [3, 2, 0, 0], sum = w.reduce((a, b) => a + b, 0);
+    const raw = w.map(x => x * n / sum), got = raw.map(Math.floor);
+    raw.map((x, i) => [x - got[i], i]).sort((a, b) => b[0] - a[0] || a[1] - b[1]).slice(0, n - got.reduce((a, b) => a + b, 0)).forEach(([, i]) => got[i]++);
+    return got;
+  },
+  // a page, easiest first: within 20 without carrying, beyond 20 without, then within 20 with carrying or borrowing,
+  // then beyond 20 with it; adding and taking away by turns in each band
   page(cfg, count) {
-    const out = [], seen = new Set();
-    for (let k = 0; out.length < count && k < count * 30; k++) {
-      // with both signs, the first sign alternates so a page is half adding, half taking away
-      const q = this.problem(cfg.max, cfg.ops, cfg.mode, cfg.mode === 'mix' ? (out.length % 2 ? '-' : '+') : null);
-      if (seen.has(q.text)) continue;
-      seen.add(q.text); out.push(q);
+    const out = [], seen = new Set(), want = this.share(count, cfg.max);
+    for (const b of [0, 2, 1, 3]) {
+      for (let k = 0, made = 0; made < want[b] && k < 600; k++) {
+        const sign = cfg.mode === 'mix' ? (made % 2 ? '-' : '+') : null;
+        const q = this.problem(b < 2 ? Math.min(20, cfg.max) : cfg.max, cfg.ops, cfg.mode, sign);
+        if (seen.has(q.text) || (this.band(q) !== b && k < 500)) continue;   // after 500 tries any sum of the range will do
+        seen.add(q.text); out.push(q); made++;
+      }
     }
-    for (let i = out.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [out[i], out[j]] = [out[j], out[i]]; }
     return out;
   },
   // a sum on its card, the signs in their own tags so a hint can point at them

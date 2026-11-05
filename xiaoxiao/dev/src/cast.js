@@ -18,15 +18,19 @@ const Cast = {
   near(a, b) { return [...a].some(x => [...b].some(y => x === y || this.NEAR.includes(x + y) || this.NEAR.includes(y + x))); },
   // six new animals for level li: they show at once everywhere (intro card, pieces, goals, effects) and are kept for
   // Game.start(li)
+  // decli 2026-11-05: each island has its own cast (FRIENDS' island), so up to four of the six are from the level's
+  // island and the rest from anywhere — a new island looks new, and no two games are the same
   pick(li) {
-    const lv = LEVELS[li], penguins = lv.goals.some(g => g.t === 'pg'), eggs = lv.goals.some(g => g.t === 'egg');
+    const lv = LEVELS[li], penguins = lv.goals.some(g => g.t === 'pg'), eggs = lv.goals.some(g => g.t === 'egg'), isle = isleOf(li);
     // the chicks that hatch from eggs are their own surprise, not one of the six
     const pool = FRIENDS.filter(f => f.tier <= 1 && f.id !== 'penguin' && !(penguins && this.near(f.fam, 'k')) && !(eggs && f.id === 'chick'));
+    const mix = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
     let got = [];
     for (let tries = 0; got.length < 6 && tries < 50; tries++) {   // an unlucky early pick can leave fewer than six colours: draw again
-      for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
       got = [];
-      for (const f of pool) if (got.length < 6 && got.every(g => !this.near(g.fam, f.fam))) got.push(f);
+      const fits = f => got.every(g => g !== f && !this.near(g.fam, f.fam));
+      for (const f of mix(pool.filter(f => f.isle === isle))) if (got.length < 4 && fits(f)) got.push(f);
+      for (const f of mix(pool.slice())) if (got.length < 6 && fits(f)) got.push(f);
     }
     if (got.length < 6) got = this.FIRST();
     this.set(got);

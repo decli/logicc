@@ -52,7 +52,7 @@ const Store = {
       owed: false,           // a math page is due before the next game
       played: 0,
       math: { max: 100, ops: 2, mode: 'mix', count: 'wheel' },  // count: 'wheel' (MATH_WHEEL), 'ramp' (MATH_RAMP) or a fixed size (MATH_COUNTS), 家长设置
-      mathV: 5,              // 5: the wheel draws 10 to 20, within 100, 列竖式 first; 4: the wheel (2 to 10); 3: the day's ramp; 2: a fixed size (10 by default); before that always 20
+      mathV: 6,              // 6: the wheel draws 2 to 16, pages go from easy to hard; 5: 10 to 20, within 100, 列竖式 first; 4: the wheel (2 to 10); 3: the day's ramp; 2: a fixed size (10 by default); before that always 20
       today: { day: '', pages: 0 },   // math pages finished today (not the 5-sum page for 5 more moves): where the ramp is
       spin: null,            // what the wheel landed on for the page owed now, { n, p: played }, so leaving can't spin again
       log: [],               // finished math pages: [time, count, right first time, seconds, settings label]
@@ -65,6 +65,8 @@ const Store = {
       s2: 1,                 // season two: progress made in season one has been carried over
       gifts: {},             // friends from the blind box (gift.js): id -> how many
       giftFresh: [],         // new friends not yet seen in the album
+      albumIsle: -1,         // the album's page shown last (an island)
+      pal: '',               // the companion she picked in the album (PALS; pal.js), the panda until then
       snd: true, voi: true, mus: true,
     };
   },
@@ -84,7 +86,8 @@ const Store = {
         // decli 2026-11-02: harder now, sums within 100 on a wheel of 10 to 20 (a spin of the old wheel is dropped, so
         // the page owed is drawn again), and 小老师 starts with 列竖式 instead of asking her to choose
         if (v < 5) { this.d.math.max = 100; this.d.spin = null; if (!raw.way || raw.way === 'pick') this.d.way = 'col'; }
-        this.d.mathV = 5;
+        if (v < 6) this.d.spin = null;   // decli 2026-11-05: the wheel's numbers changed, a page owed is drawn again
+        this.d.mathV = 6;
         // season two: a level won in season one now opens the next (the eleventh after the tenth); the map starts on
         // the island she is up to
         if (!raw.s2) {

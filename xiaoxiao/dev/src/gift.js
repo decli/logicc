@@ -1,23 +1,25 @@
 // 动物消消乐 · the blind box after each win (decli asked for a gift to open after a level): a box drops in, she taps it
-// three times, and an animal friend from decli's picture pops out. More stars give a finer box and better odds of a
+// three times, and a friend from decli's 怪趣森林 pictures pops out. More stars give a finer box and better odds of a
 // rare friend; a friend she does not have yet always comes before one she has. The album (🎁 on the map) shows every
-// friend, the missing ones as shadows to guess. Everything here is pictures and the narrator's voice: she can't read.
+// friend, island by island, the missing ones as shadows to guess. Everything here is pictures and the narrator's voice: she can't read.
 const Gift = {
   // chance of 稀有 and 隐藏款 for a box won with 1, 2 or 3 stars
   ODDS: [[0.12, 0], [0.12, 0], [0.25, 0.04], [0.4, 0.1]],
   // the box by stars: light, base, dark, ribbon, ribbon shade
-  LOOK: [null, ['#ffd3e8', '#ff8fc4', '#d9478d', '#fff3a6', '#e0a800'], ['#e6dbff', '#a982ff', '#6a3fd6', '#ffd0e6', '#e05a9a'],
+  LOOK: [null, ['#ffe2c4', '#f5a65b', '#c8742a', '#fff3c4', '#e0a800'], ['#e4f1cf', '#93be68', '#557f38', '#ffd9c2', '#e07a4a'],
     ['#fff3bf', '#ffcf3a', '#d98e00', '#ff6b8a', '#c42c55']],
   on: false,
 
   owned(i) { return FRIENDS[i].tier < 0 || (Store.d.gifts[FRIENDS[i].id] || 0) > 0; },
   count() { return FRIENDS.filter(f => this.owned(f.i)).length; },
-  // rare: the box for a whole island won, always 稀有 or 隐藏款
-  roll(stars, rare) {
+  // rare: the box for a whole island won, always 稀有 or 隐藏款. isle: the island she won it on, whose friends come
+  // first (decli 2026-11-05: each island has its own cast, so a new island brings new friends to find)
+  roll(stars, rare, isle) {
     const [pr, ph] = rare ? [0.75, 0.25] : this.ODDS[stars] || this.ODDS[1], r = Math.random();
     const tier = r < ph ? 2 : r < ph + pr ? 1 : 0;
     const of = t => FRIENDS.filter(f => f.tier === t), fresh = l => l.filter(f => !this.owned(f.i));
-    let pool = fresh(of(tier));
+    const here = l => { const h = l.filter(f => f.isle === isle); return h.length ? h : l; };
+    let pool = here(fresh(of(tier)));
     // that tier is complete: most of the time a missing ordinary or rare friend comes instead (never a free 隐藏款)
     if (!pool.length && Math.random() < 0.7) pool = fresh([...of(0), ...of(1)]);
     if (!pool.length) pool = of(tier);
@@ -27,7 +29,8 @@ const Gift = {
   // ---------- opening a box: resolves when she has taken the friend ----------
   open(stars, o = {}) {
     return new Promise(resolve => {
-      const d = Store.d, f = this.roll(stars, o.rare), fresh = !this.owned(f.i);
+      const d = Store.d, f = this.roll(stars, o.rare, o.isle), fresh = !this.owned(f.i);
+      Art.bigFace(f.i);   // the big picture comes in while the box drops and she taps it
       d.gifts[f.id] = (d.gifts[f.id] || 0) + 1;
       if (fresh) d.giftFresh = [...(d.giftFresh || []), f.id];
       d.seen.boxes = (d.seen.boxes || 0) + 1;
@@ -44,7 +47,7 @@ const Gift = {
       ov.addEventListener('pointerdown', e => { if (e.target !== keep) this.tap(e.clientX, e.clientY); });
       document.body.appendChild(ov);
       Fx.hush();
-      this.on = true; this.prize = null; this.W = 0;
+      this.on = true; this.prize = null; this.prizeBig = false; this.W = 0;
       let last = performance.now();
       const step = now => {
         if (!this.on) return;
@@ -124,14 +127,19 @@ const Gift = {
     const s = this.s, g = this.geo(), dpr = Math.min(devicePixelRatio || 1, 2), cv = this.cv;
     if (g.W !== this.W || g.H !== this.H) {
       this.W = g.W; this.H = g.H; cv.width = Math.round(g.W * dpr); cv.height = Math.round(g.H * dpr);
-      cv.style.width = g.W + 'px'; cv.style.height = g.H + 'px'; this.prize = null;
+      cv.style.width = g.W + 'px'; cv.style.height = g.H + 'px'; this.prize = null; this.prizeBig = false;
     }
-    if (!this.prize) this.prize = Art.friend(s.f.i, g.P * dpr, g.P * dpr * 0.92);
+    // the friend's big fun face (big/<id>.webp, asked for when the box opened), or its fun face from the sheet until it is in
+    if (!this.prize || (!this.prizeBig && Art.bigFace(s.f.i))) {
+      const big = Art.bigFace(s.f.i), side = g.P * dpr;
+      if (big) { this.prize = Art.canvas(side, side); const x2 = this.prize.getContext('2d'); x2.imageSmoothingQuality = 'high'; x2.drawImage(big, 0, 0, side, side); this.prizeBig = true; }
+      else this.prize = Art.friend(s.f.i, side, side * HEADS.fill, 'f');
+    }
     const x = cv.getContext('2d');
     x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, cv.width, cv.height); x.setTransform(dpr, 0, 0, dpr, 0, 0);
     const fade = s.phase === 'leave' ? 1 - s.leaveT / 480 : Math.min(1, s.t / 250);
     x.globalAlpha = fade;
-    x.fillStyle = 'rgba(46,20,78,0.72)'; x.fillRect(0, 0, g.W, g.H);
+    x.fillStyle = 'rgba(30,44,22,0.72)'; x.fillRect(0, 0, g.W, g.H);
     const opened = s.phase === 'open' || s.phase === 'show' || s.phase === 'leave';
     const ok = opened ? Math.min(1, s.openT / 500) : 0;
     // light rays: soft behind the box, then the friend's colour (gold for 稀有, a rainbow for 隐藏款)
@@ -174,7 +182,7 @@ const Gift = {
     }
     // the shadow on the floor
     x.save(); x.globalAlpha *= a * (s.phase === 'drop' ? Math.min(1, s.t / 650) : 1);
-    x.fillStyle = 'rgba(20,6,40,0.35)'; x.beginPath(); x.ellipse(g.bx, g.by + S * 0.38, S * 0.6 * sx, S * 0.09, 0, 0, 7); x.fill();
+    x.fillStyle = 'rgba(14,24,8,0.35)'; x.beginPath(); x.ellipse(g.bx, g.by + S * 0.38, S * 0.6 * sx, S * 0.09, 0, 0, 7); x.fill();
     x.restore();
     x.save();
     x.translate(g.bx, g.by + S * 0.36 + dy); x.rotate(rot); x.scale(sx, sy); x.translate(0, -S * 0.36);
@@ -197,7 +205,7 @@ const Gift = {
   // the box, its body's centre at (0, 0); lid offset {x, y, r} once it is flying; glow 0-1 = light leaking out;
   // bodyA the body's opacity (it fades as it sinks away; the lid stays whole)
   drawBox(x, S, look, lid, glow, bodyA) {
-    const [lt, base, dk, rb, rbd] = look, w = S, h = S * 0.72, r = S * 0.07, lw = S * 0.028, ink = '#4a2b5e', rw = S * 0.17;
+    const [lt, base, dk, rb, rbd] = look, w = S, h = S * 0.72, r = S * 0.07, lw = S * 0.028, ink = '#3d5229', rw = S * 0.17;
     x.lineJoin = 'round';
     const ribbon = (y0, hh) => {
       const rg = x.createLinearGradient(-rw / 2, 0, rw / 2, 0);
@@ -211,7 +219,7 @@ const Gift = {
     x.save(); Art.rr(x, -w / 2, -h / 2, w, h, r); x.clip();
     ribbon(-h / 2, h);
     x.fillStyle = 'rgba(255,255,255,0.3)'; Art.rr(x, -w / 2 + S * 0.06, -h / 2 + S * 0.07, S * 0.07, h * 0.62, S * 0.035); x.fill();
-    x.fillStyle = 'rgba(60,20,80,0.18)'; x.fillRect(-w / 2, -h / 2, w, S * 0.05);   // the lid's shadow
+    x.fillStyle = 'rgba(40,60,20,0.18)'; x.fillRect(-w / 2, -h / 2, w, S * 0.05);   // the lid's shadow
     x.restore();
     Art.rr(x, -w / 2, -h / 2, w, h, r); x.lineWidth = lw; x.strokeStyle = ink; x.stroke();
     // the question-mark sticker on the ribbon
@@ -277,7 +285,7 @@ const Gift = {
       x.restore();
     } else {
       x.save(); x.translate(cx + P * 0.38, cy + P * 0.34); x.scale(e, e);
-      Art.rr(x, -P * 0.1, -P * 0.06, P * 0.2, P * 0.12, P * 0.06); x.fillStyle = '#7b4dff'; x.fill(); x.lineWidth = P * 0.014; x.strokeStyle = '#fff'; x.stroke();
+      Art.rr(x, -P * 0.1, -P * 0.06, P * 0.2, P * 0.12, P * 0.06); x.fillStyle = '#8466c4'; x.fill(); x.lineWidth = P * 0.014; x.strokeStyle = '#fff'; x.stroke();
       x.font = `900 ${P * 0.075}px ${FONT}`; x.fillStyle = '#fff'; x.fillText('×' + s.n, 0, P * 0.004);
       x.restore();
     }
@@ -298,38 +306,73 @@ const Gift = {
     }
   },
 
-  // ---------- the album: every friend on one page, ten in a row like decli's pictures ----------
-  album() {
-    const d = Store.d, fresh = new Set(d.giftFresh || []);
-    d.giftFresh = []; Store.save();
+  // ---------- the album (decli 2026-11-05): a page for each island and the friends who live there ----------
+  // The islands are tabs along the top, each with how many of its friends she has. A friend she has found shows its fun
+  // face (and its name and nickname when tapped); one still in a box is a shadow with a question mark. The twelve
+  // partners (PALS) wear a heart: tapping one she has makes it her companion (Pal), shown with a ring.
+  album(k) {
+    const d = Store.d;
+    if (k == null) {   // from the map: what is new is shown once, on the island it came from
+      this.fresh = new Set(d.giftFresh || []);
+      d.giftFresh = []; Store.save();
+      const nf = FRIENDS.find(f => this.fresh.has(f.id));
+      k = nf ? nf.isle : d.albumIsle >= 0 ? d.albumIsle : Math.max(0, d.isle);
+    }
+    if (d.albumIsle !== k) { d.albumIsle = k; Store.save(); }
     UI.closeModal();
     const root = $('#album'); root.hidden = false; root.innerHTML = '';
     const top = el('div', 'top');
     const back = el('button', 'ibtn', '🗺️'); back.onclick = () => { Snd.play('tap'); root.hidden = true; root.innerHTML = ''; UI.map(); };
     top.appendChild(back);
-    top.appendChild(el('h1', null, '动物收集册'));
+    top.appendChild(el('h1', null, '小伙伴收集册'));
     top.appendChild(el('div', 'pill', `🎁 ${this.count()} / ${FRIENDS.length}`));
     root.appendChild(top);
-    const grid = el('div', 'agrid'); root.appendChild(grid);
-    const slots = FRIENDS.map(f => {
-      const n = d.gifts[f.id] || 0;
-      const b = el('button', 'aslot t' + Math.max(0, f.tier) + (this.owned(f.i) ? '' : ' no') + (n >= 2 ? ' shiny' : ''));
-      if (fresh.has(f.id)) b.appendChild(el('i', 'anew', 'NEW'));
+    const tabs = el('div', 'atabs');
+    ISLANDS.forEach((s, j) => {
+      const all = FRIENDS.filter(f => f.isle === j), got = all.filter(f => this.owned(f.i)).length;
+      const t = el('button', 'atab' + (j === k ? ' on' : '') + (got === all.length ? ' full' : '') + (all.some(f => this.fresh && this.fresh.has(f.id)) ? ' new' : ''));
+      const pic = Art2.img['island-' + (j + 1)];
+      if (pic) { const im = el('img'); im.src = pic.src; im.alt = ''; t.appendChild(im); } else t.appendChild(el('span', 'ic', s.icon));
+      t.appendChild(el('small', null, `${got}/${all.length}`));
+      t.onclick = () => { if (j === k) return; Snd.play('swap'); this.album(j); };
+      tabs.appendChild(t);
+    });
+    root.appendChild(tabs);
+    const page = el('div', 'apage'), grid = el('div', 'agrid');
+    page.appendChild(el('div', 'aname', `${ISLANDS[k].icon} ${ISLANDS[k].name}`));
+    page.appendChild(grid); root.appendChild(page);
+    const list = FRIENDS.filter(f => f.isle === k), pal = Pal.id();
+    const slots = list.map(f => {
+      const n = d.gifts[f.id] || 0, has = this.owned(f.i), isPal = PALS.includes(f.id);
+      const b = el('button', 'aslot t' + Math.max(0, f.tier) + (has ? '' : ' no') + (n >= 2 ? ' shiny' : '') + (isPal ? ' pal' : '') + (f.id === pal ? ' mine' : ''));
+      if (this.fresh && this.fresh.has(f.id)) b.appendChild(el('i', 'anew', 'NEW'));
       if (n > 1) b.appendChild(el('b', null, '×' + n));
+      if (isPal) b.appendChild(el('u', null, f.id === pal ? '✓' : '♥'));
       b.onclick = () => {
-        if (this.owned(f.i)) { Snd.play('select'); Voice.say(L.gift.names[f.i]); b.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.18)' }, { transform: 'scale(1)' }], 380); }
-        else { Snd.play('bad'); Voice.say(L.gift.locked); b.animate([{ transform: 'translateX(-5px)' }, { transform: 'translateX(5px)' }, { transform: 'none' }], 250); }
+        if (!has) { Snd.play('bad'); Voice.say(L.gift.locked); b.animate([{ transform: 'translateX(-5px)' }, { transform: 'translateX(5px)' }, { transform: 'none' }], 250); return; }
+        b.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.15) rotate(-3deg)' }, { transform: 'scale(1)' }], 380);
+        if (isPal && f.id !== Pal.id()) {
+          Snd.play('make'); Pal.choose(f.id);
+          $$('.aslot.mine', grid).forEach(o => { o.classList.remove('mine'); const u = $('u', o); if (u) u.textContent = '♥'; });
+          b.classList.add('mine'); $('u', b).textContent = '✓';
+          const r = b.getBoundingClientRect(); Fx.sparkles(r.left + r.width / 2, r.top + r.height / 2, 14, r.width * 0.6, '#ffd23a');
+        } else { Snd.play('select'); Voice.say(L.gift.who[f.i]); }
       };
       grid.appendChild(b);
       return b;
     });
-    // the heads are drawn once the slots have their size
+    // as many columns as keep the slots square and as big as they can be
     const paint = () => {
-      if (root.hidden) return;
-      const dpr = Math.min(devicePixelRatio || 1, 2), r = slots[0].getBoundingClientRect(), px = Math.floor(Math.min(r.width, r.height) * 0.94);
+      if (root.hidden || !grid.isConnected) return;
+      const W = grid.clientWidth, H = grid.clientHeight, n = list.length, gap = 10;
+      let best = 0, cols = 1;
+      for (let c = 1; c <= n; c++) { const r = Math.ceil(n / c), q = Math.min((W - gap * (c - 1)) / c, (H - gap * (r - 1)) / r); if (q > best) { best = q; cols = c; } }
+      const px = Math.max(30, Math.floor(Math.min(best, 170)));
+      grid.style.gridTemplateColumns = `repeat(${cols}, ${px}px)`; grid.style.gridAutoRows = px + 'px';
+      const dpr = Math.min(devicePixelRatio || 1, 2), cp = Math.floor(px * 0.96);
       slots.forEach((b, i) => {
         const old = $('canvas', b); if (old) old.remove();
-        const c = this.slot(FRIENDS[i], px * dpr); c.style.width = c.style.height = px + 'px';
+        const c = this.slot(list[i], cp * dpr); c.style.width = c.style.height = cp + 'px';
         b.prepend(c);
       });
     };
@@ -337,17 +380,17 @@ const Gift = {
     this._albumResize && removeEventListener('resize', this._albumResize);
     this._albumResize = () => requestAnimationFrame(paint);
     addEventListener('resize', this._albumResize);
-    if (!d.seen.album) { d.seen.album = 1; Store.save(); Voice.say(L.gift.album); }
+    if (!d.seen.album2) { d.seen.album2 = 1; Store.save(); Voice.say(L.gift.album); }
   },
-  // a friend for the album: its head, or its shadow with a question mark if she has not found it yet
+  // a friend for the album: its fun face, or its shadow with a question mark if she has not found it yet
   slot(f, s) {
-    const c = Art.friend(f.i, s, s * 0.86);
-    if (this.owned(f.i)) return c;
+    const has = this.owned(f.i), c = Art.friend(f.i, s, s * 0.86, has ? 'f' : 'b');
+    if (has) return c;
     const x = c.getContext('2d');
-    x.globalCompositeOperation = 'source-in'; x.fillStyle = f.tier === 2 ? '#d7b8f0' : '#cbbcdb'; x.fillRect(0, 0, s, s);
+    x.globalCompositeOperation = 'source-in'; x.fillStyle = f.tier === 2 ? '#d9cbe6' : f.tier === 1 ? '#e6d9b8' : '#d3d9c4'; x.fillRect(0, 0, s, s);
     x.globalCompositeOperation = 'source-over';
     x.font = `900 ${s * 0.38}px ${FONT}`; x.textAlign = 'center'; x.textBaseline = 'middle';
-    x.lineWidth = s * 0.05; x.strokeStyle = '#a593bd'; x.strokeText('?', s / 2, s * 0.53); x.fillStyle = '#fff'; x.fillText('?', s / 2, s * 0.53);
+    x.lineWidth = s * 0.05; x.strokeStyle = '#9aa58a'; x.strokeText('?', s / 2, s * 0.53); x.fillStyle = '#fff'; x.fillText('?', s / 2, s * 0.53);
     return c;
   },
 };

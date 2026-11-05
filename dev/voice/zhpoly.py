@@ -85,6 +85,9 @@ POLY = {
     '数一捆': 'shu3 yi1 kun3', '转到': 'zhuan4 dao4',
     # 动物消消乐 · 种草地: 种 is planting (zhòng), not a kind (这种 zhǒng)
     '种绿': 'zhong4 lv4',
+    # 动物消消乐 · the 怪趣森林 friends' nicknames: the squirrel hoards (tún), the chameleon's eyes spin round (zhuàn),
+    # and a 仙子 is xiānzǐ
+    '囤囤囤': 'tun2 tun2 tun2', '乱转': 'luan4 zhuan4', '仙子': 'xian1 zi3',
     '转回去': 'zhuan4 hui2 qu4', '转了': 'zhuan4 le5', '转乱': 'zhuan4 luan4', '左右转': 'zuo3 you4 zhuan4', '别转': 'bie2 zhuan4', '转过去': 'zhuan4 guo4 qu4',
     '转魔方': 'zhuan4 mo2 fang1', '被转': 'bei4 zhuan4', '箭头转': 'jian4 tou2 zhuan4', '转着': 'zhuan4 zhe5', '自己转': 'zi4 ji3 zhuan4', '转两下': 'zhuan4 liang3 xia4', '跟着转': 'gen1 zhe5 zhuan4', '再转一转': 'zai4 zhuan4 yi1 zhuan4', '搭得': 'da1 de5',
     '折纸盒': 'zhe2 zhi3 he2', '折成': 'zhe2 cheng2', '折起来': 'zhe2 qi3 lai2', '折不成': 'zhe2 bu4 cheng2', '纸片': 'zhi3 pian4',

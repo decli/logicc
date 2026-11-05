@@ -78,7 +78,7 @@ const UI = {
       return n;
     });
     const av = el('canvas', 'avatar'); av.width = av.height = 152;
-    const head = Art.friend(FRIENDS.findIndex(f => f.id === 'panda'), 152, 120); av.getContext('2d').drawImage(head, 0, 0);
+    av.getContext('2d').drawImage(Art.friend(Pal.i(), 152, 132), 0, 0);   // the companion stands for her on the map
     av.hidden = !idx.includes(cur);
     map.appendChild(av);
     // travelling between islands
@@ -124,7 +124,7 @@ const UI = {
       }
       svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
       svg.innerHTML = `<path d="${dd}" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="${sz * 0.42}" stroke-linecap="round"/>` +
-        `<path d="${dd}" fill="none" stroke="#ffb3d6" stroke-width="${sz * 0.12}" stroke-dasharray="${sz * 0.05} ${sz * 0.28}" stroke-linecap="round"/>`;
+        `<path d="${dd}" fill="none" stroke="#e9a35a" stroke-width="${sz * 0.12}" stroke-dasharray="${sz * 0.05} ${sz * 0.28}" stroke-linecap="round"/>`;
       const at = idx.indexOf(cur);
       if (at >= 0) { av.style.left = pts[at][0] + 'px'; av.style.top = pts[at][1] + 'px'; av.style.width = av.style.height = sz * 0.75 + 'px'; av.style.margin = `${-sz * 1.15}px 0 0 ${sz * 0.05}px`; }
     };
@@ -152,7 +152,7 @@ const UI = {
         card.appendChild(row);
       });
     });
-    await Gift.open(3, { rare: true });
+    await Gift.open(3, { rare: true, isle: k });
   },
 
   // ---------- before a level ----------
@@ -314,6 +314,7 @@ const UI = {
       card.appendChild(el('p', 'note', '列竖式（默认）：学校里的竖式，个位对个位、十位对十位，旁边的数位表里个位是小动物、十位是一捆捆；满十捆一捆进到十位（记小 1），不够减从十位借一捆拆开（点退位点），她一位一位数、一位一位写，最后把得数写回横式。摆一摆：小动物摆进十格框，满十捆一捆、不够拆一捆。跳一跳：小青蛙在数轴上往前、往回跳，整十跳大步，数轴上标着整十。拆一拆：拆成几小步自己填（凑十、平十、破十、先算整十），每步配图数一数。小老师里点 🔄 随时换一种。'
         + (used.length ? '<br>她的记录：' + used.join('；') + (d.wayLast ? `；上次用的是${L.teach.ways[Teach.WAYS.indexOf(d.wayLast)]}。` : '。') : '')));
       seg('📏 数的范围', 'max', [[20, '20 以内'], [50, '50 以内'], [100, '100 以内']]);
+      card.appendChild(el('p', 'note', '每一页都由易到难：先是 20 以内不进位不退位的，再是两位数不进位的，然后 20 以内进位退位的，最后两位数进位退位的。选 50 或 100 以内时，20 以内的题和更大的数大约各占一半；选 20 以内就全是 20 以内。'));
       seg('🔢 几个数一起算', 'ops', [[2, '两个数'], [3, '三个数'], [4, '四个数']]);
       seg('➕ 题型', 'mode', [['mix', '加减混合'], ['add', '只有加法'], ['sub', '只有减法']]);
       const smp = el('div', 'sample'); card.appendChild(smp);

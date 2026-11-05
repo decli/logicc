@@ -1,11 +1,11 @@
 // 动物消消乐 · everything the narrator says. dev/voice/collect.js reads this file (with levels.js and board.js) to
 // list every line for recording, so a line built from a level must be built here and nowhere else.
-const KID = '可可';   // decli's daughter, who plays this
-// how many sums a math page has (家长设置). By default she spins a wheel before each page and does what it lands on
-// (decli 2026-10-19, evening: sums feel like a chore, make drawing them a game), 10 to 20 since decli 2026-11-02 (she
-// is ready for more, and for sums within 100). A parent can pick the day's ramp instead (2, 6, 12, then 20 every time
-// after, back to 2 the next day) or one fixed size.
-const MATH_WHEEL = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+const KID = '小朋友';   // how the narrator calls the child (decli 2026-11-05: no names, for privacy)
+// how many sums a math page has (家长设置). By default the child spins a wheel before each page and does what it lands
+// on (decli 2026-10-19, evening: sums feel like a chore, make drawing them a game). decli 2026-11-05: 2 to 16, so a
+// page can also be short and nobody dreads it; each page goes from easy to hard (MathGate.page). A parent can pick the
+// day's ramp instead (2, 6, 12, then 20 every time after, back to 2 the next day) or one fixed size.
+const MATH_WHEEL = [2, 4, 6, 8, 10, 12, 16];
 const MATH_RAMP = [2, 6, 12, 20];
 const MATH_COUNTS = [5, 10, 15, 20];
 const NUM_ZH = n => String(n);   // the voice reads digits naturally ("18只" → 十八只)
@@ -25,28 +25,37 @@ function goalSay(g, lv) {
   if (g.t === 'cage') return `把笼子里的${count('012345')}个小伙伴都救出来`;
   return '';
 }
-// Every animal in decli's pictures (heads.webp, cut by dev/heads.py), in their order: [id, name, tier, colour].
-// tier: -1 in the album from the start (the first six on the board and the penguin), else from the blind box after a
-// win (gift.js): 0 普通, 1 稀有, 2 隐藏款. colour: the head's main colour, so a game's six animals all look different
-// (cast.js): p pink, w white, k black and white, v purple, y yellow, o orange, r red, g green, l blue, t teal,
-// b brown, a grey. A second letter: it also looks like that colour (the pigeon is grey-purple), so it never plays next
-// to those either (decli: some animals look very much alike).
+// Every character of decli's 怪趣森林 pictures (decli 2026-11-05; dev/art/heads2/HEADS.md, packed by dev/heads2.py in
+// this order): [id, name, tier, colour, island, temper]. The first seventy are the animals of the first pictures (same
+// ids, so what was collected stays), then thirty more: vegetables, flowers, weather, sweets and fairy-tale people.
+// tier: -1 on the board and in the album from the start, else from the blind box: 0 普通, 1 稀有, 2 隐藏款 (never on the
+// board). colour: the face's main colour, so a game's animals all look different (cast.js): p pink, w white,
+// k black and white, v purple, y yellow, o orange, r red, g green, l blue, t teal, b brown, a grey. island: ISLANDS'
+// number where it lives — its levels draw it first, and so do its blind boxes. temper: its nickname (小猪·乐呵呵).
 const FRIENDS = [
-  ['panda', '熊猫', -1, 'k'], ['fox', '小狐狸', 0, 'o'], ['tiger', '小老虎', 1, 'o'], ['lion', '小狮子', 1, 'o'], ['bear', '小棕熊', 0, 'b'],
-  ['polar', '北极熊', 0, 'w'], ['koala', '考拉', 1, 'a'], ['bunny', '小兔子', 0, 'p'], ['corgi', '柯基', 0, 'o'], ['cat', '小蓝猫', 0, 'l'],
-  ['frog', '小青蛙', -1, 'g'], ['owl', '猫头鹰', 0, 'v'], ['chick', '小黄鸡', 0, 'y'], ['penguin', '小企鹅', -1, 'k'], ['duck', '小白鸭', 0, 'w'],
-  ['flamingo', '火烈鸟', 1, 'p'], ['peacock', '孔雀', 1, 't'], ['parrot', '鹦鹉', -1, 'r'], ['budgie', '虎皮鹦鹉', 0, 'l'], ['pigeon', '小鸽子', 0, 'av'],
-  ['pig', '小猪', -1, 'p'], ['sheep', '小绵羊', 0, 'w'], ['cow', '小奶牛', 0, 'k'], ['horse', '小马', 0, 'b'], ['deer', '小鹿', 0, 'b'],
-  ['giraffe', '长颈鹿', -1, 'y'], ['hippo', '河马', -1, 'v'], ['elephant', '小象', 1, 'l'], ['rhino', '犀牛', 0, 't'], ['croc', '鳄鱼', 0, 'g'],
-  ['squirrel', '松鼠', 0, 'o'], ['hamster', '仓鼠', 0, 'o'], ['hedgehog', '刺猬', 0, 'b'], ['raccoon', '浣熊', 0, 'a'], ['skunk', '臭鼬', 0, 'k'],
-  ['redpanda', '小熊猫', 1, 'o'], ['sloth', '树懒', 1, 'b'], ['fennec', '耳廓狐', 0, 'o'], ['monkey', '小猴子', 0, 'b'], ['capybara', '水豚', 0, 'b'],
-  ['turtle', '小海龟', 0, 'g'], ['seal', '海豹', 0, 'a'], ['dolphin', '海豚', 1, 'l'], ['shark', '小鲨鱼', 1, 'l'], ['clownfish', '小丑鱼', 0, 'o'],
-  ['octopus', '章鱼', 0, 'p'], ['ladybug', '瓢虫', 0, 'r'], ['bee', '小蜜蜂', 0, 'y'], ['dragon', '小龙', 2, 't'], ['unicorn', '独角兽', 2, 'w'],
-  ['dog', '小狗', 0, 'o'], ['dalmatian', '斑点狗', 0, 'k'], ['siamese', '暹罗猫', 0, 'w'], ['axolotl', '六角恐龙', 1, 'p'], ['bat', '小蝙蝠', 0, 'v'],
-  ['alpaca', '羊驼', 1, 'w'], ['bison', '野牛', 0, 'b'], ['zebra', '斑马', 1, 'k'], ['donkey', '小毛驴', 0, 'a'], ['kangaroo', '袋鼠', 0, 'o'],
-  ['rooster', '大公鸡', 0, 'r'], ['goose', '大白鹅', 0, 'w'], ['duckling', '小黄鸭', 0, 'y'], ['cardinal', '小红鸟', 0, 'r'], ['chameleon', '变色龙', 1, 'g'],
-  ['puffer', '河豚', 0, 'o'], ['orca', '虎鲸', 1, 'k'], ['whale', '小蓝鲸', 0, 'l'], ['otter', '水獭', 0, 'b'], ['arcticfox', '北极狐', 0, 'w'],
-].map(([id, name, tier, fam], i) => ({ i, id, name, tier, fam }));
+  ['panda', '熊猫', -1, 'k', 0, '小机灵'], ['fox', '小狐狸', 0, 'o', 2, '鬼点子'], ['tiger', '小老虎', 1, 'o', 4, '威风'], ['lion', '小狮子', 1, 'o', 4, '臭美'], ['bear', '小棕熊', 0, 'b', 2, '暖心'],
+  ['polar', '北极熊', 0, 'w', 3, '冷静'], ['koala', '考拉', 1, 'a', 4, '瞌睡虫'], ['bunny', '小兔子', 0, 'p', 1, '蹦蹦'], ['corgi', '柯基', 0, 'o', 1, '小短腿'], ['cat', '小蓝猫', 0, 'l', 1, '傲娇'],
+  ['frog', '小青蛙', -1, 'g', 0, '元气派'], ['owl', '猫头鹰', 0, 'v', 3, '小老师'], ['chick', '小黄鸡', 0, 'y', 1, '刚出壳'], ['penguin', '小企鹅', -1, 'k', 0, '乖乖仔'], ['duck', '小白鸭', 0, 'w', 1, '嘎嘎嘎'],
+  ['flamingo', '火烈鸟', 1, 'p', 3, '优雅'], ['peacock', '孔雀', 1, 't', 3, '爱显摆'], ['parrot', '鹦鹉', -1, 'r', 0, '话痨王'], ['budgie', '虎皮鹦鹉', 0, 'l', 3, '复读机'], ['pigeon', '小鸽子', 0, 'a', 3, '咕咕'],
+  ['pig', '小猪', -1, 'p', 0, '乐呵呵'], ['sheep', '小绵羊', 0, 'w', 1, '软绵绵'], ['cow', '小奶牛', 0, 'k', 1, '慢悠悠'], ['horse', '小马', 0, 'b', 1, '爱臭美'], ['deer', '小鹿', 0, 'b', 2, '害羞'],
+  ['giraffe', '长颈鹿', -1, 'y', 0, '好奇鬼'], ['hippo', '河马', -1, 'v', 0, '慢半拍'], ['elephant', '小象', 1, 'l', 0, '温柔'], ['rhino', '犀牛', 0, 't', 4, '横冲直撞'], ['croc', '鳄鱼', 0, 'g', 4, '笑面虎'],
+  ['squirrel', '松鼠', 0, 'o', 2, '囤囤囤'], ['hamster', '仓鼠', 0, 'o', 2, '小吃货'], ['hedgehog', '刺猬', 0, 'b', 2, '小刺头'], ['raccoon', '浣熊', 0, 'a', 4, '小偷偷'], ['skunk', '臭鼬', 0, 'k', 4, '小捣蛋'],
+  ['redpanda', '小熊猫', 1, 'o', 4, '不好意思'], ['sloth', '树懒', 1, 'b', 4, '慢慢来'], ['fennec', '耳廓狐', 0, 'y', 4, '大耳朵'], ['monkey', '小猴子', 0, 'b', 4, '调皮'], ['capybara', '水豚', 0, 'b', 2, '佛系'],
+  ['turtle', '小海龟', 0, 'g', 0, '慢吞吞'], ['seal', '海豹', 0, 'a', 0, '拍拍手'], ['dolphin', '海豚', 1, 'l', 0, '开心果'], ['shark', '小鲨鱼', 1, 'l', 0, '假装凶'], ['clownfish', '小丑鱼', 0, 'o', 0, '快乐泡泡'],
+  ['octopus', '章鱼', 0, 'p', 0, '手忙脚乱'], ['ladybug', '瓢虫', 0, 'r', 2, '小乖乖'], ['bee', '小蜜蜂', 0, 'y', 2, '勤快'], ['dragon', '小龙', 2, 'w', 5, '守宝藏'], ['unicorn', '独角兽', 2, 'w', 3, '梦幻'],
+  ['dog', '小狗', 0, 'b', 1, '跟屁虫'], ['dalmatian', '斑点狗', 0, 'k', 1, '跑跑跑'], ['siamese', '暹罗猫', 0, 'w', 1, '高冷'], ['axolotl', '六角恐龙', 1, 'p', 0, '笑嘻嘻'], ['bat', '小蝙蝠', 0, 'v', 3, '夜猫子'],
+  ['alpaca', '羊驼', 1, 'w', 1, '无语'], ['bison', '野牛', 0, 'b', 1, '倔牛'], ['zebra', '斑马', 1, 'k', 4, '酷酷的'], ['donkey', '小毛驴', 0, 'a', 1, '倔脾气'], ['kangaroo', '袋鼠', 0, 'o', 4, '蹦蹦跳'],
+  ['rooster', '大公鸡', 0, 'r', 1, '早起鸟'], ['goose', '大白鹅', 0, 'w', 1, '凶巴巴'], ['duckling', '小黄鸭', 0, 'y', 1, '呆萌'], ['cardinal', '小红鸟', 0, 'r', 3, '小气包'], ['chameleon', '变色龙', 1, 'g', 4, '眼珠乱转'],
+  ['puffer', '河豚', 0, 'l', 0, '气鼓鼓'], ['orca', '虎鲸', 1, 'k', 0, '大嗓门'], ['whale', '小蓝鲸', 0, 'l', 0, '憨憨'], ['otter', '水獭', 0, 'b', 0, '抱抱怪'], ['arcticfox', '北极狐', 0, 'w', 3, '机灵'],
+  ['icecream', '冰淇淋', 0, 'p', 0, '甜甜'], ['cottoncandy', '棉花糖', 0, 'l', 0, '甜滋滋'], ['popcorn', '爆米花', 0, 'w', 0, '蹦蹦'], ['donut', '甜甜圈', 0, 'b', 0, '圆滚滚'], ['mermaid', '小美人鱼', 2, 'w', 0, '爱唱歌'],
+  ['carrot', '胡萝卜', 0, 'o', 1, '急性子'], ['tomato', '番茄', 0, 'r', 1, '红脸蛋'], ['eggplant', '茄子', 0, 'v', 1, '委屈巴巴'], ['corn', '玉米', 0, 'y', 1, '爆脾气'], ['scarecrow', '稻草人', 0, 'b', 1, '吓唬王'],
+  ['goldhen', '金蛋母鸡', 2, 'w', 1, '下金蛋'], ['sunflower', '向日葵', 0, 'y', 2, '笑嘻嘻'], ['tulip', '郁金香', 0, 'p', 2, '小淑女'], ['mushroom', '小蘑菇', 0, 'r', 2, '小迷糊'], ['cactus', '仙人掌', 0, 'g', 2, '刺刺的'],
+  ['butterfly', '蝴蝶', 1, 'v', 2, '翩翩'], ['fairy', '花仙子', 2, 'w', 2, '会魔法'], ['sun', '太阳', 1, 'o', 3, '暖洋洋'], ['moon', '月亮', 0, 'y', 3, '睡不醒'], ['cloud', '云朵宝宝', 0, 'w', 3, '懒洋洋'],
+  ['raindrop', '雨滴', 0, 'l', 3, '爱哭鬼'], ['toucan', '大嘴鸟', 0, 'k', 4, '嘴大王'], ['banana', '香蕉', 0, 'y', 4, '弯弯'], ['dragonfruit', '火龙果', 0, 'p', 4, '刺头'], ['coconut', '椰子', 0, 'b', 4, '硬汉'],
+  ['ninedeer', '九色鹿', 2, 'w', 4, '善良'], ['princess', '小公主', 1, 'p', 5, '爱美'], ['knight', '小骑士', 1, 'a', 5, '勇敢'], ['wizard', '小魔法师', 1, 'v', 5, '神秘'], ['ghost', '小幽灵', 0, 'w', 5, '躲猫猫'],
+].map(([id, name, tier, fam, isle, temper], i) => ({ i, id, name, tier, fam, isle, temper }));
+// the partners: the twelve decli drew with four faces (also in dev/heads2.py), any of which can keep the child company
+const PALS = ['pig', 'panda', 'hippo', 'giraffe', 'parrot', 'frog', 'owl', 'corgi', 'bee', 'cloud', 'monkey', 'princess'];
 const L = {
   welcome: '欢迎来到动物消消乐！点一个关卡开始吧。',
   pick: '选一关吧！',
@@ -54,7 +63,7 @@ const L = {
   intro(lv, n) {
     const kinds = lv.goals.filter(g => g.t === 'c').length;
     const parts = lv.goals.filter(g => g.t !== 'c').map(g => goalSay(g, lv));
-    if (kinds) parts.push(`收集${['', '这种', '这两种', '这三种'][kinds]}小动物：`);
+    if (kinds) parts.push(`收集${['', '这种', '这两种', '这三种'][kinds]}小伙伴：`);
     return `第${NUM_ZH(n)}关，${lv.name}，一共${NUM_ZH(lv.moves)}步。要${parts.join('，还要')}` + (kinds ? '' : '。');
   },
   tip: {
@@ -102,7 +111,7 @@ const L = {
   extraOffer: '做5道数学题，就能再多5步！',
   extraDone: '多了5步，加油！',
   allDone: '所有小岛全部通关啦！你是消消乐大师！',
-  // decli: call her by name on the math page, every right answer is praise for 可可
+  // the math page speaks to the child (KID), every right answer is praise for them
   math: {
     title: `${KID}，敢不敢先挑战一页数学题？`,
     start: n => `${KID}，敢不敢先挑战一页数学题？${n}道题都做对，就能接着玩啦。`,   // recorded for every size above
@@ -132,7 +141,7 @@ const L = {
   // the wheel before a math page (wheel.js): every number is good news
   wheel: {
     ask: `${KID}，点一下转盘，看看这次做几道题！`,
-    land: n => n <= 13 ? `转到${n}道题！不多不少，${KID}加油！` : n <= 16 ? `哇，转到${n}道题！${KID}，接受挑战吧！` : `哇，转到${n}道题！超级大挑战，${KID}一定行！`,
+    land: n => n <= 4 ? `转到${n}道题！${KID}，热热身吧！` : n <= 10 ? `转到${n}道题！不多不少，${KID}加油！` : `哇，转到${n}道题！${KID}，接受挑战吧！`,
   },
   // 小老师 (teach.js): when a sum she is correcting is wrong again, or 💡. 列竖式 first (decli 2026-11-02), 🔄 for the
   // others; no line ever says the answer: they count only what is added or taken away, or count along with her
@@ -206,15 +215,18 @@ const L = {
     nums: Array.from({ length: 101 }, (_, i) => String(i)),   // counting: what has come or gone, or counting along
   },
   parent: '这里是给爸爸妈妈的设置哦。',
+  // 伙伴 (pal.js): picked in the album
+  pal: { chosen: Object.fromEntries(PALS.map(id => [id, `好！今天${FRIENDS.find(f => f.id === id).name}陪你一起玩！`])) },
   gift: {
     drop: '过关礼物！是一个神秘盲盒，点它三下，打开看看！',
     rare: '稀有款！运气真好！',
     hidden: '天哪！是隐藏款！超级超级难得！',
     got: FRIENDS.map(f => `哇！是${f.name}！`),
     again: '又抽到它啦！',
-    full: '所有的动物小伙伴都集齐啦！你是收集大王！',
-    album: '这是你的动物收集册。每过一关就能拆一个盲盒，把小伙伴都集齐吧！',
+    full: '一百个小伙伴都集齐啦！你是收集大王！',
+    album: '这是你的小伙伴收集册。每座小岛都有自己的小伙伴，第一次过关就能拆一个盲盒，把它们都集齐吧！点一点挂着伙伴牌子的，它就会陪你一起玩。',
     names: FRIENDS.map(f => f.name),
+    who: FRIENDS.map(f => `${f.name}，${f.temper}！`),   // tapped in the album: its name and its nickname
     locked: '还没抽到它呢，过关拆盲盒就有机会哦！',
     more: '拿到三颗星，还能再拆一个盲盒哦！',
     shiny: '又抽到它啦！它变成闪光版啦！',   // a replay: boxes come the first time a level is won, and with its first three stars

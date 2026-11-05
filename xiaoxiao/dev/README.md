@@ -9,36 +9,37 @@ node xiaoxiao/dev/gen.js                   # 重新生成第二季的 75 关（�
 node xiaoxiao/dev/gen.js 2                 # 只重做第 2 座岛（ISLANDS[2] 花花草原）
 python3 xiaoxiao/dev/art2.py               # decli 画的第二季素材 art/season2/*.webp|png → ../s2/*.webp，并登记到 src/art2.js（含笼子锁牌的位置）
 python3 dev/voice/build.py xiaoxiao        # 改了台词或关卡后重录语音包 ../voice.bin|json（只录新句子）
-python3 xiaoxiao/dev/heads.py              # 从 art/ 里 decli 画的头像图切出 70 个头像 → ../heads.webp 和 src/heads.js
+python3 xiaoxiao/dev/heads2.py             # decli 画的 219 张怪趣森林头像 art/heads2/*.png → ../heads.webp ../funs.webp ../pals.webp ../big/，和 src/heads.js
 ```
 
 地址后面加 `?go` 跳过开始按钮，加 `?debug` 会在控制台留一个 `XX`（`XX.UI.play(4)` 直接进第 5 关，`XX.Store.d.open = 10` 打开全部关卡，`XX.Store.d.owed = false` 免做下一页数学题，`XX.Teach.open({ nums: [8, 5], signs: ['+'], ans: 13 }, document.querySelector('#math .sheet'))` 在数学题页上直接看小老师讲 8+5，`XX.Store.d.way = 'split'` 先定好用哪种办法，默认 `'col'` 列竖式），调试用。
 
 | 文件 | 做什么 |
 | --- | --- |
-| `src/head.html` | 页面骨架和全部样式（糖果按钮、地图、侧栏 / 顶栏、卡片、数学题页、家长设置） |
+| `src/head.html` | 页面骨架和全部样式（怪趣森林的颜色在 `:root` 里：米白底、叶绿毛毡、橙色按钮、虚线缝边；地图、侧栏 / 顶栏、卡片、收集册、数学题页、家长设置） |
 | `src/core.js` | 小工具、缓动、`Clock`（只在画面刷新时走的游戏时钟，暂停和切到后台时所有动画一起停）、`Store`（存进度和设置） |
 | `src/board.js` | 规则本身，不碰画面：交换、找连线、特别的小动物和组合、冰块 / 礼物盒 / 泡泡 / 小企鹅、掉落（含斜着滑）、洗牌、加分。一步要发生的事一次算完，按时间排成「阶段」交给画面去演；`excitement` 算这一步值得喊哪个词 |
 | `src/levels.js` | 第一季十关的设定（格式写在文件开头），和 `ISLANDS`：第二季「动物环游世界」的六座岛，每座岛从第几关开始、几关、新玩法、地图颜色 |
 | `src/levels2.js` | 第二季 75 关，**由 `gen.js` 生成**，不要手改；每关带着 `sim`：机器人的胜率和它在难度曲线上的位置 |
-| `src/lines.js` | 旁白说的每一句话、英文欢呼用哪段录音、`FRIENDS`（70 个动物的名字、稀有程度和主色，和头像图同一个顺序）。录音脚本 `voice/collect.js` 也从这里读 |
-| `src/cast.js` | 每局（每次打开关前卡片、重玩、下一关）从 `FRIENDS` 里随机抽 6 个动物上棋盘：颜色各不相同，长得像的（同一种主色，或 `Cast.NEAR` 里写的相近颜色）不会同局出现；有小企鹅的关不抽黑白和灰色的 |
+| `src/lines.js` | 旁白说的每一句话（叫孩子都用 `KID`「小朋友」）、英文欢呼用哪段录音、`FRIENDS`（100 个角色的名字、稀有程度、主色、住在哪座岛、外号，和头像图同一个顺序）、`PALS`（能当伙伴的 12 个）、`MATH_WHEEL`（转盘上的 2～16）。录音脚本 `voice/collect.js` 也从这里读 |
+| `src/cast.js` | 每局（每次打开关前卡片、重玩、下一关）从 `FRIENDS` 里随机抽 6 个角色上棋盘：最多 4 个是这一关所在岛上的，颜色各不相同，长得像的（同一种主色，或 `Cast.NEAR` 里写的相近颜色）不会同局出现；有小企鹅的关不抽黑白和灰色的 |
 | `src/game.js` | 一关在玩的时候：画棋盘、手指拨动、把 board.js 算好的阶段一段段演出来、侧栏的步数 / 目标 / 分数、过关和失败 |
-| `src/heads.js` | `heads.py` 生成的：每个头像在 `heads.webp` 里的大小 |
+| `src/heads.js` | `heads2.py` 生成的：头像在 `heads.webp` / `funs.webp` / `pals.webp` 里怎么排，棋盘脸占格子多大（`fill`） |
 | `src/art2.js` | 第二季的图片（蛋、气球、笼子、草地、六座岛和岛屿地图）：`art2.py` 处理好放在 `../s2/`，并把有哪些写进 `Art2.names`；还没有的，`art.js` 和地图用代码画的代替 |
-| `src/art.js` `src/fx.js` | 从 `heads.webp` 取小动物头像，各种格子的预渲染；粒子、光束、闪电、冲击波、飞向目标的小动物、Great! … Unbelievable! 大字 |
-| `src/gift.js` | 过关拆盲盒（掉下来、点三下、蹦出小伙伴、稀有款 / 隐藏款的光）和地图上 🎁 打开的动物收集册；抽到谁的概率写在 `Gift.ODDS` |
+| `src/art.js` `src/fx.js` | 取头像（`Art.friendTo(x, i, cx, cy, fit, face)`：`'b'` 棋盘脸、`'f'` 性格脸、`'t'` / `'c'` 伙伴的点选脸 / 鼓励脸、`'h'` 小黄鸡破壳；同一个角色的几张脸在格子里位置完全一样，换脸不跳），各种格子的预渲染；粒子、光束、闪电、冲击波、飞向目标的小动物、Great! … Unbelievable! 大字 |
+| `src/gift.js` | 过关拆盲盒（掉下来、点三下、蹦出小伙伴的大图 `big/<id>.webp`、稀有款 / 隐藏款的光）和地图上 🎁 打开的小伙伴收集册（一座岛一页，`Store.d.albumIsle` 记着上次看的哪页）；抽到谁的概率写在 `Gift.ODDS`，先出这座岛的 |
+| `src/pal.js` | 伙伴：侧栏最上面陪着孩子的角色（`Pal.react('tap' / 'joy' / 'cheer')` 换脸、冒个 👀 🎉 💪），也是地图上的小人和转盘中间的头像；在收集册里点挂 ♥ 的换（`Store.d.pal`），还没抽到就是熊猫 |
 | `src/audio.js` `src/voice.js` | Web Audio 实时合成的音效；decli 的背景音乐和英文欢呼（`../sound/`，暂停和数学题页时音乐停）；语音包播放。下载失败（比如刚发布新版本那一会儿）会自己隔几秒再取，头像图也一样。从不用设备自带的语音：语音包里没有的句子就不出声，`?debug` 时在控制台列出来 |
-| `src/wheel.js` | 数学题页之前的转盘：她点一下，转约 3 秒停在 10～20 中的一个（`MATH_WHEEL`，十一个格子；先公平抽好再转，格子一样大），转到的数存在 `Store.d.spin`，这一页做完前不重转 |
+| `src/wheel.js` | 数学题页之前的转盘：孩子点一下，转约 3 秒停在 2、4、6、8、10、12、16 中的一个（`MATH_WHEEL`，七个格子；先公平抽好再转，格子一样大），转到的数存在 `Store.d.spin`，这一页做完前不重转 |
 | `src/teach.js` | 小老师：订正时又错或点 💡 时盖在题目上，默认先用列竖式（`Teach.W.col`：竖式 + 十位 / 个位两栏的数位表，满十捆一捆进到十位、不够减从十位借一捆拆开，她一位一位写在横线下，最后写回横式），🔄 换成别的办法（`frame` 摆一摆、`line` 跳一跳、`split` 拆一拆，`Teach.plan` 是拆一拆的步骤）；只数加进来 / 拿走的个数，从不显示或说出答案，还错就带着她一个一个数（`Teach.guide`）；键盘留在旁边让她自己写答案，列竖式和拆一拆的中间步骤也用这个键盘（`Teach.key`） |
-| `src/math.js` | 数学题页：出题、数字键盘、记录。三段：`write` 整页写完（✓ 只跳到下一道，不判对错）→ 交卷后 `mark` 一次批改（对的打 ✓，错的圈出来）→ `fix` 订正，来到一道先说一句错在哪（`MathGate.why`），再错叫小老师，小老师帮完做对后在页尾加一道同类题（`MathGate.twin`） |
+| `src/math.js` | 数学题页：出题（`MathGate.page`：按 `band` 分四档——20 以内 / 20 以上 × 不进退位 / 进退位，`share` 按 3:3:2:2 分好每档几道，从易到难排）、数字键盘、记录。三段：`write` 整页写完（✓ 只跳到下一道，不判对错）→ 交卷后 `mark` 一次批改（对的打 ✓，错的圈出来）→ `fix` 订正，来到一道先说一句错在哪（`MathGate.why`），再错叫小老师，小老师帮完做对后在页尾加一道同类题（`MathGate.twin`） |
 | `src/ui.js` | 地图、关前卡片、结果卡片、暂停、家长专区 |
 | `src/main.js` | 启动和每帧循环 |
 | `sim.js` | 关卡模拟器（见下） |
 | `bots.js` | 两个机器人（随便玩的 random、认真但不往后想的 greedy），`sim.js` 和 `gen.js` 共用 |
 | `gen.js` | 第二季的关卡生成器（见下「第二季」） |
 | `art2.py` `art/PROMPTS.md` `art/season2/` | 第二季素材的要求和提示词、decli 画的 16 张原图（WebP）和她实际用的提示词，和把它们处理成页面用的图的脚本 |
-| `heads.py` `art/` | decli 画的头像图（`heads-sheet-1.png` 前 50 个大一点，`heads-sheet-2.png` 全部 70 个）；每个头像取最清楚的那一份，打包成 `heads.webp`。以后有更大的同样排版的图，加进 `SHEETS` 就行；某一个单独有图时放 `art/heads/<id>.png` |
+| `heads2.py` `art/heads2/` | decli 画的怪趣森林头像（`HEADS.md` 是要求：100 个角色、219 张 1024×1024 透明 PNG，同一个角色的几张脸轮廓一模一样）；每张取中间 928×928 整张缩进格子，不裁不挪。改了 `FRIENDS` 的顺序或换了图，重跑它。`art/heads-sheet-*.png` 是 2026-11-05 以前用的第一套 70 个软糖头像的原图，留着没用了 |
 | `voice/collect.js` | 列出要录的每一句话 → `voice/lines.json` |
 
 ## 加一关、调难度

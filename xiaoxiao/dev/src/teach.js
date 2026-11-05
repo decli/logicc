@@ -24,9 +24,18 @@ const Teach = {
   on: false, s: null, imgs: {}, W: {},
   WAYS: ['col', 'frame', 'line', 'split'],
   CW: 0.96, CH: 2.3, CG: 0.24, MC: 0.43,   // a bundle (its width, height, the gap after it, one of its cells) in frame cells
-  img(i) {   // a friend's head as a picture, made once
-    if (!this.imgs[i]) this.imgs[i] = Art.friend(i, 128, 120).toDataURL();
-    return this.imgs[i];
+  img(i, face) {   // a friend's head as a picture (face as in Art.friendTo), made once
+    const key = i + (face || 'b');
+    if (!this.imgs[key]) this.imgs[key] = Art.friend(i, 128, 120, face).toDataURL();
+    return this.imgs[key];
+  },
+  // the owl's face (decli's four, 2026-11-05): 'b' listening, 't' talking, 'f' praising, 'c' encouraging; a mood holds
+  // its face for a while, then the owl goes back to listening or talking with the voice
+  owlFace(face, ms) {
+    const s = this.s; if (!s) return;
+    if (ms) s.moodT = performance.now() + ms;
+    const src = this.img(Art.byId('owl'), face);
+    if (s.owl.dataset.face !== face) { s.owl.src = src; s.owl.dataset.face = face; }
   },
   // how often each way was used, and how often the sum was then answered without counting together (家长设置 shows it)
   stat(w) { const d = Store.d; if (!d.ways) d.ways = {}; return d.ways[w] || (d.ways[w] = [0, 0]); },
@@ -37,7 +46,7 @@ const Teach = {
     this.on = true;
     const kinds = q.nums.map((_, j) => ANIMALS[j % ANIMALS.length].h);
     const ov = el('div', 'teach'), top = el('div', 'thead'), stage = el('div', 'tstage');
-    const owl = el('img', 'owl'); owl.src = this.img(FRIENDS.findIndex(f => f.id === 'owl')); owl.alt = '';
+    const owl = el('img', 'owl'); owl.src = this.img(Art.byId('owl')); owl.alt = ''; owl.dataset.face = 'b';
     owl.onclick = () => { Snd.play('tap'); Voice.say(this.s && this.s.line); };   // tap the teacher to hear what to do again
     top.appendChild(owl);
     const eq = el('div', 'teq'), parts = [];
@@ -57,8 +66,8 @@ const Teach = {
     ov.appendChild(top); ov.appendChild(stage); host.appendChild(ov);
     const hand = el('div', 'whand', '👆'); stage.appendChild(hand);
     const s = this.s = {
-      q, o, ov, stage, ans, parts, kinds, hand, swap, timers: [], gen: 0, line: '', way: '', w: null, cnt: null, badges: [],
-      guided: false, idle: 0,
+      q, o, ov, stage, ans, parts, kinds, hand, swap, owl, timers: [], gen: 0, line: '', way: '', w: null, cnt: null, badges: [],
+      guided: false, idle: 0, moodT: 0,
     };
     s.later = (fn, ms) => { const id = setTimeout(() => { s.timers = s.timers.filter(x => x !== id); if (this.s === s) fn(); }, ms); s.timers.push(id); };
     s.say = (t, o2) => { s.line = t; Voice.say(t, o2); };
@@ -66,6 +75,7 @@ const Teach = {
     // the teacher talks while the voice does, and a hand shows where to tap when she waits
     s.tick = setInterval(() => {
       owl.classList.toggle('talk', Voice.busy);
+      if (performance.now() > s.moodT) this.owlFace(Voice.busy ? 't' : 'b');
       const t = this.target();
       if (!t) { hand.classList.remove('on'); s.idle = 0; return; }
       s.idle += 150;
@@ -161,12 +171,12 @@ const Teach = {
     const s = this.s, p = el('div', 'tpic ' + w);
     if (w === 'col') {   // 27 + 15 in columns, the tens tinted like the bundles' side of the chart, the ones like the animals'
       const T = (x, y, t, fill, size = 30) => `<text x="${x}" y="${y}" font-size="${size}" font-weight="900" text-anchor="middle" fill="${fill}">${t}</text>`;
-      p.innerHTML = `<svg viewBox="0 0 200 140"><rect x="80" y="4" width="42" height="132" rx="10" fill="#f3e9ff"/><rect x="126" y="4" width="42" height="132" rx="10" fill="#fff1d6"/>`
-        + T(101, 30, '十', '#b9a1d6', 15) + T(147, 30, '个', '#e0a860', 15)
-        + T(101, 62, '2', '#7b4dff') + T(147, 62, '7', '#7b4dff') + T(50, 98, '+', '#a58cba') + T(101, 98, '1', '#ff8a1f') + T(147, 98, '5', '#ff8a1f')
-        + `<line x1="32" y1="108" x2="170" y2="108" stroke="#7a5a8e" stroke-width="4" stroke-linecap="round"/>` + T(116, 106, '1', '#ff8a1f', 15)
-        + `<rect x="89" y="113" width="24" height="20" rx="5" fill="#fff" stroke="#ffb000" stroke-width="3" stroke-dasharray="5 4"/>`
-        + `<rect x="135" y="113" width="24" height="20" rx="5" fill="#fff" stroke="#ffb000" stroke-width="3" stroke-dasharray="5 4"/></svg>`;
+      p.innerHTML = `<svg viewBox="0 0 200 140"><rect x="80" y="4" width="42" height="132" rx="10" fill="#f1f0dc"/><rect x="126" y="4" width="42" height="132" rx="10" fill="#fff1d6"/>`
+        + T(101, 30, '十', '#a9b48c', 15) + T(147, 30, '个', '#e0a860', 15)
+        + T(101, 62, '2', '#2f8f86') + T(147, 62, '7', '#2f8f86') + T(50, 98, '+', '#8f9a74') + T(101, 98, '1', '#ff8a1f') + T(147, 98, '5', '#ff8a1f')
+        + `<line x1="32" y1="108" x2="170" y2="108" stroke="#5d6b45" stroke-width="4" stroke-linecap="round"/>` + T(116, 106, '1', '#ff8a1f', 15)
+        + `<rect x="89" y="113" width="24" height="20" rx="5" fill="#fff" stroke="#f2b630" stroke-width="3" stroke-dasharray="5 4"/>`
+        + `<rect x="135" y="113" width="24" height="20" rx="5" fill="#fff" stroke="#f2b630" stroke-width="3" stroke-dasharray="5 4"/></svg>`;
     } else if (w === 'frame') {
       const g = el('div', 'tframe');
       for (let i = 0; i < 10; i++) {
@@ -177,16 +187,16 @@ const Teach = {
       p.appendChild(g);
     } else if (w === 'line') {
       let t = '';
-      for (let i = 0; i <= 10; i++) t += `<line x1="${10 + i * 18}" y1="96" x2="${10 + i * 18}" y2="${i % 5 ? 106 : 112}" stroke="#c9b8dd" stroke-width="3" stroke-linecap="round"/>`;
+      for (let i = 0; i <= 10; i++) t += `<line x1="${10 + i * 18}" y1="96" x2="${10 + i * 18}" y2="${i % 5 ? 106 : 112}" stroke="#c2c8a6" stroke-width="3" stroke-linecap="round"/>`;
       const arc = (a, b) => `<path d="M${a} 94 Q${(a + b) / 2} 62 ${b} 94" fill="none" stroke="#ff8a1f" stroke-width="4" stroke-linecap="round"/>`;
-      p.innerHTML = `<svg viewBox="0 0 200 120"><line x1="4" y1="96" x2="196" y2="96" stroke="#b9a1d6" stroke-width="5" stroke-linecap="round"/>${t}`
-        + `${arc(46, 64)}${arc(64, 82)}${arc(82, 100)}<image href="${this.img(FRIENDS.findIndex(f => f.id === 'frog'))}" x="80" y="40" width="44" height="44"/></svg>`;
+      p.innerHTML = `<svg viewBox="0 0 200 120"><line x1="4" y1="96" x2="196" y2="96" stroke="#a9b48c" stroke-width="5" stroke-linecap="round"/>${t}`
+        + `${arc(46, 64)}${arc(64, 82)}${arc(82, 100)}<image href="${this.img(Art.byId('frog'))}" x="80" y="40" width="44" height="44"/></svg>`;
     } else {
       const col = '#ff8a1f', dots = (cx, cy, n) => Array.from({ length: n }, (_, i) => `<circle cx="${cx + (i - (n - 1) / 2) * 13}" cy="${cy}" r="5.5" fill="${col}"/>`).join('');
-      p.innerHTML = `<svg viewBox="0 0 200 140"><path d="M88 52 L58 86 M112 52 L142 86" stroke="#c9b8dd" stroke-width="4" stroke-linecap="round"/>`
-        + `<circle cx="100" cy="32" r="30" fill="#fff" stroke="#d9c6ea" stroke-width="4"/>${dots(100, 32, 5)}`
-        + `<circle cx="52" cy="106" r="28" fill="#fff" stroke="#d9c6ea" stroke-width="4"/>${dots(52, 106, 2)}`
-        + `<circle cx="148" cy="106" r="28" fill="#fff8d6" stroke="#ffb000" stroke-width="4" stroke-dasharray="7 5"/>${dots(148, 106, 3)}</svg>`;
+      p.innerHTML = `<svg viewBox="0 0 200 140"><path d="M88 52 L58 86 M112 52 L142 86" stroke="#c2c8a6" stroke-width="4" stroke-linecap="round"/>`
+        + `<circle cx="100" cy="32" r="30" fill="#fff" stroke="#d8d2b4" stroke-width="4"/>${dots(100, 32, 5)}`
+        + `<circle cx="52" cy="106" r="28" fill="#fff" stroke="#d8d2b4" stroke-width="4"/>${dots(52, 106, 2)}`
+        + `<circle cx="148" cy="106" r="28" fill="#fff8d6" stroke="#f2b630" stroke-width="4" stroke-dasharray="7 5"/>${dots(148, 106, 3)}</svg>`;
     }
     return p;
   },
@@ -219,6 +229,7 @@ const Teach = {
     const s = this.s;
     if (s.cnt && !s.cnt.fin) { s.say(s.w.guideLine || L.teach.guide); return; }   // still counting: keep going
     const again = !!s.cnt;
+    this.owlFace('c', 2000);
     this.unbadge();
     s.cnt = { items, i: 0, fin: false };
     s.guided = true; s.idle = 1500;
@@ -277,7 +288,7 @@ const Teach = {
   // the answer was wrong: before the picture is finished, finish it first; after, count it together (again)
   wrong() {
     const s = this.s; if (!s) return;
-    this.shake();
+    this.shake(); this.owlFace('c', 2200);
     if (!s.w) s.say(s.line || L.teach.pick);
     else if (!s.w.ready()) s.say(L.teach.early);
     else if (s.w.wrongMain) s.w.wrongMain();   // 列竖式: the answer is under the line already, she copied it wrong
@@ -285,6 +296,7 @@ const Teach = {
   },
   right() {
     const s = this.s; if (!s) return;
+    this.owlFace('f', 2000);
     if (s.way && !s.guided) { this.stat(s.way)[1]++; Store.save(); }
     this.close(true);
   },
@@ -566,7 +578,7 @@ Teach.W.col = (c, first) => {
   function check() {
     const st = f.step;
     if (+f.got === st.ans) {
-      Snd.play('right'); f.busy = true; f.step = null;
+      Snd.play('right'); f.busy = true; f.step = null; Teach.owlFace('f', 1500);
       Teach.unbadge(); s.cnt = null;
       st.bx.classList.remove('ask'); st.bx.classList.add('ok'); st.bx.textContent = st.ans;
       const r = st.bx.getBoundingClientRect();
@@ -803,13 +815,13 @@ Teach.W.line = (c, first) => {
   const svg = c.sv('svg', { class: 'tline' }), ticks = c.sv('g'), arcs = c.sv('g');
   svg.appendChild(ticks); svg.appendChild(arcs); root.appendChild(svg);
   const start = el('div', 'tstart', q.nums[0]); start.style.color = c.col(0); root.appendChild(start);
-  const frog = el('div', 'tfrog'), fi = el('img'); fi.src = Teach.img(FRIENDS.findIndex(x => x.id === 'frog')); fi.alt = '';
+  const frog = el('div', 'tfrog'), fi = el('img'); fi.src = Teach.img(Art.byId('frog')); fi.alt = '';
   frog.appendChild(fi); root.appendChild(frog);
   const f = { at: q.nums[0], i: 0, j: 0, n: 0, phase: 'intro', busy: true, drawn: [], wait: 0 };
   const G = {};
   const X = x => G.m + (x - lo) * G.sp;
   const arcH = h => h.n === 10 ? Math.min(G.H * 0.3, G.sp * 10 * 0.42) : clamp(G.sp * 0.75, 12, 40);
-  const HOP = ['#ff8a1f', '#22c38a', '#5fb8ff'];   // the arcs of each number added or taken away
+  const HOP = ['#ff8a1f', '#73a848', '#5fb8ff'];   // the arcs of each number added or taken away
   function geo() {
     const W = root.clientWidth, H = root.clientHeight;
     Object.assign(G, { W, H, m: Math.max(34, W * 0.06), Y: H * 0.6 });
@@ -1011,7 +1023,7 @@ Teach.W.split = (c, first) => {
   }
   function check() {
     if (+f.got === f.r.ans) {
-      Snd.play('right'); f.busy = true;
+      Snd.play('right'); f.busy = true; Teach.owlFace('f', 1500);
       Teach.unbadge(); s.cnt = null;
       f.box.classList.remove('ask'); f.row.classList.add('ok');
       const b = f.box.getBoundingClientRect();

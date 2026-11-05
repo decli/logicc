@@ -139,7 +139,7 @@ const Fx = {
       const w = ctx.measureText(word).width, g = ctx.createLinearGradient(-w / 2, 0, w / 2, 0);
       hues.forEach((h, i) => g.addColorStop(i / Math.max(1, hues.length - 1), h));
       ctx.lineJoin = 'round';
-      ctx.lineWidth = size * 0.3; ctx.strokeStyle = '#4a2b5e'; ctx.strokeText(word, 0, size * 0.06);
+      ctx.lineWidth = size * 0.3; ctx.strokeStyle = '#3d5229'; ctx.strokeText(word, 0, size * 0.06);
       ctx.lineWidth = size * 0.16; ctx.strokeStyle = '#fff'; ctx.strokeText(word, 0, 0);
       ctx.fillStyle = g; ctx.fillText(word, 0, 0);
       ctx.restore(); ctx.globalAlpha = 1;
