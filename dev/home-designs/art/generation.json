@@ -1,0 +1,237 @@
+{
+  "brief": "PROMPTS.md",
+  "scheme": "B · 梦想群岛",
+  "asset_count": 23,
+  "assets": [
+    {
+      "id": "schulte",
+      "file": "schulte.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "transparent",
+      "generator": "image_gen",
+      "prompt": "Draw ONE production-ready children's game illustration, a single isolated object composition, square 1024×1024 PNG with true transparent background. Art direction: Quirky Forest handmade wool felt + soft polymer clay, plump sculpted rounded forms, short dense fine suede-like felt texture, matte, saturated but gentle colors. A friendly crafted miniature, polished collectible toy, no flat vector look. Camera 30-degree elevated three-quarter view, very modest perspective, centered, widest silhouette about 80% of canvas with equal generous padding. Soft lighting from upper left, shading only on object itself, clean crisp silhouette with a subtly darker same-color rim, no stray fibers beyond 3 pixels. NO ground, NO cast/drop shadow, NO background panel, NO black outline, NO letters, NO watermark. SUBJECT (schulte / find numbers): A thick rounded cobalt-blue felt square tray (#3F86E0, over half of visible colored area) holding exactly FOUR plump clay number keys in a precise 2×2 layout. Upper left key is golden yellow and has a rounded bold blue Arabic numeral 1; upper right blue key has cream numeral 2; lower left blue key cream numeral 3; lower right blue key cream numeral 4. The numerals must be clearly correct. A small magnifying glass with a warm wood handle and blue rim overlaps just the lower-right edge of the tray, glass optically clear. Cohesive chunky simple shapes readable as a small icon. Deliver only this single icon."
+    },
+    {
+      "id": "dots",
+      "file": "dots.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "transparent",
+      "generator": "image_gen",
+      "prompt": "ONE production-ready children's game icon, a single isolated composition, square 1024×1024 PNG, true transparent background. Quirky Forest art direction: handmade wool felt and soft polymer clay, plump rounded 3D forms, MATTE soft surfaces, short dense fine suede felt texture, sculpted collectible miniature. Saturated but gentle colors. Camera 30 degrees above object, consistent slight three-quarter perspective. Center ENTIRE composition in an imaginary 800×800 central box, at least 100 pixels of clear empty padding on EACH side; never crop any part. Soft upper-left light, shading on object only, crisp clean silhouette, subtly darker same-color rim, no black outlines, no stray fuzzy silhouette hairs. NO floor, NO cast shadow, NO drop shadow, NO background, NO border, NO labels or words, NO watermark. Clear chunky simple shapes readable at small size. SUBJECT: Exactly TWO rounded clay dice. A large creamy ivory die in the lower foreground tilted slightly, its upward facing face has EXACTLY FIVE red dots in a quincunx. Behind it, a larger coral-red die (#EF5B47) diagonally stacked, white inset pips. The RED back die is large enough that red is dominant in total colored area (over half), keep the front die ivory. No extra dice. Thick soft bevels. A cohesive pair, no floating dice."
+    },
+    {
+      "id": "bond",
+      "file": "bond.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "magenta",
+      "generator": "image_gen",
+      "prompt": "ONE production-ready children's game icon, a single isolated composition, square 1024×1024 PNG, solid pure #FF00FF magenta chroma-key background. Quirky Forest art direction: handmade wool felt and soft polymer clay, plump rounded 3D forms, MATTE soft surfaces, short dense fine suede felt texture, sculpted collectible miniature. Saturated but gentle colors. Camera 30 degrees above object, consistent slight three-quarter perspective. Center ENTIRE composition in an imaginary 800×800 central box, at least 100 pixels of clear empty padding on EACH side; never crop any part. Soft upper-left light, shading on object only, crisp clean silhouette, subtly darker same-color rim, no black outlines, no stray fuzzy silhouette hairs. NO floor, NO cast shadow, NO drop shadow, NO scenery, NO border, NO labels or words, NO watermark. Clear chunky simple shapes readable at small size. SUBJECT: An educational number-bond hanging mobile, dominant leaf green #56B26A. ONE large plump green felt sphere at top, a raised creamy rounded bold Arabic numeral '10' centered on it; a small green leaf sprouts on its very top. TWO green yarn strands branch down from this large ball to TWO smaller ivory-white felt spheres beneath: left sphere has a rounded bold green '6', right sphere a rounded bold green '4'. Clearly distinct 10, 6 and 4, no other marks. Large green top sphere occupies over half of visible material area. Well-spaced clean triangular layout; no support frame. Background fallback is deliberate: pure solid #FF00FF magenta, perfectly uniform flat chroma-key screen EVERYWHERE outside the object, including between the yarn and three balls. NO transparency, NO gradient, NO glow, NO cast shadow. Outer contour sharp with dense short wool contained inside it."
+    },
+    {
+      "id": "pattern",
+      "file": "pattern.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "transparent",
+      "generator": "image_gen",
+      "prompt": "ONE production-ready children's game icon, a single isolated composition, square 1024×1024 PNG, true transparent background. Quirky Forest art direction: handmade wool felt and soft polymer clay, plump rounded 3D forms, MATTE soft surfaces, short dense fine suede felt texture, sculpted collectible miniature. Saturated but gentle colors. Camera 30 degrees above object, consistent slight three-quarter perspective. Center ENTIRE composition in an imaginary 800×800 central box, at least 100 pixels of clear empty padding on EACH side; never crop any part. Soft upper-left light, shading on object only, crisp clean silhouette, subtly darker same-color rim, no black outlines, no stray fuzzy silhouette hairs. NO floor, NO cast shadow, NO drop shadow, NO background, NO border, NO labels or words, NO watermark. Clear chunky simple shapes readable at small size. SUBJECT: A thick rounded PURPLE felt activity card (#8C6BE0), purple occupies over half visible material area. On its face exactly two rows and three columns of small plump clay symbols, precisely: TOP ROW golden circle, mint triangle, golden circle. BOTTOM ROW mint triangle, golden circle, then an EMPTY rounded square marked by pale stitched DASHES with a chunky cream YARN QUESTION MARK '?' inside the stitched square. Order must clearly read circle/triangle/circle then triangle/circle/question. No other symbols. Felt card slightly thick and softly rounded."
+    },
+    {
+      "id": "span",
+      "file": "span.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "magenta",
+      "generator": "image_gen",
+      "prompt": "ONE production-ready children's game icon, a single isolated composition, square 1024×1024 PNG, solid pure #FF00FF magenta chroma-key background. Quirky Forest art direction: handmade wool felt and soft polymer clay, plump rounded 3D forms, MATTE soft surfaces, short dense fine suede felt texture, sculpted collectible miniature. Saturated but gentle colors. Camera 30 degrees above object, consistent slight three-quarter perspective. Center ENTIRE composition in an imaginary 800×800 central box, at least 100 pixels of clear empty padding on EACH side; never crop any part. Soft upper-left light, shading on object only, crisp clean silhouette, subtly darker same-color rim, no black outlines, no stray fuzzy silhouette hairs. NO floor, NO cast shadow, NO drop shadow, NO scenery, NO border, NO labels or words, NO watermark. Clear chunky simple shapes readable at small size. SUBJECT: A chunky pale TEAL soft felt push-button panel, dominant #2FB5A7, containing EXACTLY NINE square rounded buttons in a precise 3×3 grid. Seven buttons teal, TWO buttons (top middle and lower right) are warm yellow glowing softly like tiny nightlights, glow stays on the key surfaces with NO external halo and NO cast shadow. A single small plump golden clay star sits near the panel upper-right corner. Make teal area more than half. No letters, numerals, cables or stand. Pure solid #FF00FF magenta background fallback, no transparency. Background is absolutely uniform and unlit, no haze, no glow outside the object, no shadow. Short dense felt fibers contained inside the crisp object contour."
+    },
+    {
+      "id": "mirror",
+      "file": "mirror.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "magenta",
+      "generator": "image_gen",
+      "prompt": "ONE production-ready children's game icon, a single isolated composition, square 1024×1024 PNG, solid pure #FF00FF magenta chroma-key background. Quirky Forest art direction: handmade wool felt and soft polymer clay, plump rounded 3D forms, MATTE soft surfaces, short dense fine suede felt texture, sculpted collectible miniature. Saturated but gentle colors. Camera 30 degrees above object, consistent slight three-quarter perspective. Center ENTIRE composition in an imaginary 800×800 central box, at least 100 pixels of clear empty padding on EACH side; never crop any part. Soft upper-left light, shading on object only, crisp clean silhouette, subtly darker same-color rim, no black outlines, no stray fuzzy silhouette hairs. NO floor, NO cast shadow, NO drop shadow, NO scenery, NO border, NO labels or words, NO watermark. Clear chunky simple shapes readable at small size. SUBJECT: A symmetrical butterfly made from soft PINK felt (#EE7FA6) with a tiny plump pink central body and a CLEAR vertical stitched seam down the center. LEFT half has TWO SOLID pink plump wings, upper and lower, broad rounded heart-like silhouette. RIGHT half has NO SOLID WING MATERIAL: ONLY pink dashed yarn stitches forming the matching upper and lower wing CONTOUR, with true TRANSPARENT empty space inside. The two halves are exact mirror outlines; the visual lesson is completing symmetry. Pink dashed outline is thick enough to read. Two tiny pink antennae. No decorative background. IMPORTANT: Pure solid #FF00FF magenta chroma-key background, no transparency. The empty right wings have EXACTLY the same pure magenta inside and outside the dashed stitches; NO white fill, NO pink haze, NO blur, NO glow, NO shadow anywhere. Solid sharp matte pink stitches."
+    },
+    {
+      "id": "fit",
+      "file": "fit.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "magenta",
+      "generator": "image_gen",
+      "prompt": "ONE production-ready children's game icon, a single isolated composition, square 1024×1024 PNG, solid pure #FF00FF magenta chroma-key background. Quirky Forest art direction: handmade wool felt and soft polymer clay, plump rounded 3D forms, MATTE soft surfaces, short dense fine suede felt texture, sculpted collectible miniature. Saturated but gentle colors. Camera 30 degrees above object, consistent slight three-quarter perspective. Center ENTIRE composition in an imaginary 800×800 central box, at least 100 pixels of clear empty padding on EACH side; never crop any part. Soft upper-left light, shading on object only, crisp clean silhouette, subtly darker same-color rim, no black outlines, no stray fuzzy silhouette hairs. NO floor, NO cast shadow, NO drop shadow, NO scenery, NO border, NO labels or words, NO watermark. Clear chunky simple shapes readable at small size. SUBJECT: Three chunky softly beveled polymer-clay TETROMINO puzzle pieces closely interlocking into a compact composition: one golden-yellow 2×2 SQUARE piece, one small orange L piece, and a larger royal-blue #3F86E0 T piece. BLUE dominates more than half of the overall colored area. Near the center leave a CLEAR NARROW VERTICAL rectangular gap, framed with pale DASHED stitched yarn to indicate exactly ONE missing straight bar piece; the gap interior is transparent. Visible cubical segments in each piece, tactile handmade texture, no extra loose cubes, no words. Geometric correction is essential: the BLUE piece is a T tetromino, exactly 4 blocks with 3 in its top bar and 1 at its middle underneath. Its BLUE blocks are much larger in size than the smaller orange/yellow blocks so blue still dominates. ORANGE L tetromino is EXACTLY 4 blocks: 3 vertically and 1 to the right at its lower end. YELLOW O has exactly 4 blocks, 2×2. Arrange these three distinct pieces close together leaving a central vertical dashed gap. Pure solid #FF00FF magenta background fallback, no transparency. Background perfectly uniform, including the gap, no cast shadows, no haze."
+    },
+    {
+      "id": "mofang",
+      "file": "mofang.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "transparent",
+      "generator": "image_gen",
+      "prompt": "ONE production-ready children's game icon, a single isolated composition, square 1024×1024 PNG, true transparent background. Quirky Forest art direction: handmade wool felt and soft polymer clay, plump rounded 3D forms, MATTE soft surfaces, short dense fine suede felt texture, sculpted collectible miniature. Saturated but gentle colors. Camera 30 degrees above object, consistent slight three-quarter perspective. Center ENTIRE composition in an imaginary 800×800 central box, at least 100 pixels of clear empty padding on EACH side; never crop any part. Soft upper-left light, shading on object only, crisp clean silhouette, subtly darker same-color rim, no black outlines, no stray fuzzy silhouette hairs. NO floor, NO cast shadow, NO drop shadow, NO background, NO border, NO labels or words, NO watermark. Clear chunky simple shapes readable at small size. SUBJECT: ONE handmade felt 3×3 Rubik-style cube, rounded soft cubies, slightly elevated three-quarter view. EXACTLY THREE rows and THREE columns on each main face. The TOP LAYER is twisted about 12 degrees relative to the bottom two layers so it looks mid-turn, not exploded. Warm ORANGE #F59A3B felt seams and exposed cube body establish dominant warm orange character; top face yellow, left face green, right face blue; a few small orange cubies as accents. Clearly a coherent cubic puzzle with no extra detached blocks. No stand."
+    },
+    {
+      "id": "shi",
+      "file": "shi.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "transparent",
+      "generator": "image_gen",
+      "prompt": "ONE production-ready children's game icon, a single isolated composition, square 1024×1024 PNG, true transparent background. Quirky Forest art direction: handmade wool felt and soft polymer clay, plump rounded 3D forms, MATTE soft surfaces, short dense fine suede felt texture, sculpted collectible miniature. Saturated but gentle colors. Camera 30 degrees above object, consistent slight three-quarter perspective. Center ENTIRE composition in an imaginary 800×800 central box, at least 100 pixels of clear empty padding on EACH side; never crop any part. Soft upper-left light, shading on object only, crisp clean silhouette, subtly darker same-color rim, no black outlines, no stray fuzzy silhouette hairs. NO floor, NO cast shadow, NO drop shadow, NO background, NO border, NO labels or words, NO watermark. Clear chunky simple shapes readable at small size. SUBJECT: A tiny felt PUPPET THEATER. Thick rounded purple #8C6BE0 stage frame, purple occupies more than half of visible material. Burgundy red velvet curtains are pulled open to both sides. In the opening: a miniature purple night sky, small pale crescent MOON and layered distant indigo/lavender mountains. In front of the stage at its lower edge rests one small cream rolled manuscript SCROLL, completely blank with NO writing. The theater feels handmade, rounded, cute, theatrical, with no actors, no title sign, no stars outside theater, no floor."
+    },
+    {
+      "id": "piano",
+      "file": "piano.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "magenta",
+      "generator": "image_gen",
+      "prompt": "Edit the attached picture to keep ONLY the large GOLDEN YELLOW TOY PIANO and its SINGLE GOLDEN MUSICAL NOTE at top right. Completely REMOVE the ENTIRE BOTTOM ROW of THREE TEAL PANDA TILES, replacing it with perfectly FLAT PURE MAGENTA #FF00FF background. Final picture must contain ONLY the piano and note, nothing else. Preserve the piano's rounded form, flower, matte felt/clay texture and seven ivory keys with red orange yellow green teal blue purple tips in order. Recenter piano plus note as one group, fitting within central 80% of a square 1024×1024 with equal clear padding. Crisp silhouette, short wool fibers inside edges, soft top-left light, self-shading only. Background must be absolutely solid #FF00FF everywhere, no shadow, no haze, no gradient, no text, no other objects."
+    },
+    {
+      "id": "xiaoxiao",
+      "file": "xiaoxiao.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "magenta",
+      "generator": "image_gen",
+      "prompt": "Edit this game illustration. Keep EXACTLY its object, pose, colors, details, material, key count and arrangement. Replace ALL of the transparent background and unwanted fringe/shadow residue with a completely FLAT PURE SOLID #FF00FF MAGENTA chroma-key background. No transparency. No cast shadow, no colored haze, no gradient, no highlights on the background. Clean sharp silhouette with short felt fibers confined inside the contour; no pixels of background residual shadow. For the piano, seven white keys with red orange yellow green teal blue violet tips and one golden music note; keep entire piano. For the panda tiles, exactly three teal square tiles with same Quirky Forest panda face and three stars above; keep all objects. Output ONE square 1024×1024 PNG, object occupies about 80%, centered with equal generous padding. No text or watermark."
+    },
+    {
+      "id": "wuziqi",
+      "file": "wuziqi.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "transparent",
+      "generator": "image_gen",
+      "prompt": "ONE production-ready children's game icon, a single isolated composition, square 1024×1024 PNG, true transparent background. Quirky Forest art direction: handmade wool felt and soft polymer clay, plump rounded 3D forms, MATTE soft surfaces, short dense fine suede felt texture, sculpted collectible miniature. Saturated but gentle colors. Camera 30 degrees above object, consistent slight three-quarter perspective. Center ENTIRE composition in an imaginary 800×800 central box, at least 100 pixels of clear empty padding on EACH side; never crop any part. Soft upper-left light, shading on object only, crisp clean silhouette, subtly darker same-color rim, no black outlines, no stray fuzzy silhouette hairs. NO floor, NO cast shadow, NO drop shadow, NO background, NO border, NO labels or words, NO watermark. Clear chunky simple shapes readable at small size. SUBJECT: ONE warm pale WOODEN gomoku board CORNER, honey beige #E9C38A, rounded thick square board, tactile subtle woodgrain with clean thin engraved square grid. Exactly THREE plump dark charcoal BLACK clay stones placed on three successive diagonal grid intersections from upper-left to lower-right, and exactly TWO creamy WHITE stones on neighboring off-diagonal intersections. Stones are spherical flattened discs with gentle satin soft sheen, not hard shiny plastic. Board is main visual area over half of composition. Show whole compact board with 7×7 or 8×8 grid, camera 30-degree elevated, square-ish icon. No labels, no coordinates, no hands."
+    },
+    {
+      "id": "pal-wave",
+      "file": "pal-wave.png",
+      "kind": "companion",
+      "width": 1024,
+      "height": 1024,
+      "background": "magenta",
+      "generator": "image_gen",
+      "prompt": "Use the attached Quirky Forest panda as the CHARACTER REFERENCE and extend this SAME character into a friendly UPPER-BODY portrait. Preserve recognizable ivory plump felt face, dark CHOCOLATE round ears and asymmetric dark eye patches, large cream eyes with dark pupils, one raised eyebrow and small curved smile. Small rounded dark felt torso with ivory tummy, one short paw raised beside its head WAVING hello, show tiny soft paw pads, other paw resting by belly. Upper body only, compact toy proportions, warmly curious and slightly mischievous. The exact same handmade wool-felt + matte soft-clay fine dense short suede surface, soft upper-left light. Center entire head, raised hand and upper body within 80% of a 1024×1024 square, generous padding all sides, NO cropped ears or hand. Pure solid #FF00FF MAGENTA flat background including gaps, NO transparency, NO shadow, NO floor, NO haze, NO long frizzy silhouette hairs, NO text, NO props, NO accessories."
+    },
+    {
+      "id": "isle-num",
+      "file": "b/isle-num.png",
+      "kind": "island",
+      "width": 1600,
+      "height": 1000,
+      "background": "magenta",
+      "generator": "image_gen",
+      "prompt": "Draw ONE isolated miniature island asset for a children's dream archipelago, wide horizontal 1600×1000 PNG. Quirky Forest handmade WOOL FELT and SOFT POLYMER CLAY, matte fine short dense suede texture, plump rounded toy forms, soft saturated pastel palette. Camera looking down from 45 degrees, broad low oval island, consistent 3/4 isometric view. A thin layered rounded ochre earth base, creamy sand beach shoreline, flat fresh green grassy top, a few small round felt trees ONLY around the far back and side edges. The ENTIRE island centered, occupying about 82% of canvas width, generous equal empty border. CRITICAL: the middle 60% of grass top is LARGE PLAIN EMPTY OPEN SPACE, unobstructed, reserved for later game buttons; ALL landmarks must be small and at the outer rim. No paths through middle, no props, no people, no text in center. Soft top-left lighting, self-shading only. Clean sharp silhouette, no long hairs, no black outline. FALLBACK BACKGROUND: perfectly FLAT SOLID PURE MAGENTA #FF00FF, everywhere outside island, NO sea, NO water, NO horizon, NO ground plane, NO cast shadow, NO haze, NO gradient, NO text, NO watermark. NUMBER ISLAND: At the FRONT-LEFT beach edge, just THREE rounded small ivory stones with bright raised rounded bold Arabic numerals 1, 2, 3 respectively. Three small round green trees along far rear-right rim. The number stones are the ONLY landmark. Huge open fresh-green central meadow."
+    },
+    {
+      "id": "isle-look",
+      "file": "b/isle-look.png",
+      "kind": "island",
+      "width": 1600,
+      "height": 1000,
+      "background": "magenta",
+      "generator": "image_gen",
+      "prompt": "Draw ONE isolated miniature island asset for a children's dream archipelago, wide horizontal 1600×1000 PNG. Quirky Forest handmade WOOL FELT and SOFT POLYMER CLAY, matte fine short dense suede texture, plump rounded toy forms, soft saturated pastel palette. Camera looking down from 45 degrees, broad low oval island, consistent 3/4 isometric view. A thin layered rounded ochre earth base, creamy sand beach shoreline, flat fresh green grassy top, a few small round felt trees ONLY around the far back and side edges. The ENTIRE island centered, occupying about 82% of canvas width, generous equal empty border. CRITICAL: the middle 60% of grass top is LARGE PLAIN EMPTY OPEN SPACE, unobstructed, reserved for later game buttons; ALL landmarks must be small and at the outer rim. No paths through middle, no props, no people, no text in center. Soft top-left lighting, self-shading only. Clean sharp silhouette, no long hairs, no black outline. FALLBACK BACKGROUND: perfectly FLAT SOLID PURE MAGENTA #FF00FF, everywhere outside island, NO sea, NO water, NO horizon, NO ground plane, NO cast shadow, NO haze, NO gradient, NO text, NO watermark. OBSERVATION ISLAND: One small cream and muted coral striped LIGHTHOUSE at the FAR BACK-LEFT shoreline; at its top a tiny TEAL TELESCOPE points toward upper right. Two small round mint trees far rear-right. Lighthouse entirely outside large empty central grass area. No light beam. Huge open mint-green central meadow."
+    },
+    {
+      "id": "isle-turn",
+      "file": "b/isle-turn.png",
+      "kind": "island",
+      "width": 1600,
+      "height": 1000,
+      "background": "magenta",
+      "generator": "image_gen",
+      "prompt": "Draw ONE isolated miniature island asset for a children's dream archipelago, wide horizontal 1600×1000 PNG. Quirky Forest handmade WOOL FELT and SOFT POLYMER CLAY, matte fine short dense suede texture, plump rounded toy forms, soft saturated pastel palette. Camera looking down from 45 degrees, broad low oval island, consistent 3/4 isometric view. A thin layered rounded ochre earth base, creamy sand beach shoreline, flat fresh green grassy top, a few small round felt trees ONLY around the far back and side edges. The ENTIRE island centered, occupying about 82% of canvas width, generous equal empty border. CRITICAL: the middle 60% of grass top is LARGE PLAIN EMPTY OPEN SPACE, unobstructed, reserved for later game buttons; ALL landmarks must be small and at the outer rim. No paths through middle, no props, no people, no text in center. Soft top-left lighting, self-shading only. Clean sharp silhouette, no long hairs, no black outline. FALLBACK BACKGROUND: perfectly FLAT SOLID PURE MAGENTA #FF00FF, everywhere outside island, NO sea, NO water, NO horizon, NO ground plane, NO cast shadow, NO haze, NO gradient, NO text, NO watermark. ROTATION ISLAND: On FAR BACK-RIGHT edge a small low stepped MOUNTAIN built from softly rounded toy CUBES, blue, warm orange and yellow, a compact pyramidal stack. Two little round green trees on far back-left. Cube stack occupies only outer rim. Huge empty fresh-green central meadow. No other buildings."
+    },
+    {
+      "id": "isle-art",
+      "file": "b/isle-art.png",
+      "kind": "island",
+      "width": 1600,
+      "height": 1000,
+      "background": "magenta",
+      "generator": "image_gen",
+      "prompt": "Draw ONE isolated miniature island asset for a children's dream archipelago, wide horizontal 1600×1000 PNG. Quirky Forest handmade WOOL FELT and SOFT POLYMER CLAY, matte fine short dense suede texture, plump rounded toy forms, soft saturated pastel palette. Camera looking down from 45 degrees, broad low oval island, consistent 3/4 isometric view. A thin layered rounded ochre earth base, creamy sand beach shoreline, flat fresh green grassy top, a few small round felt trees ONLY around the far back and side edges. The ENTIRE island centered, occupying about 82% of canvas width, generous equal empty border. CRITICAL: the middle 60% of grass top is LARGE PLAIN EMPTY OPEN SPACE, unobstructed, reserved for later game buttons; ALL landmarks must be small and at the outer rim. No paths through middle, no props, no people, no text in center. Soft top-left lighting, self-shading only. Clean sharp silhouette, no long hairs, no black outline. FALLBACK BACKGROUND: perfectly FLAT SOLID PURE MAGENTA #FF00FF, everywhere outside island, NO sea, NO water, NO horizon, NO ground plane, NO cast shadow, NO haze, NO gradient, NO text, NO watermark. POETRY AND MUSIC ISLAND: At FAR BACK-LEFT rim one tiny violet puppet THEATER with red pulled-open curtains, and at FAR BACK-RIGHT rim a short miniature BRIDGE with ivory piano keys and a few black keys as its walkway, crossing a tiny narrow turquoise inlet confined to rim. Two small round trees at extreme sides. The theater and bridge are small peripheral landmarks, central 60% is completely empty uninterrupted light green grass. No lettering, no notes floating in sky."
+    },
+    {
+      "id": "isle-play",
+      "file": "b/isle-play.png",
+      "kind": "island",
+      "width": 1600,
+      "height": 1000,
+      "background": "magenta",
+      "generator": "image_gen",
+      "prompt": "Draw ONE isolated miniature island asset for a children's dream archipelago, wide horizontal 1600×1000 PNG. Quirky Forest handmade WOOL FELT and SOFT POLYMER CLAY, matte fine short dense suede texture, plump rounded toy forms, soft saturated pastel palette. Camera looking down from 45 degrees, broad low oval island, consistent 3/4 isometric view. A thin layered rounded ochre earth base, creamy sand beach shoreline, flat fresh green grassy top, a few small round felt trees ONLY around the far back and side edges. The ENTIRE island centered, occupying about 82% of canvas width, generous equal empty border. CRITICAL: the middle 60% of grass top is LARGE PLAIN EMPTY OPEN SPACE, unobstructed, reserved for later game buttons; ALL landmarks must be small and at the outer rim. No paths through middle, no props, no people, no text in center. Soft top-left lighting, self-shading only. Clean sharp silhouette, no long hairs, no black outline. FALLBACK BACKGROUND: perfectly FLAT SOLID PURE MAGENTA #FF00FF, everywhere outside island, NO sea, NO water, NO horizon, NO ground plane, NO cast shadow, NO haze, NO gradient, NO text, NO watermark. PLAY ISLAND: A tiny charming pastel CAROUSEL on FAR BACK-RIGHT rim, striped coral and cream conical canopy, small golden finial, just two tiny horses visible. Three small round lollipop green trees along far back-left edge. Carousel is small and stays on perimeter. Huge central 60% grass field is completely empty and flat, no fences, no paths, no other rides."
+    },
+    {
+      "id": "sea",
+      "file": "b/sea.png",
+      "kind": "texture",
+      "width": 1024,
+      "height": 1024,
+      "background": "opaque",
+      "generator": "image_gen",
+      "prompt": "Create a perfect SEAMLESS TILEABLE square 1024×1024 sea texture for a children's handmade felt dream archipelago map. Fill the ENTIRE canvas edge-to-edge with very pale soft turquoise mint #BCE9DF, faint dense fine wool-felt surface texture and just a few tiny sparse short creamy-white sewn wavy ripple marks. Completely FLAT top-down surface, uniform low contrast and even lighting, NO gradient, NO center lighting, NO vignette, NO perspective, NO depth, NO horizon, NO object shadow. Quiet background texture that will not compete with icons. Tiny sparse wave motifs smoothly wrap across ALL opposite edges; match top to bottom and left to right so a 3×3 repeat has NO visible boundary or big repeating central motif. No land, no islands, no boat, no fish, no letters, no text, no border. Opaque full-color PNG, NOT transparent. A delicate seamless surface material swatch, not a landscape."
+    },
+    {
+      "id": "sailboat",
+      "file": "b/sailboat.png",
+      "kind": "decoration",
+      "width": 512,
+      "height": 512,
+      "background": "magenta",
+      "generator": "image_gen",
+      "prompt": "Draw ONE single children's dream archipelago decoration asset. Square 512×512 PNG. Handmade Quirky Forest wool felt + soft polymer clay, matte, dense fine short suede texture, plump rounded sculpted forms, colors saturated but soft. A consistent elevated 30-degree view, soft upper-left light, object shading only. Center complete silhouette within central 80%, equal padding. Clean precise outer edge with slightly darker same-color rim, NO stray long hairs, NO black outline, NO words or letters, NO watermark, NO cast shadow, NO drop shadow, NO floor, NO sea scene. Solid flat PURE MAGENTA #FF00FF chroma-key background everywhere outside the object, NO gradient and NO glow. SUBJECT: ONE tiny charming toy SAILBOAT, golden honey wood rounded hull with a coral-red upper stripe, one small wooden mast and two curved triangular felt sails in ivory and muted turquoise, tiny coral pennant on mast. Entire boat as one compact diagonal miniature. NO ocean, NO waves, NO stand, NO rope extending outside."
+    },
+    {
+      "id": "buoy",
+      "file": "b/buoy.png",
+      "kind": "decoration",
+      "width": 512,
+      "height": 512,
+      "background": "magenta",
+      "generator": "image_gen",
+      "prompt": "Draw ONE single children's dream archipelago decoration asset. Square 512×512 PNG. Handmade Quirky Forest wool felt + soft polymer clay, matte, dense fine short suede texture, plump rounded sculpted forms, colors saturated but soft. A consistent elevated 30-degree view, soft upper-left light, object shading only. Center complete silhouette within central 80%, equal padding. Clean precise outer edge with slightly darker same-color rim, NO stray long hairs, NO black outline, NO words or letters, NO watermark, NO cast shadow, NO drop shadow, NO floor, NO sea scene. Solid flat PURE MAGENTA #FF00FF chroma-key background everywhere outside the object, NO gradient and NO glow. SUBJECT: ONE cute nautical BUOY, plump round red-and-ivory striped floating marker with a thick rounded circular base, small golden ring on top, soft clay upper cap. Red dominant. Upright tilted very slightly, no water, no anchor, no rope, no number, no letters. Looks like a tiny handmade toy."
+    },
+    {
+      "id": "compass",
+      "file": "b/compass.png",
+      "kind": "decoration",
+      "width": 512,
+      "height": 512,
+      "background": "magenta",
+      "generator": "image_gen",
+      "prompt": "Draw ONE single children's dream archipelago decoration asset. Square 512×512 PNG. Handmade Quirky Forest wool felt + soft polymer clay, matte, dense fine short suede texture, plump rounded sculpted forms, colors saturated but soft. A consistent elevated 30-degree view, soft upper-left light, object shading only. Center complete silhouette within central 80%, equal padding. Clean precise outer edge with slightly darker same-color rim, NO stray long hairs, NO black outline, NO words or letters, NO watermark, NO cast shadow, NO drop shadow, NO floor, NO sea scene. Solid flat PURE MAGENTA #FF00FF chroma-key background everywhere outside the object, NO gradient and NO glow. SUBJECT: ONE round pocket COMPASS, plump warm golden-ochre clay casing, pale cream felt dial, bold four-point directional rose made of coral red and teal, needle pointing toward upper right, tiny warm wood hanging loop at the top. Simple SHORT tick marks, NO alphabet letters, NO N S E W, NO numerals, no text. Open visible matte dial without reflective glass. Chunky tactile miniature."
+    },
+    {
+      "id": "cloud",
+      "file": "b/cloud.png",
+      "kind": "decoration",
+      "width": 512,
+      "height": 512,
+      "background": "magenta",
+      "generator": "image_gen",
+      "prompt": "Draw ONE single children's dream archipelago decoration asset. Square 512×512 PNG. Handmade Quirky Forest wool felt + soft polymer clay, matte, dense fine short suede texture, plump rounded sculpted forms, colors saturated but soft. A consistent elevated 30-degree view, soft upper-left light, object shading only. Center complete silhouette within central 80%, equal padding. Clean precise outer edge with slightly darker same-color rim, NO stray long hairs, NO black outline, NO words or letters, NO watermark, NO cast shadow, NO drop shadow, NO floor, NO sea scene. Solid flat PURE MAGENTA #FF00FF chroma-key background everywhere outside the object, NO gradient and NO glow. SUBJECT: ONE soft ivory-white wool felt CLOUD, a low wide horizontal cluster of five plump rounded scalloped lobes, a gently flattened underside, clean crisp rounded outline, dense fine felt contained INSIDE edge, no fluffy wispy transparency, subtle very pale warm-blue inner shading. NO face, NO raindrops, NO sun, NO stars. Just one lovely small collectible cloud."
+    }
+  ]
+}

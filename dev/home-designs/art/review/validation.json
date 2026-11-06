@@ -1,0 +1,35 @@
+{
+  "status": "pass",
+  "asset_count": 23,
+  "background_counts": {
+    "transparent": 6,
+    "magenta": 16,
+    "opaque": 1
+  },
+  "checks": {
+    "required_filenames": "pass",
+    "png_rgba": "pass",
+    "exact_canvas_dimensions": "pass",
+    "transparent_or_pure_magenta_outer_edges": "pass",
+    "centered_foreground_and_padding": "pass",
+    "foreground_longest_extent": "pass",
+    "sha256_recorded": "pass"
+  },
+  "visual_review": {
+    "game_subjects_and_numbers": "reviewed",
+    "five_islands_with_clear_centers": "reviewed",
+    "sea_2x2_repeat": "reviewed"
+  },
+  "sea_seam_measurements_0_to_255": {
+    "left_right_mean_abs_difference": 4.528,
+    "top_bottom_mean_abs_difference": 4.7054,
+    "interior_horizontal_mean_abs_difference": 3.2,
+    "interior_vertical_mean_abs_difference": 4.477,
+    "left_right_to_interior_ratio": 1.415,
+    "top_bottom_to_interior_ratio": 1.051
+  },
+  "limits": [
+    "Sea repeat was checked visually and by edge difference relative to texture detail. Opposite edges are not claimed pixel-identical.",
+    "16 assets use the brief-approved #FF00FF chroma-key fallback and require cutout before use."
+  ]
+}
