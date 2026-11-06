@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>梦想群岛</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&family=Baloo+2:wght@700;800&display=swap">
+<style>
+/* 方案 B · 梦想群岛: an explorer's map. Five islands (the five groups), each game a landmark, a dotted sea route through
+   them in order, the companion standing where the child played last; the day's goal is a little boat between six buoys */
+:root{
+  --sea:#7FCFD3; --sea2:#5FB9C4; --deep:#3E9AAA; --sand:#F4E1B3; --sand2:#E3C788; --grass:#9ED27F; --grass2:#7DBE63;
+  --ink:#24323A; --soft:#4F6670; --paper:#FFF8E8; --rope:#B98A55;
+  --display:"ZCOOL XiaoWei","Songti SC","STSong","Noto Serif SC",serif;
+  --num:"Baloo 2","Arial Rounded MT Bold",system-ui,sans-serif;
+  --body:"PingFang SC","HarmonyOS Sans SC","MiSans","Microsoft YaHei",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--sea);color:var(--ink);font-family:var(--body);overflow:hidden;-webkit-user-select:none;user-select:none}
+button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer}
+#sea{position:fixed;inset:0;width:100%;height:100%}
+.ui{position:fixed;inset:0;pointer-events:none}
+.ui > *{pointer-events:auto}
+
+/* ---------- the top: a parchment name banner, the day's buoys, stars, three wooden buttons ---------- */
+.top{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:14px;
+  padding:max(14px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) 0 max(20px,env(safe-area-inset-left));pointer-events:none}
+.top > *{pointer-events:auto}
+.banner{position:relative;padding:10px 26px 12px;background:var(--paper);border-radius:6px;box-shadow:0 6px 0 rgba(36,50,58,.12);transform:rotate(-1.5deg)}
+.banner::before,.banner::after{content:"";position:absolute;top:8px;bottom:8px;width:16px;background:#EADBB8;border-radius:8px}
+.banner::before{left:-8px}.banner::after{right:-8px}
+.banner b{display:block;font:400 34px/1 var(--display);letter-spacing:3px}
+.banner small{display:block;margin-top:5px;font-size:14px;font-weight:700;color:var(--soft);letter-spacing:2px}
+.route{flex:1;min-width:0;height:64px;display:flex;align-items:center;justify-content:center;gap:10px}
+.route svg{height:64px;max-width:100%}
+.route span{font:800 20px var(--num);color:#fff;text-shadow:0 2px 0 rgba(36,50,58,.25);white-space:nowrap}
+.chip{display:flex;align-items:center;gap:6px;height:52px;padding:0 18px;border-radius:26px;background:var(--paper);font:800 24px var(--num);box-shadow:0 5px 0 rgba(36,50,58,.15)}
+.chip svg{color:#E8A317}
+.wbtn{width:56px;height:56px;border-radius:18px;display:grid;place-items:center;color:#fff;
+  background:linear-gradient(180deg,#C99A62,#A87A45);box-shadow:inset 0 2px 0 rgba(255,255,255,.25),0 5px 0 #7D5A31,0 10px 16px -6px rgba(0,0,0,.35)}
+.wbtn:active{transform:translateY(3px);box-shadow:inset 0 2px 0 rgba(255,255,255,.25),0 2px 0 #7D5A31}
+
+/* ---------- the islands' labels and the landmarks (over the drawn map) ---------- */
+.sign{position:absolute;transform:translate(-50%,-50%);font:400 22px var(--display);letter-spacing:2px;color:var(--ink);background:var(--paper);
+  padding:5px 16px 6px;border-radius:8px;box-shadow:0 4px 0 rgba(125,90,49,.35);white-space:nowrap}
+.sign::after{content:"";position:absolute;left:50%;top:100%;width:6px;height:16px;margin-left:-3px;background:var(--rope);border-radius:0 0 3px 3px}
+.spot{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:6px;transition:transform .25s cubic-bezier(.2,1.5,.4,1)}
+.spot:hover{transform:translate(-50%,-56%)}
+.spot:active{transform:translate(-50%,-50%) scale(.95)}
+.plot{position:relative;border-radius:50%;background:var(--paper);display:grid;place-items:center;
+  box-shadow:0 7px 0 rgba(90,70,30,.25),0 0 0 6px rgba(255,255,255,.55)}
+.plot .ic{width:72%;height:72%;filter:drop-shadow(2px 4px 0 rgba(0,0,0,.14))}
+.plot svg.ring{position:absolute;inset:-9px;width:calc(100% + 18px);height:calc(100% + 18px);transform:rotate(-90deg)}
+.name{font-size:17px;font-weight:900;background:rgba(255,248,232,.94);padding:3px 12px;border-radius:999px;white-space:nowrap;box-shadow:0 3px 0 rgba(90,70,30,.18)}
+.name em{font:800 14px var(--num);color:var(--soft);font-style:normal;margin-left:6px}
+.me{position:absolute;width:76px;transform:translate(-50%,-100%);pointer-events:none;animation:hop 1.6s ease-in-out infinite;filter:drop-shadow(0 6px 4px rgba(0,0,0,.2))}
+.me + .here{position:absolute;transform:translate(-50%,0);z-index:2;background:var(--ink);color:#fff;font-size:13px;font-weight:800;padding:4px 10px;border-radius:10px;white-space:nowrap;pointer-events:none}
+@keyframes hop{0%,100%{transform:translate(-50%,-100%)}45%{transform:translate(-50%,-112%)}}
+@keyframes bob{50%{transform:translateY(-4px)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- a phone held upright: the islands one under another, the map scrolls ---------- */
+@media (max-width:700px){
+  body{overflow:auto}
+  #sea{position:absolute}
+  .ui{position:absolute}
+  .top{flex-wrap:wrap;gap:8px}
+  .banner{padding:7px 16px 8px}
+  .banner b{font-size:20px;letter-spacing:1px}
+  .top{gap:6px}
+  .banner small{font-size:12px}
+  .route{order:9;flex-basis:100%;height:46px}.route svg{height:46px}
+  .chip{height:38px;font-size:18px;padding:0 10px;margin-left:auto}
+  .wbtn{width:38px;height:38px;border-radius:12px}.wbtn svg{width:20px;height:20px}
+  .name{font-size:14px}
+  .sign{font-size:18px}
+}
+</style>
+</head>
+<body>
+<canvas id="sea" aria-hidden="true"></canvas>
+<div class="ui" id="ui">
+  <header class="top">
+    <div class="banner"><b>思维小画本</b><small>小探险家的地图</small></div>
+    <div class="route" id="route" aria-label="今天玩了 2 关，目标 6 关"></div>
+    <div class="chip" aria-label="星星"></div>
+    <button class="wbtn" aria-label="贴纸册"></button>
+    <button class="wbtn" aria-label="读一遍"></button>
+    <button class="wbtn" aria-label="家长设置"></button>
+  </header>
+</div>
+<script src="shared.js"></script>
+<script>
+const wb = document.querySelectorAll('.wbtn');
+['book', 'sound', 'gear'].forEach((g, k) => { wb[k].innerHTML = glyph(g, 26); });
+document.querySelector('.chip').innerHTML = glyph('star', 24) + TODAY.stars;
+const seeded = s => () => { s = (s * 16807) % 2147483647; return s / 2147483647; };
+
+// the day's goal: six buoys, a little sailing boat at the last one reached
+function route() {
+  const n = TODAY.goal, w = 300, h = 64;
+  let s = `<path d="M10 40 Q 80 20 150 38 T 290 36" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="2 9" stroke-linecap="round" opacity=".9"/>`;
+  for (let k = 0; k < n; k++) {
+    const x = 22 + k * (256 / (n - 1)), y = 38 + Math.sin(k * 1.3) * 6, on = k < TODAY.done;
+    s += `<g transform="translate(${x} ${y})"><ellipse cx="0" cy="9" rx="10" ry="3" fill="#000" opacity=".12"/><path d="M-8 6 Q0 -16 8 6 Z" fill="${on ? '#EF5B47' : '#fff'}" stroke="${on ? '#B83A2A' : '#CFE7EA'}" stroke-width="2"/><rect x="-8" y="0" width="16" height="4" fill="${on ? '#fff' : '#CFE7EA'}"/></g>`;
+  }
+  const bx = 22 + (TODAY.done - 0.5) * (256 / (n - 1)), by = 22;
+  s += `<g transform="translate(${bx} ${by})" style="animation:bob 2s ease-in-out infinite"><path d="M-16 8 H16 L11 16 H-11 Z" fill="#B07A4F"/><path d="M0 8 V-16 L13 4 Z" fill="#fff" stroke="#24323A" stroke-width="1.5" stroke-linejoin="round"/><path d="M-2 6 L-12 4 L-2 -10 Z" fill="#F7C948"/></g>`;
+  document.getElementById('route').innerHTML = `<svg viewBox="0 0 ${w} ${h}">${s}</svg><span>今天 ${TODAY.done} / ${n} 关</span>`;
+}
+
+// where the islands go: the five groups along an S-shaped route (two rows), or one under another on a phone
+function plan() {
+  const W = innerWidth, H = innerHeight, phone = W <= 700, top = phone ? 170 : 96;
+  const isl = [];
+  if (!phone) {
+    const mh = H - top, row1 = top + mh * 0.3, row2 = top + mh * 0.76;
+    const spec = [['num', 0.145, row1, 0.24], ['eye', 0.455, row1 - mh * 0.02, 0.33], ['space', 0.8, row1 + mh * 0.02, 0.33], ['art', 0.71, row2, 0.25], ['play', 0.31, row2 + mh * 0.01, 0.25]];
+    spec.forEach(([id, x, y, w]) => isl.push({ id, x: W * x, y, w: W * w, h: mh * 0.38 }));
+  } else {
+    let y = top + 120;
+    GROUPS.forEach((g, k) => { const n = GAMES.filter(x => x.g === g.id).length; isl.push({ id: g.id, x: W * (k % 2 ? 0.54 : 0.46), y, w: W * 0.9, h: 220 }); y += 280; });
+  }
+  return { W, H: phone ? isl[isl.length - 1].y + 200 : H, isl, phone };
+}
+
+// the map: sea, waves, the dotted route, the islands with sand, grass and a few trees
+function draw(P) {
+  const cv = document.getElementById('sea'), dpr = Math.min(devicePixelRatio || 1, 2), x = cv.getContext('2d');
+  cv.width = Math.round(P.W * dpr); cv.height = Math.round(P.H * dpr); cv.style.width = P.W + 'px'; cv.style.height = P.H + 'px';
+  if (P.phone) document.getElementById('ui').style.height = P.H + 'px';
+  x.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const g = x.createLinearGradient(0, 0, 0, P.H); g.addColorStop(0, '#9ADBDD'); g.addColorStop(1, '#5FB9C4');
+  x.fillStyle = g; x.fillRect(0, 0, P.W, P.H);
+  const rnd = seeded(7);
+  // light patches and little waves
+  for (let k = 0; k < 18; k++) { const r = 60 + rnd() * 140; x.fillStyle = 'rgba(255,255,255,.07)'; x.beginPath(); x.ellipse(rnd() * P.W, rnd() * P.H, r * 1.6, r * 0.6, 0, 0, 7); x.fill(); }
+  x.strokeStyle = 'rgba(255,255,255,.55)'; x.lineWidth = 2.5; x.lineCap = 'round';
+  for (let k = 0; k < (P.phone ? 60 : 46); k++) { const wx = rnd() * P.W, wy = rnd() * P.H; x.beginPath(); x.arc(wx, wy, 7, Math.PI * 1.15, Math.PI * 1.85); x.stroke(); x.beginPath(); x.arc(wx + 13, wy, 7, Math.PI * 1.15, Math.PI * 1.85); x.stroke(); }
+  // the route, island to island
+  x.save(); x.strokeStyle = 'rgba(255,255,255,.9)'; x.lineWidth = 4; x.setLineDash([2, 12]);
+  x.beginPath(); P.isl.forEach((s, k) => { if (!k) x.moveTo(s.x, s.y); else { const p = P.isl[k - 1]; x.bezierCurveTo(p.x + (s.x - p.x) * 0.5, p.y + 70, s.x - (s.x - p.x) * 0.3, s.y - 70, s.x, s.y); } }); x.stroke(); x.restore();
+  P.isl.forEach((s, k) => island(x, s, seeded(31 + k * 17)));
+  // a compass rose in a quiet corner of the sea
+  if (!P.phone) compass(x, P.W * 0.5, P.H - 70, 34);
+}
+function blob(x, cx, cy, rx, ry, rnd, n = 11) {
+  const pts = [];
+  for (let k = 0; k < n; k++) { const a = k / n * Math.PI * 2, r = 0.82 + rnd() * 0.26; pts.push([cx + Math.cos(a) * rx * r, cy + Math.sin(a) * ry * r]); }
+  x.beginPath();
+  for (let k = 0; k < n; k++) {
+    const p0 = pts[(k - 1 + n) % n], p1 = pts[k], p2 = pts[(k + 1) % n], p3 = pts[(k + 2) % n];
+    if (!k) x.moveTo(p1[0], p1[1]);
+    x.bezierCurveTo(p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6, p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6, p2[0], p2[1]);
+  }
+  x.closePath();
+}
+function island(x, s, rnd) {
+  const seed = rnd() * 1e6 | 0, again = () => seeded(seed + 1);
+  // shallow water, sand, grass
+  x.fillStyle = 'rgba(255,255,255,.28)'; blob(x, s.x, s.y + 8, s.w * 0.56, s.h * 0.56, again()); x.fill();
+  x.fillStyle = 'rgba(36,80,90,.22)'; blob(x, s.x + 6, s.y + 14, s.w * 0.5, s.h * 0.5, again()); x.fill();
+  x.fillStyle = '#F4E1B3'; blob(x, s.x, s.y, s.w * 0.5, s.h * 0.5, again()); x.fill();
+  x.fillStyle = '#E3C788'; blob(x, s.x, s.y + 6, s.w * 0.44, s.h * 0.42, again()); x.fill();
+  x.fillStyle = '#9ED27F'; blob(x, s.x, s.y - 4, s.w * 0.43, s.h * 0.4, again()); x.fill();
+  x.fillStyle = 'rgba(255,255,255,.18)'; blob(x, s.x - s.w * 0.08, s.y - s.h * 0.1, s.w * 0.26, s.h * 0.18, again()); x.fill();
+  // a few round trees and flowers at the edges
+  const r2 = again();
+  for (let k = 0; k < 7; k++) {
+    const a = r2() * Math.PI * 2, tx = s.x + Math.cos(a) * s.w * 0.38, ty = s.y - 4 + Math.sin(a) * s.h * 0.32;
+    if (Math.abs(Math.sin(a)) < 0.5) continue;
+    if (r2() < 0.55) { x.fillStyle = '#5E9E4A'; x.beginPath(); x.arc(tx, ty + 6, 13, 0, 7); x.fill(); x.fillStyle = '#7DBE63'; x.beginPath(); x.arc(tx - 2, ty, 13, 0, 7); x.fill(); }
+    else { x.fillStyle = ['#EF5B47', '#F7C948', '#fff', '#EE7FA6'][k % 4]; for (let q = 0; q < 5; q++) { x.beginPath(); x.arc(tx + Math.cos(q * 1.26) * 4, ty + Math.sin(q * 1.26) * 4, 3, 0, 7); x.fill(); } }
+  }
+}
+function compass(x, cx, cy, r) {
+  x.save(); x.translate(cx, cy); x.globalAlpha = 0.85;
+  x.fillStyle = '#FFF8E8'; x.beginPath(); x.arc(0, 0, r, 0, 7); x.fill();
+  x.strokeStyle = '#B98A55'; x.lineWidth = 2; x.beginPath(); x.arc(0, 0, r - 5, 0, 7); x.stroke();
+  [0, 1, 2, 3].forEach(k => { x.rotate(Math.PI / 2); x.fillStyle = k % 2 ? '#24323A' : '#EF5B47'; x.beginPath(); x.moveTo(0, -r + 8); x.lineTo(6, 0); x.lineTo(-6, 0); x.closePath(); x.fill(); });
+  x.restore();
+  x.font = '800 13px "Baloo 2",sans-serif'; x.fillStyle = '#24323A'; x.textAlign = 'center'; x.fillText('N', cx, cy - r - 6);
+}
+
+// the landmarks: on each island, its games in a row (a little up and down), a ring for progress, its name
+function marks(P) {
+  const ui = document.getElementById('ui');
+  ui.querySelectorAll('.spot,.sign,.me,.here').forEach(n => n.remove());
+  const S = P.phone ? 92 : Math.max(84, Math.min(118, P.H * 0.135));
+  P.isl.forEach(s => {
+    const gr = GROUPS.find(g => g.id === s.id), list = GAMES.filter(g => g.g === s.id), n = list.length;
+    const sign = document.createElement('div'); sign.className = 'sign'; sign.textContent = gr.name;
+    sign.style.left = s.x + 'px'; sign.style.top = (s.y - s.h * 0.5 - 6) + 'px'; ui.appendChild(sign);
+    list.forEach((g, k) => {
+      const t = n === 1 ? 0.5 : k / (n - 1), x = s.x + (t - 0.5) * s.w * (n === 3 ? 0.62 : 0.46), y = s.y - 8 + (k % 2 ? 1 : -1) * s.h * 0.06;
+      const b = document.createElement('button'); b.className = 'spot'; b.setAttribute('aria-label', g.name);
+      b.style.left = x + 'px'; b.style.top = y + 'px';
+      const f = progFrac(g), R = 50, C = 2 * Math.PI * R;
+      b.innerHTML = `<span class="plot" style="width:${S}px;height:${S}px">${icon(g.id)}<svg class="ring" viewBox="0 0 120 120"><circle cx="60" cy="60" r="${R}" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="7"/>`
+        + `<circle cx="60" cy="60" r="${R}" fill="none" stroke="${g.color}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${(C * f).toFixed(1)} ${C}"/></svg></span>`
+        + `<span class="name">${g.name}<em>${progText(g)}</em></span>`;
+      ui.appendChild(b);
+      if (g.id === TODAY.last) {
+        const me = document.createElement('img'); me.className = 'me'; me.src = 'img/panda.webp'; me.alt = '';
+        // the companion stands on the island's edge beside the landmark, its words above its head
+        const mx = x - S * 0.78, my = y - S * 0.05;
+        me.style.left = mx + 'px'; me.style.top = my + 'px'; ui.appendChild(me);
+        const here = document.createElement('span'); here.className = 'here'; here.textContent = '上次玩到这儿';
+        here.style.left = mx + 'px'; here.style.top = (my - 76 - 30) + 'px'; ui.appendChild(here);
+      }
+    });
+  });
+}
+function all() { const P = plan(); route(); draw(P); marks(P); }
+all();
+addEventListener('resize', all);
+document.fonts && document.fonts.ready.then(all);
+</script>
+</body>
+</html>

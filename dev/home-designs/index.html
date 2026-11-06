@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>首页改版三方案</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* the review page: three tabs, a device switch, the live prototype scaled into a device frame, and what each one is about */
+:root{
+  --bg:#F4F4F1; --card:#FFFFFF; --ink:#1E1F26; --soft:#5E6170; --line:#E2E2DC; --frame:#1E1F26;
+  --a:#E2513C; --b:#2A9FB2; --c:#F06A2E;
+  --body:"PingFang SC","HarmonyOS Sans SC","MiSans","Microsoft YaHei",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6}
+.wrap{max-width:1360px;margin:0 auto;padding-block:28px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
+h1{margin:0;font-size:30px;line-height:1.25;text-wrap:balance}
+h1 small{display:block;font-size:15px;color:var(--soft);letter-spacing:1px}
+.lead{margin:6px 0 0;color:var(--soft);max-width:70ch}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{border:0;font:inherit;cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 16px 10px 10px;border-radius:16px;background:var(--card);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.tab b{display:grid;place-items:center;width:30px;height:30px;border-radius:10px;background:var(--k);color:#fff;font-size:16px}
+.tab span{display:flex;flex-direction:column;line-height:1.2;text-align:left}
+.tab small{color:var(--soft);font-size:12px}
+.tab[aria-selected="true"]{box-shadow:inset 0 0 0 2.5px var(--k);background:#fff}
+.tab:focus-visible,.dev:focus-visible,.copy:focus-visible,a:focus-visible{outline:3px solid var(--k,#2A9FB2);outline-offset:2px}
+.devs{display:flex;gap:4px;padding:4px;border-radius:14px;background:#E9E9E3}
+.dev{border:0;font:inherit;font-size:14px;cursor:pointer;padding:7px 14px;border-radius:10px;background:transparent;color:var(--soft)}
+.dev[aria-pressed="true"]{background:#fff;color:var(--ink);font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:22px;align-items:start}
+.view{min-width:0;display:flex;flex-direction:column;align-items:center;gap:10px}
+.device{background:var(--frame);border-radius:30px;padding:14px;box-shadow:0 30px 60px -30px rgba(0,0,0,.45);max-width:100%}
+.device.phone{border-radius:44px;padding:12px}
+.screen{overflow:hidden;border-radius:18px;background:#fff;position:relative}
+.device.phone .screen{border-radius:34px}
+.screen iframe{border:0;display:block;transform-origin:0 0;position:absolute;left:0;top:0}
+.under{font-size:13px;color:var(--soft)}
+.under a{color:var(--ink)}
+.info{background:var(--card);border-radius:22px;padding:20px 22px;box-shadow:inset 0 0 0 1.5px var(--line);display:flex;flex-direction:column;gap:12px;min-width:0}
+.info h2{margin:0;font-size:22px;line-height:1.3}
+.info .tag{align-self:flex-start;display:inline-block;font-size:12px;font-weight:700;color:#fff;background:var(--k);border-radius:999px;padding:2px 10px}
+.info h3{margin:6px 0 0;font-size:14px;color:var(--soft);letter-spacing:.5px}
+.info p,.info li{margin:0;font-size:14.5px}
+.info ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.pick{margin-top:4px;padding:12px 14px;border-radius:14px;background:#F6F6F2;font-size:14px}
+.prompts{background:var(--card);border-radius:22px;padding:22px;box-shadow:inset 0 0 0 1.5px var(--line);display:flex;flex-direction:column;gap:14px}
+.prompts h2{margin:0;font-size:22px}
+.prompts p{margin:0;max-width:75ch;color:var(--soft)}
+.base{position:relative;background:#F6F6F2;border-radius:14px;padding:14px 16px;font-size:14px}
+.copy{position:absolute;right:10px;top:10px;border:0;font:inherit;font-size:13px;font-weight:700;cursor:pointer;background:var(--ink);color:#fff;border-radius:10px;padding:5px 12px}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:14px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:13px;color:var(--soft);font-weight:700}
+td:first-child{white-space:nowrap;font-weight:700}
+td .sw{display:inline-block;width:12px;height:12px;border-radius:4px;vertical-align:-1px;margin-right:6px}
+code{font-family:ui-monospace,Menlo,monospace;font-size:13px;background:#F0F0EA;border-radius:6px;padding:1px 6px}
+@media (max-width:1000px){.stage{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1><small>思维小画本</small>首页改版三方案</h1>
+    <p class="lead">三版用的是同一份真实内容：12 个游戏（五子棋已换下造物）、五个类别、一个孩子的示例进度（今天 2/6 关、9 颗星、上次玩的是动物消消乐）。下面能直接点、能切设备；游戏图标现在是代码画的占位，最后一节是请 decli 画的插画清单。</p>
+  </header>
+  <div class="bar">
+    <div class="tabs" role="tablist" id="tabs"></div>
+    <div class="devs" id="devs" aria-label="设备"></div>
+  </div>
+  <section class="stage">
+    <div class="view">
+      <div class="device" id="device"><div class="screen" id="screen"><iframe id="frame" title="方案预览"></iframe></div></div>
+      <div class="under" id="under"></div>
+    </div>
+    <article class="info" id="info"></article>
+  </section>
+  <section class="prompts" id="prompts"></section>
+</div>
+<script>
+const DESIGNS = [
+  { id: 'a', file: 'a.html', k: 'var(--a)', name: '小画本书架', sub: '每个游戏是一本画本', tag: '温暖 · 手作',
+    idea: '「思维小画本」本来就是画本，那首页就是一面书架：12 个游戏是 12 本立着的图画书，封面是游戏的颜色和插画，书脊、书页边、书名牌都有纸的手感。今天的目标是挂在上面的一串彩旗，玩一关点亮一面。',
+    kid: ['一眼看到的是「一本本书」，点哪本读哪本；书名牌上有关卡圆点，看得出读到哪儿了', '上次读的那本歪出来一点，夹着红色书签：「上次读到这儿」', '彩旗一面面亮起来，比进度条更像一件事情'],
+    parent: ['每本书的书脊上有类别小标签（数一数、看一看、转一转、念一念、玩一玩），看得出每样练了多少', '星星是一枚纸做的小奖章；贴纸册、读一遍、家长设置是三颗纸按钮'],
+    art: '只需要 12 张游戏插画（第一节），书、书架、彩旗都是代码画的',
+    cost: '最贴近「小画本」的名字和现在的游戏内容，改动风险最小；12 本一样大的书，层次靠颜色和书签，不靠大小。' },
+  { id: 'b', file: 'b.html', k: 'var(--b)', name: '梦想群岛', sub: '首页是一张探险地图', tag: '沉浸 · 故事',
+    idea: '首页是一张小探险家的地图：五个类别是五座小岛，每个游戏是岛上的一个地标，一条白色的海上航线按顺序串起五座岛。熊猫伙伴站在上次玩的地方，今天的目标是一条小帆船在六个浮标之间往前走。',
+    kid: ['不用读字也知道怎么走：顺着虚线航线一座岛一座岛去', '每个地标有一圈进度环，玩得越多环越满', '熊猫站在哪儿，就是上次玩到哪儿'],
+    parent: ['五座岛就是五个能力方向，岛上的地标多少一目了然', '手机上地图变成从上往下的一串岛，能滑着看'],
+    art: '12 张游戏插画 + 5 座立体小岛 + 海面和几样小装饰（第三节 B），画的量最大',
+    cost: '最有故事感，也最像一个「世界」；要多画五座岛，地标位置要按屏幕排，以后加游戏要给它找一座岛。' },
+  { id: 'c', file: 'c.html', k: 'var(--c)', name: '玩具盒', sub: '软软的分格玩具盒', tag: '现代 · 清爽',
+    idea: '像一只分格的玩具盒：左边是孩子的今天（一个分六段的圆环、星星、贴纸册），右边最上面一块大大的「接着玩」，下面 12 个软陶质感的小格子，可以按类别筛选。',
+    kid: ['最大的按钮是「接着玩」：一进来点那个橙色的大圆就回到上次的游戏', '圆环分六段，玩一关亮一段，「再玩 4 关，今天的圆圈就满啦」', '每格有一条和游戏同色的进度条'],
+    parent: ['类别筛选（数一数、看一看……）一点就只亮那一类', '星星、贴纸册是两张数字卡，信息最清楚'],
+    art: '12 张游戏插画；可选一张熊猫挥手（第二节）',
+    cost: '最清爽、最好扩展，以后加游戏、加统计最方便；风格更像一个精致的 App，童话感比 A、B 少一些。' },
+];
+const DEVS = [{ id: 'tab', name: '平板横屏', w: 1180, h: 820 }, { id: 'pc', name: '电脑', w: 1440, h: 900 }, { id: 'phone', name: '手机竖屏', w: 390, h: 844 }];
+let cur = 'a', dev = 'tab';
+try { const s = JSON.parse(localStorage.getItem('home-designs') || '{}'); if (s.cur) cur = s.cur; if (s.dev) dev = s.dev; } catch (e) { }
+if (/^#[abc]$/.test(location.hash)) cur = location.hash.slice(1);
+const $ = s => document.querySelector(s);
+function tabs() {
+  $('#tabs').innerHTML = DESIGNS.map(d => `<button class="tab" role="tab" id="t-${d.id}" aria-selected="${d.id === cur}" style="--k:${d.k}"><b>${d.id.toUpperCase()}</b><span>${d.name}<small>${d.sub}</small></span></button>`).join('');
+  DESIGNS.forEach(d => { $('#t-' + d.id).onclick = () => { cur = d.id; history.replaceState(null, '', '#' + d.id); show(); }; });
+  $('#devs').innerHTML = DEVS.map(v => `<button class="dev" id="d-${v.id}" aria-pressed="${v.id === dev}">${v.name}</button>`).join('');
+  DEVS.forEach(v => { $('#d-' + v.id).onclick = () => { dev = v.id; show(); }; });
+}
+function show() {
+  try { localStorage.setItem('home-designs', JSON.stringify({ cur, dev })); } catch (e) { }
+  tabs();
+  const d = DESIGNS.find(x => x.id === cur), v = DEVS.find(x => x.id === dev), fr = $('#frame');
+  document.documentElement.style.setProperty('--k', d.k);
+  if (fr.getAttribute('src') !== d.file) fr.setAttribute('src', d.file);
+  fit();
+  $('#device').className = 'device' + (dev === 'phone' ? ' phone' : '');
+  $('#under').innerHTML = `${v.name} ${v.w} × ${v.h}，按比例缩小显示 · <a href="${d.file}" target="_blank" rel="noopener">单独打开这一版</a>`;
+  $('#info').innerHTML = `<span class="tag">${d.tag}</span><h2>${d.id.toUpperCase()} · ${d.name}</h2><p>${d.idea}</p>`
+    + `<h3>孩子看到什么</h3><ul>${d.kid.map(x => `<li>${x}</li>`).join('')}</ul>`
+    + `<h3>家长看到什么</h3><ul>${d.parent.map(x => `<li>${x}</li>`).join('')}</ul>`
+    + `<h3>要画的图</h3><p>${d.art}</p><div class="pick">${d.cost}</div>`;
+}
+// the prototype at its real size, scaled down to fit the column (and most of the window's height)
+function fit() {
+  const v = DEVS.find(x => x.id === dev), fr = $('#frame'), view = document.querySelector('.view');
+  const pad = dev === 'phone' ? 24 : 28, maxW = view.clientWidth - pad, maxH = Math.max(320, innerHeight * (dev === 'phone' ? 0.8 : 0.72));
+  const k = Math.min(1, maxW / v.w, maxH / v.h);
+  fr.style.width = v.w + 'px'; fr.style.height = v.h + 'px'; fr.style.transform = `scale(${k})`;
+  const sc = $('#screen'); sc.style.width = Math.floor(v.w * k) + 'px'; sc.style.height = Math.floor(v.h * k) + 'px';
+}
+addEventListener('resize', fit);
+// the illustrations to draw: the same twelve for every design
+const PROMPT_ZH = '「怪趣森林」风格的儿童游戏图标插画：手工羊毛毡和软陶捏出来的 3D 小物件，哑光表面，细腻的绒面纹理，圆润饱满，稍微俯视的角度，物件居中占画面八成；颜色饱和但柔和；光从左上方来，阴影只在物件内部；轮廓有一圈同色稍深的暗边，没有黑色描边，没有文字，没有投影，没有地面，透明背景。';
+const PROMPT_EN = 'A 3D children\'s game icon in the "Quirky Forest" style: handmade wool felt and soft polymer clay, matte, fine fuzzy texture, plump rounded shapes, seen slightly from above, centred and filling about 80% of the frame; saturated but soft colours; soft light from the top left with shading only on the object; a slightly darker rim of the same colour, no black outlines, no text, no cast shadow, no ground, transparent background.';
+const ART = [
+  ['schulte', '找数字', '#3F86E0', '一块蓝色毛毡方盘，上面 2×2 四块软陶数字方块 1 2 3 4，「1」那块是黄色的；右下角压着一把木柄放大镜'],
+  ['dots', '数点点', '#EF5B47', '两颗软陶骰子：前面一颗奶白色、朝上一面五个红点，稍微歪着；后面一颗红色白点，斜着叠在后面'],
+  ['bond', '凑数字', '#56B26A', '上面一颗大绿毛毡球写着 10，两根毛线连着下面两颗白毛毡球，写着 6 和 4；大球顶上一片小叶子'],
+  ['pattern', '找规律', '#8C6BE0', '紫色毛毡卡片上两排软陶小件：圆、三角、圆 / 三角、圆，最后一格是虚线缝出来的空格子，里面一个毛线问号'],
+  ['span', '记住亮过的', '#2FB5A7', '3×3 的浅青色软按键面板，其中两个按键发出暖黄色的光（像小夜灯），旁边一颗小星星'],
+  ['mirror', '照镜子', '#EE7FA6', '毛毡蝴蝶，正中一条竖缝线：左半边实心粉色翅膀，右半边只有虚线缝出来的翅膀轮廓'],
+  ['fit', '方块拼拼', '#3F86E0', '软陶俄罗斯方块拼在一起：黄色正方形、橙色 L、蓝色 T，中间缺一个竖条的空位（虚线缝出来）'],
+  ['mofang', '魔方世界', '#F59A3B', '毛毡三阶魔方，顶层稍微拧开一点角度，黄、绿、蓝面为主'],
+  ['shi', '古诗小剧场', '#8C6BE0', '毛毡木偶小剧场：紫色台框、红丝绒幕布拉开，里面夜空、弯月和远山，台口前一卷小书卷'],
+  ['piano', '彩虹钢琴', '#F7C948', '软陶玩具小钢琴，白键底部各染一种彩虹色，上方飘着一个黄色音符'],
+  ['xiaoxiao', '动物消消乐', '#2FB5A7', '三块青色软陶方块排成一排，每块上是怪趣森林的熊猫头，上方几颗小星星在闪'],
+  ['wuziqi', '五子棋', '#E9C38A', '一角浅色木纹棋盘，斜着一排三颗黑色软陶棋子，旁边两颗白子，棋子有柔和光泽'],
+];
+$('#prompts').innerHTML = `<h2>请 decli 画的图</h2>`
+  + `<p>三版都要的是同一套 12 张游戏插画（选哪版都不白画）：PNG 1024 × 1024 透明背景，和怪趣森林同一种羊毛毡 + 软陶手感，同一个稍微俯视的机位，物件居中占八成，一张一个主色。选定方案后再画那一版自己的背景（B 要五座小岛和海面，A 和 C 基本不用另画）。完整要求在仓库 <code>dev/home-designs/PROMPTS.md</code>。</p>`
+  + `<div class="base"><button class="copy" data-t="zh">复制</button><b>基础提示词</b><br>${PROMPT_ZH}</div>`
+  + `<div class="base"><button class="copy" data-t="en">Copy</button><b>English</b><br>${PROMPT_EN}</div>`
+  + `<div class="tw"><table><thead><tr><th>文件</th><th>游戏</th><th>画什么（接在基础提示词后面）</th></tr></thead><tbody>`
+  + ART.map(([id, n, c, d]) => `<tr><td><span class="sw" style="background:${c}"></span>${id}.png</td><td>${n}</td><td>${d}</td></tr>`).join('') + `</tbody></table></div>`;
+document.querySelectorAll('.copy').forEach(b => b.onclick = () => {
+  const t = b.dataset.t === 'zh' ? PROMPT_ZH : PROMPT_EN, lbl = b.textContent;
+  const ok = () => { b.textContent = b.dataset.t === 'zh' ? '已复制' : 'Copied'; setTimeout(() => { b.textContent = lbl; }, 1500); };
+  try { navigator.clipboard.writeText(t).then(ok, () => select(b)); } catch (e) { select(b); }
+});
+function select(b) { const r = document.createRange(); r.selectNodeContents(b.parentNode); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+show();
+</script>
+</body>
+</html>

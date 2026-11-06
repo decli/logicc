@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>小画本书架</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Baloo+2:wght@700;800&display=swap">
+<style>
+/* 方案 A · 小画本书架: every game is a picture book standing on two paper shelves; the day's goal is a bunting of six flags */
+:root{
+  --wall:#F2EADB; --wall2:#EADFCB; --ink:#2F2A25; --soft:#7B6E5F; --paper:#FFFBF2; --plank:#D7B583; --plank2:#B98F5A;
+  --display:"ZCOOL KuaiLe","Hiragino Maru Gothic ProN","Yuanti SC","PingFang SC",sans-serif;
+  --num:"Baloo 2","Arial Rounded MT Bold",system-ui,sans-serif;
+  --body:"PingFang SC","HarmonyOS Sans SC","MiSans","Microsoft YaHei",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--wall);color:var(--ink);font-family:var(--body);overflow:hidden;-webkit-user-select:none;user-select:none}
+button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer}
+/* paper grain over everything */
+body::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .3 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.app{position:fixed;inset:0;display:flex;flex-direction:column;padding:max(14px,env(safe-area-inset-top)) max(22px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(22px,env(safe-area-inset-left))}
+/* the wall: two paper-cut clouds and a paper sun, very quiet */
+.wall{position:fixed;inset:0;pointer-events:none;z-index:-1}
+.wall svg{position:absolute}
+
+/* ---------- the top: the name, the day's bunting, stars and three round buttons ---------- */
+.top{flex:none;display:flex;align-items:center;gap:18px;height:96px}
+.brand{display:flex;flex-direction:column;line-height:1}
+.brand b{font:400 44px/1 var(--display);letter-spacing:2px;position:relative}
+.brand b::after{content:"";position:absolute;left:4px;right:10px;bottom:-9px;height:9px;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10' preserveAspectRatio='none'%3E%3Cpath d='M2 6 C40 1 70 9 110 5 S170 2 198 6' fill='none' stroke='%23EF5B47' stroke-width='3.5' stroke-linecap='round'/%3E%3C/svg%3E") center/100% 100% no-repeat}
+.brand small{margin-top:16px;font-size:16px;color:var(--soft);font-weight:700;letter-spacing:1px}
+.garland{flex:1;min-width:0;height:92px;position:relative;display:flex;align-items:flex-start;justify-content:center}
+.garland svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.garland .say{position:absolute;right:6%;bottom:0;font:800 19px var(--num);color:var(--soft)}
+.garland .say b{color:var(--ink);font-size:24px}
+.rosette{flex:none;width:78px;height:78px;position:relative;display:grid;place-items:center}
+.rosette svg{position:absolute;inset:0}
+.rosette span{position:relative;font:800 26px var(--num);color:var(--ink);display:flex;align-items:center;gap:2px;margin-top:2px}
+.rosette span svg{position:static;color:#E8A317}
+.rbtn{flex:none;width:58px;height:58px;border-radius:50%;background:var(--paper);display:grid;place-items:center;color:var(--ink);
+  box-shadow:0 2px 0 rgba(90,70,40,.12),0 10px 16px -10px rgba(90,60,30,.5);position:relative}
+.rbtn::before{content:"";position:absolute;inset:5px;border-radius:50%;border:1.5px dashed rgba(123,110,95,.35)}
+.rbtn:active{transform:translateY(2px)}
+
+/* ---------- the shelves ---------- */
+.shelves{flex:1;min-height:0;display:grid;grid-template-rows:1fr 1fr;gap:0;position:relative}
+.shelf{position:relative;display:grid;align-items:end;padding:0 10px 26px}
+.shelf::after{content:"";position:absolute;left:-6px;right:-6px;bottom:0;height:26px;border-radius:6px;
+  background:linear-gradient(180deg,#E3C495 0%,var(--plank) 45%,var(--plank2) 100%);box-shadow:0 14px 18px -10px rgba(80,55,25,.55)}
+.shelf::before{content:"";position:absolute;left:-6px;right:-6px;bottom:26px;height:14px;background:linear-gradient(180deg,transparent,rgba(80,55,25,.12))}
+.row{display:flex;align-items:flex-end;justify-content:space-around;gap:14px;position:relative;z-index:1}
+
+/* a book: the cover in the game's colour, a darker spine on the left, page edges on the right, a cream title plate */
+.book{--c:#3F86E0;position:relative;flex:none;border-radius:4px 12px 12px 4px;background:var(--c);display:flex;flex-direction:column;align-items:center;
+  box-shadow:inset 9px 0 0 rgba(0,0,0,.16),inset 11px 0 0 rgba(255,255,255,.18),4px 0 0 #F6EEDC,5px 0 0 #E2D5BD,8px 0 0 #F6EEDC,9px 0 0 #D8C9AE,
+  0 18px 22px -14px rgba(60,40,20,.65);transform-origin:50% 100%;transition:transform .25s cubic-bezier(.2,1.4,.4,1)}
+.book::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(115deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,0) 38%),radial-gradient(circle at 70% 18%,rgba(255,255,255,.18),transparent 40%)}
+.book:hover{transform:translateY(-8px) rotate(-1deg)}
+.book:active{transform:translateY(-2px) scale(.97)}
+.book .art{flex:1;min-height:0;width:100%;display:grid;place-items:center;padding:10% 8% 2% 14%}
+.book .ic{width:100%;height:100%;max-width:150px;filter:drop-shadow(4px 6px 0 rgba(0,0,0,.18))}
+.book .plate{width:84%;margin:0 0 10% 7%;background:var(--paper);border-radius:10px;padding:8px 6px 7px;text-align:center;position:relative;
+  box-shadow:0 2px 0 rgba(0,0,0,.08)}
+.book .plate b{display:block;font:400 clamp(17px,1.9vw,26px)/1.1 var(--display);white-space:nowrap}
+.book .plate small{display:flex;justify-content:center;align-items:center;gap:6px;margin-top:4px;font:800 14px var(--num);color:var(--soft);white-space:nowrap}
+.pips{display:inline-flex;gap:3px}.pips i{width:7px;height:7px;border-radius:50%;background:#E6DCC8}.pips i.on{background:var(--c)}
+/* the group, as a small tab on top of the spine */
+.book .tab{position:absolute;left:14px;top:-15px;font-size:12px;font-weight:800;background:var(--paper);color:var(--c);padding:3px 8px 2px;border-radius:8px 8px 0 0;
+  box-shadow:0 -1px 0 rgba(0,0,0,.04);white-space:nowrap}
+/* the book read last: a bookmark ribbon and a little lean */
+.book.last{transform:rotate(-3deg) translateY(-4px)}
+.book.last .mark{position:absolute;right:14%;top:-6px;width:22px;height:54px;background:#EF5B47;clip-path:polygon(0 0,100% 0,100% 100%,50% 78%,0 100%);box-shadow:0 2px 0 rgba(0,0,0,.1)}
+.book.last .hey{position:absolute;right:-14px;top:-46px;background:var(--ink);color:#fff;font-size:14px;font-weight:800;padding:5px 10px;border-radius:12px;white-space:nowrap}
+.book.last .hey::after{content:"";position:absolute;left:18px;bottom:-6px;border:6px solid transparent;border-top-color:var(--ink);border-bottom:0}
+/* the bunting flags fall in on load */
+@keyframes flag{from{transform:translateY(-14px) rotate(-8deg);opacity:0}}
+.flag{animation:flag .5s cubic-bezier(.2,1.6,.4,1) backwards}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- a phone held upright: three books a shelf, the page scrolls ---------- */
+@media (max-width:700px){
+  body{overflow:auto}
+  .app{position:static;min-height:100%}
+  .top{height:auto;flex-wrap:wrap;gap:10px 10px;padding-bottom:8px}
+  .top{flex-wrap:wrap;gap:8px 8px}
+  .brand b{font-size:27px;letter-spacing:1px}
+  .brand small{margin-top:11px;font-size:13px}
+  .garland{order:9;flex-basis:100%;height:74px}
+  .rosette{width:52px;height:52px;margin-left:auto}.rosette span{font-size:18px}
+  .rbtn{width:40px;height:40px}.rbtn svg{width:20px;height:20px}
+  .shelves{display:flex;flex-direction:column}
+  .shelf{padding-bottom:22px;margin-top:22px}
+  .row{flex-wrap:nowrap;gap:10px}
+  .book .plate b{font-size:17px}
+  .book .plate small{font-size:12px}
+  .pips{display:none}
+}
+</style>
+</head>
+<body>
+<div class="wall" aria-hidden="true"></div>
+<div class="app">
+  <header class="top">
+    <div class="brand"><b>思维小画本</b><small>今天想读哪一本？</small></div>
+    <div class="garland" id="garland" aria-label="今天玩了 2 关，目标 6 关"></div>
+    <div class="rosette" aria-label="星星"><svg viewBox="0 0 100 100" aria-hidden="true" id="ros"></svg><span></span></div>
+    <button class="rbtn" aria-label="贴纸册"></button>
+    <button class="rbtn" aria-label="读一遍"></button>
+    <button class="rbtn" aria-label="家长设置"></button>
+  </header>
+  <main class="shelves" id="shelves"></main>
+</div>
+<script src="shared.js"></script>
+<script>
+// the round buttons and the star rosette
+const rb = document.querySelectorAll('.rbtn');
+['book', 'sound', 'gear'].forEach((g, k) => { rb[k].innerHTML = glyph(g, 26); });
+document.querySelector('.rosette span').innerHTML = glyph('star', 22) + TODAY.stars;
+// a paper rosette: 16 scallops
+(() => {
+  let d = '';
+  for (let k = 0; k < 32; k++) { const a = k / 32 * Math.PI * 2, r = k % 2 ? 44 : 49; d += (k ? 'L' : 'M') + (50 + Math.cos(a) * r).toFixed(1) + ' ' + (50 + Math.sin(a) * r).toFixed(1); }
+  document.getElementById('ros').innerHTML = `<path d="${d}Z" fill="#F7C948"/><circle cx="50" cy="50" r="36" fill="#FFFBF2"/><circle cx="50" cy="50" r="31" fill="none" stroke="#F7C948" stroke-width="2" stroke-dasharray="4 4"/>`;
+})();
+// the day's bunting: six flags on a string, the ones played today in colour
+function garland() {
+  const g = document.getElementById('garland'), w = g.clientWidth, h = g.clientHeight, n = TODAY.goal;
+  const x0 = w * 0.08, x1 = w * 0.92, sag = h * 0.36, y = t => 10 + sag * 4 * t * (1 - t);
+  const cols = ['#EF5B47', '#F59A3B', '#F7C948', '#56B26A', '#3F86E0', '#8C6BE0'];
+  let s = `<path d="M${x0 - 14} 8 Q ${w / 2} ${10 + sag * 2} ${x1 + 14} 8" fill="none" stroke="#9C8B74" stroke-width="2"/>`;
+  for (let k = 0; k < n; k++) {
+    const t = (k + 0.5) / n, x = x0 + (x1 - x0) * t, yy = y(t), fw = Math.min(46, (x1 - x0) / n * 0.62), fh = fw * 1.15, on = k < TODAY.done;
+    s += `<g class="flag" style="animation-delay:${k * 70}ms" transform="translate(${x} ${yy}) rotate(${((t - 0.5) * 16).toFixed(1)})">`
+      + `<path d="M${-fw / 2} 0 H${fw / 2} L0 ${fh} Z" fill="${on ? cols[k] : '#FFFBF2'}" stroke="${on ? 'none' : '#CDBFA8'}" stroke-width="1.5" stroke-dasharray="${on ? '' : '4 3'}"/>`
+      + (on ? `<path d="M${-fw / 2} 0 H${fw / 2} L${fw * 0.28} ${fh * 0.32} H${-fw * 0.28}Z" fill="#fff" opacity=".18"/>` : '') + '</g>';
+  }
+  g.innerHTML = `<svg>${s}</svg><span class="say">今天 <b>${TODAY.done}</b> / ${n} 关</span>`;
+}
+// the shelves: six books each in the five groups' order
+function shelves() {
+  const sh = document.getElementById('shelves'), phone = innerWidth <= 700;
+  const per = phone ? 3 : 6, rows = [];
+  for (let k = 0; k < GAMES.length; k += per) rows.push(GAMES.slice(k, k + per));
+  sh.innerHTML = rows.map(r => `<div class="shelf"><div class="row">${r.map(g => book(g)).join('')}</div></div>`).join('');
+  size();
+}
+function book(g) {
+  const gr = groupOf(g), last = g.id === TODAY.last, p = g.p;
+  const pips = p.kind === 'lv' && p.of <= 8 ? `<span class="pips">${Array.from({ length: p.of }, (_, k) => `<i class="${k < p.v ? 'on' : ''}"></i>`).join('')}</span>` : '';
+  return `<button class="book${last ? ' last' : ''}" style="--c:${g.color}" aria-label="${g.name}">`
+    + `<span class="tab">${gr.name.split(' · ')[0]}</span>${last ? '<span class="mark"></span><span class="hey">上次读到这儿</span>' : ''}`
+    + `<span class="art">${icon(g.id)}</span><span class="plate"><b>${g.name}</b><small>${pips}${progText(g)}</small></span></button>`;
+}
+// each book as big as its shelf allows (picture-book proportions, 3 : 4)
+function size() {
+  document.querySelectorAll('.shelf').forEach(s => {
+    const row = s.querySelector('.row'), n = row.children.length, phone = innerWidth <= 700;
+    const W = row.clientWidth, H = phone ? 1e9 : s.clientHeight - 26 - 18;
+    const w = Math.min((W - (n - 1) * 14) / n * 0.95, H * 0.74, 240), h = w / 0.74;
+    row.querySelectorAll('.book').forEach(b => { b.style.width = w + 'px'; b.style.height = h + 'px'; });
+  });
+}
+// the wall: a paper sun and two clouds, cut and slightly lifted
+function wall() {
+  const W = innerWidth, H = innerHeight, cloud = (x, y, s) => `<svg style="left:${x}px;top:${y}px;width:${160 * s}px" viewBox="0 0 160 70"><path d="M20 60 C0 60 0 34 22 34 C24 14 52 8 64 24 C72 6 104 6 110 28 C134 22 152 40 140 60 Z" fill="#FBF6EC" style="filter:drop-shadow(3px 4px 0 rgba(120,95,60,.12))"/></svg>`;
+  document.querySelector('.wall').innerHTML = cloud(W * 0.36, H * 0.02, 0.7) + cloud(W * 0.72, H * 0.06, 0.5)
+    + `<svg style="right:${-60}px;bottom:${-80}px;width:300px" viewBox="0 0 300 300"><circle cx="150" cy="150" r="140" fill="#EADFCB"/><circle cx="150" cy="150" r="104" fill="#E5D8C0"/></svg>`;
+}
+function all() { garland(); shelves(); wall(); }
+all();
+addEventListener('resize', all);
+document.fonts && document.fonts.ready.then(size);
+</script>
+</body>
+</html>
