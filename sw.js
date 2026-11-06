@@ -8,13 +8,17 @@
 // - 语音包 voice-xx.bin?h=<指纹>：指纹变了就是新文件，所以缓存里有就直接用，没有才下载；旧指纹的那份删掉
 // - 语音包的索引 json 和 bin 必须配对：新 json 要等它的 bin 整个下载完、存好，才换进缓存。
 //   在那之前页面拿到的一直是旧的一对，所以下载到一半断网也不会出错
-// - 「五子棋」「彩虹钢琴」「动物消消乐」「魔方世界」（wuziqi/、piano/、xiaoxiao/、mofang/）不预先下载（加起来四十多 MB），打开过一次就存下，之后断网也能玩
+// - 首页「梦想群岛」的图（home/，二十几张 WebP，共约 0.5 MB）跟首页一起预先存好，断网打开首页也是完整的地图
+// - 「五子棋」「彩虹钢琴」「动物消消乐」「魔方世界」（wuziqi/、piano/、xiaoxiao/、mofang/）不预先下载（加起来三十来 MB），打开过一次就存下，之后断网也能玩
 const CACHE = 'logicc-v1';
 const SCOPE = new URL('./', self.location).href;
 // 首页点开游戏时才加载的代码（index.html 的 GAME_FILES），也预先存好，没玩过的游戏断网也能打开
 const GAME_FILES = ['schulte/game.js', 'dots/game.css', 'dots/game.js', 'bond/game.css', 'bond/game.js', 'shi/game.css', 'shi/game.js',
   'mirror/game.css', 'mirror/game.js', 'pattern/game.css', 'pattern/game.js', 'fit/game.css', 'fit/game.js', 'span/game.js'];
-const SHELL = ['./', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'].concat(GAME_FILES);
+// 首页的海、五座岛、十二个游戏的图、熊猫和几样航海小装饰（dev/home-designs/art.py 做的）
+const HOME_ART = ['sea', 'pal-wave', 'sailboat', 'buoy', 'compass', 'cloud'].concat(['num', 'look', 'turn', 'art', 'play'].map(i => 'isle-' + i),
+  ['schulte', 'dots', 'bond', 'pattern', 'span', 'mirror', 'fit', 'mofang', 'shi', 'piano', 'xiaoxiao', 'wuziqi'].map(g => 'ic-' + g)).map(n => 'home/' + n + '.webp');
+const SHELL = ['./', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'].concat(GAME_FILES, HOME_ART);
 const BANKS = ['voice-zh', 'pattern/voice-gl', 'shi/voice-shi'];
 // 两个语音包原来放在根目录，搬进了各自游戏的文件夹：新的一对存好以后，旧地方的那份删掉（不然白占二十多 MB）
 const MOVED = { 'pattern/voice-gl': 'voice-gl', 'shi/voice-shi': 'voice-shi' };

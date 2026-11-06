@@ -45,25 +45,6 @@ body{
 /* ---------- 屏幕 ---------- */
 #screen{flex:1 1 auto;position:relative;overflow:hidden;min-height:0}
 .pane{position:absolute;inset:0;display:flex;flex-direction:column;padding:0 12px 12px;overflow:hidden}
-/* ---------- 首页 ---------- */
-.hero{flex:0 0 auto;display:flex;align-items:baseline;gap:10px;padding:0 4px 8px}
-.hero h1{margin:0;font-size:26px;transform:rotate(-1.2deg)}
-.hero p{margin:0;color:var(--ink-soft);font-size:14px}
-#cards{flex:1 1 auto;display:grid;gap:10px;min-height:0}
-.card{border:4px solid var(--ink);border-radius:18px;background:#fff;position:relative;overflow:hidden;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  box-shadow:5px 5px 0 var(--ink);cursor:pointer;min-height:0;padding-bottom:12%}
-.card:nth-child(odd){transform:rotate(-.8deg)}
-.card:nth-child(even){transform:rotate(.8deg)}
-.card:active{transform:translate(4px,4px) rotate(0);box-shadow:0 0 0 var(--ink)}
-.card .band{position:absolute;left:0;right:0;bottom:0;height:11%;background:var(--c)}
-.card .band i{position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.35) 0 6px,transparent 6px 14px)}
-.card .emoji{line-height:1.05;position:relative;z-index:1}
-.card .name{font-weight:700;position:relative;z-index:1}
-.card .lv{position:absolute;top:6px;right:9px;font-size:12px;color:var(--ink-soft);z-index:1}
-#stickerBar{flex:0 0 auto;display:flex;align-items:center;gap:7px;padding:8px 4px 0;font-size:14px;color:var(--ink-soft);
-  min-height:34px;overflow:hidden}
-#stickerBar b{font-size:23px;font-weight:400}
 /* ---------- 选关 ---------- */
 #lvWrap{flex:1 1 auto;display:grid;gap:10px;min-height:0;align-content:center}
 .lvcard{border:4px solid var(--ink);border-radius:16px;background:#fff;box-shadow:4px 4px 0 var(--ink);cursor:pointer;
@@ -150,17 +131,6 @@ body{
 .dayPill{flex:1 1 auto;min-width:0;gap:calc(14px * var(--k));font-size:calc(24px * var(--k));font-weight:700}
 .dayBar{flex:1 1 auto;height:calc(20px * var(--k));border:calc(3px * var(--k)) solid var(--ink);border-radius:calc(999px * var(--k));background:#F5F0E2;overflow:hidden;min-width:calc(60px * var(--k))}
 .dayBar i{display:block;height:100%;background:var(--green)}
-#cards{flex:1 1 auto;display:grid;gap:calc(18px * var(--k));min-height:0;padding:calc(4px * var(--k)) calc(24px * var(--k)) calc(24px * var(--k))}
-.card,.card:nth-child(odd),.card:nth-child(even){display:flex;overflow:hidden;border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(24px * var(--k));background:#fff;box-shadow:calc(7px * var(--k)) calc(7px * var(--k)) 0 var(--ink);cursor:pointer;min-height:0;padding:0;transform:none;flex-direction:row;align-items:stretch;justify-content:flex-start}
-.card:active{transform:translate(calc(5px * var(--k)),calc(5px * var(--k)));box-shadow:0 0 0 var(--ink)}
-.cardArt{flex:0 0 calc(148px * var(--k));background:var(--c);display:flex;align-items:center;justify-content:center;font-size:calc(84px * var(--k));line-height:1}
-.cardArt svg{width:calc(104px * var(--k));height:calc(104px * var(--k));filter:drop-shadow(0 calc(4px * var(--k)) 0 rgba(0,0,0,.18))}
-.cardTx{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:calc(6px * var(--k));padding:calc(14px * var(--k)) calc(18px * var(--k))}
-.cardName{font-size:calc(38px * var(--k));font-weight:700;line-height:1.1}
-.cardTip{font-size:calc(21px * var(--k));color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cardMeta{display:flex;align-items:center;gap:calc(12px * var(--k));margin-top:calc(4px * var(--k))}
-.cardMeta .s{flex:none;white-space:nowrap;font-size:calc(25px * var(--k));font-weight:700;color:var(--orange)}
-.cardMeta .b{flex:none;white-space:nowrap;font-size:calc(21px * var(--k));color:var(--ink-soft)}
 .stair{flex:1 1 auto;min-height:0;display:flex;align-items:flex-end;gap:calc(20px * var(--k));padding:calc(132px * var(--k)) calc(26px * var(--k)) 0}
 .step{flex:1 1 0;min-width:0;border:calc(5px * var(--k)) solid var(--ink);border-bottom:0;border-radius:calc(26px * var(--k)) calc(26px * var(--k)) 0 0;display:flex;flex-direction:column;align-items:center;gap:calc(10px * var(--k));padding:calc(18px * var(--k)) calc(12px * var(--k)) 0;position:relative;cursor:pointer}
 .step .no{width:calc(92px * var(--k));height:calc(92px * var(--k));flex:none;border:calc(5px * var(--k)) solid var(--ink);border-radius:calc(26px * var(--k));background:#fff;color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:calc(50px * var(--k))}
@@ -246,6 +216,71 @@ body{
 .extras .sw:active{transform:translate(calc(4px * var(--k)),calc(4px * var(--k)));box-shadow:0 0 0 var(--ink)}
 .extras .sw[disabled]{opacity:.5}
 
+/* ===== 首页 · 梦想群岛（decli 2026-11-06 选的方案 B，图是她画的，见 dev/home-designs/）=====
+   a felt sea, five islands (the five kinds of games) on a dotted route, each game a landmark with a ring for its
+   progress, the companion standing where the child played last; the day's goal is a little boat between six buoys.
+   Sizes go by --u (one unit = 1px on a 1180 x 820 tablet), set by isleLayout() */
+.isleHome{--u:1;--kai:"Kaiti SC","STKaiti","KaiTi","BiauKai","AR PL UKai CN","Songti SC",serif;--sea:#86CFD2;
+  background:var(--sea) url(home/sea.webp) center/calc(420px * var(--u)) repeat;overflow:hidden}
+.isleHome::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 55%,rgba(30,90,100,.22) 100%)}
+.isleMap{position:absolute;inset:0;overflow:hidden}
+.isleHome.tall .isleMap{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.isleRoom{position:relative;width:100%}
+.isleRoute{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
+.isleImg{position:absolute;z-index:1;pointer-events:none;-webkit-user-drag:none;filter:drop-shadow(0 calc(10px * var(--u)) calc(10px * var(--u)) rgba(25,85,95,.28))}
+.isleSign{position:absolute;transform:translate(-50%,-50%);font:700 calc(22px * var(--u))/1.2 var(--kai);letter-spacing:calc(3px * var(--u));color:#3B2F22;background:#FFF6E2;
+  padding:calc(5px * var(--u)) calc(16px * var(--u)) calc(6px * var(--u));border-radius:calc(9px * var(--u));box-shadow:0 calc(4px * var(--u)) 0 #C9A06A;white-space:nowrap;z-index:2;pointer-events:none}
+.spot{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:calc(4px * var(--u));border:0;background:none;padding:0;cursor:pointer;z-index:3;
+  font-family:inherit;color:#2B2A33;transition:transform .25s cubic-bezier(.2,1.5,.4,1);-webkit-tap-highlight-color:transparent}
+.spot:active{transform:translate(-50%,-50%) scale(.93)}
+@media (hover:hover){.spot:hover{transform:translate(-50%,-55%)}}
+.spot:focus-visible{outline:none}.spot:focus-visible .plot{box-shadow:0 0 0 calc(5px * var(--u)) #FFD34D,0 calc(7px * var(--u)) 0 rgba(90,70,30,.25)}
+.plot{position:relative;border-radius:50%;background:radial-gradient(circle at 40% 35%,#FFFDF6 0,#FFF4DA 70%,#F3E1BA 100%);display:grid;place-items:center;
+  box-shadow:0 calc(7px * var(--u)) 0 rgba(120,90,40,.28),0 0 0 calc(5px * var(--u)) rgba(255,255,255,.6)}
+.plot img{width:86%;height:86%;object-fit:contain;-webkit-user-drag:none;pointer-events:none}
+.plot svg{position:absolute;inset:calc(-9px * var(--u));width:calc(100% + 18px * var(--u));height:calc(100% + 18px * var(--u));transform:rotate(-90deg);pointer-events:none}
+.spot .nm{font-size:calc(17px * var(--u));font-weight:800;background:rgba(255,248,232,.96);padding:calc(3px * var(--u)) calc(12px * var(--u));border-radius:999px;white-space:nowrap;
+  box-shadow:0 calc(3px * var(--u)) 0 rgba(120,90,40,.2)}
+.spot .nm em{font-style:normal;font-size:calc(14px * var(--u));color:#6F665E;margin-left:calc(6px * var(--u));font-weight:700}
+.islePal{position:absolute;transform:translate(-50%,-92%);pointer-events:none;z-index:4;animation:isleHop 1.8s ease-in-out infinite;filter:drop-shadow(0 6px 5px rgba(0,0,0,.22))}
+.isleHere{position:absolute;transform:translate(-50%,-100%);background:#2B2A33;color:#fff;font-size:calc(14px * var(--u));font-weight:800;padding:calc(4px * var(--u)) calc(11px * var(--u));
+  border-radius:calc(11px * var(--u));white-space:nowrap;pointer-events:none;z-index:4}
+.isleHere::after{content:"";position:absolute;left:50%;top:100%;margin-left:-6px;border:6px solid transparent;border-top-color:#2B2A33;border-bottom:0}
+@keyframes isleHop{0%,100%{transform:translate(-50%,-92%)}45%{transform:translate(-50%,-100%)}}
+.isleDeco{position:absolute;pointer-events:none;z-index:1}
+.isleCloud{position:absolute;pointer-events:none;opacity:.92;animation:isleDrift linear infinite;z-index:0}
+@keyframes isleDrift{from{transform:translateX(-30vw)}to{transform:translateX(130vw)}}
+/* the top: a parchment name, the day's boat, stars and three wooden buttons */
+.isleTop{position:absolute;left:0;right:0;top:0;z-index:6;display:flex;align-items:center;gap:calc(14px * var(--u));pointer-events:none;
+  padding:calc(14px * var(--u)) calc(20px * var(--u)) 0}
+.isleTop > *{pointer-events:auto}
+.isleHome.tall .isleTop{flex-wrap:wrap;gap:calc(8px * var(--u));padding-bottom:calc(8px * var(--u));background:linear-gradient(180deg,rgba(134,207,210,.97) 70%,rgba(134,207,210,0))}
+.isleBanner{position:relative;padding:calc(9px * var(--u)) calc(26px * var(--u)) calc(11px * var(--u));background:#FFF6E2;border-radius:calc(7px * var(--u));box-shadow:0 calc(6px * var(--u)) 0 rgba(40,60,60,.14);transform:rotate(-1.5deg)}
+.isleBanner::before,.isleBanner::after{content:"";position:absolute;top:calc(8px * var(--u));bottom:calc(8px * var(--u));width:calc(16px * var(--u));background:#E9D7AF;border-radius:calc(8px * var(--u))}
+.isleBanner::before{left:calc(-8px * var(--u))}.isleBanner::after{right:calc(-8px * var(--u))}
+.isleBanner b{display:block;font:700 calc(34px * var(--u))/1.1 var(--kai);letter-spacing:calc(4px * var(--u));color:#3B2F22}
+.isleBanner small{display:block;margin-top:calc(4px * var(--u));font-size:calc(14px * var(--u));font-weight:700;color:#7A6A55;letter-spacing:calc(2px * var(--u))}
+.isleDay{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:calc(12px * var(--u))}
+.isleBuoys{position:relative;height:calc(66px * var(--u));width:calc(320px * var(--u));flex:none}
+.isleBuoys svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.isleBuoys img{position:absolute;transform:translate(-50%,-50%);pointer-events:none}
+.isleBuoys img.off{filter:grayscale(1) brightness(1.25);opacity:.55}
+.isleBuoys .boat{animation:isleBob 2.2s ease-in-out infinite}
+@keyframes isleBob{50%{transform:translate(-50%,-58%) rotate(-4deg)}}
+.isleDay span{font-size:calc(20px * var(--u));font-weight:800;color:#fff;text-shadow:0 2px 0 rgba(30,80,90,.35);white-space:nowrap}
+.isleDay span b{font-size:calc(26px * var(--u))}
+.isleStars{display:flex;align-items:center;gap:calc(6px * var(--u));height:calc(52px * var(--u));padding:0 calc(18px * var(--u));border-radius:999px;background:#FFF6E2;
+  font-size:calc(24px * var(--u));font-weight:800;box-shadow:0 calc(5px * var(--u)) 0 rgba(40,60,60,.16);flex:none}
+.isleStars svg{width:calc(24px * var(--u));height:calc(24px * var(--u));color:#E8A317}
+.woodBtn{flex:none;width:calc(56px * var(--u));height:calc(56px * var(--u));border-radius:calc(18px * var(--u));display:grid;place-items:center;color:#fff;border:0;padding:0;cursor:pointer;
+  background:linear-gradient(180deg,#C99A62,#A87A45);box-shadow:inset 0 2px 0 rgba(255,255,255,.25),0 calc(5px * var(--u)) 0 #7D5A31,0 calc(10px * var(--u)) calc(16px * var(--u)) calc(-6px * var(--u)) rgba(0,0,0,.35)}
+.woodBtn svg{width:calc(26px * var(--u));height:calc(26px * var(--u))}
+.woodBtn:active{transform:translateY(3px);box-shadow:inset 0 2px 0 rgba(255,255,255,.25),0 calc(2px * var(--u)) 0 #7D5A31}
+.woodBtn#sayBtn{background:linear-gradient(180deg,#F2C14E,#D99A1E);box-shadow:inset 0 2px 0 rgba(255,255,255,.3),0 calc(5px * var(--u)) 0 #9C6A0E,0 calc(10px * var(--u)) calc(16px * var(--u)) calc(-6px * var(--u)) rgba(0,0,0,.35)}
+.isleHome.tall .isleDay{order:9;flex-basis:100%}
+.isleHome.stack:not(.tall) .isleTop{background:linear-gradient(180deg,rgba(134,207,210,.97) 70%,rgba(134,207,210,0));padding-bottom:calc(10px * var(--u))}
+.isleHome.stack .isleMap{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+@media (prefers-reduced-motion:reduce){.islePal,.isleCloud,.isleBuoys .boat{animation:none}}
 </style>
 </head>
 <body>
@@ -736,7 +771,7 @@ const GAMES = [
     meta: function () {
       var n = 0;
       try { var d = JSON.parse(localStorage.getItem('logicc.xiaoxiao.v1') || '{}'); Object.keys(d.stars || {}).forEach(function (k) { n += d.stars[k]; }); } catch (e) { }
-      return ['⭐ ' + n + '/30', '玩一局，做一页数学题'];
+      return ['⭐ ' + n + '/255', '玩一局，做一页数学题'];   // 六座岛 85 关，每关三颗星
     },
     levels: []
   },
@@ -823,7 +858,7 @@ function toast(t) {
 Object.assign(S, { hints: false, hideTarget: false, easeIn: true, dropSpeed: 1, dropBest: {}, dropRules: 2, showTimer: true, persist: true, best: {}, days: {} });
 var SKEY = 'logicc.design.v2';
 function todayKey() { var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
-function save() { if (!S.persist) return; try { localStorage.setItem(SKEY, JSON.stringify({ level: S.level, stars: S.stars, stickers: S.stickers, best: S.best, days: S.days, hints: S.hints, hideTarget: S.hideTarget, easeIn: S.easeIn, dropSpeed: S.dropSpeed, dropBest: S.dropBest, dropRules: S.dropRules, showTimer: S.showTimer, autoLevel: S.autoLevel, snd: Audio2.on, voi: Voice.on, mus: Music.on, shi: S.shi })); } catch (e) { } }
+function save() { if (!S.persist) return; try { localStorage.setItem(SKEY, JSON.stringify({ level: S.level, stars: S.stars, stickers: S.stickers, best: S.best, days: S.days, hints: S.hints, hideTarget: S.hideTarget, easeIn: S.easeIn, last: S.last, dropSpeed: S.dropSpeed, dropBest: S.dropBest, dropRules: S.dropRules, showTimer: S.showTimer, autoLevel: S.autoLevel, snd: Audio2.on, voi: Voice.on, mus: Music.on, shi: S.shi })); } catch (e) { } }
 function load() {
   try {
     // 找规律换成了行测图形推理（第 2 版）：旧关卡的进度和用时对不上，从第 1 关重新来
@@ -832,6 +867,7 @@ function load() {
     var r = JSON.parse(raw); if (!r) return;
     if (r.level) Object.keys(r.level).forEach(function (k) { if (S.level[k]) S.level[k] = r.level[k]; });
     S.stars = r.stars || 0; S.stickers = r.stickers || []; S.best = r.best || {}; S.days = r.days || {};
+    if (typeof r.last === 'string' && G[r.last]) S.last = r.last;
     if (typeof r.hints === 'boolean') S.hints = r.hints;
     if (typeof r.hideTarget === 'boolean') S.hideTarget = r.hideTarget;
     if (typeof r.easeIn === 'boolean') S.easeIn = r.easeIn;
@@ -905,56 +941,165 @@ function topbar(o) {
   return bar;
 }
 
+// 首页 · 梦想群岛。五座岛是五类游戏，按这个顺序连成一条航线
+const ISLES = [
+  { id: 'num', name: '数一数', games: ['dots', 'bond'] },
+  { id: 'look', name: '看一看', games: ['schulte', 'pattern', 'span'] },
+  { id: 'turn', name: '转一转', games: ['mirror', 'fit', 'mofang'] },
+  { id: 'art', name: '念一念 · 弹一弹', games: ['shi', 'piano'] },
+  { id: 'play', name: '玩一玩', games: ['xiaoxiao', 'wuziqi'] }
+];
+// 每座岛图上草地的中心（占图片宽高的比例），dev/home-designs/art.py 量的
+const MEADOW = { num: [0.511, 0.465], look: [0.502, 0.501], turn: [0.499, 0.48], art: [0.497, 0.484], play: [0.497, 0.476] };
+const HOME_GLYPH = {
+  book: '<path d="M4 6.5C4 5.1 5.1 4 6.5 4H11v15H6.5A2.5 2.5 0 0 0 4 21.5Z M20 6.5C20 5.1 18.9 4 17.5 4H13v15h4.5a2.5 2.5 0 0 1 2.5 2.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+  sound: '<path d="M4 9.5h3.5L12 5v14l-4.5-4.5H4Z" fill="currentColor"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  gear: '<circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="6.6" fill="none" stroke="currentColor" stroke-width="2"/>',
+  star: '<path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4L2.8 9.5l6.4-.8Z" fill="currentColor"/>'
+};
+function homeGlyph(n) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + HOME_GLYPH[n] + '</svg>'; }
+function woodBtn(glyph, label, fn, id) {
+  var b = el('button', 'woodBtn'); b.innerHTML = homeGlyph(glyph); b.setAttribute('aria-label', label); b.title = label;
+  if (id) b.id = id; b.addEventListener('click', fn); return b;
+}
+// a game's progress for its landmark: the words on its name tag, and how full its ring is (null: no ring)
+function homeMeta(g) {
+  if (g.id === 'shi') { var n = shiStars(), of = SHI_POEMS * 3; return { t: n + '/' + of + ' 星', f: n / of }; }
+  if (g.href) {
+    var m = typeof g.meta === 'function' ? g.meta() : g.meta || ['✨ 随便玩'], q = /(\d+)\s*\/\s*(\d+)/.exec(m[0]);
+    return { t: m[0], f: q ? +q[1] / +q[2] : null };
+  }
+  return { t: S.level[g.id] + '/' + g.levels.length + ' 关', f: S.level[g.id] / g.levels.length };
+}
+function playGame(g) {
+  Audio2.page();
+  S.last = g.id; save();
+  if (g.id === 'shi') return openGame('shi', function () { tkHome(); });
+  if (g.href) return setTimeout(function () { location.href = g.href; }, 120);
+  openGame(g.id, function () { levelPicker(g); });
+}
 function home() {
   Session = null; Fit.cb = null; ROUND_ID++; stopTimer(); Voice.lastFn = null; GAME_HOOKS.home.forEach(function (f) { f(); });
-  var p = el('div', 'pane');
-  p.appendChild(topbar({ title: '思维小画本', day: true, book: true, gear: true }));
-  var cards = el('div'); cards.id = 'cards';
-  GAMES.forEach(function (g) {
-    var c = el('div', 'card'); c.style.setProperty('--c', g.color);
-    var art = el('div', 'cardArt', g.art ? null : g.emoji); if (g.art) art.innerHTML = g.art;
-    c.appendChild(art);
-    var tx = el('div', 'cardTx');
-    tx.appendChild(el('div', 'cardName', g.name));
-    tx.appendChild(el('div', 'cardTip', g.tip));
-    var m = el('div', 'cardMeta');
-    if (g.id === 'shi') {
-      m.appendChild(el('span', 's', '⭐ ' + shiStars() + '/' + SHI_POEMS * 3));
-      m.appendChild(el('span', 'b', '一到四年级 ' + SHI_POEMS + ' 首'));
-      tx.appendChild(m); c.appendChild(tx);
-      c.addEventListener('click', function () { Audio2.page(); openGame('shi', function () { tkHome(); }); });
-      cards.appendChild(c);
-      return;
-    }
-    if (g.href) {
-      var meta = typeof g.meta === 'function' ? g.meta() : g.meta || ['✨ 随便玩', '中文 / English · 有声'];
-      m.appendChild(el('span', 's', meta[0]));
-      m.appendChild(el('span', 'b', meta[1]));
-      tx.appendChild(m); c.appendChild(tx);
-      c.addEventListener('click', function () { Audio2.page(); save(); setTimeout(function () { location.href = g.href; }, 120); });
-      cards.appendChild(c);
-      return;
-    }
-    m.appendChild(el('span', 's', '★ ' + S.level[g.id] + '/' + g.levels.length + ' 关'));
-    var b = bestOf(g);
-    m.appendChild(el('span', 'b', b ? '⏱ 最快 ' + fmt(b) : '还没玩过'));
-    tx.appendChild(m); c.appendChild(tx);
-    c.addEventListener('click', function () { Audio2.page(); openGame(g.id, function () { levelPicker(g); }); });
-    cards.appendChild(c);
-  });
-  p.appendChild(cards);
+  var p = el('div', 'pane isleHome'), map = el('div', 'isleMap'), room = el('div', 'isleRoom');
+  map.appendChild(room); p.appendChild(map);
+  // the top
+  var top = el('div', 'isleTop');
+  var ban = el('div', 'isleBanner'); ban.appendChild(el('b', null, '思维小画本')); ban.appendChild(el('small', null, '小探险家的地图'));
+  top.appendChild(ban);
+  var n = S.days[todayKey()] || 0, goal = 6, day = el('div', 'isleDay');
+  day.setAttribute('aria-label', '今天玩了 ' + n + ' 关');
+  var buoys = el('div', 'isleBuoys'); day.appendChild(buoys);
+  var say = el('span'); say.innerHTML = n >= goal ? '今天玩够啦 🎉' : '今天 <b>' + n + '</b> / ' + goal + ' 关'; day.appendChild(say);
+  top.appendChild(day);
+  var st = el('div', 'isleStars'); st.innerHTML = homeGlyph('star'); var sn = el('span', null, String(S.stars)); sn.id = 'starNum'; st.appendChild(sn);
+  st.setAttribute('aria-label', '星星'); top.appendChild(st);
+  top.appendChild(woodBtn('book', '贴纸册', openAlbum));
+  top.appendChild(woodBtn('sound', '再读一遍', function () { Audio2.init(); Voice.unlock(); Voice.repeat(); }, 'sayBtn'));
+  top.appendChild(woodBtn('gear', '家长设置', openPanel));
+  p.appendChild(top);
   $('#screen').innerHTML = ''; $('#screen').appendChild(p);
-  Fit.cb = function () {
-    var r = cards.getBoundingClientRect();
-    if (!r.width) return;
-    var n = GAMES.length;
-    var cols = r.width >= r.height * 1.1 ? Math.ceil(n / 3) : Math.ceil(n / 4);
-    cols = clamp(cols, 2, 5);
-    cards.style.gridTemplateColumns = 'repeat(' + cols + ',1fr)';
-    cards.style.gridTemplateRows = 'repeat(' + Math.ceil(n / cols) + ',1fr)';
-  };
+  Fit.cb = function () { isleLayout(p, map, room, top, buoys, Math.min(n, goal), goal); };
   Fit.run();
   Voice.say('今天玩哪一个？', false);
+}
+// where everything goes: on a wide screen the islands in two rows, the route going right along the top and back along
+// the bottom; on a tall screen (or a short one, a phone on its side) one under another, and the map scrolls
+function isleLayout(p, map, room, top, buoys, n, goal) {
+  var W = p.clientWidth, H = p.clientHeight;
+  if (!W || !H) return;
+  var stack = W < H * 1.05 || H < 560, narrow = W < 700 || (stack && W < H);
+  var u = narrow ? Math.max(0.62, Math.min(1, W / 600)) : stack ? Math.max(0.6, Math.min(1, H / 700, W / 1000)) : Math.max(0.6, Math.min(1.45, Math.min(W / 1180, H / 820)));
+  p.classList.toggle('tall', narrow); p.classList.toggle('stack', stack); p.style.setProperty('--u', u.toFixed(3));
+  // the day's buoys and the boat
+  var bw = 320 * u, bh = 66 * u, path = '';
+  for (var k = 0; k < goal; k++) path += (k ? ' L' : 'M') + (bw * (0.07 + 0.86 * k / (goal - 1))).toFixed(1) + ' ' + (bh * (0.62 + 0.1 * Math.sin(k * 1.3))).toFixed(1);
+  buoys.innerHTML = '<svg viewBox="0 0 ' + bw + ' ' + bh + '"><path d="' + path + '" fill="none" stroke="#fff" stroke-width="' + (3 * u) + '" stroke-dasharray="' + (2 * u) + ' ' + (9 * u) + '" stroke-linecap="round" opacity=".9"/></svg>';
+  for (var k = 0; k < goal; k++) {
+    var b = el('img', k < n ? null : 'off'); b.src = 'home/buoy.webp'; b.alt = '';
+    b.style.left = (0.07 + 0.86 * k / (goal - 1)) * 100 + '%'; b.style.top = (62 + 10 * Math.sin(k * 1.3)) + '%'; b.style.width = 30 * u + 'px';
+    buoys.appendChild(b);
+  }
+  var boat = el('img', 'boat'); boat.src = 'home/sailboat.webp'; boat.alt = '';
+  boat.style.left = (0.07 + 0.86 * Math.max(0, n - 0.5) / (goal - 1)) * 100 + '%'; boat.style.top = '34%'; boat.style.width = 50 * u + 'px';
+  buoys.appendChild(boat);
+  // the islands
+  var head = top.getBoundingClientRect().height, S0, place = [];
+  if (!stack) {
+    // the islands' bodies are about 82% of their pictures: the top row's three fill the width with even gaps
+    var mh = H - head, w3 = Math.min(W * 0.4, mh * 0.78), w2 = w3 * 0.8, gap = Math.max(0, (W - 0.82 * (w2 + 2 * w3)) / 4);
+    var x1 = gap + 0.41 * w2, x2 = x1 + 0.41 * w2 + gap + 0.41 * w3, x3 = x2 + 0.82 * w3 + gap, r1 = head + mh * 0.28, r2 = head + mh * 0.75;
+    var wb = w3 * 0.92;   // the bottom row has two islands: they can be bigger
+    S0 = Math.max(64, Math.min(124, w3 * 0.185));
+    place = [[x1, r1, w2], [x2, r1 - mh * 0.01, w3], [x3, r1 + mh * 0.01, w3], [0.68 * W, r2, wb], [0.32 * W, r2 + mh * 0.01, wb]];
+    room.style.height = H + 'px';
+  } else {
+    var wi = Math.min(W * 1.02, 640, (H - head) * 1.5), y = head + wi * 0.3;
+    S0 = Math.max(66, Math.min(118, wi * 0.19));
+    ISLES.forEach(function (s, k) { place.push([W * (k % 2 ? 0.53 : 0.47), y, wi]); y += wi * 0.66; });
+    room.style.height = (y + wi * 0.06) + 'px';
+  }
+  room.innerHTML = '';
+  // the route behind the islands
+  var svg = '<svg class="isleRoute" width="' + W + '" height="' + room.style.height.replace('px', '') + '"><path d="';
+  place.forEach(function (q, k) {
+    if (!k) { svg += 'M' + q[0] + ' ' + q[1]; return; }
+    var a = place[k - 1], dy = stack ? 0 : 60 * u;
+    svg += ' C' + (a[0] + (q[0] - a[0]) * 0.5) + ' ' + (a[1] + dy) + ' ' + (q[0] - (q[0] - a[0]) * 0.3) + ' ' + (q[1] - dy) + ' ' + q[0] + ' ' + q[1];
+  });
+  room.insertAdjacentHTML('beforeend', svg + '" fill="none" stroke="#fff" stroke-width="' + (4 * u) + '" stroke-dasharray="' + (2 * u) + ' ' + (13 * u) + '" stroke-linecap="round" opacity=".9"/></svg>');
+  // a compass in the sea between the bottom islands, and two clouds drifting along the top
+  var cp = el('img', 'isleDeco'); cp.src = 'home/compass.webp'; cp.alt = '';
+  var cs = 78 * u; cp.style.width = cs + 'px';
+  if (!stack) { cp.style.left = (0.5 * W - cs / 2) + 'px'; cp.style.top = (H - cs - 10 * u) + 'px'; }
+  else { cp.style.left = (W - cs - 12) + 'px'; cp.style.top = (parseFloat(room.style.height) - cs - 10) + 'px'; }
+  room.appendChild(cp);
+  if (!stack) [[0.0, 70, 0], [0.04, 100, -45]].forEach(function (c) {   // high up, behind everything else
+    var cl = el('img', 'isleCloud'); cl.src = 'home/cloud.webp'; cl.alt = '';
+    cl.style.top = H * c[0] + 'px'; cl.style.width = 150 * u + 'px'; cl.style.left = '0';
+    cl.style.animationDuration = c[1] + 's'; cl.style.animationDelay = c[2] + 's';
+    room.appendChild(cl);
+  });
+  var last = S.last && G[S.last] ? S.last : null;
+  ISLES.forEach(function (isle, k) {
+    var q = place[k], wi = q[2], hi = wi * 0.625, x0 = q[0] - wi / 2, y0 = q[1] - hi * 0.55, mc = MEADOW[isle.id];
+    var im = el('img', 'isleImg'); im.src = 'home/isle-' + isle.id + '.webp'; im.alt = '';
+    im.style.left = x0 + 'px'; im.style.top = y0 + 'px'; im.style.width = wi + 'px'; im.style.height = hi + 'px';
+    room.appendChild(im);
+    var sign = el('div', 'isleSign', isle.name); sign.style.left = q[0] + 'px'; sign.style.top = (y0 + hi * 0.86) + 'px';
+    room.appendChild(sign);
+    var gs = isle.games.filter(function (id) { return G[id]; }), m = gs.length, cx = x0 + wi * mc[0], cy = y0 + hi * mc[1];
+    var S1 = S0;
+    gs.forEach(function (id, j) {
+      // three on an island stand a little up and down, so their name tags don't touch
+      var g = G[id], t = m === 1 ? 0 : j / (m - 1) - 0.5, x = cx + t * wi * (m >= 3 ? (stack ? 0.58 : 0.55) : 0.48), y = cy - S1 * 0.18 + (m >= 3 ? (j % 2 ? 1 : -1) * hi * 0.06 : 0);
+      var meta = homeMeta(g), b = el('button', 'spot'); b.setAttribute('aria-label', g.name);
+      b.style.left = x + 'px'; b.style.top = y + 'px';
+      var R = 50, C = 2 * Math.PI * R, ring = meta.f == null ? '' : '<svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="' + R + '" fill="none" stroke="rgba(255,255,255,.75)" stroke-width="7"/>'
+        + '<circle cx="60" cy="60" r="' + R + '" fill="none" stroke="' + g.color + '" stroke-width="7" stroke-linecap="round" stroke-dasharray="' + (C * Math.max(0.02, Math.min(1, meta.f))).toFixed(1) + ' ' + C + '"/></svg>';
+      b.innerHTML = '<span class="plot" style="width:' + S1 + 'px;height:' + S1 + 'px"><img src="home/ic-' + g.id + '.webp" alt="">' + ring + '</span>'
+        + '<span class="nm">' + g.name + '<em>' + meta.t + '</em></span>';
+      b.addEventListener('click', function () { playGame(g); });
+      room.appendChild(b);
+      // the companion beside the game played last: on its outer side, or above it when it is in the middle
+      // (no room on the outer side, at the screen's edge: above it, leaning inwards)
+      if (id === last) {
+        var side = j === 0 ? -1 : j === m - 1 ? 1 : 0, px = x + side * S1 * 0.92;
+        if (side && (px - S1 * 0.5 < 6 || px + S1 * 0.5 > W - 6)) side = 0;
+        if (!side) px = x + (x > W / 2 ? -1 : 1) * S1 * 0.42;
+        isleCompanion(room, px, side ? y + S1 * 0.12 : y - S1 * 0.4, side ? S1 : S1 * 0.75, '上次玩到这儿', W);
+      }
+    });
+    if (!last && k === 0) isleCompanion(room, Math.max(S0 * 0.5, cx - wi * 0.36), cy + S0 * 0.12, S0, '从这里出发', W);
+  });
+}
+function isleCompanion(room, x, y, s, words, W) {
+  var pw = el('img', 'islePal'); pw.src = 'home/pal-wave.webp'; pw.alt = '';
+  pw.style.left = x + 'px'; pw.style.top = y + 'px'; pw.style.width = s * 0.95 + 'px';
+  room.appendChild(pw);
+  var here = el('span', 'isleHere', words); here.style.top = (y - s * 0.95 * 0.95 - 8) + 'px';
+  room.appendChild(here);
+  var hw = here.offsetWidth / 2 + 6;   // its words stay on the screen
+  here.style.left = Math.max(hw, Math.min(W - hw, x)) + 'px';
 }
 
 function previewShape(g, i) {
