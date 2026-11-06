@@ -1,0 +1,608 @@
+{
+  "asset_count": 23,
+  "background_counts": {
+    "transparent": 6,
+    "magenta": 16,
+    "opaque": 1
+  },
+  "assets": [
+    {
+      "id": "schulte",
+      "file": "schulte.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "transparent",
+      "bytes": 1065312,
+      "sha256": "d7691a3c4fbae593883ad7c35f952ee6191e937b880adf94fdd940a3e942854d",
+      "foreground_bbox": [
+        102,
+        103,
+        922,
+        921
+      ],
+      "margins_left_top_right_bottom": [
+        102,
+        103,
+        102,
+        103
+      ],
+      "alpha_range": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "dots",
+      "file": "dots.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "transparent",
+      "bytes": 684186,
+      "sha256": "aa5a7237ebb5fb58ffdf337963864e5a8e5822427268d56899b6edfffbf9e530",
+      "foreground_bbox": [
+        188,
+        102,
+        835,
+        922
+      ],
+      "margins_left_top_right_bottom": [
+        188,
+        102,
+        189,
+        102
+      ],
+      "alpha_range": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "bond",
+      "file": "bond.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "magenta",
+      "bytes": 572385,
+      "sha256": "fc0762b0578fd2ae33325caabd7d22f82acbc642a226532a3dc82d67b75bdba8",
+      "foreground_bbox": [
+        200,
+        102,
+        824,
+        922
+      ],
+      "margins_left_top_right_bottom": [
+        200,
+        102,
+        200,
+        102
+      ],
+      "alpha_range": [
+        255,
+        255
+      ]
+    },
+    {
+      "id": "pattern",
+      "file": "pattern.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "transparent",
+      "bytes": 934279,
+      "sha256": "b7dc2c250dfd405722bec5b95eb92dc6cdf3907b11db1fe4f473e5a436f707d1",
+      "foreground_bbox": [
+        102,
+        160,
+        922,
+        863
+      ],
+      "margins_left_top_right_bottom": [
+        102,
+        160,
+        102,
+        161
+      ],
+      "alpha_range": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "span",
+      "file": "span.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "magenta",
+      "bytes": 1131558,
+      "sha256": "8da4832f816b252118e847bd58b563ddf96bff5d8acf174be7c090b0dc523638",
+      "foreground_bbox": [
+        126,
+        102,
+        898,
+        922
+      ],
+      "margins_left_top_right_bottom": [
+        126,
+        102,
+        126,
+        102
+      ],
+      "alpha_range": [
+        255,
+        255
+      ]
+    },
+    {
+      "id": "mirror",
+      "file": "mirror.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "magenta",
+      "bytes": 636163,
+      "sha256": "34295fec22ff01cde21c0c432f11ac6e9b14ce17d4cc1392552864e0cedf475b",
+      "foreground_bbox": [
+        102,
+        157,
+        922,
+        867
+      ],
+      "margins_left_top_right_bottom": [
+        102,
+        157,
+        102,
+        157
+      ],
+      "alpha_range": [
+        255,
+        255
+      ]
+    },
+    {
+      "id": "fit",
+      "file": "fit.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "magenta",
+      "bytes": 1005402,
+      "sha256": "d141f9d8357727a4597ba7af6c4ded72729cec26f3fbe2c9356f30409ba6ddd6",
+      "foreground_bbox": [
+        102,
+        102,
+        922,
+        922
+      ],
+      "margins_left_top_right_bottom": [
+        102,
+        102,
+        102,
+        102
+      ],
+      "alpha_range": [
+        255,
+        255
+      ]
+    },
+    {
+      "id": "mofang",
+      "file": "mofang.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "transparent",
+      "bytes": 934137,
+      "sha256": "5b2b1bb9a161160cd4ce3e8eb813348f414fd5536e6bda0782075f2f6c48e194",
+      "foreground_bbox": [
+        172,
+        102,
+        852,
+        922
+      ],
+      "margins_left_top_right_bottom": [
+        172,
+        102,
+        172,
+        102
+      ],
+      "alpha_range": [
+        0,
+        254
+      ]
+    },
+    {
+      "id": "shi",
+      "file": "shi.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "transparent",
+      "bytes": 997578,
+      "sha256": "e5bd099a54ec25855e5b4554b81c137516a75f09e03df2bda0536f3e0ddb3537",
+      "foreground_bbox": [
+        120,
+        102,
+        903,
+        922
+      ],
+      "margins_left_top_right_bottom": [
+        120,
+        102,
+        121,
+        102
+      ],
+      "alpha_range": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "piano",
+      "file": "piano.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "magenta",
+      "bytes": 781594,
+      "sha256": "383d75e576c817577815dfedc5e320c1eade9b227a0b7e87e684fc4a77ef5f8b",
+      "foreground_bbox": [
+        103,
+        102,
+        921,
+        922
+      ],
+      "margins_left_top_right_bottom": [
+        103,
+        102,
+        103,
+        102
+      ],
+      "alpha_range": [
+        255,
+        255
+      ]
+    },
+    {
+      "id": "xiaoxiao",
+      "file": "xiaoxiao.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "magenta",
+      "bytes": 557434,
+      "sha256": "7945d8d21578ae1d795543dc280dc83594610521b1a3149ef0c09c66dbdc126e",
+      "foreground_bbox": [
+        102,
+        254,
+        922,
+        770
+      ],
+      "margins_left_top_right_bottom": [
+        102,
+        254,
+        102,
+        254
+      ],
+      "alpha_range": [
+        255,
+        255
+      ]
+    },
+    {
+      "id": "wuziqi",
+      "file": "wuziqi.png",
+      "kind": "game",
+      "width": 1024,
+      "height": 1024,
+      "background": "transparent",
+      "bytes": 731627,
+      "sha256": "2464233dfe9b7b0bce8a0d554ced035917e802d28df0c4e8116b98ca49b235c9",
+      "foreground_bbox": [
+        102,
+        148,
+        922,
+        876
+      ],
+      "margins_left_top_right_bottom": [
+        102,
+        148,
+        102,
+        148
+      ],
+      "alpha_range": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "pal-wave",
+      "file": "pal-wave.png",
+      "kind": "companion",
+      "width": 1024,
+      "height": 1024,
+      "background": "magenta",
+      "bytes": 893572,
+      "sha256": "a589458323eddf8461302d8ddce8674925126c2b275da0fb8a4471778ddbc37b",
+      "foreground_bbox": [
+        169,
+        102,
+        854,
+        922
+      ],
+      "margins_left_top_right_bottom": [
+        169,
+        102,
+        170,
+        102
+      ],
+      "alpha_range": [
+        255,
+        255
+      ]
+    },
+    {
+      "id": "isle-num",
+      "file": "b/isle-num.png",
+      "kind": "island",
+      "width": 1600,
+      "height": 1000,
+      "background": "magenta",
+      "bytes": 1344055,
+      "sha256": "91e5b6423b4dc4c4e15c99d68c6bbf198db74e31e51247e6266569d69a618acb",
+      "foreground_bbox": [
+        144,
+        149,
+        1456,
+        851
+      ],
+      "margins_left_top_right_bottom": [
+        144,
+        149,
+        144,
+        149
+      ],
+      "alpha_range": [
+        255,
+        255
+      ]
+    },
+    {
+      "id": "isle-look",
+      "file": "b/isle-look.png",
+      "kind": "island",
+      "width": 1600,
+      "height": 1000,
+      "background": "magenta",
+      "bytes": 1298984,
+      "sha256": "41676517ce181807a1d15889abe78ea32c56aa16872cac3034039e6b9a29a9fc",
+      "foreground_bbox": [
+        144,
+        128,
+        1456,
+        872
+      ],
+      "margins_left_top_right_bottom": [
+        144,
+        128,
+        144,
+        128
+      ],
+      "alpha_range": [
+        255,
+        255
+      ]
+    },
+    {
+      "id": "isle-turn",
+      "file": "b/isle-turn.png",
+      "kind": "island",
+      "width": 1600,
+      "height": 1000,
+      "background": "magenta",
+      "bytes": 1376490,
+      "sha256": "653ce5da5900bbb81cf884b8a855b7c56ed3bae136a48e50108c3836099a7f7c",
+      "foreground_bbox": [
+        144,
+        151,
+        1456,
+        848
+      ],
+      "margins_left_top_right_bottom": [
+        144,
+        151,
+        144,
+        152
+      ],
+      "alpha_range": [
+        255,
+        255
+      ]
+    },
+    {
+      "id": "isle-art",
+      "file": "b/isle-art.png",
+      "kind": "island",
+      "width": 1600,
+      "height": 1000,
+      "background": "magenta",
+      "bytes": 1342992,
+      "sha256": "1e5b19880a7a87edde5476ea2917fc2c3e41af3a69b660dfb2ecdd16728fecc9",
+      "foreground_bbox": [
+        144,
+        156,
+        1456,
+        844
+      ],
+      "margins_left_top_right_bottom": [
+        144,
+        156,
+        144,
+        156
+      ],
+      "alpha_range": [
+        255,
+        255
+      ]
+    },
+    {
+      "id": "isle-play",
+      "file": "b/isle-play.png",
+      "kind": "island",
+      "width": 1600,
+      "height": 1000,
+      "background": "magenta",
+      "bytes": 1322569,
+      "sha256": "fb72c3e70f0de99e7269425f635a7ae46c5c781cef91633ce622d36ede3a2143",
+      "foreground_bbox": [
+        144,
+        152,
+        1456,
+        847
+      ],
+      "margins_left_top_right_bottom": [
+        144,
+        152,
+        144,
+        153
+      ],
+      "alpha_range": [
+        255,
+        255
+      ]
+    },
+    {
+      "id": "sea",
+      "file": "b/sea.png",
+      "kind": "texture",
+      "width": 1024,
+      "height": 1024,
+      "background": "opaque",
+      "bytes": 1667112,
+      "sha256": "55a926eb7a2b8c76fa828ee19a423e1a8d369dbdc2f0b6ddad5d5596fd37c608",
+      "foreground_bbox": [
+        0,
+        0,
+        1024,
+        1024
+      ],
+      "margins_left_top_right_bottom": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "alpha_range": [
+        255,
+        255
+      ]
+    },
+    {
+      "id": "sailboat",
+      "file": "b/sailboat.png",
+      "kind": "decoration",
+      "width": 512,
+      "height": 512,
+      "background": "magenta",
+      "bytes": 174787,
+      "sha256": "f0596c3d822b6f5c2d06d6fb239c554448a2cf8f9008d3f6d719944d4634cb59",
+      "foreground_bbox": [
+        95,
+        51,
+        416,
+        461
+      ],
+      "margins_left_top_right_bottom": [
+        95,
+        51,
+        96,
+        51
+      ],
+      "alpha_range": [
+        255,
+        255
+      ]
+    },
+    {
+      "id": "buoy",
+      "file": "b/buoy.png",
+      "kind": "decoration",
+      "width": 512,
+      "height": 512,
+      "background": "magenta",
+      "bytes": 174715,
+      "sha256": "ecbcb6ca801745117d7fb44aa88848b34c9e2fdb727454e26089f45585637294",
+      "foreground_bbox": [
+        105,
+        51,
+        406,
+        461
+      ],
+      "margins_left_top_right_bottom": [
+        105,
+        51,
+        106,
+        51
+      ],
+      "alpha_range": [
+        255,
+        255
+      ]
+    },
+    {
+      "id": "compass",
+      "file": "b/compass.png",
+      "kind": "decoration",
+      "width": 512,
+      "height": 512,
+      "background": "magenta",
+      "bytes": 205362,
+      "sha256": "28999638ee0e180caa2a37006b103b5547498f3c32950b061edf3960310644bc",
+      "foreground_bbox": [
+        87,
+        51,
+        424,
+        461
+      ],
+      "margins_left_top_right_bottom": [
+        87,
+        51,
+        88,
+        51
+      ],
+      "alpha_range": [
+        255,
+        255
+      ]
+    },
+    {
+      "id": "cloud",
+      "file": "b/cloud.png",
+      "kind": "decoration",
+      "width": 512,
+      "height": 512,
+      "background": "magenta",
+      "bytes": 106739,
+      "sha256": "feb5c1925669ce2a4b62f8d6154d40cfcabf4b5eaa2a5988ca036a7c696d8b84",
+      "foreground_bbox": [
+        51,
+        152,
+        461,
+        359
+      ],
+      "margins_left_top_right_bottom": [
+        51,
+        152,
+        51,
+        153
+      ],
+      "alpha_range": [
+        255,
+        255
+      ]
+    }
+  ]
+}
