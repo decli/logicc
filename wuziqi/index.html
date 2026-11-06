@@ -1,0 +1,1057 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="theme-color" content="#f7f0e1"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><link rel="manifest" href="../manifest.webmanifest"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><link rel="icon" href="../icon-192.png"><meta name="description" content="五子棋：和小黄鸡、小兔子、小狐狸、猫头鹰四个由易到难的电脑对手下，或者两个人轮流下。"><title>五子棋</title>
+<style>
+:root{
+  /* warm wood and cream paper with leaf-green felt, like 动物消消乐's 怪趣森林 */
+  --ink:#3d3426; --soft:#7a6c58; --cream:#fffaf0; --paper:#f7f0e1; --leaf:#8fb866; --leaf2:#6f9a4a; --leaf3:#4f7a35;
+  --orange:#ee8a3c; --orange2:#c8661f; --red:#e2483d; --gold:#f2b630; --wood:#e2b97f;
+  --font:"PingFang SC","Hiragino Sans GB","HarmonyOS Sans SC","MiSans","Microsoft YaHei",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;overflow:hidden}
+body{color:var(--ink);font-family:var(--font);-webkit-user-select:none;user-select:none;touch-action:manipulation;overscroll-behavior:none;
+  background:radial-gradient(circle at 8% 12%,rgba(255,255,255,.75) 0 90px,transparent 91px),radial-gradient(circle at 94% 90%,rgba(190,215,150,.35) 0 160px,transparent 161px),
+  linear-gradient(165deg,#f9f3e6 0%,#f2ead6 55%,#e6eed5 100%)}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer;touch-action:manipulation}
+.ibtn{width:58px;height:58px;border-radius:50%;background:var(--cream);box-shadow:0 4px 0 #ddd3bc,0 8px 16px rgba(61,52,38,.12);font-size:27px;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.ibtn:active{transform:translateY(3px);box-shadow:0 1px 0 #ddd3bc}
+.ibtn.off{opacity:.45}
+
+/* ---------- the menu: who to play ---------- */
+#menu{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;gap:clamp(10px,2.4vh,26px);
+  padding:max(14px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left));overflow:auto}
+#menu .top{align-self:stretch;display:flex;align-items:center;gap:14px}
+#menu h1{flex:1;margin:0;text-align:center;font-size:clamp(34px,6vh,58px);font-weight:900;letter-spacing:4px;display:flex;align-items:center;justify-content:center;gap:.3em;white-space:nowrap}
+#menu .mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(10px,2.4vh,26px);width:100%}
+#menu h1 i{display:inline-block;width:.8em;height:.8em;border-radius:50%;font-style:normal}
+.stone-b{background:radial-gradient(circle at 34% 30%,#7b7b7b 0,#2a2a2a 38%,#0d0d0d 100%);box-shadow:0 3px 6px rgba(0,0,0,.35)}
+.stone-w{background:radial-gradient(circle at 34% 30%,#fff 0,#f4f1ea 45%,#cfcac0 100%);box-shadow:0 3px 6px rgba(0,0,0,.25)}
+#menu .sub{margin:-6px 0 0;font-size:clamp(16px,2.4vh,22px);color:var(--soft);font-weight:700}
+#menu h2{margin:0;font-size:clamp(18px,2.6vh,24px);font-weight:900;align-self:center;display:flex;align-items:center;gap:10px}
+#menu h2::before,#menu h2::after{content:"";width:46px;height:3px;border-radius:2px;background:#d8ccb1}
+.opps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(10px,1.6vw,20px);width:min(1100px,100%)}
+.opp{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:clamp(10px,1.6vh,18px) 10px clamp(12px,1.8vh,18px);border-radius:28px;background:var(--cream);
+  box-shadow:0 6px 0 #e0d4b8,0 14px 28px rgba(61,52,38,.1);outline:2px dashed rgba(143,184,102,.55);outline-offset:-8px;transition:transform .12s}
+.opp:active{transform:translateY(4px);box-shadow:0 2px 0 #e0d4b8}
+.opp img{width:clamp(84px,19vh,190px);height:clamp(84px,19vh,190px);object-fit:contain;filter:drop-shadow(0 6px 6px rgba(61,52,38,.18));pointer-events:none}
+.opp b{font-size:clamp(20px,3vh,28px);font-weight:900}
+.opp .lv{font-size:clamp(14px,2vh,18px);color:var(--orange);letter-spacing:2px}
+.opp .tag{font-size:clamp(13px,1.9vh,17px);color:var(--soft);font-weight:700}
+.opp .rec{position:absolute;top:10px;right:12px;font-size:14px;font-weight:900;background:#eef6df;color:var(--leaf3);border-radius:999px;padding:2px 9px}
+.opp .board{position:absolute;top:10px;left:12px;font-size:13px;font-weight:800;color:var(--soft);background:#f3ead6;border-radius:999px;padding:2px 9px}
+.opp.next::after{content:"去挑战";position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--orange);color:#fff;font-size:14px;font-weight:900;padding:3px 12px;border-radius:999px;box-shadow:0 3px 0 var(--orange2);white-space:nowrap}
+.rowx{display:flex;align-items:stretch;gap:clamp(10px,1.6vw,20px);width:min(1100px,100%)}
+.pvp{flex:1;display:flex;align-items:center;justify-content:center;gap:18px;padding:16px 22px;border-radius:28px;background:linear-gradient(180deg,#a8cc7c,#86b05c);color:#fff;
+  box-shadow:0 6px 0 var(--leaf3),0 14px 28px rgba(61,52,38,.12);text-shadow:0 2px 0 rgba(40,70,20,.35)}
+.pvp:active{transform:translateY(4px);box-shadow:0 2px 0 var(--leaf3)}
+.pvp .st{display:flex;gap:6px}.pvp .st i{width:44px;height:44px;border-radius:50%}
+.pvp b{font-size:clamp(22px,3.2vh,30px);font-weight:900}
+.pvp small{display:block;font-size:15px;font-weight:700;opacity:.92}
+.first{display:flex;flex-direction:column;justify-content:center;gap:8px;padding:12px 16px;border-radius:28px;background:var(--cream);box-shadow:0 6px 0 #e0d4b8}
+.first span{font-size:15px;font-weight:900;color:var(--soft);text-align:center}
+.seg{display:flex;gap:6px}
+.seg button{padding:9px 14px;border-radius:16px;background:#f1ebdc;font-size:17px;font-weight:900;box-shadow:0 3px 0 #ddd3bc;white-space:nowrap}
+.seg button.on{background:var(--leaf2);color:#fff;box-shadow:0 3px 0 var(--leaf3)}
+@media (max-width:760px){
+  #menu h1{font-size:36px;letter-spacing:2px}
+  .opps{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:18px}
+  .opp img{width:clamp(70px,13vh,120px);height:clamp(70px,13vh,120px)}
+  .rowx{flex-direction:column}
+}
+
+/* ---------- playing ---------- */
+#play{position:fixed;inset:0;display:flex}
+#play.wide{flex-direction:row}
+#play.tall{flex-direction:column-reverse}
+#stage{flex:1;min-width:0;min-height:0;position:relative}
+#cv{position:absolute;left:0;top:0;touch-action:none}
+#side{flex:none;display:flex;flex-direction:column;gap:14px;padding:max(16px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) 0;justify-content:center}
+#play.wide #side{width:clamp(250px,26vw,330px)}
+#play.tall #side{flex-direction:row;flex-wrap:wrap;align-items:stretch;padding:max(12px,env(safe-area-inset-top)) 14px 0;justify-content:center;gap:10px}
+.card{background:var(--cream);border-radius:26px;box-shadow:0 5px 0 #e0d4b8,0 10px 22px rgba(61,52,38,.1);outline:2px dashed rgba(143,184,102,.5);outline-offset:-7px;padding:14px 16px}
+.who{display:flex;align-items:center;gap:12px;position:relative}
+.who img{width:96px;height:96px;object-fit:contain;flex:none;transition:transform .3s}
+.who img.think{animation:think 1.1s ease-in-out infinite}
+@keyframes think{50%{transform:rotate(-7deg) translateY(-4px)}}
+.who img.hop{animation:hop .5s ease-out 3}
+@keyframes hop{50%{transform:translateY(-12px) scale(1.06)}}
+.who b{display:block;font-size:24px;font-weight:900}
+.who small{display:block;font-size:15px;color:var(--orange);letter-spacing:2px;font-weight:800}
+.who .bub{position:absolute;right:-6px;top:-12px;font-size:32px;opacity:0;transition:opacity .2s}
+.who .bub.on{opacity:1;animation:bob .9s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-6px)}}
+.turn{display:flex;align-items:center;gap:12px;font-size:22px;font-weight:900}
+.turn i{width:42px;height:42px;border-radius:50%;flex:none}
+.turn.me i{animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.12)}}
+.score{display:flex;justify-content:space-around;align-items:center;font-size:20px;font-weight:900}
+.score span{display:flex;align-items:center;gap:8px}
+.score i{width:26px;height:26px;border-radius:50%}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;min-height:58px;border-radius:20px;background:var(--cream);font-size:20px;font-weight:900;box-shadow:0 5px 0 #ddd3bc,0 8px 16px rgba(61,52,38,.08)}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #ddd3bc}
+.btn.go{background:linear-gradient(180deg,#f9b46b,var(--orange));color:#fff;box-shadow:0 5px 0 var(--orange2);text-shadow:0 1px 0 rgba(0,0,0,.15)}
+.btn.green{background:linear-gradient(180deg,#a8cc7c,var(--leaf2));color:#fff;box-shadow:0 5px 0 var(--leaf3)}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.btn.on{background:#eef6df;color:var(--leaf3)}
+.icons{display:flex;gap:10px;justify-content:center}
+#play.tall .card{padding:10px 12px}
+#play.tall .who,#play.tall .turn{flex:1 1 40%;min-width:0}
+#play.tall .score{display:none}
+#play.tall .icons{flex-basis:100%;gap:14px}
+#play.tall .ibtn{width:46px;height:46px;font-size:22px}
+#play.tall .who img{width:64px;height:64px}
+#play.tall .who b{font-size:19px}
+#play.tall .btns{grid-template-columns:repeat(4,1fr);flex-basis:100%}
+#play.tall .btn{min-height:50px;font-size:17px}
+#play.tall .turn{font-size:18px}
+#play.tall .turn i{width:32px;height:32px}
+
+/* ---------- the end of a game ---------- */
+#end{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:rgba(40,34,24,.28);padding:20px}
+#end .box{background:var(--cream);border-radius:34px;box-shadow:0 10px 0 #e0d4b8,0 24px 50px rgba(40,34,24,.25);outline:2px dashed rgba(143,184,102,.5);outline-offset:-11px;
+  padding:26px 30px 28px;text-align:center;width:min(520px,100%);animation:pop .4s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{from{transform:scale(.6);opacity:0}}
+#end img{width:140px;height:140px;object-fit:contain}
+#end h2{margin:4px 0 6px;font-size:36px;font-weight:900}
+#end p{margin:0 0 18px;font-size:19px;color:var(--soft);font-weight:700}
+#end .row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+#end .btn{padding:0 24px}
+#toast{position:fixed;left:50%;bottom:max(20px,env(safe-area-inset-bottom));transform:translate(-50%,180%);background:var(--cream);border-radius:22px;box-shadow:0 6px 18px rgba(40,34,24,.2);
+  padding:12px 20px;font-size:19px;font-weight:800;transition:transform .3s cubic-bezier(.2,1.4,.4,1);z-index:30;pointer-events:none;white-space:nowrap}
+#toast:empty,#toast:not(.on){visibility:hidden}
+#toast.on{transform:translate(-50%,0)}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:25}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="menu"></div>
+<div id="play" hidden><div id="stage"><canvas id="cv"></canvas></div><div id="side"></div></div>
+<div id="end" hidden></div>
+<canvas id="fx"></canvas>
+<div id="toast"></div>
+<script>
+(() => {
+'use strict';
+// 五子棋 · small helpers and what is kept on this device
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const el = (tag, cls, html) => { const n = document.createElement(tag); if (cls) n.className = cls; if (html != null) n.innerHTML = html; return n; };
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const pick = a => a[(Math.random() * a.length) | 0];
+const wait = ms => new Promise(r => setTimeout(r, ms));
+
+const Store = {
+  key: 'logicc.wuziqi.v1',
+  d: null,
+  defaults() {
+    return {
+      rec: {},              // opponent id -> [won, lost, drawn] (games against the computer)
+      pvp: [0, 0, 0],       // two players: black won, white won, drawn
+      first: 'me',          // against the computer: 'me' (the child is black and starts) or 'it'
+      remind: true,         // 提醒: rings where the other side is about to make five, or an open four
+      snd: true, voi: true,
+    };
+  },
+  load() {
+    this.d = this.defaults();
+    try {
+      // the first visit follows 思维小画本's sound switches
+      const home = JSON.parse(localStorage.getItem('logicc.design.v2') || 'null');
+      if (home) { if (typeof home.snd === 'boolean') this.d.snd = home.snd; if (typeof home.voi === 'boolean') this.d.voi = home.voi; }
+      Object.assign(this.d, JSON.parse(localStorage.getItem(this.key) || 'null') || {});
+    } catch (e) { }
+    return this.d;
+  },
+  save() { try { localStorage.setItem(this.key, JSON.stringify(this.d)); } catch (e) { } },
+  rec(id) { return this.d.rec[id] || (this.d.rec[id] = [0, 0, 0]); },
+};
+
+// 五子棋 · the rules and the computer players. Nothing here touches the page: dev/test.js runs it in node to play the
+// levels against each other. Free-style rules for children: five or more in a row wins, black moves first, no
+// forbidden moves (禁手).
+//
+// The players all look at the board the same way, through its "windows": every line of five cells. A window that
+// holds only one colour is worth something to that colour (more stones, more worth), a window with both colours is
+// dead. Counting stones per window is kept up to date as stones go on and come off, so judging a move or a position is
+// cheap. Four players, from a beginner to a strong one (LEVELS):
+//   0 小黄鸡 picks among good-looking moves at random, often misses a four
+//   1 小兔子 picks among the best few, usually blocks a four
+//   2 小狐狸 always the best-looking move (attack and defence together), always blocks
+//   3 猫头鹰 also looks ahead: wins by a run of fours when it can (VCF), searches a few moves deep (alpha-beta), and
+//            defends against the other side's run of fours
+const Gomoku = (() => {
+  const DIRS = [[1, 0], [0, 1], [1, 1], [1, -1]];
+  // a move's worth: windows through the cell, by how many of my stones (OWN) or the other side's (OPP) are in them
+  // already; an empty window 7 (the classic five-tuple table)
+  const OWN = [7, 35, 800, 15000, 800000], OPP = [7, 15, 400, 1800, 100000];
+  // a position's worth for the search: windows holding only one colour, by how many stones
+  const V = [0, 2, 25, 300, 4000, 0];
+  const WIN = 1e9;
+
+  const geo = {};
+  function geometry(n) {
+    if (geo[n]) return geo[n];
+    const wins = [], cellWins = Array.from({ length: n * n }, () => []);
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) for (const [dx, dy] of DIRS) {
+      const ex = x + dx * 4, ey = y + dy * 4;
+      if (ex < 0 || ex >= n || ey < 0 || ey >= n) continue;
+      const w = [];
+      for (let k = 0; k < 5; k++) w.push((y + dy * k) * n + x + dx * k);
+      const id = wins.length; wins.push(w); w.forEach(i => cellWins[i].push(id));
+    }
+    const near = [];
+    for (let i = 0; i < n * n; i++) {
+      const x = i % n, y = (i / n) | 0, out = [];
+      for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
+        const X = x + dx, Y = y + dy;
+        if ((dx || dy) && X >= 0 && X < n && Y >= 0 && Y < n) out.push(Y * n + X);
+      }
+      near.push(out);
+    }
+    return (geo[n] = { wins, cellWins, near });
+  }
+
+  // a board: stones, whose turn, the moves so far, and the window counts
+  class Pos {
+    constructor(n) {
+      const g = this.g = geometry(n);
+      this.n = n; this.b = new Int8Array(n * n); this.moves = []; this.turn = 1; this.winner = 0; this.line = null;
+      this.cnt = [null, new Int8Array(g.wins.length), new Int8Array(g.wins.length)];
+      this.nearCnt = new Int16Array(n * n); this.tot = [0, 0, 0];
+    }
+    clone() {
+      const p = new Pos(this.n);
+      this.moves.forEach(i => p.play(i));
+      return p;
+    }
+    // a stone of colour c on cell i (no checks), keeping the counts
+    put(i, c) {
+      const o = 3 - c, A = this.cnt[c], B = this.cnt[o], tot = this.tot;
+      this.b[i] = c;
+      for (const w of this.g.cellWins[i]) {
+        if (B[w] === 0) tot[c] -= V[A[w]];
+        else if (A[w] === 0) tot[o] -= V[B[w]];
+        A[w]++;
+        if (B[w] === 0) tot[c] += V[A[w]];
+      }
+      for (const j of this.g.near[i]) this.nearCnt[j]++;
+    }
+    take(i, c) {
+      const o = 3 - c, A = this.cnt[c], B = this.cnt[o], tot = this.tot;
+      this.b[i] = 0;
+      for (const w of this.g.cellWins[i]) {
+        if (B[w] === 0) tot[c] -= V[A[w]];
+        A[w]--;
+        if (B[w] === 0) tot[c] += V[A[w]];
+        else if (A[w] === 0) tot[o] += V[B[w]];
+      }
+      for (const j of this.g.near[i]) this.nearCnt[j]--;
+    }
+    // ---------- the game itself ----------
+    play(i) {
+      if (this.winner || i < 0 || i >= this.b.length || this.b[i]) return false;
+      const c = this.turn;
+      this.put(i, c); this.moves.push(i);
+      const line = this.fiveThrough(i, c);
+      if (line) { this.winner = c; this.line = line; }
+      else if (this.moves.length === this.b.length) this.winner = 3;   // the board is full: a draw
+      this.turn = 3 - c;
+      return true;
+    }
+    undo() {
+      const i = this.moves.pop();
+      if (i == null) return false;
+      const c = this.b[i];
+      this.take(i, c); this.turn = c; this.winner = 0; this.line = null;
+      return true;
+    }
+    // the whole row through i if colour c has five or more there (for drawing the winning line), else null
+    fiveThrough(i, c) {
+      const n = this.n, x0 = i % n, y0 = (i / n) | 0;
+      for (const [dx, dy] of DIRS) {
+        const run = [i];
+        for (const s of [1, -1]) {
+          let x = x0 + dx * s, y = y0 + dy * s;
+          while (x >= 0 && x < n && y >= 0 && y < n && this.b[y * n + x] === c) { run.push(y * n + x); x += dx * s; y += dy * s; }
+        }
+        if (run.length >= 5) return run.sort((a, b) => a - b);
+      }
+      return null;
+    }
+    // ---------- what the players look at ----------
+    // cells where colour c would make five at once
+    fives(c) {
+      const A = this.cnt[c], B = this.cnt[3 - c], wins = this.g.wins, out = [];
+      for (let w = 0; w < wins.length; w++) {
+        if (A[w] !== 4 || B[w] !== 0) continue;
+        for (const i of wins[w]) if (!this.b[i] && !out.includes(i)) out.push(i);
+      }
+      return out;
+    }
+    // empty cells worth a look: near a stone (the middle on an empty board)
+    cands() {
+      const out = [];
+      if (!this.moves.length) return [((this.n * this.n) / 2) | 0];
+      for (let i = 0; i < this.b.length; i++) if (!this.b[i] && this.nearCnt[i] > 0) out.push(i);
+      return out;
+    }
+    // how good a move on empty cell i is for colour c: attack and defence in one number
+    score(i, c) {
+      const A = this.cnt[c], B = this.cnt[3 - c];
+      let s = 0;
+      for (const w of this.g.cellWins[i]) {
+        const a = A[w], b = B[w];
+        if (a && b) continue;
+        s += a ? OWN[a] : b ? OPP[b] : OWN[0];
+      }
+      return s;
+    }
+    ranked(c) { return this.cands().map(i => [i, this.score(i, c)]).sort((p, q) => q[1] - p[1]); }
+    // the position for colour c to move: its windows against the other side's (having the move is worth a bit)
+    value(c) { return this.tot[c] * 1.2 - this.tot[3 - c]; }
+    // would colour c playing i make a four (a cell where it then makes five)?
+    makesFour(i, c) {
+      const A = this.cnt[c], B = this.cnt[3 - c];
+      for (const w of this.g.cellWins[i]) if (A[w] === 3 && B[w] === 0) return true;
+      return false;
+    }
+    // cells where colour c would get two ways to make five at once (an open four, or two fours): what must be
+    // blocked before it happens. These are the ends of an open three and the like.
+    doubles(c) {
+      const out = [];
+      for (const i of this.cands()) {
+        if (!this.makesFour(i, c)) continue;
+        this.put(i, c);
+        if (this.fives(c).length >= 2) out.push(i);
+        this.take(i, c);
+      }
+      return out;
+    }
+  }
+
+  // ---------- looking ahead ----------
+  // a run of fours (VCF) for colour c: each move makes a four, the other side must block it, until two fives are
+  // threatened at once. The first move, or -1. budget: positions it may look at.
+  function vcf(p, c, depth, budget) {
+    const o = 3 - c;
+    const mine = p.fives(c);
+    if (mine.length) return mine[0];
+    if (depth <= 0 || budget.n <= 0 || p.fives(o).length) return -1;
+    const tries = p.cands().filter(i => p.makesFour(i, c)).map(i => [i, p.score(i, c)]).sort((a, b) => b[1] - a[1]);
+    for (const [i] of tries) {
+      if (--budget.n <= 0) return -1;
+      p.put(i, c);
+      const threats = p.fives(c);
+      let won = false;
+      if (threats.length >= 2) won = true;
+      else if (threats.length === 1) {
+        const t = threats[0];
+        p.put(t, o);
+        // the block itself must not make five for the other side
+        if (!p.g.cellWins[t].some(w => p.cnt[o][w] === 5)) won = vcf(p, c, depth - 1, budget) >= 0;
+        p.take(t, o);
+      }
+      p.take(i, c);
+      if (won) return i;
+    }
+    return -1;
+  }
+
+  // alpha-beta: the value of the position for colour c to move
+  function search(p, c, depth, alpha, beta, ply, clock) {
+    const o = 3 - c;
+    if (p.fives(c).length) return WIN - ply;
+    const theirs = p.fives(o);
+    let cands, forced = false;
+    if (theirs.length > 1) return -WIN + ply + 1;
+    if (theirs.length === 1) { cands = theirs; forced = true; }
+    else {
+      if (depth <= 0 || ply >= 14) return p.value(c);
+      cands = p.ranked(c).slice(0, ply < 2 ? 12 : 8).map(x => x[0]);
+    }
+    let best = -Infinity;
+    for (const i of cands) {
+      if (clock.out()) break;
+      p.put(i, c);
+      const v = -search(p, o, forced ? depth : depth - 1, -beta, -alpha, ply + 1, clock);
+      p.take(i, c);
+      if (v > best) best = v;
+      if (v > alpha) alpha = v;
+      if (alpha >= beta) break;
+    }
+    return best === -Infinity ? p.value(c) : best;
+  }
+
+  function weighted(list, weights) {
+    const w = weights.slice(0, list.length), sum = w.reduce((a, b) => a + b, 0);
+    let r = Math.random() * sum;
+    for (let k = 0; k < list.length; k++) { r -= w[k]; if (r < 0) return list[k]; }
+    return list[0];
+  }
+
+  // the computer's move for the side to move, by level (0-3); ms: how long the strongest may think
+  function move(pos, level, ms = 900) {
+    const p = pos.clone(), c = p.turn, o = 3 - c;
+    if (!p.moves.length) return p.cands()[0];
+    const mine = p.fives(c), theirs = p.fives(o), r = Math.random();
+    if (level === 0) {
+      if (mine.length && r < 0.7) return mine[0];
+      if (theirs.length && Math.random() < 0.45) return theirs[0];
+      const top = p.ranked(c).slice(0, 8).map(x => x[0]);
+      return Math.random() < 0.15 ? top[top.length - 1] : weighted(top, [5, 4, 4, 3, 3, 2, 2, 1]);
+    }
+    if (mine.length) return mine[0];
+    if (theirs.length && (level > 1 || r < 0.9)) return theirs[0];
+    const ranked = p.ranked(c);
+    if (level === 1) return weighted(ranked.slice(0, 3).map(x => x[0]), [6, 3, 1]);
+    if (level === 2) {
+      const best = ranked[0][1], close = ranked.filter(x => x[1] >= best * 0.97).map(x => x[0]);
+      return close[(Math.random() * close.length) | 0];
+    }
+    // 猫头鹰
+    if (theirs.length) return theirs[0];
+    const win = vcf(p, c, 12, { n: 6000 });
+    if (win >= 0) return win;
+    const t0 = Date.now(), clock = { out: () => Date.now() - t0 > ms };
+    let order = ranked.slice(0, 12).map(x => x[0]), vals = new Map();
+    for (let depth = 2; depth <= 6; depth += 2) {
+      const got = new Map();
+      for (const i of order) {
+        if (clock.out()) break;
+        p.put(i, c);
+        got.set(i, -search(p, o, depth - 1, -Infinity, Infinity, 1, clock));
+        p.take(i, c);
+      }
+      if (got.size === order.length) vals = got;   // a depth only counts when it was searched through
+      else { got.forEach((v, i) => { if (!vals.has(i)) vals.set(i, v); }); break; }
+      order = order.slice().sort((a, b) => vals.get(b) - vals.get(a));
+      if (vals.get(order[0]) >= WIN - 20) break;
+    }
+    order.sort((a, b) => (vals.get(b) ?? -Infinity) - (vals.get(a) ?? -Infinity));
+    // the best move after which the other side has no run of fours
+    for (const i of order.slice(0, 6)) {
+      p.put(i, c);
+      const theirRun = vcf(p, o, 10, { n: 2500 });
+      p.take(i, c);
+      if (theirRun < 0) return i;
+    }
+    return order[0];
+  }
+
+  // a good move to suggest to a child (💡): the fox's choice, or a run of fours when there is one
+  function hint(pos) {
+    const p = pos.clone(), c = p.turn, o = 3 - c;
+    const mine = p.fives(c); if (mine.length) return mine[0];
+    const theirs = p.fives(o); if (theirs.length) return theirs[0];
+    const win = vcf(p, c, 8, { n: 2000 }); if (win >= 0) return win;
+    return p.ranked(c)[0][0];
+  }
+
+  // what the side to move should watch out for: cells where the other side makes five next move (urgent), and cells
+  // where it would make an open four or two fours (block one of these now)
+  function dangers(pos) {
+    const p = pos.clone(), o = 3 - p.turn;
+    const urgent = p.fives(o);
+    return { urgent, soon: urgent.length ? [] : p.doubles(o) };
+  }
+
+  return { Pos, move, hint, dangers, vcf, geometry, WIN };
+})();
+
+// 五子棋 · the computer's players and everything the narrator says. dev/voice/collect.js reads this file to list every
+// line for recording, so a line built from an opponent must be built here.
+// The opponents are 怪趣森林 friends from 动物消消乐 (decli's pictures, img/<id>.webp), from a beginner to a teacher;
+// the first two play on a smaller board, so a child's first games are short and the stones big.
+const OPPS = [
+  { id: 'chick', name: '小黄鸡', level: 0, size: 11, tag: '刚学会下棋' },
+  { id: 'bunny', name: '小兔子', level: 1, size: 11, tag: '会堵你，偶尔看漏' },
+  { id: 'fox', name: '小狐狸', level: 2, size: 15, tag: '机灵，攻守都会' },
+  { id: 'owl', name: '猫头鹰', level: 3, size: 15, tag: '下棋老师，会算好几步' },
+];
+const STONE = ['', '黑棋', '白棋'];
+const L = {
+  welcome: '五子棋！谁先把五个棋子连成一条线，谁就赢。你想和谁下？',
+  intro: {
+    chick: '小黄鸡刚学会下棋，和它玩玩吧！',
+    bunny: '小兔子会堵你，可有时候也会看漏哦。',
+    fox: '小狐狸可机灵了，一不留神就被它连上啦。',
+    owl: '猫头鹰是下棋老师，能赢它就是高手！',
+  },
+  meFirst: '你先下，你是黑棋。',
+  itFirst: OPPS.map(o => `${o.name}先下，你是白棋。`),
+  pvp: '两个人下：黑棋先下，轮流放棋子，谁先连成五个谁就赢。',
+  // 提醒: the other side can make five next move, or is one move from two ways to make five
+  urgent: '小心！它马上就要连成五个了，快堵住！',
+  soon: '注意！它连成三个了，两头都空着，快堵住一头！',
+  pvpUrgent: [1, 2].map(c => `小心！${STONE[c]}马上就要连成五个了！`),
+  pvpSoon: [1, 2].map(c => `注意！${STONE[c]}连成三个了，两头都空着！`),
+  blocked: ['堵得好！', '好眼力，堵住啦！', '漂亮，挡住了！'],
+  hint: '下在发光的地方试试？',
+  win: '你赢啦！连成了五个，太厉害了！',
+  winNext: OPPS.slice(1).map(o => `你赢啦！下次去挑战${o.name}吧！`),
+  lose: OPPS.map(o => `哎呀，这次${o.name}赢了。看看它是怎么连成五个的，再来一局！`),
+  draw: '棋盘下满啦，平局！',
+  pvpWin: [1, 2].map(c => `${STONE[c]}赢啦！连成了五个！`),
+  undo: '退回一步，再想想。',
+};
+
+// 五子棋 · sounds made on the spot with Web Audio: a stone on wood, a little chime for a warning, a fanfare for a win
+const Snd = {
+  ctx: null, on: true, master: null, sfx: null, voice: null, noise: null,
+  init() {
+    if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; }
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    const c = this.ctx = new AC();
+    this.master = c.createGain(); this.master.gain.value = 0.9; this.master.connect(c.destination);
+    this.sfx = c.createGain(); this.sfx.gain.value = this.on ? 0.8 : 0; this.sfx.connect(this.master);
+    this.voice = c.createGain(); this.voice.gain.value = 1; this.voice.connect(this.master);
+    const nb = c.createBuffer(1, c.sampleRate * 0.3, c.sampleRate), d = nb.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 4);
+    this.noise = nb;
+    if (c.state === 'suspended') c.resume();
+  },
+  setOn(v) { this.on = v; if (this.sfx) this.sfx.gain.value = v ? 0.8 : 0; },
+  duck() { },
+  tone(f, dur, o = {}) {
+    if (!this.ctx || !this.on) return;
+    const c = this.ctx, t = c.currentTime + (o.at || 0), osc = c.createOscillator(), g = c.createGain();
+    osc.type = o.type || 'sine'; osc.frequency.setValueAtTime(f, t);
+    if (o.to) osc.frequency.exponentialRampToValueAtTime(o.to, t + dur);
+    const v = o.vol == null ? 0.25 : o.vol;
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + 0.006); g.gain.exponentialRampToValueAtTime(0.0008, t + dur);
+    osc.connect(g); g.connect(this.sfx); osc.start(t); osc.stop(t + dur + 0.05);
+  },
+  // a stone set down on the board: a short knock of wood, a little higher for white
+  stone(c) {
+    if (!this.ctx || !this.on) return;
+    const x = this.ctx, t = x.currentTime, src = x.createBufferSource(), bp = x.createBiquadFilter(), g = x.createGain();
+    src.buffer = this.noise; bp.type = 'bandpass'; bp.frequency.value = c === 2 ? 2600 : 2100; bp.Q.value = 3;
+    g.gain.setValueAtTime(0.9, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+    src.connect(bp); bp.connect(g); g.connect(this.sfx); src.start(t);
+    this.tone(c === 2 ? 330 : 260, 0.14, { vol: 0.35, to: c === 2 ? 220 : 170 });
+  },
+  play(name) {
+    const T = (f, d, o) => this.tone(f, d, o);
+    if (name === 'tap') T(660, 0.08, { vol: 0.15, type: 'triangle' });
+    else if (name === 'warn') { T(880, 0.18, { vol: 0.18, type: 'triangle' }); T(660, 0.25, { vol: 0.18, type: 'triangle', at: 0.16 }); }
+    else if (name === 'good') [784, 988, 1175].forEach((f, k) => T(f, 0.18, { vol: 0.16, type: 'triangle', at: k * 0.07 }));
+    else if (name === 'hint') [1047, 1319, 1568, 2093].forEach((f, k) => T(f, 0.2, { vol: 0.1, at: k * 0.06 }));
+    else if (name === 'win') [523, 659, 784, 1047, 784, 1047, 1319].forEach((f, k) => T(f, 0.3, { vol: 0.2, type: 'triangle', at: k * 0.11 }));
+    else if (name === 'lose') [523, 466, 392, 330].forEach((f, k) => T(f, 0.32, { vol: 0.16, type: 'triangle', at: k * 0.16 }));
+    else if (name === 'undo') T(500, 0.14, { vol: 0.14, to: 330, type: 'triangle' });
+  },
+};
+
+// 五子棋 · the narrator. Every line is pre-recorded (voice.bin|json next to the page, made with edge-tts by
+// ../../dev/voice/build.py wuziqi) by 晓晓 like the rest of 思维小画本; the device's own speech is never used. A line
+// missing from the bank stays silent, and ?debug lists it in the console.
+const Voice = { on: true, last: '', busy: false };
+(() => {
+  let bank = null, state = 'idle', loadP = null, clip = null, gen = 0, tries = 0;
+  const bufs = new Map(), debug = /[?&]debug\b/.test(location.search);
+  const fnv = s => { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); } return (h >>> 0).toString(36); };
+  Voice.load = function () {
+    if (state !== 'idle') return loadP;
+    if (!window.fetch || location.protocol === 'file:') { state = 'failed'; return (loadP = Promise.resolve()); }
+    state = 'loading';
+    loadP = fetch('voice.json').then(r => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then(ix => fetch('voice.bin' + (ix.h ? '?h=' + ix.h : '')).then(r => (r.ok ? r.arrayBuffer() : Promise.reject(r.status))).then(bin => { bank = { map: ix.u, bin }; state = 'ready'; }))
+      .catch(() => { state = 'failed'; if (++tries < 5) setTimeout(() => { state = 'idle'; Voice.load(); }, [2000, 5000, 10000, 20000][tries - 1]); });
+    return loadP;
+  };
+  const entry = t => {
+    const e = bank && bank.map[fnv('n|' + t)];
+    if (!e && bank && debug) console.warn('voice: not recorded: ' + t);
+    return e;
+  };
+  const decode = e => {
+    const got = bufs.get(e[0]);
+    if (got) return Promise.resolve(got);
+    return new Promise((res, rej) => {
+      try { const q = Snd.ctx.decodeAudioData(bank.bin.slice(e[0], e[0] + e[1]), res, rej); if (q && q.catch) q.catch(rej); } catch (err) { rej(err); }
+    }).then(b => { bufs.set(e[0], b); if (bufs.size > 30) bufs.delete(bufs.keys().next().value); return b; });
+  };
+  function stopClip() { const c = clip; clip = null; if (c) { try { c.onended = null; c.stop(); } catch (_) { } } }
+  function done(g, onend) { if (g !== gen) return; Voice.busy = false; if (onend) onend(); }
+  Voice.stop = function () { gen++; stopClip(); Voice.busy = false; };
+  // say a line; the newest line wins. o.onend runs when it has been said (or skipped)
+  Voice.say = function (t, o = {}) {
+    if (!t) return;
+    Voice.last = t;
+    if (!Voice.on) { if (o.onend) setTimeout(o.onend, 200); return; }
+    const g = ++gen;
+    const go = () => {
+      if (g !== gen) return;
+      const e = entry(t);
+      if (e && Snd.ctx) play(e, g, o); else setTimeout(() => done(g, o.onend), 300);
+    };
+    if (state === 'loading') { let went = false; const once = () => { if (!went) { went = true; go(); } }; loadP.then(once); setTimeout(once, 2500); }
+    else go();
+  };
+  Voice.repeat = () => Voice.say(Voice.last);
+  function play(e, g, o) {
+    decode(e).then(buf => {
+      if (g !== gen) return;
+      stopClip();
+      const c = Snd.ctx, src = c.createBufferSource(), gn = c.createGain();
+      gn.gain.value = 1.05; src.buffer = buf; src.connect(gn); gn.connect(Snd.voice);
+      src.onended = () => { if (clip !== src) return; clip = null; done(g, o.onend); };
+      clip = src; src.start(); Voice.busy = true;
+    }).catch(() => done(g, o.onend));
+  }
+})();
+
+// 五子棋 · the board on a canvas: wood, lines and star points (drawn once per size), stones (drawn once per size and
+// stamped), the last move, a ghost stone under the finger, rings for 提醒 and 💡, and the winning line.
+const Board = {
+  cv: null, x: null, dpr: 1, n: 15, pos: null, S: 0, cell: 0, ox: 0, oy: 0, base: null, stones: [],
+  ghost: -1, ghostC: 1, urgent: [], soon: [], hintAt: -1, hintUntil: 0, dropAt: -1, dropT: 0, winT: 0, onPlace: null, enabled: false,
+  init(cv) {
+    this.cv = cv; this.x = cv.getContext('2d');
+    // the finger shows a ghost stone where it would go, and the stone goes where it is lifted (it can slide to adjust)
+    let down = false;
+    const at = e => { const r = cv.getBoundingClientRect(); return this.hit(e.clientX - r.left, e.clientY - r.top); };
+    cv.addEventListener('pointerdown', e => { if (!this.enabled) return; down = true; cv.setPointerCapture(e.pointerId); this.ghost = at(e); });
+    cv.addEventListener('pointermove', e => { if (down) this.ghost = at(e); });
+    const up = e => {
+      if (!down) return;
+      down = false;
+      const i = at(e); this.ghost = -1;
+      if (i >= 0 && this.enabled && !this.pos.b[i] && this.onPlace) this.onPlace(i);
+    };
+    cv.addEventListener('pointerup', up);
+    cv.addEventListener('pointercancel', () => { down = false; this.ghost = -1; });
+    const loop = t => { this.draw(t); requestAnimationFrame(loop); };
+    requestAnimationFrame(loop);
+  },
+  set(pos) { this.pos = pos; this.n = pos.n; this.urgent = []; this.soon = []; this.hintAt = -1; this.dropAt = -1; this.winT = 0; this.base = null; this.layout(); },
+  layout() {
+    const st = this.cv.parentNode, w = st.clientWidth, h = st.clientHeight;
+    if (!w || !h || !this.pos) return;
+    const dpr = this.dpr = Math.min(devicePixelRatio || 1, 2), pad = Math.max(10, Math.min(w, h) * 0.035);
+    this.cv.width = Math.round(w * dpr); this.cv.height = Math.round(h * dpr);
+    this.cv.style.width = w + 'px'; this.cv.style.height = h + 'px';
+    const S = this.S = Math.floor(Math.min(w, h) - pad * 2);
+    this.cell = S / this.n; this.ox = (w - S) / 2; this.oy = (h - S) / 2;
+    this.makeBase(); this.makeStones();
+  },
+  xy(i) { const n = this.n; return [this.ox + ((i % n) + 0.5) * this.cell, this.oy + (((i / n) | 0) + 0.5) * this.cell]; },
+  hit(px, py) {
+    const n = this.n, cx = Math.floor((px - this.ox) / this.cell), cy = Math.floor((py - this.oy) / this.cell);
+    return cx >= 0 && cx < n && cy >= 0 && cy < n ? cy * n + cx : -1;
+  },
+  // the wood, the lines and the star points
+  makeBase() {
+    const d = this.dpr, S = this.S, n = this.n, c = this.cell, m = 18;
+    const cv = document.createElement('canvas'); cv.width = Math.round((S + m * 2) * d); cv.height = cv.width;
+    const x = cv.getContext('2d'); x.scale(d, d); x.translate(m, m);
+    const r = c * 0.35;
+    const rr = () => { x.beginPath(); x.moveTo(r, 0); x.arcTo(S, 0, S, S, r); x.arcTo(S, S, 0, S, r); x.arcTo(0, S, 0, 0, r); x.arcTo(0, 0, S, 0, r); x.closePath(); };
+    x.save(); x.shadowColor = 'rgba(60,40,15,.35)'; x.shadowBlur = 18; x.shadowOffsetY = 8;
+    const g = x.createLinearGradient(0, 0, S, S); g.addColorStop(0, '#f0cf98'); g.addColorStop(0.5, '#e5bb7c'); g.addColorStop(1, '#d6a463');
+    rr(); x.fillStyle = g; x.fill(); x.restore();
+    // grain: long soft waves across the wood
+    x.save(); rr(); x.clip();
+    for (let k = 0; k < 26; k++) {
+      const y0 = (k + 0.5) / 26 * S, a = 3 + (k * 7) % 9, ph = k * 1.7;
+      x.beginPath();
+      for (let X = -10; X <= S + 10; X += 8) x.lineTo(X, y0 + Math.sin(X / S * 6 + ph) * a + Math.sin(X / S * 17 + ph * 2) * a * 0.3);
+      x.strokeStyle = `rgba(150,95,40,${0.05 + (k % 3) * 0.025})`; x.lineWidth = 1 + (k % 4); x.stroke();
+    }
+    const sh = x.createRadialGradient(S * 0.3, S * 0.25, S * 0.1, S * 0.5, S * 0.5, S * 0.8); sh.addColorStop(0, 'rgba(255,255,255,.18)'); sh.addColorStop(1, 'rgba(120,70,20,.08)');
+    x.fillStyle = sh; x.fillRect(0, 0, S, S);
+    x.restore();
+    // lines
+    x.strokeStyle = 'rgba(85,55,25,.78)'; x.lineWidth = Math.max(1, c * 0.032); x.lineCap = 'round';
+    for (let k = 0; k < n; k++) {
+      const p = (k + 0.5) * c;
+      x.beginPath(); x.moveTo(c / 2, p); x.lineTo(S - c / 2, p); x.stroke();
+      x.beginPath(); x.moveTo(p, c / 2); x.lineTo(p, S - c / 2); x.stroke();
+    }
+    x.lineWidth = Math.max(1.5, c * 0.05); x.strokeRect(c / 2, c / 2, S - c, S - c);
+    const s = n === 15 ? [3, 7, 11] : n === 11 ? [2, 5, 8] : [Math.floor(n / 2)];
+    x.fillStyle = 'rgba(85,55,25,.9)';
+    s.forEach(a => s.forEach(b => { if ((a === s[1]) !== (b === s[1]) && n >= 11) return; x.beginPath(); x.arc((a + 0.5) * c, (b + 0.5) * c, Math.max(2.5, c * 0.09), 0, 7); x.fill(); }));
+    this.base = { cv, m };
+  },
+  // a black and a white stone, shaded, with their shadow
+  makeStones() {
+    const d = this.dpr, R = this.cell * 0.46, s = Math.ceil(R * 2.6);
+    this.stones = [null, 1, 2].map(c => {
+      if (!c) return null;
+      const cv = document.createElement('canvas'); cv.width = cv.height = Math.round(s * d);
+      const x = cv.getContext('2d'); x.scale(d, d);
+      const m = s / 2;
+      x.fillStyle = 'rgba(40,25,10,.32)'; x.beginPath(); x.ellipse(m + R * 0.1, m + R * 0.16, R * 1.0, R * 0.98, 0, 0, 7); x.fill();
+      const g = x.createRadialGradient(m - R * 0.38, m - R * 0.42, R * 0.05, m, m, R);
+      if (c === 1) { g.addColorStop(0, '#7d7d7d'); g.addColorStop(0.35, '#2b2b2b'); g.addColorStop(1, '#060606'); }
+      else { g.addColorStop(0, '#ffffff'); g.addColorStop(0.55, '#f2eee5'); g.addColorStop(1, '#c6bfb1'); }
+      x.fillStyle = g; x.beginPath(); x.arc(m, m, R, 0, 7); x.fill();
+      x.fillStyle = c === 1 ? 'rgba(255,255,255,.22)' : 'rgba(255,255,255,.9)';
+      x.beginPath(); x.ellipse(m - R * 0.36, m - R * 0.42, R * 0.26, R * 0.16, -0.6, 0, 7); x.fill();
+      return { cv, s };
+    });
+  },
+  stone(x, c, i, k = 1, a = 1) {
+    const [cx, cy] = this.xy(i), st = this.stones[c], s = st.s * k;
+    x.globalAlpha = a; x.drawImage(st.cv, cx - s / 2, cy - s / 2, s, s); x.globalAlpha = 1;
+  },
+  ring(x, i, col, t, solid) {
+    const [cx, cy] = this.xy(i), R = this.cell * (0.36 + 0.05 * Math.sin(t / 180));
+    x.save(); x.strokeStyle = col; x.lineWidth = Math.max(3, this.cell * 0.09);
+    if (!solid) x.setLineDash([this.cell * 0.12, this.cell * 0.08]);
+    x.beginPath(); x.arc(cx, cy, R, 0, 7); x.stroke();
+    x.globalAlpha = 0.18; x.fillStyle = col; x.fill(); x.restore();
+  },
+  // a stone was just put down: it lands with a little bounce
+  dropped(i) { this.dropAt = i; this.dropT = performance.now(); },
+  win() { this.winT = performance.now(); },
+  draw(t) {
+    const x = this.x, p = this.pos, d = this.dpr;
+    if (!x || !p || !this.base) return;
+    x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, this.cv.width, this.cv.height); x.setTransform(d, 0, 0, d, 0, 0);
+    const b = this.base, S = this.S;
+    x.drawImage(b.cv, this.ox - b.m, this.oy - b.m, S + b.m * 2, S + b.m * 2);
+    // rings first, so the stones sit on top
+    if (!p.winner) {
+      this.soon.forEach(i => { if (!p.b[i]) this.ring(x, i, '#ee8a3c', t, false); });
+      this.urgent.forEach(i => { if (!p.b[i]) this.ring(x, i, '#e2483d', t * 1.6, true); });
+    }
+    const last = p.moves[p.moves.length - 1];
+    for (let i = 0; i < p.b.length; i++) {
+      const c = p.b[i]; if (!c) continue;
+      let k = 1;
+      if (i === this.dropAt) { const q = Math.min(1, (t - this.dropT) / 220); k = 1 + 0.22 * (1 - q) * Math.cos(q * Math.PI * 1.5); }
+      this.stone(x, c, i, k);
+    }
+    if (last != null && !p.winner) {   // the last move: a small red mark
+      const [cx, cy] = this.xy(last);
+      x.fillStyle = '#e2483d'; x.beginPath(); x.arc(cx, cy, this.cell * 0.1, 0, 7); x.fill();
+    }
+    if (this.hintAt >= 0 && t < this.hintUntil && !p.b[this.hintAt]) {
+      const [cx, cy] = this.xy(this.hintAt), R = this.cell * (0.5 + 0.08 * Math.sin(t / 150));
+      const g = x.createRadialGradient(cx, cy, 0, cx, cy, R); g.addColorStop(0, 'rgba(255,240,120,.9)'); g.addColorStop(1, 'rgba(255,220,60,0)');
+      x.fillStyle = g; x.beginPath(); x.arc(cx, cy, R, 0, 7); x.fill();
+      this.stone(x, p.turn, this.hintAt, 1, 0.55 + 0.2 * Math.sin(t / 150));
+    }
+    if (this.ghost >= 0 && !p.b[this.ghost] && this.enabled) this.stone(x, p.turn, this.ghost, 1, 0.5);
+    // the five in a row: a golden line drawn across them
+    if (p.winner && p.winner < 3 && p.line) {
+      const q = Math.min(1, (t - this.winT) / 600), a = this.xy(p.line[0]), z = this.xy(p.line[p.line.length - 1]);
+      const ex = a[0] + (z[0] - a[0]) * q, ey = a[1] + (z[1] - a[1]) * q;
+      x.save(); x.lineCap = 'round';
+      x.strokeStyle = 'rgba(255,214,70,.45)'; x.lineWidth = this.cell * 0.42; x.beginPath(); x.moveTo(a[0], a[1]); x.lineTo(ex, ey); x.stroke();
+      x.strokeStyle = '#ffd23a'; x.lineWidth = this.cell * 0.14; x.beginPath(); x.moveTo(a[0], a[1]); x.lineTo(ex, ey); x.stroke();
+      x.restore();
+      p.line.forEach((i, k) => { if (k / (p.line.length - 1) <= q) { const [cx, cy] = this.xy(i); x.strokeStyle = '#fff3a6'; x.lineWidth = 3; x.beginPath(); x.arc(cx, cy, this.cell * 0.47, 0, 7); x.stroke(); } });
+    }
+  },
+};
+
+// a little confetti for a win
+const Fx = {
+  cv: null, x: null, bits: [],
+  init(cv) { this.cv = cv; this.x = cv.getContext('2d'); const loop = () => { this.draw(); requestAnimationFrame(loop); }; requestAnimationFrame(loop); },
+  confetti(n = 90) {
+    const W = innerWidth;
+    for (let k = 0; k < n; k++) this.bits.push({ x: Math.random() * W, y: -20 - Math.random() * 200, vx: (Math.random() - 0.5) * 2, vy: 2 + Math.random() * 3, r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.3, c: pick(['#ee8a3c', '#f2c443', '#79b956', '#5c9ddc', '#ef8fa8', '#a385d8']), life: 0 });
+  },
+  draw() {
+    const cv = this.cv, x = this.x, d = Math.min(devicePixelRatio || 1, 2);
+    if (cv.width !== Math.round(innerWidth * d)) { cv.width = Math.round(innerWidth * d); cv.height = Math.round(innerHeight * d); cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px'; }
+    if (!this.bits.length) { if (this.dirty) { x.clearRect(0, 0, cv.width, cv.height); this.dirty = false; } return; }
+    this.dirty = true;
+    x.setTransform(1, 0, 0, 1, 0, 0); x.clearRect(0, 0, cv.width, cv.height); x.setTransform(d, 0, 0, d, 0, 0);
+    this.bits = this.bits.filter(b => b.y < innerHeight + 30);
+    for (const b of this.bits) {
+      b.x += b.vx; b.y += b.vy; b.vy += 0.03; b.r += b.vr;
+      x.save(); x.translate(b.x, b.y); x.rotate(b.r); x.fillStyle = b.c; x.fillRect(-5, -3, 10, 6); x.restore();
+    }
+  },
+};
+
+// 五子棋 · the menu (who to play), a game (the board, the side panel, the computer's turn, 提醒, 💡, 悔棋) and its end
+const UI = {
+  mode: null,       // { opp } against the computer (me: the child's colour), or { pvp: true }
+  pos: null, thinking: false, token: 0, warned: new Set(), recorded: false,
+
+  // ---------- the menu ----------
+  menu() {
+    this.token++; this.thinking = false; Board.enabled = false;
+    $('#play').hidden = true; $('#end').hidden = true;
+    const m = $('#menu'); m.hidden = false; m.innerHTML = '';
+    const top = el('div', 'top');
+    top.appendChild(this.homeButton());
+    top.appendChild(el('h1', null, '<i class="stone-b"></i>五子棋<i class="stone-w"></i>'));
+    top.appendChild(this.soundButton());
+    m.appendChild(top);
+    const mid = el('div', 'mid'); m.appendChild(mid);
+    mid.appendChild(el('p', 'sub', '谁先把五个棋子连成一条线，谁就赢'));
+    mid.appendChild(el('h2', null, '和小伙伴下'));
+    const opps = el('div', 'opps'), d = Store.d;
+    // the next one to take on: the easiest not yet beaten twice
+    const next = OPPS.find(o => Store.rec(o.id)[0] < 2);
+    OPPS.forEach(o => {
+      const r = Store.rec(o.id), b = el('button', 'opp' + (o === next && OPPS.some(q => Store.rec(q.id).some(Boolean)) ? ' next' : ''));
+      b.innerHTML = `<img src="img/${o.id}.webp" alt=""><b>${o.name}</b><span class="lv">${'★'.repeat(o.level + 1)}<span style="opacity:.25">${'★'.repeat(3 - o.level)}</span></span><span class="tag">${o.tag}</span>`
+        + `<span class="board">${o.size}×${o.size}</span>` + (r[0] ? `<span class="rec">赢 ${r[0]}</span>` : '');
+      b.onclick = () => { Snd.init(); Snd.play('tap'); this.start({ opp: o }); };
+      opps.appendChild(b);
+    });
+    mid.appendChild(opps);
+    const row = el('div', 'rowx');
+    const first = el('div', 'first');
+    first.appendChild(el('span', null, '和小伙伴下时，谁先下？'));
+    const seg = el('div', 'seg');
+    [['me', '我先下 ⚫'], ['it', '它先下，我执白 ⚪']].forEach(([v, t]) => {
+      const b = el('button', d.first === v ? 'on' : '', t);
+      b.onclick = () => { Snd.init(); Snd.play('tap'); d.first = v; Store.save(); $$('button', seg).forEach(x => x.classList.toggle('on', x === b)); };
+      seg.appendChild(b);
+    });
+    first.appendChild(seg);
+    row.appendChild(first);
+    const pvp = el('button', 'pvp', `<span class="st"><i class="stone-b"></i><i class="stone-w"></i></span><span><b>两个人下</b><small>和爸爸妈妈、小伙伴轮流下 · 15×15</small></span>`);
+    pvp.onclick = () => { Snd.init(); Snd.play('tap'); this.start({ pvp: true }); };
+    row.appendChild(pvp);
+    mid.appendChild(row);
+  },
+  homeButton() {
+    const b = el('button', 'ibtn', '🏠'); b.title = '回思维小画本'; b.setAttribute('aria-label', '回思维小画本');
+    b.onclick = () => { Snd.init(); Snd.play('tap'); Voice.stop(); setTimeout(() => { location.href = '../'; }, 120); };
+    return b;
+  },
+  soundButton() {
+    const d = Store.d, b = el('button', 'ibtn' + (d.voi ? '' : ' off'), d.voi ? '🔊' : '🔇');
+    b.title = '声音'; b.setAttribute('aria-label', '声音');
+    b.onclick = () => {
+      Snd.init(); d.voi = d.snd = !d.voi; Store.save();
+      Voice.on = d.voi; Snd.setOn(d.snd); if (!d.voi) Voice.stop();
+      b.textContent = d.voi ? '🔊' : '🔇'; b.classList.toggle('off', !d.voi);
+    };
+    return b;
+  },
+
+  // ---------- a game ----------
+  start(mode) {
+    this.token++;
+    this.mode = mode; this.thinking = false; this.warned = new Set(); this.recorded = false;
+    const size = mode.pvp ? 15 : mode.opp.size;
+    if (mode.opp) mode.me = Store.d.first === 'it' ? 2 : 1;
+    this.pos = new Gomoku.Pos(size);
+    $('#menu').hidden = true; $('#end').hidden = true;
+    const play = $('#play'); play.hidden = false;
+    this.side();
+    this.layout();
+    Board.set(this.pos);
+    Board.onPlace = i => this.human(i);
+    if (mode.pvp) Voice.say(L.pvp);
+    else {
+      const o = mode.opp;
+      Voice.say(L.intro[o.id], { onend: () => { if (this.mode === mode && this.pos.moves.length < 2) Voice.say(mode.me === 1 ? L.meFirst : L.itFirst[o.level]); } });
+    }
+    this.next();
+  },
+  layout() {
+    const play = $('#play'), wide = innerWidth >= innerHeight * 1.05;
+    play.className = wide ? 'wide' : 'tall';
+    Board.layout();
+  },
+  side() {
+    const s = $('#side'), mode = this.mode; s.innerHTML = '';
+    if (mode.opp) {
+      const o = mode.opp, who = el('div', 'card who');
+      who.innerHTML = `<img src="img/${o.id}.webp" alt=""><div><b>${o.name}</b><small>${'★'.repeat(o.level + 1)}</small></div><span class="bub"></span>`;
+      s.appendChild(who);
+    }
+    s.appendChild(el('div', 'card turn'));
+    s.appendChild(el('div', 'card score'));
+    const btns = el('div', 'btns');
+    const b = (id, label, cls, fn) => { const x = el('button', 'btn ' + (cls || ''), label); x.id = id; x.onclick = () => { Snd.init(); fn(); }; btns.appendChild(x); return x; };
+    b('bUndo', '↩️ 悔棋', '', () => this.undo());
+    b('bHint', '💡 支一招', 'go', () => this.hint());
+    b('bRemind', '🔔 提醒', Store.d.remind ? 'on' : '', () => {
+      Store.d.remind = !Store.d.remind; Store.save(); Snd.play('tap');
+      $('#bRemind').classList.toggle('on', Store.d.remind); this.toast(Store.d.remind ? '提醒打开了：快要连成五个时会亮红圈' : '提醒关掉了');
+      this.danger(true);
+    });
+    b('bAgain', '🔄 重来', '', () => { Snd.play('tap'); Voice.stop(); this.start(this.mode); });
+    s.appendChild(btns);
+    const icons = el('div', 'icons');
+    const back = el('button', 'ibtn', '⬅️'); back.title = '换个对手'; back.setAttribute('aria-label', '换个对手');
+    back.onclick = () => { Snd.init(); Snd.play('tap'); Voice.stop(); this.menu(); };
+    icons.appendChild(back); icons.appendChild(this.soundButton()); icons.appendChild(this.homeButton());
+    s.appendChild(icons);
+  },
+  // the side panel says whose turn it is and the score
+  paint() {
+    const p = this.pos, m = this.mode, turn = $('#side .turn'), score = $('#side .score');
+    if (!turn) return;
+    const stone = c => `<i class="${c === 1 ? 'stone-b' : 'stone-w'}"></i>`;
+    if (m.opp) {
+      const mine = p.turn === m.me;
+      turn.className = 'card turn' + (mine && !p.winner ? ' me' : '');
+      turn.innerHTML = p.winner ? (p.winner === 3 ? '🤝 平局' : p.winner === m.me ? '🎉 你赢啦' : `${m.opp.name}赢了`) : mine ? `${stone(m.me)}轮到你啦` : `${stone(3 - m.me)}${m.opp.name}在想…`;
+      const r = Store.rec(m.opp.id);
+      score.innerHTML = `<span>${stone(m.me)}你 ${r[0]}</span><span>:</span><span>${r[1]} ${m.opp.name}</span>`;
+    } else {
+      turn.className = 'card turn' + (p.winner ? '' : ' me');
+      turn.innerHTML = p.winner ? (p.winner === 3 ? '🤝 平局' : `${stone(p.winner)}${STONE[p.winner]}赢啦`) : `${stone(p.turn)}轮到${STONE[p.turn]}`;
+      const r = Store.d.pvp;
+      score.innerHTML = `<span>${stone(1)}${r[0]}</span><span>:</span><span>${r[1]}${stone(2)}</span>`;
+    }
+    const busy = this.thinking || !!p.winner;
+    $('#bHint').disabled = busy;
+    $('#bUndo').disabled = this.thinking || !this.canUndo();
+  },
+  bubble(emo, ms = 1600) {
+    const b = $('#side .bub'); if (!b) return;
+    b.textContent = emo; b.classList.toggle('on', !!emo);
+    clearTimeout(this._bub); if (emo && ms) this._bub = setTimeout(() => b.classList.remove('on'), ms);
+  },
+  face(cls) {
+    const im = $('#side .who img'); if (!im) return;
+    im.classList.remove('think', 'hop'); if (cls) { void im.offsetWidth; im.classList.add(cls); }
+  },
+  // whose move it is now
+  next() {
+    const p = this.pos, m = this.mode;
+    this.paint();
+    if (p.winner) return this.end();
+    if (m.opp && p.turn !== m.me) { Board.enabled = false; this.computer(); return; }
+    Board.enabled = true;
+    this.danger();
+  },
+  human(i) {
+    const p = this.pos, c = p.turn, d = Gomoku.dangers(p);
+    if (!p.play(i)) return;
+    Snd.stone(c); Board.dropped(i); Board.hintAt = -1; Board.urgent = []; Board.soon = [];
+    // blocking what was about to win is worth a word (only the first time for each threat)
+    if (!p.winner && (d.urgent.includes(i) || (d.soon.includes(i) && d.soon.length <= 2))) {
+      Snd.play('good'); Voice.say(pick(L.blocked));
+      if (this.mode.opp) this.bubble('😮');
+    }
+    this.next();
+  },
+  async computer() {
+    const tok = this.token, p = this.pos, o = this.mode.opp;
+    this.thinking = true; this.paint(); this.face('think'); this.bubble('🤔', 0);
+    await wait(o.level === 3 ? 250 : 450 + Math.random() * 350);
+    if (tok !== this.token) return;
+    const i = Gomoku.move(p, o.level, 900);
+    await wait(80);
+    if (tok !== this.token) return;
+    this.thinking = false; this.face(); this.bubble('');
+    p.play(i); Snd.stone(3 - p.turn); Board.dropped(i);
+    if (!p.winner && p.fives(3 - this.mode.me).length) this.bubble('😏');
+    this.next();
+  },
+  // 提醒: rings on the cells to block (red: it makes five next move; orange: one move from two ways to make five)
+  danger(quiet) {
+    const p = this.pos;
+    if (!Store.d.remind || p.winner) { Board.urgent = []; Board.soon = []; return; }
+    const d = Gomoku.dangers(p);
+    Board.urgent = d.urgent; Board.soon = d.soon.slice(0, 4);
+    if (quiet) return;
+    const key = (d.urgent.length ? 'u' : 's') + [...d.urgent, ...d.soon].sort().join(',');
+    if ((d.urgent.length || d.soon.length) && !this.warned.has(key)) {
+      this.warned.add(key);
+      Snd.play('warn');
+      const them = 3 - p.turn;
+      if (this.mode.pvp) Voice.say(d.urgent.length ? L.pvpUrgent[them - 1] : L.pvpSoon[them - 1]);
+      else Voice.say(d.urgent.length ? L.urgent : L.soon);
+    }
+  },
+  hint() {
+    const p = this.pos;
+    if (this.thinking || p.winner) return;
+    const i = Gomoku.hint(p);
+    Board.hintAt = i; Board.hintUntil = performance.now() + 4000;
+    Snd.play('hint'); Voice.say(L.hint);
+  },
+  canUndo() {
+    const p = this.pos, m = this.mode;
+    if (m.pvp) return p.moves.length > 0;
+    // the child's own last move must be there to take back (the computer's first move stays)
+    return p.moves.length > (m.me === 2 ? 1 : 0);
+  },
+  undo() {
+    const p = this.pos, m = this.mode;
+    if (this.thinking || !this.canUndo()) return;
+    this.token++;
+    p.undo();
+    if (m.opp && p.turn !== m.me) p.undo();   // the computer's reply and the child's move
+    $('#end').hidden = true;
+    Board.dropAt = -1; Board.hintAt = -1; Board.winT = 0;
+    Snd.play('undo'); Voice.say(L.undo);
+    this.warned = new Set();
+    this.next();
+  },
+  // ---------- the end of a game ----------
+  end() {
+    const p = this.pos, m = this.mode, w = p.winner;
+    Board.enabled = false; Board.urgent = []; Board.soon = []; Board.win();
+    let title, line, img = m.opp ? `img/${m.opp.id}.webp` : null, won = false;
+    if (m.opp) {
+      const r = Store.rec(m.opp.id);
+      won = w === m.me;
+      if (!this.recorded) { r[w === 3 ? 2 : won ? 0 : 1]++; this.recorded = true; Store.save(); }
+      title = w === 3 ? '平局！' : won ? '你赢啦！' : `${m.opp.name}赢了`;
+      const nextOpp = OPPS[m.opp.level + 1];
+      line = w === 3 ? L.draw : won ? (nextOpp && r[0] >= 2 ? L.winNext[m.opp.level] : L.win) : L.lose[m.opp.level];
+      if (won) { this.face('hop'); this.bubble('😵', 2500); } else if (w !== 3) { this.face('hop'); this.bubble('😄', 2500); }
+    } else {
+      if (!this.recorded) { Store.d.pvp[w === 3 ? 2 : w - 1]++; this.recorded = true; Store.save(); }
+      title = w === 3 ? '平局！' : `${STONE[w]}赢啦！`;
+      line = w === 3 ? L.draw : L.pvpWin[w - 1];
+      won = w !== 3;
+    }
+    this.paint();
+    Snd.play(won ? 'win' : 'lose'); if (won) Fx.confetti();
+    Voice.say(line);
+    const tok = this.token;
+    setTimeout(() => {
+      if (tok !== this.token) return;
+      const e = $('#end'); e.hidden = false; e.innerHTML = '';
+      const box = el('div', 'box');
+      if (img) box.appendChild(el('img', null)).src = img;
+      else box.appendChild(el('div', null, `<span style="font-size:90px">${w === 3 ? '🤝' : '🏆'}</span>`));
+      box.appendChild(el('h2', null, title));
+      const r = m.opp ? Store.rec(m.opp.id) : Store.d.pvp;
+      box.appendChild(el('p', null, m.opp ? `和${m.opp.name}：赢 ${r[0]} 局，输 ${r[1]} 局${r[2] ? `，平 ${r[2]} 局` : ''}` : `黑棋赢 ${r[0]} 局，白棋赢 ${r[1]} 局${r[2] ? `，平 ${r[2]} 局` : ''}`));
+      const row = el('div', 'row');
+      const btn = (t, cls, fn) => { const x = el('button', 'btn ' + cls, t); x.onclick = () => { Snd.init(); Snd.play('tap'); fn(); }; row.appendChild(x); };
+      btn('🔄 再来一局', 'go', () => this.start(this.mode));
+      if (m.opp && !won && w !== 3) btn('↩️ 退回去看看', '', () => this.undo());
+      btn('👀 看看棋盘', '', () => { e.hidden = true; });
+      btn('⬅️ 换个对手', 'green', () => this.menu());
+      box.appendChild(row);
+      e.appendChild(box);
+    }, 1400);
+  },
+  toast(t) {
+    const n = $('#toast'); n.textContent = t; n.classList.add('on');
+    clearTimeout(this._t); this._t = setTimeout(() => n.classList.remove('on'), 2400);
+  },
+};
+
+// 五子棋 · start
+Store.load();
+Voice.on = Store.d.voi; Snd.on = Store.d.snd;
+Voice.load();
+Board.init($('#cv'));
+Fx.init($('#fx'));
+addEventListener('pointerdown', () => Snd.init(), { capture: true, once: true });
+addEventListener('resize', () => { if (!$('#play').hidden) UI.layout(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) Voice.stop(); });
+UI.menu();
+// the first touch wakes up sound, and the welcome is said then (browsers keep sound off until a touch)
+addEventListener('pointerdown', () => { if (!$('#menu').hidden && !Voice.last) Voice.say(L.welcome); }, { once: true });
+if (/[?&]debug\b/.test(location.search)) window.WZ = { Gomoku, UI, Board, Store, Voice, L, OPPS };
+
+})();
+</script>
+</body></html>

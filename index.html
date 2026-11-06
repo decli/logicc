@@ -777,8 +777,14 @@ const GAMES = [
     ]
   },
   {
-    // 造物：一个独立的全屏小世界（zaowu/），没有关卡，点卡片直接进去玩
-    id: 'zaowu', name: '造物', emoji: '🥚', color: 'var(--red)', tip: '画个圈让它活过来，再认词、说话', href: 'zaowu/',
+    // 五子棋（wuziqi/，decli 2026-11-06 替换了造物）：和四个由易到难的电脑对手下，或者两个人轮流下。点卡片直接进去
+    id: 'wuziqi', name: '五子棋', emoji: '⚫', color: 'var(--red)', tip: '五个连成一条线就赢，和电脑或家人下', href: 'wuziqi/',
+    art: '<svg viewBox="0 0 100 100" aria-hidden="true"><rect x="9" y="9" width="82" height="82" rx="14" fill="#E9C38A" stroke="#2A2523" stroke-width="5"/><g stroke="#8A5A2B" stroke-width="3" stroke-linecap="round"><path d="M22 30H78M22 50H78M22 70H78M30 22V78M50 22V78M70 22V78"/></g><g stroke="#2A2523" stroke-width="3"><circle cx="30" cy="30" r="11" fill="#2A2523"/><circle cx="50" cy="50" r="11" fill="#2A2523"/><circle cx="70" cy="70" r="11" fill="#2A2523"/><circle cx="70" cy="30" r="11" fill="#fff"/><circle cx="30" cy="70" r="11" fill="#fff"/></g></svg>',
+    meta: function () {
+      var n = 0;
+      try { var d = JSON.parse(localStorage.getItem('logicc.wuziqi.v1') || '{}'); Object.keys(d.rec || {}).forEach(function (k) { n += d.rec[k][0] || 0; }); } catch (e) { }
+      return ['🏆 赢 ' + n + ' 局', '和电脑下 · 两个人下'];
+    },
     levels: []
   },
   {
