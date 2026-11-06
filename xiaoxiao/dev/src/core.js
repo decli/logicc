@@ -51,9 +51,11 @@ const Store = {
       stars: {}, best: {},   // per level
       owed: false,           // a math page is due before the next game
       played: 0,
-      math: { max: 100, ops: 2, mode: 'mix', count: 'wheel' },  // count: 'wheel' (MATH_WHEEL), 'ramp' (MATH_RAMP) or a fixed size (MATH_COUNTS), 家长设置
-      mathV: 6,              // 6: the wheel draws 2 to 16, pages go from easy to hard; 5: 10 to 20, within 100, 列竖式 first; 4: the wheel (2 to 10); 3: the day's ramp; 2: a fixed size (10 by default); before that always 20
+      // count: 'wheel', 'ramp' (MATH_RAMP) or a fixed size (MATH_COUNTS); wheel: the numbers on the wheel (0 to MATH_MOST); 家长设置
+      math: { max: 100, ops: 2, mode: 'mix', count: 'wheel', wheel: MATH_WHEEL.slice() },
+      mathV: 7,              // 7: the wheel's numbers set by a parent (2 to 12 by default), the first game of a day free; 6: the wheel draws 2 to 16, pages go from easy to hard; 5: 10 to 20, within 100, 列竖式 first; 4: the wheel (2 to 10); 3: the day's ramp; 2: a fixed size (10 by default); before that always 20
       today: { day: '', pages: 0 },   // math pages finished today (not the 5-sum page for 5 more moves): where the ramp is
+      freeDay: '',           // the day whose first game was let off its math page (Store.newDay)
       spin: null,            // what the wheel landed on for the page owed now, { n, p: played }, so leaving can't spin again
       log: [],               // finished math pages: [time, count, right first time, seconds, settings label]
       way: 'col',            // 小老师 (teach.js) starts with: one way ('col' 'frame' 'line' 'split'), 'pick' (she chooses each time) or 'random', 家长设置
@@ -86,8 +88,8 @@ const Store = {
         // decli 2026-11-02: harder now, sums within 100 on a wheel of 10 to 20 (a spin of the old wheel is dropped, so
         // the page owed is drawn again), and 小老师 starts with 列竖式 instead of asking her to choose
         if (v < 5) { this.d.math.max = 100; this.d.spin = null; if (!raw.way || raw.way === 'pick') this.d.way = 'col'; }
-        if (v < 6) this.d.spin = null;   // decli 2026-11-05: the wheel's numbers changed, a page owed is drawn again
-        this.d.mathV = 6;
+        if (v < 7) this.d.spin = null;   // decli 2026-11-05 and 11-06: the wheel's numbers changed, a page owed is drawn again
+        this.d.mathV = 7;
         // season two: a level won in season one now opens the next (the eleventh after the tenth); the map starts on
         // the island she is up to
         if (!raw.s2) {
@@ -100,4 +102,13 @@ const Store = {
     return this.d;
   },
   save() { try { localStorage.setItem(this.key, JSON.stringify(this.d)); } catch (e) { } },
+  // decli 2026-11-06: the first game of each day needs no math page; the page comes after it (before the next game, or
+  // when she comes back later the same day). Called before a game starts; true when it let go a page owed from before.
+  newDay() {
+    const d = this.d, t = new Date().toDateString();
+    if (d.freeDay === t) return false;
+    const freed = d.owed;
+    d.freeDay = t; d.owed = false; d.spin = null; this.save();
+    return freed;
+  },
 };

@@ -158,6 +158,7 @@ const UI = {
   // ---------- before a level ----------
   intro(li) {
     const lv = LEVELS[li], goalEls = [];
+    Store.newDay();   // the first game of a day needs no math page (decli 2026-11-06), even with the game left open overnight
     Cast.pick(li);   // new animals every game
     this.modal(card => {
       card.appendChild(el('h2', null, `第 ${li + 1} 关`));
@@ -189,9 +190,10 @@ const UI = {
     Voice.say(line, { onend: () => names(0) });
     if (tip) { Store.d.seen['tip_' + lv.tip] = 1; Store.save(); }
   },
-  // start a level, through the math page when one is owed
+  // start a level, through the math page when one is owed (never before the first game of the day)
   async play(li) {
     this.closeModal();
+    Store.newDay();
     if (Store.d.owed) { Game.stop(); await MathGate.open(); }
     Game.start(li);
   },
@@ -305,9 +307,30 @@ const UI = {
         });
         card.appendChild(s);
       };
-      card.appendChild(el('p', null, '<span style="font-size:17px">每玩完一局，再玩或进下一关之前，要先做一页数学题，全部做对才能接着玩。</span>'));
+      card.appendChild(el('p', null, '<span style="font-size:17px">每天第一局直接玩，不用做题；之后每玩完一局，再玩、进下一关或当天再进来，都要先做一页数学题，全部做对才能接着玩。</span>'));
       seg('📝 每页几道题', 'count', [['wheel', '🎡 转盘抽']].concat([['ramp', '越做越多']], MATH_COUNTS.map(n => [n, n + ' 道'])));
-      card.appendChild(el('p', 'note', `转盘抽：每页之前孩子自己转一下转盘，转到几就做几道（${MATH_WHEEL[0]}～${MATH_WHEEL[MATH_WHEEL.length - 1]} 道，每个数机会一样）。越做越多：当天第 1 页 ${MATH_RAMP[0]} 道、第 2 页 ${MATH_RAMP[1]} 道、第 3 页 ${MATH_RAMP[2]} 道，之后每页 ${MATH_RAMP[3]} 道，第二天重新从 ${MATH_RAMP[0]} 道开始。今天已经做完 ${MathGate.pagesToday()} 页。`));
+      // the numbers on the wheel (decli 2026-11-06): any of 0 to MATH_MOST, ticked one by one
+      card.appendChild(el('h3', null, '🎡 转盘上有哪些数（点一下选上 / 去掉）'));
+      const chips = el('div', 'seg chips'), wnote = el('p', 'note');
+      const showW = () => {
+        const w = MathGate.wheelNums();
+        $$('button', chips).forEach(b => b.classList.toggle('on', w.includes(+b.dataset.n)));
+        wnote.textContent = `转盘现在有 ${w.length} 格：${w.join('、')} 道` + (w.includes(0) ? '（转到 0 这次就不用做题）' : '') + '。每格一样大，转到哪个数的机会都一样；改了以后，下一次转盘就用新的数。';
+      };
+      for (let n = 0; n <= MATH_MOST; n++) {
+        const b = el('button', null, String(n)); b.dataset.n = n;
+        b.onclick = () => {
+          const w = MathGate.wheelNums(), has = w.includes(n);
+          if (has && w.length === 1) { Snd.play('bad'); this.toast('转盘上至少要留一个数'); return; }
+          cfg.wheel = has ? w.filter(x => x !== n) : w.concat(n).sort((a, b) => a - b);
+          d.spin = null;   // a page owed is drawn again on the new wheel
+          Store.save(); Snd.play('tap'); showW();
+        };
+        chips.appendChild(b);
+      }
+      chips.appendChild(this.button('恢复默认', 'ghost small', () => { cfg.wheel = MATH_WHEEL.slice(); d.spin = null; Store.save(); Snd.play('tap'); showW(); }));
+      card.appendChild(chips); card.appendChild(wnote); showW();
+      card.appendChild(el('p', 'note', `转盘抽：每页之前孩子自己转一下转盘，转到几就做几道（默认 ${MATH_WHEEL.join('、')} 道）。越做越多：当天第 1 页 ${MATH_RAMP[0]} 道、第 2 页 ${MATH_RAMP[1]} 道、第 3 页 ${MATH_RAMP[2]} 道，之后每页 ${MATH_RAMP[3]} 道，第二天重新从 ${MATH_RAMP[0]} 道开始。今天已经做完 ${MathGate.pagesToday()} 页。`));
       card.appendChild(el('p', 'note', '做题时不逐题判对错，免得打断她的思路：✓ 只是跳到下一道，整页都写好了点「交卷」，小老师一次批改完，对的打 ✓，错的圈出来让她订正。订正时先语音提示错在哪（看错符号、差一点、写反了……）并出现 💡；再错或点 💡，小老师来帮忙，答案始终让她自己数、自己写，不直接给答案；看着图还是数错，小老师就带着她一个一个数。'));
       seg('🦉 小老师先用哪种办法', 'way', [['col', '列竖式'], ['pick', '她自己选'], ['random', '随机换'], ['frame', '摆一摆'], ['line', '跳一跳'], ['split', '拆一拆']], d);
       const used = Teach.WAYS.map((w, i) => { const r = (d.ways || {})[w]; return r && r[0] ? `${L.teach.ways[i]} 用了 ${r[0]} 次，其中 ${r[1]} 次看图自己数对` : ''; }).filter(Boolean);

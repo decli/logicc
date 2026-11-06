@@ -116,19 +116,25 @@ const MathGate = {
   // the parent's fixed size
   pageSize() {
     const n = Store.d.math.count;
-    return n === 'wheel' ? this.spun() || MATH_WHEEL[0] : n === 'ramp' ? MATH_RAMP[Math.min(this.pagesToday(), MATH_RAMP.length - 1)] : n || 10;
+    return n === 'wheel' ? this.spun() ?? this.wheelNums()[0] : n === 'ramp' ? MATH_RAMP[Math.min(this.pagesToday(), MATH_RAMP.length - 1)] : n || 10;
   },
-  // the wheel's number for the page owed now (a game played since makes it old)
-  spun() { const s = Store.d.spin; return s && s.p === Store.d.played ? s.n : 0; },
+  // the wheel's number for the page owed now (a game played since makes it old), or null before it has been spun
+  spun() { const s = Store.d.spin; return s && s.p === Store.d.played ? s.n : null; },
+  // the numbers on the wheel (家长设置, 0 to MATH_MOST, decli 2026-11-06), smallest first; MATH_WHEEL if none are set
+  wheelNums() {
+    const w = [...new Set((Store.d.math.wheel || []).filter(n => Number.isInteger(n) && n >= 0 && n <= MATH_MOST))].sort((a, b) => a - b);
+    return w.length ? w : MATH_WHEEL.slice();
+  },
   pagesToday() { const t = Store.d.today; return t && t.day === new Date().toDateString() ? t.pages : 0; },
 
 
   // o.count, o.extra (the five-sums-for-five-moves page); resolves when every sum is right
   open(o = {}) {
     // the wheel first, unless it has already landed for this page (she left half-way and came back)
-    if (!o.count && Store.d.math.count === 'wheel' && !this.spun()) {
+    if (!o.count && Store.d.math.count === 'wheel' && this.spun() == null) {
       return Wheel.spin().then(r => {
-        if (r === 'skip') { Store.d.owed = false; Store.d.spin = null; Store.save(); return; }
+        // a parent skipped the page, or the wheel landed on 0: no sums this time
+        if (r === 'skip' || r === 0) { Store.d.owed = false; Store.d.spin = null; Store.save(); return; }
         if (r !== 'again') this.fresh = true;
         return MathGate.open(o);
       });

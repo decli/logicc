@@ -2,10 +2,13 @@
 // list every line for recording, so a line built from a level must be built here and nowhere else.
 const KID = '小朋友';   // how the narrator calls the child (decli 2026-11-05: no names, for privacy)
 // how many sums a math page has (家长设置). By default the child spins a wheel before each page and does what it lands
-// on (decli 2026-10-19, evening: sums feel like a chore, make drawing them a game). decli 2026-11-05: 2 to 16, so a
-// page can also be short and nobody dreads it; each page goes from easy to hard (MathGate.page). A parent can pick the
-// day's ramp instead (2, 6, 12, then 20 every time after, back to 2 the next day) or one fixed size.
-const MATH_WHEEL = [2, 4, 6, 8, 10, 12, 16];
+// on (decli 2026-10-19, evening: sums feel like a chore, make drawing them a game). decli 2026-11-05: short pages too,
+// so nobody dreads it; each page goes from easy to hard (MathGate.page). decli 2026-11-06: 2, 4, 6, 8, 9, 10, 11, 12 by
+// default (16 was a lot), and a parent can put any of 0 to MATH_MOST on the wheel (Store.d.math.wheel; landing on 0
+// means no sums this time). A parent can also pick the day's ramp (2, 6, 12, then 20 every time after, back to 2 the
+// next day) or one fixed size.
+const MATH_WHEEL = [2, 4, 6, 8, 9, 10, 11, 12];
+const MATH_MOST = 20;
 const MATH_RAMP = [2, 6, 12, 20];
 const MATH_COUNTS = [5, 10, 15, 20];
 const NUM_ZH = n => String(n);   // the voice reads digits naturally ("18只" → 十八只)
@@ -114,7 +117,8 @@ const L = {
   // the math page speaks to the child (KID), every right answer is praise for them
   math: {
     title: `${KID}，敢不敢先挑战一页数学题？`,
-    start: n => `${KID}，敢不敢先挑战一页数学题？${n}道题都做对，就能接着玩啦。`,   // recorded for every size above
+    start: n => `${KID}，敢不敢先挑战一页数学题？${n}道题都做对，就能接着玩啦。`,   // recorded for every size, 1 to MATH_MOST
+    freeDay: `${KID}，今天的第一局不用做题，直接玩吧！`,   // a page owed since an earlier day is let go (Store.newDay)
     extra: '做对5道题，就多给你5步！',
     right: [`${KID}，你答对啦！`, `${KID}真棒！`, `${KID}，完全正确！`, `${KID}，你好厉害！`, `${KID}，没错，就是这样！`],
     // the first wrong answer: one short hint about what went wrong (MathGate.why), not the answer
@@ -141,7 +145,7 @@ const L = {
   // the wheel before a math page (wheel.js): every number is good news
   wheel: {
     ask: `${KID}，点一下转盘，看看这次做几道题！`,
-    land: n => n <= 4 ? `转到${n}道题！${KID}，热热身吧！` : n <= 10 ? `转到${n}道题！不多不少，${KID}加油！` : `哇，转到${n}道题！${KID}，接受挑战吧！`,
+    land: n => !n ? `转到0道题！运气真好，这次不用做题，${KID}直接去玩吧！` : n <= 4 ? `转到${n}道题！${KID}，热热身吧！` : n <= 10 ? `转到${n}道题！不多不少，${KID}加油！` : `哇，转到${n}道题！${KID}，接受挑战吧！`,
   },
   // 小老师 (teach.js): when a sum she is correcting is wrong again, or 💡. 列竖式 first (decli 2026-11-02), 🔄 for the
   // others; no line ever says the answer: they count only what is added or taken away, or count along with her
