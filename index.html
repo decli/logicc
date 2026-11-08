@@ -281,6 +281,22 @@ body{
 .isleHome.stack:not(.tall) .isleTop{background:linear-gradient(180deg,rgba(134,207,210,.97) 70%,rgba(134,207,210,0));padding-bottom:calc(10px * var(--u))}
 .isleHome.stack .isleMap{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 @media (prefers-reduced-motion:reduce){.islePal,.isleCloud,.isleBuoys .boat{animation:none}}
+/* 家长专区: the question before the settings (a parchment card, like the map's) */
+.gateWrap{position:absolute;inset:0;z-index:45;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(30,60,64,.42);
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.gateCard{width:min(440px,100%);max-height:100%;overflow:auto;background:#FFF6E2;border-radius:26px;padding:20px 22px 18px;text-align:center;
+  box-shadow:0 8px 0 #C9A06A,0 24px 50px rgba(20,40,40,.35);display:flex;flex-direction:column;gap:10px;animation:pp .3s}
+.gateCard.shake{animation:sh .34s}
+.gateTitle{align-self:center;font:700 26px/1.2 "Kaiti SC","STKaiti","KaiTi","BiauKai",serif;letter-spacing:4px;color:#3B2F22;background:#E9D7AF;border-radius:10px;padding:4px 18px}
+.gateAsk{font-size:17px;color:#7A6A55;font-weight:700}
+.gateQ{font-size:26px;font-weight:800;color:#2B2A33}
+.gateDisp{height:52px;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;border-radius:14px;background:#fff;box-shadow:inset 0 0 0 2px #E2D3B4;
+  font-variant-numeric:tabular-nums;color:#2B2A33}
+.gateKeys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.gateKey{height:54px;border:0;border-radius:14px;background:#fff;font-size:24px;font-weight:800;line-height:1;font-family:inherit;color:#2B2A33;cursor:pointer;box-shadow:0 4px 0 #D8C7A5}
+.gateKey.del{background:#FBE3D6;color:#B6502C;font-size:30px}
+.gateKey:active{transform:translateY(3px);box-shadow:0 1px 0 #D8C7A5}
+.gateCancel{align-self:center;border:0;background:none;font:inherit;font-size:17px;font-weight:700;color:#7A6A55;padding:6px 18px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -1388,9 +1404,44 @@ function toggleRow(name, desc, get, set, warn) {
   r.appendChild(b);
   return r;
 }
+// 家长专区: a multiplication sum written in characters (七乘以八等于多少？), which grown-ups answer at once and a child
+// who can't read yet can't; the same as 动物消消乐's. Answered right, the settings open; every time, nothing remembered.
 function openPanel() {
-  if (document.querySelector('.sheet')) return;
+  if (document.querySelector('.sheet') || document.querySelector('.gateWrap')) return;
   Audio2.init();
+  var a = 6 + rnd(4), b = 6 + rnd(4), got = '';
+  var w = el('div', 'gateWrap'), card = el('div', 'gateCard');
+  w.setAttribute('role', 'dialog'); w.setAttribute('aria-label', '家长专区');
+  card.appendChild(el('div', 'gateTitle', '家长专区'));
+  card.appendChild(el('div', 'gateAsk', '请爸爸妈妈回答'));
+  card.appendChild(el('div', 'gateQ', CN_DIG[a] + '乘以' + CN_DIG[b] + '等于多少？'));
+  var disp = el('div', 'gateDisp', ''); card.appendChild(disp);
+  var keys = el('div', 'gateKeys');
+  var close = function () { w.remove(); };
+  var press = function (k) {
+    Audio2.init();
+    if (k === '⌫') { got = got.slice(0, -1); disp.textContent = got; return; }
+    got = (got + k).slice(0, 2); disp.textContent = got;
+    if (got.length < 2) return;
+    if (+got === a * b) { close(); showPanel(); return; }
+    Audio2.soft(); card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
+    disp.textContent = '再试试'; got = '';
+  };
+  '1234567890'.split('').concat(['⌫']).forEach(function (k) {
+    var kb = el('button', 'gateKey' + (k === '⌫' ? ' del' : ''), k);
+    kb.addEventListener('click', function () { press(k); });
+    keys.appendChild(kb);
+  });
+  card.appendChild(keys);
+  var cancel = el('button', 'gateCancel', '取消'); cancel.addEventListener('click', close);
+  card.appendChild(cancel);
+  w.appendChild(card);
+  w.addEventListener('click', function (e) { if (e.target === w) close(); });
+  $('#screen').appendChild(w);
+  Voice.say('这里是给爸爸妈妈的设置哦。', false);
+}
+function showPanel() {
+  if (document.querySelector('.sheet')) return;
   var s = sheet('⚙️ 家长设置');
   var body = el('div', 'sheetBody');
   var cols = el('div', 'pcols');

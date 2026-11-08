@@ -223,13 +223,12 @@ const MathGate = {
         grid.style.gridTemplateRows = small ? `repeat(${rows},minmax(0,132px))` : `repeat(${rows},1fr)`;
         const fs = Math.max(9, size(cols));
         cards.forEach(c => { c.style.fontSize = fs + 'px'; });
-        // the 小黑板 button in the top corner, full size when the sum leaves room to its left; else as big as the larger of
-        // the gaps above and below the sum allows, in that corner (its touch area reaches a little further, see .bb::before)
+        // the 小黑板 button always in the top-left corner (decli 2026-11-08: the same place on every card): full size when
+        // the sum leaves room to its left or above it, smaller only when the gap above the sum is tight (a phone); its
+        // touch area reaches a little further (.bb::before)
         cards.forEach(c => {
           const bb = c.querySelector('.bb'), cr = c.getBoundingClientRect(), r = c.children[0].getBoundingClientRect();
-          const room = r.left - cr.left, up = r.top - cr.top, down = cr.bottom - r.bottom;
-          const h = room >= 46 ? 33 : clamp(Math.max(up, down) - 7, 16, 33);
-          c.classList.toggle('bblow', room < 46 && down > up);
+          const h = r.left - cr.left >= 46 ? 33 : clamp(r.top - cr.top - 7, 16, 33);
           bb.style.height = h + 'px'; bb.style.width = Math.round(h * 1.2) + 'px';
         });
       }
