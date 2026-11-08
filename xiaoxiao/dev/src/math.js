@@ -170,6 +170,10 @@ const MathGate = {
         const c = el('button', 'q');
         c.innerHTML = `<span>${MathGate.html(q)} =</span><span class="ans"></span>`;
         c.onclick = () => choose(qs.indexOf(q));
+        // 小黑板 (chalk.js): the sum as 列竖式 with the rule, never the answer
+        const bb = el('span', 'bb', Chalk.icon); bb.setAttribute('role', 'button'); bb.setAttribute('aria-label', '小黑板');
+        bb.addEventListener('click', e => { e.stopPropagation(); Snd.init(); board(qs.indexOf(q)); });
+        c.appendChild(bb);
         grid.appendChild(c);
         return c;
       }
@@ -205,10 +209,10 @@ const MathGate = {
         Object.assign(grid.style, small ? { alignContent: 'center', width: '100%', maxWidth: '600px', margin: '0 auto' } : { alignContent: '', width: '', maxWidth: '', margin: '' });
         const r = grid.getBoundingClientRect();
         cards.forEach(c => { c.style.fontSize = '100px'; });   // the widest sum in em: its two halves, the gap between them and a little air
-        const em = Math.max(...cards.map(c => [...c.children].reduce((w, s) => w + s.offsetWidth, 0))) / 100 + 0.25 + 0.2;
+        const em = Math.max(...cards.map(c => [c.children[0], c.children[1]].reduce((w, s) => w + s.offsetWidth, 0))) / 100 + 0.25 + 0.2;   // not the 小黑板 button
         const size = cols => {
           const rows = Math.ceil(count / cols), cw = (r.width - (cols - 1) * 10) / cols - 8;
-          const ch = small ? Math.min(110, (r.height - (rows - 1) * 10) / rows) : (r.height - (rows - 1) * 10) / rows;
+          const ch = small ? Math.min(132, (r.height - (rows - 1) * 10) / rows) : (r.height - (rows - 1) * 10) / rows;
           return Math.min(ch * 0.42, cw / em, 46);
         };
         // four across, or three when that fills every row (6 or 15 sums: no half-empty last row)
@@ -216,9 +220,18 @@ const MathGate = {
         if (!small && size(cols) < 20) cols = [3, 2].reduce((a, c) => size(c) > size(a) + 0.5 ? c : a, cols);
         const rows = Math.ceil(count / cols);
         grid.style.gridTemplateColumns = `repeat(${cols},1fr)`;
-        grid.style.gridTemplateRows = small ? `repeat(${rows},minmax(0,110px))` : `repeat(${rows},1fr)`;
+        grid.style.gridTemplateRows = small ? `repeat(${rows},minmax(0,132px))` : `repeat(${rows},1fr)`;
         const fs = Math.max(9, size(cols));
         cards.forEach(c => { c.style.fontSize = fs + 'px'; });
+        // the 小黑板 button in the top corner, full size when the sum leaves room to its left; else as big as the larger of
+        // the gaps above and below the sum allows, in that corner (its touch area reaches a little further, see .bb::before)
+        cards.forEach(c => {
+          const bb = c.querySelector('.bb'), cr = c.getBoundingClientRect(), r = c.children[0].getBoundingClientRect();
+          const room = r.left - cr.left, up = r.top - cr.top, down = cr.bottom - r.bottom;
+          const h = room >= 46 ? 33 : clamp(Math.max(up, down) - 7, 16, 33);
+          c.classList.toggle('bblow', room < 46 && down > up);
+          bb.style.height = h + 'px'; bb.style.width = Math.round(h * 1.2) + 'px';
+        });
       }
       function draw() {
         cards.forEach((c, i) => {
@@ -230,6 +243,7 @@ const MathGate = {
           c.classList.toggle('has', phase === 'write' && !!q.got);
           a.classList.toggle('was', was);
           a.textContent = q.ok ? q.ans : q.got || (was ? q.was : i === cur && phase !== 'mark' ? '?' : '');
+          c.querySelector('.bb').hidden = q.ok || phase === 'mark' || finished || Teach.on;
         });
         const n = qs.length, q = qs[cur], filled = qs.filter(x => x.got).length;
         prog.textContent = phase === 'write' ? `✏️ ${filled} / ${n}` : `✓ ${qs.filter(x => x.ok).length} / ${n}`;
@@ -239,19 +253,32 @@ const MathGate = {
         if (help && bulb.hidden !== false) { bulb.hidden = false; bulb.classList.remove('new'); void bulb.offsetWidth; bulb.classList.add('new'); Snd.play('idea'); }
         bulb.hidden = !help;
         if (Teach.on) Teach.sync(q.got);
+        if (Chalk.on) Chalk.sync(q.got);
       }
       // she taps a sum: any while writing, one still to correct while correcting
       function choose(i) {
         const q = qs[i];
         if (finished || phase === 'mark' || !q || q.ok || i === cur || Teach.on) return;
+        if (Chalk.on) Chalk.close(true);
         cur = i; Snd.play('tap');
         clearTimeout(helpT);
         draw();
         if (phase === 'fix') hint();
       }
+      // 小黑板 over the cards for sum i (it becomes the one she is writing); the pad stays beside it
+      function board(i) {
+        const q = qs[i];
+        if (finished || phase === 'mark' || !q || q.ok || Teach.on) return;
+        clearTimeout(helpT);
+        if (i !== cur) { cur = i; draw(); }
+        Snd.play('select');
+        Chalk.open(q, sheet, { close: draw });
+        draw();
+      }
       // 小老师 over the cards; the pad stays to write the answer
       function teach() {
         clearTimeout(helpT);
+        if (Chalk.on) Chalk.close(true);
         if (finished || phase !== 'fix' || qs[cur].ok) return;
         Teach.open(qs[cur], sheet, { close: draw });
         draw();
@@ -263,7 +290,7 @@ const MathGate = {
         const q = qs[cur];
         if (q.ok) return;
         if (k === '⌫') { q.got = q.got.slice(0, -1); Snd.play('key', 2); }
-        else if (k === '✓') { if (phase === 'write') onward(); else if (q.got) check(); return; }
+        else if (k === '✓') { if (Chalk.on && (phase === 'write' || q.got)) Chalk.close(true); if (phase === 'write') onward(); else if (q.got) check(); return; }
         else if (q.got.length < 3) { q.got = (q.got === '0' ? '' : q.got) + k; Snd.play('key', +k); }
         draw();
       }
@@ -287,6 +314,7 @@ const MathGate = {
       // 交卷: the teacher marks the whole page at once, a tick or a ring one sum after another
       function handIn() {
         if (phase !== 'write' || qs.some(x => !x.got)) return;
+        if (Chalk.on) Chalk.close(true);
         phase = 'mark'; Snd.play('tap'); Voice.say(L.math.mark);
         draw();
         const n = qs.length, gap = clamp(4200 / n, 180, 380);
@@ -374,7 +402,7 @@ const MathGate = {
       }
       function cleanup() {
         finished = true;
-        clearTimeout(helpT); clearTimeout(markT); if (Teach.on) Teach.close();
+        clearTimeout(helpT); clearTimeout(markT); if (Teach.on) Teach.close(); if (Chalk.on) Chalk.close(true);
         window.removeEventListener('keydown', onKey);
         removeEventListener('resize', refit);
       }

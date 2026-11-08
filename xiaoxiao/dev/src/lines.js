@@ -147,6 +147,14 @@ const L = {
     ask: `${KID}，点一下转盘，看看这次做几道题！`,
     land: n => !n ? `转到0道题！运气真好，这次不用做题，${KID}直接去玩吧！` : n <= 4 ? `转到${n}道题！${KID}，热热身吧！` : n <= 10 ? `转到${n}道题！不多不少，${KID}加油！` : `哇，转到${n}道题！${KID}，接受挑战吧！`,
   },
+  // 小黑板 (chalk.js): the textbook's rule for 列竖式 (人教版二年级上册「笔算加法」「笔算减法」), never the answer
+  chalk: {
+    add: '列竖式，相同数位对齐，从个位加起。个位满十，就向十位进一。',
+    sub: '列竖式，相同数位对齐，从个位减起。个位不够减，就从十位退一，在个位上加十再减。',
+    sub100: '十位上是零不够退，就先从百位退一，变成十个十。',
+    steps: '这道题要分几步算：先算第一步，再用它的得数接着算。',
+    draw: '你可以用手指在黑板上写一写。算好了，用键盘写上得数。',
+  },
   // 小老师 (teach.js): when a sum she is correcting is wrong again, or 💡. 列竖式 first (decli 2026-11-02), 🔄 for the
   // others; no line ever says the answer: they count only what is added or taken away, or count along with her
   teach: {
