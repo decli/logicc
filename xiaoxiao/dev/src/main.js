@@ -8,6 +8,8 @@
   Game.layout();
   const bar = $('#ldBar');
   bar.style.width = '30%';
+  Title.early();   // the island she is on, behind the name, before any picture has come
+  $('#loader .tHome').onclick = () => { Voice.stop(); location.href = '../'; };
   Voice.load();
   Art2.load();
   Snd.load(['bg1', 'bg2', 'great', 'excellent', 'unbelievable']);
@@ -29,22 +31,16 @@
     bar.style.width = '100%';
     Art.setCell(64, Math.min(devicePixelRatio || 1, 2));
     const ld = $('#loader');
-    ld.innerHTML = '';
-    const pic = el('canvas'); pic.width = pic.height = 300; pic.style.width = pic.style.height = '150px';
-    const px = pic.getContext('2d');
-    [[0, 30, 120], [1, 150, 100], [2, 80, 190], [3, 200, 200]].forEach(([k, x, y]) => px.drawImage(Art.head(k, 130, 110), x - 65, y - 65));
-    ld.appendChild(pic);
-    ld.appendChild(el('div', null, '<span style="font-size:40px;font-weight:900;color:#fff;-webkit-text-stroke:2px #3d5229;paint-order:stroke fill;text-shadow:0 4px 0 #3d5229">动物消消乐</span>'));
-    const go = el('button', 'btn green', '开始玩 ▶');
-    go.onclick = () => {
+    // the start screen's button: sound wakes up, the island flies at her and the map opens behind it
+    const go = () => {
       wake(); Snd.play('tap');
-      ld.classList.add('gone'); setTimeout(() => ld.remove(), 450);
+      setTimeout(() => ld.classList.add('gone'), 150); setTimeout(() => ld.remove(), 650);
       const freed = Store.newDay();   // the first game of the day: a page owed from before is let go, and she is told
       UI.map();
       Voice.say(freed ? L.math.freeDay : Store.d.played ? L.pick : L.welcome);
     };
-    ld.appendChild(go);
-    if (/[?&]go\b/.test(location.search)) go.onclick();   // ?go skips the start button (for testing)
+    if (/[?&]go\b/.test(location.search)) { ld.remove(); go(); return; }   // ?go skips the start screen (for testing)
+    Title.ready(go);
   });
   document.addEventListener('visibilitychange', () => {
     if (!Snd.ctx) return;

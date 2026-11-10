@@ -489,15 +489,78 @@ button{font:inherit;color:inherit;border:0;background:none;padding:0;cursor:poin
 #toast{position:fixed;z-index:55;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translate(-50%,200%);width:max-content;max-width:min(640px,92vw);background:#fff;border-radius:24px;box-shadow:var(--shadow);
   padding:14px 22px;font-size:21px;font-weight:800;line-height:1.4;transition:transform .35s cubic-bezier(.2,1.4,.4,1);pointer-events:none}
 #toast.on{transform:translate(-50%,0)}
-#loader{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:linear-gradient(170deg,#f8f2e4 0%,#f1ead4 50%,#e2edcd 100%);
-  font-size:24px;font-weight:800;transition:opacity .4s}
+/* ---------- the start screen (title.js): the island she is on, the name in felt letters, one big button ---------- */
+#loader{position:fixed;inset:0;z-index:60;display:grid;grid-template-rows:auto minmax(0,1fr) auto;justify-items:center;align-items:center;overflow:hidden;gap:6px;
+  padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(18px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));
+  transition:opacity .45s;background:#e8f3c8;color:var(--ink)}
 #loader.gone{opacity:0;pointer-events:none}
-#loader .ld{width:220px;height:16px;border-radius:999px;background:#fff;overflow:hidden}
+#loader .tBg{position:absolute;inset:0;background:linear-gradient(170deg,#f8f2e4,#e2edcd)}
+#loader .tBg::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 52%,rgba(255,255,255,.5) 0,rgba(255,255,255,0) 58%)}
+#loader > :not(.tBg){position:relative;z-index:1}
+#loader .tHome{position:absolute;left:max(16px,env(safe-area-inset-left));top:max(16px,env(safe-area-inset-top));z-index:3}
+.tHead{display:flex;flex-direction:column;align-items:center;gap:clamp(6px,1.4vh,14px);padding-top:clamp(4px,1.5vh,18px)}
+.tTitle{display:flex;gap:.03em;font-size:clamp(44px,min(10vh,11vw),104px);font-weight:900;line-height:1.1}
+.tTitle b{display:inline-block;color:var(--c);-webkit-text-stroke:.1em #fff;paint-order:stroke fill;
+  text-shadow:0 .07em 0 #3d5229,0 .14em .12em rgba(61,82,41,.3);animation:tWave 3s ease-in-out infinite;transform:rotate(var(--r))}
+.tTitle b:nth-child(1){--c:#ee8a3c;--r:-6deg;animation-delay:0s}
+.tTitle b:nth-child(2){--c:#5aa83f;--r:4deg;animation-delay:-.25s}
+.tTitle b:nth-child(3){--c:#e86f93;--r:-3deg;animation-delay:-.5s}
+.tTitle b:nth-child(4){--c:#4a8fd6;--r:5deg;animation-delay:-.75s}
+.tTitle b:nth-child(5){--c:#e3a21a;--r:-5deg;animation-delay:-1s}
+@keyframes tWave{0%,100%{transform:translateY(0) rotate(var(--r))}50%{transform:translateY(-.09em) rotate(calc(var(--r) * -1))}}
+.tRibbon{position:relative;font-size:clamp(15px,2.5vh,22px);font-weight:900;color:#fff;background:#ee8a3c;padding:.32em 1.5em;letter-spacing:.08em;
+  box-shadow:0 4px 0 #c8661f;text-shadow:0 1px 0 rgba(0,0,0,.18);white-space:nowrap}
+.tRibbon::before,.tRibbon::after{content:"";position:absolute;top:.38em;width:1.3em;height:100%;background:#d0702a;z-index:-1}
+.tRibbon::before{left:-.95em;clip-path:polygon(0 0,100% 0,100% 100%,0 100%,.45em 50%)}
+.tRibbon::after{right:-.95em;clip-path:polygon(0 0,100% 0,calc(100% - .45em) 50%,100% 100%,0 100%)}
+.tStage{position:relative;width:100%;height:100%;min-height:0;display:grid;place-items:center;--isle:min(44vh,54vw)}
+.tIsle{position:relative;width:var(--isle);height:var(--isle);animation:tFloat 4.6s ease-in-out infinite, tIn .7s cubic-bezier(.2,1.5,.4,1) both}
+.tIsle > img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 22px 20px rgba(60,80,40,.3))}
+@keyframes tFloat{50%{transform:translateY(-12px)}}
+@keyframes tIn{from{transform:scale(.4);opacity:0}}
+.tPal{position:absolute;left:-30%;bottom:-6%;width:48%;animation:tHop 2.4s ease-in-out infinite}
+.tPalFace{display:block;width:100%;height:auto;filter:drop-shadow(0 10px 8px rgba(40,50,30,.28))}
+@keyframes tHop{50%{transform:translateY(-6%) rotate(-3deg)}}
+.tBub{position:absolute;left:46%;top:-30%;white-space:nowrap;background:#fff;border-radius:18px;padding:.35em .9em;font-size:clamp(14px,2.3vh,21px);font-weight:900;
+  box-shadow:0 4px 0 rgba(61,82,41,.16)}
+.tBub::after{content:"";position:absolute;left:22%;top:100%;border:8px solid transparent;border-top-color:#fff;border-bottom:0}
+.tFriend{position:absolute;left:calc(50% + var(--x) * var(--isle));top:calc(50% + var(--y) * var(--isle));width:calc(var(--s) * var(--isle) * .3);
+  transform:translate(-50%,-50%);animation:tBob 3.4s ease-in-out infinite}
+.tFriend canvas{display:block;width:100%;height:auto;filter:drop-shadow(0 7px 6px rgba(40,50,30,.22))}
+@keyframes tBob{0%,100%{translate:0 0;rotate:-4deg}50%{translate:0 -10px;rotate:4deg}}
+.tFoot{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(10px,1.8vh,16px);min-height:clamp(96px,17vh,150px)}
+.tChips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.tChip{display:flex;align-items:center;gap:8px;background:rgba(255,251,241,.94);border-radius:999px;padding:5px 18px 5px 7px;box-shadow:0 4px 0 rgba(61,82,41,.16);
+  font-size:clamp(16px,2.4vh,21px);font-weight:900;font-variant-numeric:tabular-nums}
+.tChip img{width:2.1em;height:2.1em;object-fit:contain}
+.tChip i{font-style:normal;font-size:1.35em;width:1.6em;text-align:center}
+.tChip span{display:flex;flex-direction:column;line-height:1.15;text-align:left}
+.tChip small{font-size:.62em;color:#6b7a55;font-weight:800}
+.tGo{font:inherit;font-size:clamp(22px,3.6vh,32px);font-weight:900;color:#fff;min-width:min(300px,80vw);padding:.5em 1.6em;border:0;border-radius:999px;cursor:pointer;
+  background:linear-gradient(180deg,#f9b46b,#ee8a3c);box-shadow:inset 0 2px 0 rgba(255,255,255,.35),0 7px 0 #b9601c,0 16px 26px rgba(185,96,28,.35);
+  text-shadow:0 2px 0 rgba(0,0,0,.15);animation:tPulse 2.2s ease-in-out infinite}
+.tGo:active{transform:translateY(5px);box-shadow:inset 0 2px 0 rgba(255,255,255,.35),0 2px 0 #b9601c}
+.tGo:focus-visible{outline:4px solid #fff;outline-offset:4px}
+@keyframes tPulse{50%{transform:scale(1.05)}}
+.tWait{font-size:18px;font-weight:800}
+#loader .ld{width:min(260px,70vw);height:16px;border-radius:999px;background:rgba(255,255,255,.85);overflow:hidden;box-shadow:inset 0 0 0 2px rgba(61,82,41,.12)}
 #loader .ld i{display:block;height:100%;width:10%;background:linear-gradient(90deg,#f9b46b,#ffd23a);transition:width .3s}
+#loader.leaving .tIsle{animation:none;transition:transform .45s ease-in,opacity .45s;transform:scale(1.7);opacity:0}
+#loader.leaving .tFriend,#loader.leaving .tFoot,#loader.leaving .tHead{transition:opacity .3s;opacity:0}
+@media (max-width:600px){
+  .tStage{--isle:min(40vh,62vw)}
+  .tPal{left:-20%;width:44%}
+  .tChip{padding:4px 12px 4px 5px;gap:6px}
+}
+@media (max-height:480px){.tChips{display:none}.tStage{--isle:min(48vh,40vw)}.tFriend:nth-of-type(n+4){display:none}}   /* a phone on its side: only the friends above the island */
+@media (prefers-reduced-motion:reduce){.tTitle b,.tIsle,.tPal,.tFriend,.tGo{animation:none}}
 </style>
 </head>
 <body>
-<div id="loader"><div style="font-size:64px">🐼</div><div>小伙伴们正在赶来…</div><div class="ld"><i id="ldBar"></i></div></div>
+<div id="loader"><div class="tBg"></div><button class="ibtn tHome" aria-label="回思维小画本">🏠</button>
+<div class="tHead"><div class="tTitle" role="heading" aria-level="1" aria-label="动物消消乐"><b>动</b><b>物</b><b>消</b><b>消</b><b>乐</b></div><div class="tRibbon">第二季 · 动物环游世界</div></div>
+<div class="tStage"></div>
+<div class="tFoot"><div class="ld"><i id="ldBar"></i></div><span class="tWait">小伙伴们正在赶来…</span></div></div>
 <canvas id="cv"></canvas>
 <div id="hud" hidden></div>
 <div id="map" hidden></div>
